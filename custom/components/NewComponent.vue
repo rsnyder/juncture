@@ -1,33 +1,36 @@
 <template>
-  <div v-html="viewerLabel" :style="containerStyle">
-    Our new component.
-  </div>
+  <div :style="containerStyle">
+
+  Test
+  </div>  
 </template>
 
 <script>
 
 module.exports = {
   name: 'NewComponent',
-  props: {
+  props: { 
     items: { type: Array, default: () => ([]) },
     viewerIsActive: Boolean
   },
   data: () => ({
-    viewerLabel: 'Custom Component',
-    viewerIcon: 'fas fa-code',
+    viewerLabel: 'New Component',
+    viewerIcon: 'fas fa-file-code',
     dependencies: []
   }),
   computed: {
-    containerStyle() { return { height: this.viewerIsActive ? '100%' : '0' } }
+    containerStyle() { return { 
+      position: 'relative',
+      height: this.viewerIsActive ? '100%' : '0', 
+      overflowY: 'auto !important' 
+    }},
   },
   mounted() { this.loadDependencies(this.dependencies, 0, this.init) },
   methods: {
     init() {
-      console.log(`${this.$options.name}.mounted`)
     }
   }
 }
-
 </script>
 
 <style>

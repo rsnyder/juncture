@@ -58,6 +58,7 @@
     <template v-if="path === '/'">
 
       <div class="title-bar">
+        <div>New text</div>
         <div class="title" v-html="title"></div>
         <div class="author" v-html="author || tagline"></div>
       </div>

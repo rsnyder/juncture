@@ -10,7 +10,7 @@
         <span></span>
         <ul id="menu">
 
-          <li @click="doMenuAction({action:'load-page', path:'/'})"><i :class="`fas fa-home`"></i>Home modified</li>
+          <li @click="doMenuAction({action:'load-page', path:'/'})"><i :class="`fas fa-home`"></i>Home modified again</li>
 
           <!--  Adds menu items defined in site config.yaml -->
           <template v-for="(navItem, idx) in siteConfig.nav">

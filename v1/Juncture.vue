@@ -117,7 +117,7 @@ const availableViewers = [
   've1-vis-network'
 ]
 
-const componentsPath = 'https://rsnyder.github.io/juncture-v1/sfc'
+const componentsPath = 'https://rsnyder.github.io/juncture-v1/v1'
 const componentPrefix = 've1-'
 
 const contentSource = {

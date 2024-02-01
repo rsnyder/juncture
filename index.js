@@ -92,7 +92,7 @@ function _createJunctureV1App() {
   new window.Vue({
     el: '#vue',
     components: {
-      'juncture-v1': window.httpVueLoader('sfc/Juncture.vue')
+      'juncture-v1': window.httpVueLoader('https://rsnyder.github.io/juncture-v1/sfc/Juncture.vue')
     },
     data: () => ({ html })
   })

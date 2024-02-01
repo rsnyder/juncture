@@ -38,7 +38,6 @@ function _createJunctureV1App() {
       wrapper.appendChild(seg.cloneNode(true))
       let sib = seg.nextSibling
       while (sib && sib.nodeName === 'PARAM') {
-        console.log(sib)
         wrapper.appendChild(sib)
         sib = sib.nextSibling
       }

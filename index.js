@@ -39,7 +39,7 @@ function _createJunctureV1App() {
       while (seg.nextSibling) {
         let sib = seg.nextSibling
         if (sib.nodeName !== 'PARAM') break
-        wrapper.appendChild(sib)
+        wrapper.appendChild(sib.cloneNode(true))
       }
       seg.replaceWith(wrapper)
     })

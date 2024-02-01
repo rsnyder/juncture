@@ -57,7 +57,7 @@
   onMounted(() => {
     nextTick(() => {
       let ul = (host.value.querySelector('ul') as HTMLUListElement)
-      if (!ul && (window as any).config?.nav) {
+      if (!ul && (window as any).config?.defaults?.header?.nav) {
         ul = document.createElement('ul');
         (window as any).config?.nav.forEach((item:any) => {
           const li = document.createElement('li')

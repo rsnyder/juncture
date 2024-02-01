@@ -267,7 +267,7 @@ module.exports = {
     },
 
     logout() {
-      console.log('logout')
+      // console.log('logout')
     },
 
     // Updates viewer data from events emitted when viewer components are loaded
@@ -587,7 +587,7 @@ module.exports = {
 
     // Watcher that updates various data elements when the active paragraph changes
     active(current, prior) {
-      console.log(`active: current=${current} prior=${prior}`)
+      // console.log(`active: current=${current} prior=${prior}`)
       let activeSegment = document.querySelector(`[data-id="${current}"]`)
       if (activeSegment) {
         if (this.$refs.tabsBar) activeSegment.appendChild(this.$refs.tabsBar)

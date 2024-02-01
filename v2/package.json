@@ -1,6 +1,6 @@
 {
-  "name": "juncture2-webcomponents",
-  "version": "0.5.0",
+  "name": "juncture2",
+  "version": "0.5.1",
   "private": false,
   "scripts": {
     "dev": "vite",

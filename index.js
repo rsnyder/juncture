@@ -36,11 +36,11 @@ function _createJunctureV1App() {
       seg.removeAttribute('data-id')
       seg.className = ''
       wrapper.appendChild(seg.cloneNode(true))
-      while (seg.nextSibling) {
-        let sib = seg.nextSibling
-        if (sib.nodeName !== 'PARAM') break
+      let sib = seg.nextSibling
+      while (sib && sib.nodeName === 'PARAM') {
         console.log(sib)
-        // wrapper.appendChild(sib)
+        wrapper.appendChild(sib)
+        sib = sib.nextSibling
       }
       seg.replaceWith(wrapper)
     })

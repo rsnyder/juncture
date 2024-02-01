@@ -46,7 +46,7 @@ function _createJunctureV1App() {
 
   Array.from(tmp.querySelectorAll('div'))
   .forEach(div => {
-    if (div.firstChild.firstChild?.tagName === 'PARAM' && div.textContent?.trim() == '') div.replaceWith(div.firstChild.firstChild)
+    if (div.firstChild?.tagName === 'PARAM' && div.textContent?.trim() == '') div.replaceWith(div.firstChild)
   })
 
   /*

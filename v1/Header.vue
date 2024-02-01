@@ -64,7 +64,7 @@
       baseUrl() { return this.isGHP ? `/${location.pathname.split('/')[1]}` : '' }
     },
     mounted() {
-      this.nav = window?.config?.nav || []
+      this.nav = window?.config?.defaults?.header?.nav || []
       this.loadDependencies(this.dependencies, 0, this.init) 
     },
     methods: {

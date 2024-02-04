@@ -83,23 +83,28 @@ module.exports = {
 
           console.log(`visibleParagraphs=${visibleParagraphs.length}`, `notVisible=${notVisible.length}`)
 
-          visibleParagraphs = visibleParagraphs
+          let visibleParagraphsFiltered = visibleParagraphs
             .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
             .filter(entry => entry.target.getBoundingClientRect().x < 600)
             .filter(entry => entry.target.classList.contains('sticky') ? false : true)
 
-          visibleParagraphs.forEach(para => console.log(para))
+          if (visibleParagraphsFiltered.length === 0 && visibleParagraphs.length > 0) {
+            visibleParagraphsFiltered = visibleParagraphs
+              .filter(entry => entry.target.getBoundingClientRect().x < 600)
+              .filter(entry => entry.target.classList.contains('sticky') ? false : true)
+          }
+          visibleParagraphsFiltered.forEach(para => console.log(para))
 
-          visibleParagraphs = visibleParagraphs
+          visibleParagraphsFiltered = visibleParagraphsFiltered
             .sort((a,b) => {
               let aTop = a.target.getBoundingClientRect().top
               let bTop = b.target.getBoundingClientRect().top
               return aTop < bTop ? -1 : 1
             })
-          if (self.active !== visibleParagraphs[0]?.target) {
-            self.active = visibleParagraphs[0]?.target.id
+          if (self.active !== visibleParagraphsFiltered[0]?.target) {
+            self.active = visibleParagraphsFiltered[0]?.target.id
             document.querySelectorAll('.active').forEach(p => p.classList.remove('active'))
-            visibleParagraphs[0]?.target?.classList.add('active')
+            visibleParagraphsFiltered[0]?.target?.classList.add('active')
             self.$emit('set-active', self.active)
           }
         }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})

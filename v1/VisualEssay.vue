@@ -81,10 +81,14 @@ module.exports = {
           let notVisible = entries.filter(entry => !entry.isIntersecting)
           for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
 
+          console.log(`visibleParagraphs=${visibleParagraphs.length}`, `notVisible=${notVisible.length}`)
+
           visibleParagraphs = visibleParagraphs
             .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
             .filter(entry => entry.target.getBoundingClientRect().x < 600)
             .filter(entry => entry.target.classList.contains('sticky') ? false : true)
+
+          visibleParagraphs.forEach(para => console.log(para))
 
           visibleParagraphs = visibleParagraphs
             .sort((a,b) => {

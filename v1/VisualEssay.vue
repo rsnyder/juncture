@@ -78,6 +78,13 @@ module.exports = {
         console.log('topMargin', topMargin)
 
         const observer = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            let para = entry.target
+            let intersectionRatio = entry.intersectionRatio
+            let top = para.getBoundingClientRect().top
+            console.log(intersectionRatio, top, para)
+          })
+
           let notVisible = entries.filter(entry => !entry.isIntersecting)
           for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
 
@@ -95,6 +102,7 @@ module.exports = {
               return aTop < bTop ? -1 : 1
             })
           
+          /*
           console.log(`visibleParagraphs=${visibleParagraphsFiltered.length}`)
           visibleParagraphsFiltered.forEach(entry => {
             let para = entry.target
@@ -102,6 +110,7 @@ module.exports = {
             let top = para.getBoundingClientRect().top
             console.log(intersectionRatio, top, para)
           })
+          */
 
           if (self.active !== visibleParagraphsFiltered[0]?.target) {
             self.active = visibleParagraphsFiltered[0]?.target.id

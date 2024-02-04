@@ -79,6 +79,7 @@ module.exports = {
 
         const observer = new IntersectionObserver((entries, observer) => {
           entries.forEach(entry => {
+            console.log(entry)
             let para = entry.target
             let intersectionRatio = entry.intersectionRatio
             let top = para.getBoundingClientRect().top

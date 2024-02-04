@@ -78,14 +78,13 @@ module.exports = {
           for (const entry of entries) {
             let para = entry.target
             let intersectionRatio = entry.intersectionRatio
-            let top = para.getBoundingClientRect().top
+            let top = para.getBoundingClientRect().y
             if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}
             else delete visible[para.id]
           }
 
           let sortedVisible = Object.values(visible).sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.top - b.top)
-          // sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top))
-          console.log(sortedVisible.map(v => [v.para.id, v.intersectionRatio, v.top]))
+          sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top))
 
           if (self.active !== sortedVisible[0]?.para.id) {
             self.active = sortedVisible[0]?.para.id

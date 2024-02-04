@@ -119,7 +119,7 @@ module.exports = {
             visibleParagraphsFiltered[0]?.target?.classList.add('active')
             self.$emit('set-active', self.active)
           }
-        }, { root: null, threshold: [1.0, .5], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
+        }, { root: null, threshold: [], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
         // target the elements to be observed
         document.querySelectorAll('.segment').forEach((paragraph) => observer.observe(paragraph))

@@ -85,7 +85,7 @@ module.exports = {
 
           let sortedVisible = Object.values(visible).sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.top - b.top)
           // sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top))
-          console.log(sortedVisible.map(v => console.log(v.para, v.intersectionRatio, v.top)))
+          console.log(sortedVisible.map(v => [v.para.id, v.intersectionRatio, v.top]))
 
           if (self.active !== sortedVisible[0]?.para.id) {
             self.active = sortedVisible[0]?.para.id

@@ -81,15 +81,12 @@ module.exports = {
           let notVisible = entries.filter(entry => !entry.isIntersecting)
           for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
 
-          console.log(`visibleParagraphs=${visibleParagraphs.length}`, `notVisible=${notVisible.length}`)
-
           let visibleParagraphsFiltered = visibleParagraphs
             .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
             .filter(entry => entry.target.getBoundingClientRect().x < 600)
             .filter(entry => entry.target.classList.contains('sticky') ? false : true)
 
           if (visibleParagraphsFiltered.length === 0 && visibleParagraphs.length > 0) visibleParagraphsFiltered = visibleParagraphs
-          visibleParagraphsFiltered.forEach(para => console.log(para))
 
           visibleParagraphsFiltered = visibleParagraphsFiltered
             .sort((a,b) => {
@@ -97,6 +94,10 @@ module.exports = {
               let bTop = b.target.getBoundingClientRect().top
               return aTop < bTop ? -1 : 1
             })
+          
+          console.log(`visibleParagraphs=${visibleParagraphsFiltered.length}`)
+          visibleParagraphsFiltered.forEach(para => console.log(para))
+
           if (self.active !== visibleParagraphsFiltered[0]?.target) {
             self.active = visibleParagraphsFiltered[0]?.target.id
             document.querySelectorAll('.active').forEach(p => p.classList.remove('active'))

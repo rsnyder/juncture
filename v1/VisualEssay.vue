@@ -88,11 +88,7 @@ module.exports = {
             .filter(entry => entry.target.getBoundingClientRect().x < 600)
             .filter(entry => entry.target.classList.contains('sticky') ? false : true)
 
-          if (visibleParagraphsFiltered.length === 0 && visibleParagraphs.length > 0) {
-            visibleParagraphsFiltered = visibleParagraphs
-              .filter(entry => entry.target.getBoundingClientRect().x < 600)
-              .filter(entry => entry.target.classList.contains('sticky') ? false : true)
-          }
+          if (visibleParagraphsFiltered.length === 0 && visibleParagraphs.length > 0) visibleParagraphsFiltered = visibleParagraphs
           visibleParagraphsFiltered.forEach(para => console.log(para))
 
           visibleParagraphsFiltered = visibleParagraphsFiltered

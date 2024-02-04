@@ -67,65 +67,39 @@ module.exports = {
       })
       let self = this
 
-      let visibleParagraphs = []
-      function observeVisible() {
-        
-        let topMargin = 0
-        Array.from(document.querySelectorAll('.sticky'))
-        .filter(sticklEl => sticklEl.getBoundingClientRect().x < 600)
-        .forEach(stickyEl => topMargin += stickyEl.getBoundingClientRect().height)
-        topMargin = 100
-        console.log('topMargin', topMargin)
+      function observeVisible(callback = null) {
 
+        let topMargin = 100
+
+        console.log(`observeVisible: topMargin=${topMargin}`)
+
+        const visible = {}
         const observer = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            console.log(entry)
+          for (const entry of entries) {
             let para = entry.target
             let intersectionRatio = entry.intersectionRatio
             let top = para.getBoundingClientRect().top
-            console.log(intersectionRatio, top, para)
-          })
+            if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}
+            else delete visible[para.id]
+          }
 
-          let notVisible = entries.filter(entry => !entry.isIntersecting)
-          for (const entry of entries) { if (entry.isIntersecting && !visibleParagraphs.find(vp => vp.target === entry.target)) visibleParagraphs.push(entry) }
+          let sortedVisible = Object.values(visible).sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.top - b.top)
+          // sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top))
 
-          let visibleParagraphsFiltered = visibleParagraphs
-            .filter(entry => notVisible.find(nv => nv.target === entry.target) ? false : true)
-            .filter(entry => entry.target.getBoundingClientRect().x < 600)
-            .filter(entry => entry.target.classList.contains('sticky') ? false : true)
-
-          if (visibleParagraphsFiltered.length === 0 && visibleParagraphs.length > 0) visibleParagraphsFiltered = visibleParagraphs
-
-          visibleParagraphsFiltered = visibleParagraphsFiltered
-            .sort((a,b) => {
-              let aTop = a.target.getBoundingClientRect().top
-              let bTop = b.target.getBoundingClientRect().top
-              return aTop < bTop ? -1 : 1
-            })
-          
-          /*
-          console.log(`visibleParagraphs=${visibleParagraphsFiltered.length}`)
-          visibleParagraphsFiltered.forEach(entry => {
-            let para = entry.target
-            let intersectionRatio = entry.intersectionRatio
-            let top = para.getBoundingClientRect().top
-            console.log(intersectionRatio, top, para)
-          })
-          */
-
-          if (self.active !== visibleParagraphsFiltered[0]?.target) {
-            self.active = visibleParagraphsFiltered[0]?.target.id
+          if (self.active !== sortedVisible[0]?.para) {
+            self.active = sortedVisible[0]?.para.id
             document.querySelectorAll('.active').forEach(p => p.classList.remove('active'))
-            visibleParagraphsFiltered[0]?.target?.classList.add('active')
+            sortedVisible[0]?.para?.classList.add('active')
             self.$emit('set-active', self.active)
           }
+
         }, { root: null, threshold: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
         // target the elements to be observed
         document.querySelectorAll('.segment').forEach((paragraph) => observer.observe(paragraph))
       }
-      observeVisible()
 
+      observeVisible()
 
     },
     doCustomFormatting(elem) {

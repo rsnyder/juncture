@@ -75,7 +75,7 @@ module.exports = {
         .filter(sticklEl => sticklEl.getBoundingClientRect().x < 600)
         .forEach(stickyEl => topMargin += stickyEl.getBoundingClientRect().height)
         topMargin = 100
-        // console.log('topMargin', topMargin)
+        console.log('topMargin', topMargin)
 
         const observer = new IntersectionObserver((entries, observer) => {
           let notVisible = entries.filter(entry => !entry.isIntersecting)
@@ -96,7 +96,12 @@ module.exports = {
             })
           
           console.log(`visibleParagraphs=${visibleParagraphsFiltered.length}`)
-          visibleParagraphsFiltered.forEach(para => console.log(para))
+          visibleParagraphsFiltered.forEach(entry => {
+            let para = entry.target
+            let intersectionRatio = entry.intersectionRatio
+            let top = para.getBoundingClientRect().top
+            console.log(intersectionRatio, top, para)
+          })
 
           if (self.active !== visibleParagraphsFiltered[0]?.target) {
             self.active = visibleParagraphsFiltered[0]?.target.id

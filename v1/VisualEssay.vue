@@ -78,13 +78,12 @@ module.exports = {
           for (const entry of entries) {
             let para = entry.target
             let intersectionRatio = Math.round(100*entry.intersectionRatio)/100
-            // let top = Math.round(para.getBoundingClientRect().top + para.ownerDocument.defaultView.scrollY)
-            let top = Math.round(para.getBoundingClientRect().top)
-            if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}
+            if (intersectionRatio > 0) visible[para.id] = {para, intersectionRatio}
             else delete visible[para.id]
           }
 
-          let sortedVisible = Object.values(visible).sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.top - b.top)
+          let sortedVisible = Object.values(visible)
+            .sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.para.getBoundingClientRect().top - b.para.getBoundingClientRect().top)
           sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top, v.para.getBoundingClientRect()))
           console.log('---')
 

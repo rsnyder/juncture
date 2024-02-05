@@ -63,6 +63,11 @@ module.exports = {
         } else {
           essayElem.scrollTop = 0
           this.active = segments.length > 0 ? segments[0].dataset.id : null
+          if (this.active) {
+            this.$emit('set-active', this.active)
+            segments[0].classList.add('active')
+          }
+
         }
       })
       let self = this
@@ -71,7 +76,7 @@ module.exports = {
 
         let topMargin = 100
 
-        console.log(`observeVisible: topMargin=${topMargin}`)
+        console.log(`observeVisible: topMargin=${topMargin} active=${self.active}`)
 
         const visible = {}
         const observer = new IntersectionObserver((entries, observer) => {
@@ -84,8 +89,8 @@ module.exports = {
 
           let sortedVisible = Object.values(visible)
             .sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.para.getBoundingClientRect().top - b.para.getBoundingClientRect().top)
-          sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top, v.para.getBoundingClientRect()))
-          console.log('---')
+          // sortedVisible.forEach(v => console.log(v.para, v.intersectionRatio, v.top, v.para.getBoundingClientRect()))
+          // console.log('---')
 
           if (self.active !== sortedVisible[0]?.para.id) {
             self.active = sortedVisible[0]?.para.id

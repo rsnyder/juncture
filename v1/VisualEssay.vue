@@ -77,7 +77,7 @@ module.exports = {
         const observer = new IntersectionObserver((entries, observer) => {
           for (const entry of entries) {
             let para = entry.target
-            let intersectionRatio = entry.intersectionRatio
+            let intersectionRatio = Math.round(10*entry.intersectionRatio)/10
             // let top = Math.round(para.getBoundingClientRect().top + para.ownerDocument.defaultView.scrollY)
             let top = para.getBoundingClientRect().top
             if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}

@@ -78,7 +78,8 @@ module.exports = {
           for (const entry of entries) {
             let para = entry.target
             let intersectionRatio = entry.intersectionRatio
-            let top = para.getBoundingClientRect().y
+            let top = Math.round(para.getBoundingClientRect().top + para.ownerDocument.defaultView.scrollY)
+            console.log(para.id, entry.intersectionRatio, top)
             if (intersectionRatio > 0) visible[para.id] = {para, top, intersectionRatio}
             else delete visible[para.id]
           }

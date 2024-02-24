@@ -65,7 +65,7 @@ html_template = open(f'{CONTENT_ROOT}/_layouts/default.html', 'r').read().replac
 html_template = re.sub(r'https:\/\/.+\/mdpress\/', '/', html_template)
 
 html_template = html_template.replace('https://mdpress.io', '')
-if LOCAL_WC: html_template = html_template.replace('/wc/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
+if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{%- seo -%}', '')
@@ -144,7 +144,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = content.replace('/wc/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
+      content = content.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
   if ext is None: # markdown file
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
   media_type = media_types[ext] if ext in media_types else 'text/html'

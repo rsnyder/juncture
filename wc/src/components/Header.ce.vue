@@ -51,7 +51,7 @@
   const backgroundImage = computed(() => props.background || config.value.defaults?.header?.backgroundImage )
   const logo = computed(() => {
     let logo = props.logo || config.value.defaults?.header?.logo
-    return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl}/${logo}`)
+    return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl}/${logo[0] === '/' ? logo.slice(1) : logo}`)
   })
   const iconFilter = computed(() => props.iconFilter === undefined ? config.value.defaults?.header?.iconFilter : props.iconFilter)
   const color = computed(() => props.color || (backgroundImage.value ? 'black' : '#ddd'))

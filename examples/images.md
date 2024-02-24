@@ -6,7 +6,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ![thumbnail](https://4l7jc4phyfduh6gtdkz465nwsy0xhsfv.lambda-url.us-east-1.on.aws/iiif/3/695bd3f1722e67d3c21708575797728a968ed3fccd707b5aca33920f270c85fc/full/400,/0/default.jpg)
 
-![thumbnail](https:/iiif-image.mdpress.io/iiif/3/695bd3f1722e67d3c21708575797728a968ed3fccd707b5aca33920f270c85fc/full/400,/0/default.jpg)
+![thumbnail](https://iiif-image.mdpress.io/iiif/3/695bd3f1722e67d3c21708575797728a968ed3fccd707b5aca33920f270c85fc/full/400,/0/default.jpg)
 
 ## ez-image
 

@@ -514,9 +514,7 @@ function setMeta() {
     ? meta?.getAttribute('robots')
     : window.config?.robots
       ? window.config.robots
-      : location.hostname.indexOf('www') === 0
-        ? '' 
-        : 'noindex, nofollow'
+      : '' 
 
   if (title) {
     document.title = title

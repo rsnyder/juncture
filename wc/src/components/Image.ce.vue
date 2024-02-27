@@ -170,7 +170,7 @@
 
   // resize OSD viewer
   function resize() {
-    setOsdHeight
+    // setOsdHeight
     setTimeout(() => osd.value?.viewport?.goHome(true), 100)
   }
 
@@ -178,7 +178,7 @@
     if (!osdEl.value) return
     let container = shadowRoot.value.querySelector('#osd') as HTMLElement
     // console.log(`initOpenSeadragon() width: ${osdEl.value?.clientWidth} imageHeight: ${imageSize.value?.height} osdHeight: ${osdEl.value?.clientHeight} tileSource: ${tileSource.value}`)
-    setOsdHeight()
+    // setOsdHeight()
     const osdOptions: OpenSeadragon.Options = {
       element: container,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
@@ -313,7 +313,7 @@ function copyTextToClipboard(text: string) {
 
 <template>
 
-<div ref="root" class="image relative rounded overflow-hidden shadow-lg">
+<div ref="root" class="image flex relative rounded overflow-hidden shadow-lg">
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
   <div v-if="tileSource" ref="osdEl" id="osd" class="w-full" role="img" :aria-label="caption" :alt="caption"></div>
   <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">

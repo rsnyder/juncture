@@ -2,7 +2,7 @@ import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
 // import * as yaml from 'js-yaml'
 
-export const iiifServer = 'https://iiif.juncture-digital.org'
+export const iiifServer = 'https://iiif.mdpress.io'
 
 export function isURL(str:string) { return /^https*:\/\//.test(str) }
 export function isQid(s:string) { return /^Q\d+$/.test(s) }

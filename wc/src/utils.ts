@@ -345,7 +345,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
   if (toGet.length > 0) {
     let requests: any = toGet
       .map(manifestUrl => {
-        if (refresh && ['localhost', 'iiif.juncture-digital.org'].includes(new URL(manifestUrl).hostname)) {
+        if (refresh && ['localhost', 'iiif.mdpress.io'].includes(new URL(manifestUrl).hostname)) {
           manifestUrl += '?refresh'
         }
         return fetch(manifestUrl)
@@ -354,7 +354,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
     let manifests = await Promise.all(responses.map((resp:any) => resp.json()))
     requests = manifests
       .filter(manifest => !Array.isArray(manifest['@context']) && parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
-      .map(manifest => fetch('https://iiif.juncture-digital.org/prezi2to3/', {
+      .map(manifest => fetch('https://iiif.mdpress.io/prezi2to3/', {
         method: 'POST', 
         body: JSON.stringify(manifest)
       }))

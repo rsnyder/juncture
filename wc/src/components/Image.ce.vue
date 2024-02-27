@@ -63,12 +63,12 @@
     if (/upload\.wikimedia\.org/.test(_src)) {
       let parts = _src.split('/')
       let file = parts[5] === 'thumb' ? parts[8] : parts[7]
-      src.value = `https://iiif.juncture-digital.org/wc:${file.replace(/ /g, '_')}/manifest.json` 
+      src.value = `https://iiif.mdpress.io/wc:${file.replace(/ /g, '_')}/manifest.json` 
     } else {
       src.value = /^http/.test(_src) 
         ? _src
         : /^\w+:/.test(_src)
-          ? `https://iiif.juncture-digital.org/${_src.replace(/ /g, '_')}/manifest.json` 
+          ? `https://iiif.mdpress.io/${_src.replace(/ /g, '_')}/manifest.json` 
           : _src
     }
   }
@@ -97,7 +97,7 @@
 
   // convert IIIF v2 manifest to v3; all operations in this component assume v3
   async function prezi2to3(manifest: any) {
-    let resp = await fetch('https://iiif.juncture-digital.org/prezi2to3/', {
+    let resp = await fetch('https://iiif.mdpress.io/prezi2to3/', {
       method: 'POST', 
       body: JSON.stringify(manifest)
     })

@@ -1,8 +1,12 @@
 import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
-// import * as yaml from 'js-yaml'
+import * as yaml from 'js-yaml'
 
-export const iiifServer = 'https://iiif.mdpress.io'
+const window = (globalThis as any).window as any
+let options = yaml.load(window.options)
+
+export const iiifServer = options?.defaults?.iiifServer || 'iiif.mdpress.io'
+console.log(`iiifServer=${iiifServer}`)
 
 export function isURL(str:string) { return /^https*:\/\//.test(str) }
 export function isQid(s:string) { return /^Q\d+$/.test(s) }
@@ -38,8 +42,6 @@ export function isMobile() {
 }
 
 export const isGHP = /\.github\.io$/.test(location.hostname)
-
-const window = (globalThis as any).window as any
 
 
 function computeStickyOffsets(root:HTMLElement) {
@@ -338,14 +340,14 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
   .map(manifestId =>
     manifestId.indexOf('http') === 0
       ? manifestId
-      : `${iiifServer}/${manifestId}/manifest.json`
+      : `https://${iiifServer}/${manifestId}/manifest.json`
   )
   let toGet = _manifestUrls.filter(url => !_manifestCache[url])
 
   if (toGet.length > 0) {
     let requests: any = toGet
       .map(manifestUrl => {
-        if (refresh && ['localhost', 'iiif.mdpress.io'].includes(new URL(manifestUrl).hostname)) {
+        if (refresh && ['localhost', iiifServer].includes(new URL(manifestUrl).hostname)) {
           manifestUrl += '?refresh'
         }
         return fetch(manifestUrl)
@@ -354,7 +356,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
     let manifests = await Promise.all(responses.map((resp:any) => resp.json()))
     requests = manifests
       .filter(manifest => !Array.isArray(manifest['@context']) && parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
-      .map(manifest => fetch('https://iiif.mdpress.io/prezi2to3/', {
+      .map(manifest => fetch(`https://${iiifServer}/prezi2to3/`, {
         method: 'POST', 
         body: JSON.stringify(manifest)
       }))
@@ -377,7 +379,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
 export async function getManifest(manifestId: string, refresh: boolean=false) {
   let manifestUrl = manifestId.indexOf('http') === 0
     ? manifestId
-    : `${iiifServer}/${manifestId}/manifest.json`
+    : `https://${iiifServer}/${manifestId}/manifest.json`
   let manifests = await loadManifests([manifestUrl], refresh)
   return manifests[0]
 }

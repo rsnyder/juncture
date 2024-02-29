@@ -114,7 +114,7 @@ async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
 
-  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'images', 'juncture', 'src', 'wc']:
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'images', 'juncture', 'css', 'wc']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
 
   elif ext:

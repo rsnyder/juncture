@@ -1,5 +1,5 @@
 import { isJunctureV1, createJunctureV1App } from './juncture/index.js'
-import { parse, stringify } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
+import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
@@ -690,7 +690,9 @@ function loadDependencies(dependencies, callback, i) {
 function readMoreSetup() {
   const ps = document.querySelectorAll('.read-more p')
   const observer = new ResizeObserver(entries => {
-    for (let entry of entries) entry.target.classList[entry.target.scrollHeight > entry.contentRect.height ? 'add' : 'remove']('truncated');
+    for (let entry of entries) {
+      entry.target.classList[entry.target.scrollHeight > (entry.contentRect.height + 10) ? 'add' : 'remove']('truncated')
+    }
   })
   ps.forEach(p => observer.observe(p))
 }

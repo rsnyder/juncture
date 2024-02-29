@@ -186,6 +186,7 @@ function structureContent() {
   let sectionParam
   let tabGroup = 0
   let tab = 0
+  let cardCtr = 0
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
@@ -323,6 +324,24 @@ function structureContent() {
         if (img) img.parentElement?.replaceWith(img)
         let link = card.querySelector('p > a')
         if (link) link.parentElement?.replaceWith(link)
+        card.querySelectorAll('p').forEach(p => {
+          ++cardCtr
+          let readMoreWrapper = document.createElement('div')
+          readMoreWrapper.className = 'read-more'
+          let input = document.createElement('input')
+          input.setAttribute('type', 'checkbox')
+          input.id = `read-more-${cardCtr}`
+          readMoreWrapper.appendChild(input)
+          let para = document.createElement('p')
+          para.innerHTML = p.innerHTML
+          readMoreWrapper.appendChild(para)
+          let label = document.createElement('label')
+          label.setAttribute('for', `read-more-${cardCtr}`)
+          label.setAttribute('role', 'button')
+          label.innerHTML = 'More'
+          readMoreWrapper.appendChild(label)
+          p.replaceWith(readMoreWrapper)
+        })
       })
       section.appendChild(wrapper)
     }
@@ -668,6 +687,14 @@ function loadDependencies(dependencies, callback, i) {
   }
 }
 
+function readMoreSetup() {
+  const ps = document.querySelectorAll('.read-more p')
+  const observer = new ResizeObserver(entries => {
+    for (let entry of entries) entry.target.classList[entry.target.scrollHeight > entry.contentRect.height ? 'add' : 'remove']('truncated');
+  })
+  ps.forEach(p => observer.observe(p))
+}
+
 function init() {
   // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
   window.config = {...parse(window.options || ''), ...(window.config || {}), ...{isJunctureV1}}
@@ -676,7 +703,12 @@ function init() {
   console.log(window.config)
   
   if (isJunctureV1) createJunctureV1App()
-  else setTimeout(() => observeVisible(), 0)
+  else setTimeout(() => {
+    observeVisible()
+    readMoreSetup()
+  }, 0)
+
+  readMoreSetup
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init() }) // Loading hasn't finished yet, wait for it

@@ -56,8 +56,29 @@
     max-height: 260px;
     overflow-y: scroll
   }
+
   
-  .card > p {
+  .clamp5 {
+    -webkit-line-clamp: 5
+  }
+
+  /*********** read more ***********/
+
+  .read-more input {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  .read-more input:focus ~ label {
+    outline: -webkit-focus-ring-color auto 5px;
+  }
+  .read-more input:checked + p {
+    -webkit-line-clamp: unset;
+  }
+  .read-more input:checked ~ label, .read-more p:not(.truncated) ~ label {
+    display: none;
+  }
+  .read-more > p {
     grid-area: 4 / 1 / 5 / 2;
     align-self: flex-start;
     min-height: 110px;
@@ -67,12 +88,20 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    margin: 0 0 .5rem;
-    -webkit-line-clamp: 12
-  }
-  
-  .clamp5 {
+    margin: 0 0 .2rem;
     -webkit-line-clamp: 5
+  }
+  .read-more label {
+    margin-left: 0.5rem;
+    border-radius: 4px;
+    padding: 0.2em 0.6em;
+    border: 1px solid #555;
+    background-color: #777;
+    color: #fff;
+    font-size: 0.7em;
+  }
+  .read-more label:hover {
+    background-color: #555;
   }
 
   @media only screen and (max-width: 768px) {

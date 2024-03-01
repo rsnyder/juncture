@@ -19,14 +19,14 @@
       </div>
 
       <div class="search-and-menu">
-        <ez-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></ez-site-search>
-        <ez-menu v-if="navEl !== undefined" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></ez-menu>
+        <mdp-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></mdp-site-search>
+        <mdp-menu v-if="navEl !== undefined" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></mdp-menu>
       </div>
 
     </div>
 
-    <ez-breadcrumbs v-if="breadcrumbs"></ez-breadcrumbs>
-    <ez-manifest-popup v-if="manifest" :manifest="manifest"></ez-manifest-popup>
+    <mdp-breadcrumbs v-if="breadcrumbs"></mdp-breadcrumbs>
+    <mdp-manifest-popup v-if="manifest" :manifest="manifest"></mdp-manifest-popup>
   </div>
 
 </template>
@@ -218,7 +218,7 @@
   padding: 0 20px;
 }
 
-ez-manifest-popup {
+mdp-manifest-popup {
   visibility: hidden;
   position: absolute;
   top: 1em;
@@ -226,12 +226,12 @@ ez-manifest-popup {
   z-index: 10;
 }
 
-.header:hover ez-manifest-popup {
+.header:hover mdp-manifest-popup {
   visibility: visible;
   transition: all .5s ease-in;
 }
 
-ez-breadcrumbs {
+mdp-breadcrumbs {
   grid-area: 3 / 1 / 4 / 2;
   background-color: inherit;
   color: white;
@@ -311,7 +311,7 @@ ez-breadcrumbs {
     max-width: 40px;
   }
 
-  ez-breadcrumbs {
+  mdp-breadcrumbs {
     padding-left: 0.5rem;
   }
 

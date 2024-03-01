@@ -1,6 +1,6 @@
 `.flow-root`
 
-`ez-breadcrumbs .sticky`
+`mdp-breadcrumbs .sticky`
 
 * * *
 # A First Level Header

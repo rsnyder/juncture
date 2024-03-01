@@ -240,7 +240,7 @@ function structureContent() {
           .filter(child => !/^H\d/.test(child.tagName))
           .filter(child => !/PARAM/.test(child.tagName))
           .filter(child => !/STYLE/.test(child.tagName))
-          .filter(child => !/^EZ-/.test(child.tagName))
+          .filter(child => !/^MDP-/.test(child.tagName))
           .forEach((child, idx) => { 
             let segId = `${currentSection.getAttribute('data-id') || 1}.${idx+1}`
             child.setAttribute('data-id', segId)
@@ -455,10 +455,10 @@ function structureContent() {
     } else {
       let lastPathElem = path[path.length-1]
       if (/^Q\d+$/.test(lastPathElem)) {
-        let ezEntityInfobox = document.createElement('ez-entity-infobox')
-        ezEntityInfobox.innerHTML = anchorElem.innerHTML
-        ezEntityInfobox.setAttribute('qid', lastPathElem)
-        anchorElem.replaceWith(ezEntityInfobox)
+        let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
+        mdpEntityInfobox.innerHTML = anchorElem.innerHTML
+        mdpEntityInfobox.setAttribute('qid', lastPathElem)
+        anchorElem.replaceWith(mdpEntityInfobox)
       }
     }
     // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
@@ -468,16 +468,16 @@ function structureContent() {
   Array.from(restructured.querySelectorAll('img'))
     .forEach(img => {
       if (img.parentElement?.classList.contains('card')) return
-      let ezImage = document.createElement('ez-image')
-      ezImage.setAttribute('src', img.src)
-      ezImage.setAttribute('alt', img.alt)
-      ezImage.setAttribute('left', '');
-      (img.parentNode).replaceWith(ezImage)
+      let mdpImage = document.createElement('mdp-image')
+      mdpImage.setAttribute('src', img.src)
+      mdpImage.setAttribute('alt', img.alt)
+      mdpImage.setAttribute('left', '');
+      (img.parentNode).replaceWith(mdpImage)
     })
   */
   
   restructured.style.paddingBottom = '100vh'
-  let footer = restructured.querySelector('ez-footer, ve-footer')
+  let footer = restructured.querySelector('mdp-footer, ve-footer')
   if (footer) {
     Array.from(footer.querySelectorAll('li'))
     .filter(li => /^\s*{.*}$/.test(li.textContent.trim()))
@@ -580,7 +580,7 @@ function computeStickyOffsets(root) {
 
   /*
   let stickyElems = [
-    ...Array.from(root.querySelectorAll('ez-header[sticky], ez-header[sticky], ez-breadcrumbs[sticky]')),
+    ...Array.from(root.querySelectorAll('mdp-header[sticky], mdp-header[sticky], mdp-breadcrumbs[sticky]')),
     ...Array.from(root.querySelectorAll('.sticky'))
   ]
   */
@@ -635,7 +635,7 @@ let activeParagraph
 
 function observeVisible(callback = null) {
 
-  let topMargin = Array.from(document.querySelectorAll('EZ-HEADER'))
+  let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
   // console.log(`observeVisible: topMargin=${topMargin}`)

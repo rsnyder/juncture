@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="icon" href="/mdpress/mdpress/dist/img/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EZPage</title>
+    <title>MDPress</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <style>
       * { box-sizing: border-box; }
@@ -17,7 +17,7 @@
       main {
         padding-bottom: 100vh;
       }
-      ez-map ul {
+      mdp-map ul {
         display: none
       }
       .zoom {
@@ -36,7 +36,7 @@
     <main>
 
       <!--
-      <ez-header title="mdpress Example" 
+      <mdp-header title="mdpress Example" 
                   background="wc:Mont_Blanc_from_Les_Arcs_1950.jpg"
                   logo="https://upload.wikimedia.org/wikipedia/commons/8/82/Noun_Project_website_icon_3077870.svg" 
                   contact="ron@snyderjr.com" 
@@ -49,11 +49,11 @@
           <li><a href="/">Home</a></li>
           <li><a href="/about">About</a></li>
         </ul>
-      </ez-header>
+      </mdp-header>
 
       <h2 class="font-bold text-2xl mt-4">Menu</h2>
       <section class="bg-slate-100 rounded m-2 p-2">
-        <ez-menu>
+        <mdp-menu>
           <ul>
             <li>
               <a href="/">
@@ -63,12 +63,12 @@
             </li>
             <li><a href="/about">About</a></li>
           </ul>
-        </ez-menu>
+        </mdp-menu>
       </section>
       -->
       <h2 class="font-bold text-2xl mt-4">Map</h2>
       <section style="width:60%;margin:auto;">
-        <ez-map center="32.325,-80.96302" zoom="15">
+        <mdp-map center="32.325,-80.96302" zoom="15">
           <ul>
             <li>Q83813 layer="Savannah" prefer-geojson disabled</li>
             <li>Q47716 layer="Charleston" prefer-geojson disabled</li>
@@ -79,7 +79,7 @@
             <li>allmaps=dcbf95935e8119cd layer="East Argent Neighborhood Map" opacity=70</li>
             <li>32.32347,-80.97122 "1121 Sunfish Way, Bluffton, SC 29909" layer="Home Site" disabled</li>
           </ul>
-        </ez-map>
+        </mdp-map>
       </section>
 
       <!--
@@ -90,10 +90,10 @@
   
       <h2 class="font-bold text-2xl mt-4">Image Viewer</h2>
       <section class="flow-root bg-slate-100 rounded m-2 p-2">
-        <ez-image 
+        <mdp-image 
           src="wc:Arc de triomphe du carrousel in Paris France.jpg"
           right
-        ></ez-image>
+        ></mdp-image>
         <ul>
           <li><a href="zoom/1763,1178,212,142" class="zoom">Zoom to 1</a></li>
           <li><a href="zoom/116,1494,255,170" class="zoom">Zoom to 2</a></li>
@@ -102,19 +102,19 @@
 
       <h2 class="font-bold text-2xl mt-4">Entity Infobox and Viewer Triggers</h2>
       <section class="bg-slate-100 rounded m-2 p-2">
-        The <ez-entity-infobox qid="Q6960545">Vainakh tower architecture</ez-entity-infobox>, also called Nakh architecture, is a characteristic feature of ancient and medieval architecture of <ez-entity-infobox qid="Q5187">Chechnya</ez-entity-infobox> and <ez-entity-infobox qid="Q5219">Ingushetia</ez-entity-infobox>.
+        The <mdp-entity-infobox qid="Q6960545">Vainakh tower architecture</mdp-entity-infobox>, also called Nakh architecture, is a characteristic feature of ancient and medieval architecture of <mdp-entity-infobox qid="Q5187">Chechnya</mdp-entity-infobox> and <mdp-entity-infobox qid="Q5219">Ingushetia</mdp-entity-infobox>.
       </section>
       -->
 
     </main>
 
-    <ez-modal></ez-modal>
+    <mdp-modal></mdp-modal>
 
     
 
     <script>
       function toggleModal() {
-        let modal = document.querySelector('ez-modal')
+        let modal = document.querySelector('mdp-modal')
         let isOpen = modal.getAttribute('open') !== null
         console.log(modal, isOpen)
         if (isOpen) modal.removeAttribute('open')

@@ -1,2 +1,2 @@
-# ezpage-wc
-ezpage web components
+# mdpress
+mdpress web components

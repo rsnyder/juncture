@@ -33,21 +33,21 @@ import SiteSearch from './components/SiteSearch.ce.vue'
 
 
 function defineCustomElements() {
-	customElements.define('ez-breadcrumbs', defineCustomElement(Breadcrumbs))
-	// customElements.define('ez-button', defineCustomElement(Button))
-	// customElements.define('ez-dropdown', defineCustomElement(Dropdown))
-	customElements.define('ez-entity-infobox', defineCustomElement(EntityInfobox))
-	customElements.define('ez-footer', defineCustomElement(Footer))
-	customElements.define('ez-header', defineCustomElement(Header))
-	customElements.define('ez-image', defineCustomElement(Image))
-	customElements.define('ez-manifest', defineCustomElement(Manifest))
-	customElements.define('ez-manifest-popup', defineCustomElement(ManifestPopup))
-	customElements.define('ez-map', defineCustomElement(Map))
-	customElements.define('ez-menu', defineCustomElement(Menu))
-	customElements.define('ez-meta', defineCustomElement(Meta))
-	customElements.define('ez-modal', defineCustomElement(Modal))
-	customElements.define('ez-site-search', defineCustomElement(SiteSearch))
-	// customElements.define('ez-trigger', defineCustomElement(Trigger))
+	customElements.define('mdp-breadcrumbs', defineCustomElement(Breadcrumbs))
+	// customElements.define('mdp-button', defineCustomElement(Button))
+	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
+	customElements.define('mdp-entity-infobox', defineCustomElement(EntityInfobox))
+	customElements.define('mdp-footer', defineCustomElement(Footer))
+	customElements.define('mdp-header', defineCustomElement(Header))
+	customElements.define('mdp-image', defineCustomElement(Image))
+	customElements.define('mdp-manifest', defineCustomElement(Manifest))
+	customElements.define('mdp-manifest-popup', defineCustomElement(ManifestPopup))
+	customElements.define('mdp-map', defineCustomElement(Map))
+	customElements.define('mdp-menu', defineCustomElement(Menu))
+	customElements.define('mdp-meta', defineCustomElement(Meta))
+	customElements.define('mdp-modal', defineCustomElement(Modal))
+	customElements.define('mdp-site-search', defineCustomElement(SiteSearch))
+	// customElements.define('mdp-trigger', defineCustomElement(Trigger))
 }
 
 // @ts-ignore

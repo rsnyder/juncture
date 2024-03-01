@@ -1,4 +1,4 @@
-`ez-header title="Plant Humanities Lab" logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" background="gh:plant-humanities/media/images/header.jpg" subtitle="Explore the cultural histories of plants and their influence on human societies" contact="ron@snyderjr.com" url="/" icon-filter="" sticky`
+`mdp-header title="Plant Humanities Lab" logo="https://raw.githubusercontent.com/plant-humanities/media/main/images/phl-website-png-logo.png" background="gh:plant-humanities/media/images/header.jpg" subtitle="Explore the cultural histories of plants and their influence on human societies" contact="ron@snyderjr.com" url="/" icon-filter="" sticky`
 
 # Mobile Layout
 

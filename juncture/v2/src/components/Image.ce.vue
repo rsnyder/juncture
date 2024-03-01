@@ -228,7 +228,7 @@
     function checkSibs(el:any) {
       let sib = el.previousSibling
       while (sib) {
-        if (sib.nodeName === 'EZ-IMAGE') return sib === host.value ? sib : null
+        if (sib.nodeName === 'MDP-IMAGE') return sib === host.value ? sib : null
         sib = sib.previousSibling
       }
     }
@@ -236,7 +236,7 @@
     checkSibs(el)
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
-      let imageEl = el.querySelector(':scope > ez-image, :scope > p > ez-image')
+      let imageEl = el.querySelector(':scope > mdp-image, :scope > p > mdp-image')
       if (imageEl) return imageEl === host.value ? imageEl : null
     }
   }
@@ -247,7 +247,7 @@
     const match = arg?.match(/^(?<region>(pct:|pixel:|px:)?[\d.]+,[\d.]+,[\d.]+,[\d.]+)?$/)
     if (match) {
       let region = match?.groups?.region
-      // console.log(`ez-image.zoomto: region=${region}`)
+      // console.log(`mdp-image.zoomto: region=${region}`)
       if (region) {
         if (zoomedToRegion === region) {
           osd.value?.viewport.goHome()

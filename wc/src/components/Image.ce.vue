@@ -239,7 +239,7 @@
     function checkSibs(el:any) {
       let sib = el.previousSibling
       while (sib) {
-        if (sib.nodeName === 'EZ-IMAGE') return sib === host.value ? sib : null
+        if (sib.nodeName === 'MDP-IMAGE') return sib === host.value ? sib : null
         sib = sib.previousSibling
       }
     }
@@ -247,7 +247,7 @@
     checkSibs(el)
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
-      let imageEl = el.querySelector(':scope ez-image')
+      let imageEl = el.querySelector(':scope mdp-image')
       if (imageEl) return imageEl === host.value ? imageEl : null
     }
   }
@@ -258,7 +258,7 @@
     const match = arg?.match(/^(?<region>(pct:|pixel:|px:)?[\d.]+,[\d.]+,[\d.]+,[\d.]+)?$/)
     if (match) {
       let region = match?.groups?.region
-      // console.log(`ez-image.zoom: region=${region}`)
+      // console.log(`mdp-image.zoom: region=${region}`)
       if (region) {
         if (zoomedToRegion === region) {
           osd.value?.viewport.goHome()
@@ -329,7 +329,7 @@ function copyTextToClipboard(text: string) {
       @click="copyTextToClipboard(coords || '')">
     </div>
   </div>
-  <ez-manifest-popup v-if="manifest" :manifest="manifest"></ez-manifest-popup>
+  <mdp-manifest-popup v-if="manifest" :manifest="manifest"></mdp-manifest-popup>
 </div>
 
 </template>
@@ -337,7 +337,7 @@ function copyTextToClipboard(text: string) {
 <style>
   @import '../tailwind.css';
 
-  ez-manifest-popup {
+  mdp-manifest-popup {
   visibility: hidden;
   position: absolute;
   top: 1em;
@@ -345,7 +345,7 @@ function copyTextToClipboard(text: string) {
   z-index: 10;
 }
 
-.image:hover ez-manifest-popup {
+.image:hover mdp-manifest-popup {
   visibility: visible;
   transition: all .5s ease-in;
 }

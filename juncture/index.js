@@ -111,7 +111,7 @@ function _createJunctureV1App() {
   new window.Vue({
     el: '#vue',
     components: {
-      'juncture-v1': window.httpVueLoader(`${window.config.scriptBasePath}/juncture/v1/Juncture.vue`)
+      'juncture-v1': window.httpVueLoader('https://www.mdpress.io/juncture/v1/Juncture.vue')
     },
     data: () => ({ html })
   })

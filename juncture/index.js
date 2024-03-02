@@ -11,9 +11,9 @@ window.config.scriptBasePath = Array.from(document.querySelectorAll('script'))
     console.log(srcUrl)
     let path = srcUrl.pathname.split('/').filter(pe => pe).slice(0, -2)
     console.log(path)
-    return path.length > 0 ? `/${path.join('/')}` : ''
+    return `${srcUrl.origin}/${path.length > 0 ? `/${path.join('/')}` : ''}`
   })
-  ?.[0] || ''
+  ?.[0] || 'https://www.mdpress.io'
 
 const junctureDependencies = [
   // {tag: 'link', rel: 'stylesheet', href: `${config.baseurl}juncture/index.css`},

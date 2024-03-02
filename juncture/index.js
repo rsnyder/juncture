@@ -9,9 +9,9 @@ window.config.scriptBasePath = Array.from(document.querySelectorAll('script'))
     console.log(scriptEl)
     let srcUrl = new URL(scriptEl.src)
     console.log(srcUrl)
-    let path = srcUrl.pathname.split('/').filter(pe => pe).slice(0, -2)
+    let path = srcUrl.pathname.split('/').filter(pe => pe).slice(0, -1)
     console.log(path)
-    return `${srcUrl.origin}/${path.length > 0 ? `/${path.join('/')}` : ''}`
+    return path.length > 0 ? `${srcUrl.origin}/${path.join('/')}` : srcUrl.origin
   })
   ?.[0] || 'https://www.mdpress.io'
 

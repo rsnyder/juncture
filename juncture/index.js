@@ -1,16 +1,10 @@
 window.config = window.config || {}
 window.config.scriptBasePath = Array.from(document.querySelectorAll('script'))
   .filter(script => script.src)
-  .filter(script => {
-    console.log(script.src, /\/mdpress\/index\.js$/.test(script.src))
-    return /\/mdpress\/index\.js$/.test(script.src)
-  })
+  .filter(script => /\/mdpress\/index\.js$/.test(script.src))
   .map(scriptEl => {
-    console.log(scriptEl)
     let srcUrl = new URL(scriptEl.src)
-    console.log(srcUrl)
     let path = srcUrl.pathname.split('/').filter(pe => pe).slice(0, -1)
-    console.log(path)
     return path.length > 0 ? `${srcUrl.origin}/${path.join('/')}` : srcUrl.origin
   })
   ?.[0] || 'https://www.mdpress.io'

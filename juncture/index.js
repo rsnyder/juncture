@@ -2,11 +2,15 @@ window.config = window.config || {}
 window.config.scriptBasePath = Array.from(document.querySelectorAll('script'))
   .filter(script => script.src)
   .filter(script => {
-    console.log(script.src)
+    console.log(script.src, /\/mdpress\/index\.js$/.test(script.src))
     return /\/mdpress\/index\.js$/.test(script.src)
   })
   .map(scriptEl => {
-    let path = new URL(scriptEl.src).pathname.split('/').filter(pe => pe).slice(0, -2)
+    console.log(scriptEl)
+    let srcUrl = new URL(scriptEl.src)
+    console.log(srcUrl)
+    let path = srcUrl.pathname.split('/').filter(pe => pe).slice(0, -2)
+    console.log(path)
     return path.length > 0 ? `/${path.join('/')}` : ''
   })
   ?.[0] || ''

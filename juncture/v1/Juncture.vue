@@ -117,7 +117,7 @@ const availableViewers = [
   've1-vis-network'
 ]
 
-const componentsPath = 'https://www.mdpress.io/juncture/v1'
+const componentsPath = `${window.config.scriptBasePath}/juncture/v1`
 
 const componentPrefix = 've1-'
 

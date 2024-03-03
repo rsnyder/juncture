@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { computed, ref, watch } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
 
   // @ts-ignore
   import { HSTooltip } from '../lib/preline/components/hs-tooltip'
@@ -10,9 +10,13 @@
   const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
   watch(shadowRoot, () => { new HSTooltip(shadowRoot.value).init() })
 
+  const manifest = ref<any>(null)
   const props = defineProps({
     manifest: { type: Object, required: true }
   })
+  watch(props, () => manifest.value = props.manifest )
+  
+  onMounted(() => manifest.value = props.manifest )
 
 </script>
 

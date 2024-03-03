@@ -20,6 +20,7 @@ import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Footer from './components/Footer.ce.vue'
+import Gallery from './components/Gallery.ce.vue'
 import Header from './components/Header.ce.vue'
 import Image from './components/Image.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
@@ -38,6 +39,7 @@ function defineCustomElements() {
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
 	customElements.define('mdp-entity-infobox', defineCustomElement(EntityInfobox))
 	customElements.define('mdp-footer', defineCustomElement(Footer))
+	customElements.define('mdp-gallery', defineCustomElement(Gallery))
 	customElements.define('mdp-header', defineCustomElement(Header))
 	customElements.define('mdp-image', defineCustomElement(Image))
 	customElements.define('mdp-manifest', defineCustomElement(Manifest))

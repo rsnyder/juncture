@@ -57,11 +57,13 @@
 
   // OpenSeadragon tile source - https://openseadragon.github.io/docs/OpenSeadragon.TileSource.html
   const tileSource:any = ref<TiledImage>()
+  watch(tileSource, () => { osd.value?.open(tileSource.value) })
 
   // Image source, can be an image or IIIF manifest URL
   const src = ref()
   watch(src, () => { getTileSource(src.value) })
   function setSrc(_src: string) {
+    if (osd.value) tileSource.value = null
     if (/upload\.wikimedia\.org/.test(_src)) {
       let parts = _src.split('/')
       let file = parts[5] === 'thumb' ? parts[8] : parts[7]
@@ -211,7 +213,7 @@
 
   function addInteractionHandlers() {
     let el = host.value.parentElement
-    while (el.parentElement && el.tagName !== 'MAIN') {
+    while (el?.parentElement && el.tagName !== 'MAIN') {
       (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
         let link = new URL(anchorElem.href)
         let path = link.pathname.split('/').filter((p:string) => p)
@@ -329,7 +331,7 @@ function copyTextToClipboard(text: string) {
       @click="copyTextToClipboard(coords || '')">
     </div>
   </div>
-  <mdp-manifest-popup v-if="manifest" :manifest="manifest"></mdp-manifest-popup>
+  <mdp-manifest-popup v-if="manifest" :manifest="manifest" class="z-20"></mdp-manifest-popup>
 </div>
 
 </template>

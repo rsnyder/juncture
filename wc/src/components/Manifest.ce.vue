@@ -126,21 +126,19 @@
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import { getItemInfo, getManifest } from '../utils'
-
+  
   const props = defineProps({
     manifest: { type: Object, required: true }
   })
+  watch(props, () => manifest.value = props.manifest )
 
   const root = ref<HTMLElement | null>(null)
-  const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const manifest = ref<any>(null)
   const parsed = ref<any>(null)
 
   watch(manifest, () => parsed.value = parseManifest(manifest.value))
     
   const licenseBadge = computed(() => parsed.value && _getLicenseBadge(parsed.value))
-
-  // watch(host, () => init())
 
   onMounted(() => init())
 

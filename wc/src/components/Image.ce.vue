@@ -145,9 +145,9 @@
     let resp = await fetch(src)
     if (resp.ok) {
       let _manifest:any = await resp.json()
-      manifest.value = parseFloat(_manifest['@context'].split('/').slice(-2,-1).pop()) < 3
-        ? await prezi2to3(manifest)
-        : _manifest
+      let context = Array.isArray(_manifest['@context']) ? _manifest['@context'].find(c => c.indexOf('/presentation/') > 0) : _manifest['@context']
+      let version = parseFloat(context.split('/').slice(-2,-1).pop())
+      manifest.value = version < 3 ? await prezi2to3(manifest) : _manifest
       return manifest.value
     }
   }

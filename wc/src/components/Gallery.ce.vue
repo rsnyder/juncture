@@ -29,6 +29,7 @@
 <script setup  lang="ts">
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { isMobile } from '../utils'
 
   import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
   import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
@@ -100,7 +101,7 @@
 
     let _layout:any[] = []
 
-    let spaceBetweenImages = 16
+    let spaceBetweenImages = isMobile() ? 8 : 16
 
     let row:any[] = []
     let translateX = 0

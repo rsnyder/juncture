@@ -168,13 +168,13 @@
     if (osdEl.value?.clientWidth) {
       let osdHeight = props.height || Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)
       // console.log(`setOsdHeight() width:=${osdWidth.value} height=${osdHeight}`)
-      osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
+      // osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
     }
   }
 
   // resize OSD viewer
   function resize() {
-    setOsdHeight
+    setOsdHeight()
     setTimeout(() => osd.value?.viewport?.goHome(true), 100)
   }
 
@@ -317,9 +317,9 @@ function copyTextToClipboard(text: string) {
 
 <template>
 
-<div ref="root" class="image flex flex-col relative rounded overflow-hidden shadow-lg">
+<div ref="root" class="h-[100%] image flex flex-col relative rounded overflow-hidden shadow-lg">
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
-  <div v-if="tileSource" ref="osdEl" id="osd" class="w-full" role="img" :aria-label="caption" :alt="caption"></div>
+  <div v-if="tileSource" ref="osdEl" id="osd" class="w-full h-[100%]" role="img" :aria-label="caption" :alt="caption"></div>
   <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">
     <div class="font-bold text-xl mb-2" v-html="caption"></div>
     <div v-if="coords"

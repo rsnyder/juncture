@@ -1,105 +1,200 @@
 <template>
 
-  <div ref="root" :style="{width: '100%', height: '100%'}">
-    <ul>
-      <li v-for="(item, idx) in images" :key="`img-${idx+1}`">
-        <img :src="`https://iiif.mdpress.io/thumbnail/${item}`" @click="imageSelected(item)"/>
-      </li>
-    </ul>
-  </div>
+  <div ref="root" id="image-grid">
 
-  <div ref="overlayRef">
-    <!--
-    <div ref="modalRef" id="hs-basic-modal" class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none">
-      <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)] flex items-center">
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
-          <div class="p-4 overflow-y-auto flex items-center gap-4 text-black">
-            <mdp-image :src="selectedImage"></mdp-image>
-          </div>
+    <div v-if="layout.length > 0" v-for="img, idx in imageData"
+      class="pig-figure"
+      :id="imageData.id"
+      :style="layout[idx]"
+    >
+      <img class="image" onload="this.style.opacity = 1" :src="imageData[idx].thumbnail" @click="imageSelected(idx)">
+      <div class="caption">
+        <div class="icons">
+          <img v-if="imageData[idx].logo" class="provider-logo" :src="imageData[idx].logo" alt="Provider Logo">
+        </div>
+        <div class="size">
+          <span v-if="imageData[idx].width">{{ imageData[idx].width.toLocaleString() }} x {{ imageData[idx].height.toLocaleString() }}</span>
         </div>
       </div>
     </div>
-    -->
-    
-    <div ref="modalRef" id="hs-full-screen-modal" class="w-full h-full hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto">
-      <div class="max-w-full">
-        <div class="h-[100vh] flex flex-col bg-white dark:bg-gray-800">
-          <div class="flex">
-            <button type="button" class="flex ml-auto justify-center items-center size-7 text-sm font-semibold rounded-full border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-gray-700 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600" data-hs-overlay="#hs-full-screen-modal">
-              <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-          </div>
-          <mdp-image :src="selectedImage" class="h-[100%] w-[100%] object-contain"></mdp-image>
-        </div>
-      </div>
-    </div>
-
   </div>
+
+  <sl-dialog class="dialog" no-header  :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
+    <mdp-image v-if="selectedImage" no-caption :src="selectedImage.id" fit="cover"></mdp-image>
+    <sl-button slot="footer" variant="primary" @click="selectedImage = null">Close</sl-button>
+  </sl-dialog>
 
 </template>
-      
-<script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
-  
-  // @ts-ignore
-  import { HSOverlay } from '../lib/preline/components/hs-overlay'
+<script setup  lang="ts">
 
-  const props = defineProps({
-    data: { type: String }
-  })
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+
+  import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
+  import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 
   const root = ref<HTMLElement | null>(null)
-  const host = computed(() => (root.value?.getRootNode() as any)?.host as HTMLElement)
+  const host = computed(() => (root.value?.getRootNode() as any)?.host)
+  watch(host, () => { getImageData() })
 
-  const overlayRef = ref<HTMLElement | null>(null)
-  const overlayEl = computed(() => overlayRef?.value as HTMLElement)
-  const overlay = computed(() =>  new HSOverlay(overlayEl.value) )
+  const shadowRoot = computed(() => root?.value?.parentNode)
 
-  const modalRef = ref<HTMLElement | null>(null)
-  const modalEl = computed(() => modalRef?.value as HTMLElement)
-
-  watch(modalEl, (modal) => { 
-    overlay.value.init()
-    modal.addEventListener('open.hs.overlay', (e:any) => isOpen.value = true)
-    modal.addEventListener('close.hs.overlay', (e:any) => isOpen.value = false)
+  const props = defineProps({
+    data: { type: String },
+    dialogWidth: { type: String, default: '100vw' }
   })
 
-  const isOpen = ref(false)
-  watch(isOpen, (isOpen) => {
-    if (isOpen) overlay.value.open(modalEl.value)
-    else overlay.value.close(modalEl.value)
+  const imageData = <any>ref([])
+  watch(imageData, async () => {
+    console.log(toRaw(imageData.value))
+    await checkImagesSizes(imageData.value)
+    doLayout()
   })
 
-  const images = ref<any[]>([])
-  // watch(images, (images) => { console.log(toRaw(images)) })
-  
-  const selectedImage = ref('')
-
-  onMounted(() => {
-    listenForSlotChanges()
-    getImages()
+  const selectedImage = ref<any | null>(null)
+  watch(selectedImage, () => {
+    showDialog.value = selectedImage.value !== null 
   })
 
-  async function getImages() {
-    let dataEl = (props.data ? document.getElementById(props.data) : host.value) as HTMLElement
-    console.log('dataEl', dataEl)
-    images.value = Array.from(dataEl.querySelectorAll('li')).map((item:any) => item.textContent)
+  const width = ref(0)
+  const layout = ref<any[]>([])
+  let doLayoutDebounceTimer:any
+
+  let dialog: any
+  const showDialog = ref(false)
+  watch(showDialog, () => { dialog.open = showDialog.value })
+
+  function getImageData() {
+    if (props.data) {
+      let dataEl = document.getElementById(props.data) as HTMLElement
+      imageData.value = Array.from(dataEl.querySelectorAll('li'))
+        .map((item:any) => item.textContent)
+        .map((imageId:string) => {
+          return { thumbnail: `https://iiif.mdpress.io/thumbnail/${imageId}`, id: imageId}
+        })
+    } else {
+      let slot = host.value.parentElement
+      function parseSlot() {
+        imageData.value = Array.from(slot.querySelectorAll('li')).map((li: any) => li.innerText)
+      }
+      parseSlot()
+      new MutationObserver(
+        (mutationsList:any) => {
+          for (let mutation of mutationsList) { if (mutation.type === 'childList') parseSlot() }      
+        }
+      ).observe(slot, { childList: true, subtree: true })
+    }
   }
 
-  function listenForSlotChanges() {
-    const callback = (mutationsList:any) => {
-      for (let mutation of mutationsList) {
-        if (mutation.type === 'childList' && Array.from(mutation.target.classList).indexOf('hydrated') >= 0) getImages ()       
-      }
-    }
-    const observer = new MutationObserver(callback);
-    observer.observe(host.value, { childList: true, subtree: true, characterData: true })
-  }    
+  function doLayout() {
+    // console.log(`doLayout: width=${width.value} images=${imageData.value.length} layout=${layout.value.length}`)
+    if (imageData.value.length === 0) return
 
-  function imageSelected(img:any) {
-    selectedImage.value = img
-    isOpen.value = !isOpen.value
+    let numImages = imageData.value.length
+    const minAspectRatio = width.value <= 640 ? 2
+                         : width.value <= 960 ? 3
+                         : width.value <= 1280 ? 4
+                         : width.value <= 1920 ? 5
+                         : 6
+    console.log(`width=${width.value} minAspectRatio=${minAspectRatio}`)
+
+    let _layout:any[] = []
+
+    let spaceBetweenImages = 16
+
+    let row:any[] = []
+    let translateX = 0
+    let translateY = 0
+    let rowAspectRatio = 0
+
+    // Loop through all our images, building them up into rows and computing
+    // the working rowAspectRatio.
+    imageData.value.forEach((image, index) => {
+      rowAspectRatio += image.aspect_ratio
+      row.push(image)
+
+      if (rowAspectRatio >= minAspectRatio || index + 1 === numImages) {
+
+        rowAspectRatio = Math.max(rowAspectRatio, minAspectRatio)
+
+        // Compute this row's height.
+        const totalDesiredWidthOfImages = width.value - spaceBetweenImages * (row.length - 1)
+        const rowHeight = totalDesiredWidthOfImages / rowAspectRatio
+
+        row.forEach(img => {
+          const imageWidth: number = rowHeight * img.aspect_ratio
+          _layout.push( {
+            width: `${Math.round(imageWidth)}px`,
+            height: `${Math.round(rowHeight)}px`,
+            transform: `translate3d(${Math.round(translateX)}px, ${Math.round(translateY)}px, 0)`,
+          })
+          translateX += imageWidth + spaceBetweenImages
+        })
+
+        // Reset our state variables for next row.
+        row = []
+        rowAspectRatio = 0
+        translateY += rowHeight + spaceBetweenImages
+        translateX = 0
+      }
+    })
+
+    if (root.value) root.value.style.height = `${translateY - spaceBetweenImages}px`
+    layout.value = _layout
+  }
+
+  function imageSelected(index:number) {
+    selectedImage.value = imageData.value[index] as any
+  }
+
+  onMounted(() => {
+    dialog = shadowRoot.value?.querySelector('.dialog')
+    dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
+  })
+
+  watch(root, () => {
+    if (root.value) {
+      width.value = root.value?.clientWidth || 0
+      const resizeObserver = new ResizeObserver(() => {
+        if (root.value?.clientWidth && root.value?.clientWidth !== width.value) {
+          width.value = root.value?.clientWidth
+          clearTimeout(doLayoutDebounceTimer)
+          doLayoutDebounceTimer = setTimeout(doLayout, 10)
+        }
+      })
+      resizeObserver.observe(root.value)
+    }
+  })
+
+  async function checkImagesSizes(images:any[]) {
+    let promises = images
+      .filter((image:any) => !image.width)
+      .map((image:any) => getImageSize(image))
+
+    if (promises.length) {
+      let results = await Promise.all(promises)
+      results.forEach((result:any) => {
+        let found:any = images.find((item:any) => result.id === item.id)
+        found.width = result.width
+        found.height = result.height
+        found.aspect_ratio = result.aspect_ratio
+        found.format = result.format
+      })
+    }
+  }
+
+  async function getImageSize(image: any, minWidth=200): Promise<{ image:any, width: number, height: number }> {
+    return new Promise((resolve, reject) => {
+      let img = new Image()
+      img.onload = () => {
+        let width = img.width < minWidth ? minWidth : img.width
+        let height = img.width < minWidth ? img.height * minWidth/img.width : img.height
+        let aspect_ratio = Number((width/height).toFixed(4))
+        resolve({...image, aspect_ratio, format: 'image/jpeg'})
+      }
+      img.onerror = () => reject()
+      img.src = image.thumbnail
+    })
   }
 
 </script>
@@ -107,25 +202,143 @@
 <style>
 
   @import '@shoelace-style/shoelace/dist/themes/light.css';
-  @import '../tailwind.css';
 
   * { box-sizing: border-box; }
 
-  :host {
-    display: flex;
-    align-content: center;
-    justify-content: center;
+  #image-grid {
     position: relative;
-    background-color: inherit;
+    margin: 1rem;    
   }
 
-  ul {
+  @media only screen and (max-width: 768px) {
+    #image-grid {
+      margin: 0;
+    }
+  }
+
+  sl-dialog::part(panel) {
+    max-width: unset;
+    max-height: unset;
+    height: 100vh;
+  }
+
+  sl-dialog::part(overlay) {
+    --sl-overlay-background-color: rgba(100, 100, 100, 0.8);
+  }
+
+  sl-dialog::part(footer) {
+    background-color: rgba(100, 100, 100, 0.5);
+  }
+
+  .pig-figure {
+    position: absolute;
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 0;
+    flex-direction: column;
+    /* overflow: hidden; */
+    width: 100px;
+    box-shadow: 2px 2px 4px 0 #ccc;
+  }
+
+  .pig-figure:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  }
+
+  .image {
+    left: 0;
+    top: 0;
+    width: 100%;
+    opacity: 0;
+    background-color: #D5D5D5;
+  }
+
+  .image:hover {
+    cursor: pointer;
+  }
+
+  .caption {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    padding: 6px 3px 3px 3px;
+  }
+
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .size {
+    width: 100%;
+    font-size: 0.8em;
+    margin-top: 3px;
+  }
+
+  .provider-logo {
+    height: 20px;
+  }
+
+  .license {
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .image-card {
+    font-size: 0.85em;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9em;
+  }
+
+  .title img {
+    width: 16px;
+    opacity: 1;
+  }
+
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    /* margin-bottom: 6px; */
+  }
+
+  .text {
+    margin: 6px 0;
+    height: 50px;
+  }
+
+  .text p {
     margin: 0;
-    list-style: none;
+    padding: 0;
+  }
+
+  .license {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.8em;
+    margin-left: 0.5rem;
+  }
+
+  a.license {
+    color: black;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  sl-icon {
+    font-size: 1.2rem;
+  }
+
+  .push {
+    margin-left: auto;
   }
 
 </style>

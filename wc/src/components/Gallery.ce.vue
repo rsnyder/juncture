@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <sl-dialog class="dialog" no-header  :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
+  <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
     <mdp-image v-if="selectedImage" no-caption :src="selectedImage.id" fit="cover"></mdp-image>
     <sl-button slot="footer" variant="primary" @click="selectedImage = null">Close</sl-button>
   </sl-dialog>
@@ -219,7 +219,7 @@
   sl-dialog::part(panel) {
     max-width: unset;
     max-height: unset;
-    height: 100vh;
+    height: 100dvh;
   }
 
   sl-dialog::part(overlay) {

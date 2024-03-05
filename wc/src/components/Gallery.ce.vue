@@ -71,7 +71,7 @@
       imageData.value = Array.from(dataEl.querySelectorAll('li'))
         .map((item:any) => item.textContent)
         .map((imageId:string) => {
-          return { thumbnail: `https://iiif.mdpress.io/thumbnail/${imageId}`, id: imageId}
+          return { thumbnail: `https://iiif.mdpress.io/thumbnail/${imageId}`, id: imageId.replace(/\s/g, '%20'), width: 0, height: 0, aspect_ratio: 1}
         })
     } else {
       let slot = host.value.parentElement
@@ -193,7 +193,10 @@
         let aspect_ratio = Number((width/height).toFixed(4))
         resolve({...image, aspect_ratio, format: 'image/jpeg'})
       }
-      img.onerror = () => reject()
+      img.onerror = () => {
+        // reject()
+        resolve({...image, aspect_ratio: 1, format: 'image/jpeg'} )
+      }
       img.src = image.thumbnail
     })
   }

@@ -71,10 +71,12 @@
       imageData.value = Array.from(dataEl.querySelectorAll('li'))
         .map((item:any) => item.textContent)
         .map((imageId:string) => {
+          // encode imageId to handle special characters
           let imageIdParts = imageId.split('/')
           let [name, ext] = imageIdParts[imageIdParts.length - 1].split('.')
           imageIdParts[imageIdParts.length - 1] = `${encodeURIComponent(name)}.${ext}`
-          return { thumbnail: `https://iiif.mdpress.io/thumbnail/${imageId}`, id: imageIdParts.join('/'), width: 0, height: 0, aspect_ratio: 1}
+          imageId = imageIdParts.join('/')
+          return { thumbnail: `https://iiif.mdpress.io/thumbnail/${imageId}`, id: imageId, width: 0, height: 0, aspect_ratio: 1}
         })
     } else {
       let slot = host.value.parentElement

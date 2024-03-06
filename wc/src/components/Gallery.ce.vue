@@ -42,6 +42,7 @@
 
   const manifests = ref<any[]>([])
   watch(manifests, (manifests) => {
+    console.log(toRaw(manifests))
     images.value = manifests.map((manifest:any) => {
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
       return {
@@ -169,6 +170,8 @@
   }
 
   function imageSelected(index:number) {
+    let manifest = manifests.value[index]
+    console.log(toRaw(manifest))
     selectedImage.value = images.value[index] as any
   }
 
@@ -191,6 +194,7 @@
     }
   })
 
+  /*
   async function checkImagesSizes(images:any[]) {
     let promises = images
       .filter((image:any) => !image.width)
@@ -224,6 +228,7 @@
       img.src = image.thumbnail
     })
   }
+  */
 
 </script>
 

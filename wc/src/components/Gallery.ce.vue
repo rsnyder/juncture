@@ -47,15 +47,17 @@
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
       let orientation = manifest.metadata?.filter((item:any) => (item.label.en || item.label.none) === 'orientation').map(item => item.value.en || item.value.none)[0] || 1
       orientation = Array.isArray(orientation) ? orientation[0] : orientation
+      let width = (orientation === 1 || orientation === 3) ? imgInfo.width : imgInfo.height
+      let height = (orientation === 1 || orientation === 3) ? imgInfo.height : imgInfo.width
       return {
         id: manifest.id,
         label: manifest.label,
         summary: manifest.summary,
-        width: imgInfo.width,
-        height: imgInfo.height,
+        width,
+        height,
         format: imgInfo.format,
         orientation,
-        aspect_ratio: orientation === 1 || orientation == 3 ? Number((imgInfo.width/imgInfo.height).toFixed(4)) : Number((imgInfo.height/imgInfo.width).toFixed(4)),
+        aspect_ratio: Number((width/height).toFixed(4)),
         thumbnail: manifest.thumbnail[0].id
       }
     })

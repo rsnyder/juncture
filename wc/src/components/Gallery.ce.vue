@@ -45,7 +45,7 @@
     console.log(toRaw(manifests))
     images.value = manifests.map((manifest:any) => {
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
-      let orientation = manifest.metadata?.filter((item:any) => (item.label.en || item.label.none) === 'orientation').map(item => item.value.en || item.value.none)[0] || 1
+      let orientation = manifest.metadata?.filter((item:any) => (item.label.en || item.label.none)[0] === 'orientation').map((item => item.value.en || item.value.none)[0])[0] || 1
       orientation = Array.isArray(orientation) ? orientation[0] : orientation
       let width = (orientation === 1 || orientation === 3) ? imgInfo.width : imgInfo.height
       let height = (orientation === 1 || orientation === 3) ? imgInfo.height : imgInfo.width

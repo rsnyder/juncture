@@ -45,6 +45,7 @@
     console.log(toRaw(manifests))
     images.value = manifests.map((manifest:any) => {
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
+      let orientation = manifest.metadata?.find((item:any) => (item.label.en || item.label.none === 'orientation')).map(item => item.value.en || item.value.none)?.[0] || 1
       return {
         id: manifest.id,
         label: manifest.label,
@@ -52,7 +53,9 @@
         width: imgInfo.width,
         height: imgInfo.height,
         format: imgInfo.format,
-        thumbnail: manifest.thumbnail[0].id,
+        orientation,
+        aspect_ratio: orientation === 1 || orientation == 3 ? Number((imgInfo.width/imgInfo.height).toFixed(4)) : Number((imgInfo.height/imgInfo.width).toFixed(4)),
+        thumbnail: manifest.thumbnail[0].id
       }
     })
   })
@@ -110,10 +113,10 @@
   }
 
   function doLayout() {
-    console.log(`doLayout: width=${width.value} images=${manifests.value.length}`)
-    if (manifests.value.length === 0) return
+    console.log(`doLayout: width=${width.value} images=${images.value.length}`)
+    if (images.value.length === 0) return
 
-    let numImages = manifests.value.length
+    let numImages = images.value.length
     const minAspectRatio = width.value <= 640 ? 2
                          : width.value <= 960 ? 3
                          : width.value <= 1280 ? 4
@@ -130,14 +133,10 @@
     let translateY = 0
     let rowAspectRatio = 0
 
-    // Loop through all our images, building them up into rows and computing
-    // the working rowAspectRatio.
-    manifests.value.forEach((manifest, index) => {
-      let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
-      let imageAspectRatio = 
-      manifest.aspect_ratio = Number((imgInfo.width/imgInfo.height).toFixed(4))
-      rowAspectRatio += imageAspectRatio
-      row.push(manifest)
+    // Loop through all our images, building them up into rows and computing the working rowAspectRatio.
+    images.value.forEach((image, index) => {
+      rowAspectRatio += image.aspect_ratio
+      row.push(image)
 
       if (rowAspectRatio >= minAspectRatio || index + 1 === numImages) {
 
@@ -193,42 +192,6 @@
       resizeObserver.observe(root.value)
     }
   })
-
-  /*
-  async function checkImagesSizes(images:any[]) {
-    let promises = images
-      .filter((image:any) => !image.width)
-      .map((image:any) => getImageSize(image))
-
-    if (promises.length) {
-      let results = await Promise.all(promises)
-      results.forEach((result:any) => {
-        let found:any = images.find((item:any) => result.id === item.id)
-        found.width = result.width
-        found.height = result.height
-        found.aspect_ratio = result.aspect_ratio
-        found.format = result.format
-      })
-    }
-  }
-
-  async function getImageSize(image: any, minWidth=200): Promise<{ image:any, width: number, height: number }> {
-    return new Promise((resolve, reject) => {
-      let img = new Image()
-      img.onload = () => {
-        let width = img.width < minWidth ? minWidth : img.width
-        let height = img.width < minWidth ? img.height * minWidth/img.width : img.height
-        let aspect_ratio = Number((width/height).toFixed(4))
-        resolve({...image, aspect_ratio, format: 'image/jpeg'})
-      }
-      img.onerror = () => {
-        // reject()
-        resolve({...image, aspect_ratio: 1, format: 'image/jpeg'} )
-      }
-      img.src = image.thumbnail
-    })
-  }
-  */
 
 </script>
 

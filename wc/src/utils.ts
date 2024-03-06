@@ -3,7 +3,7 @@ import { Md5 } from 'ts-md5'
 import * as yaml from 'js-yaml'
 
 const window = (globalThis as any).window as any
-let options = yaml.load(window.options)
+let options:any = yaml.load(window.options)
 
 export const iiifServer = options?.defaults?.iiifServer || 'iiif.mdpress.io'
 console.log(`iiifServer=${iiifServer}`)
@@ -343,6 +343,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
       : `https://${iiifServer}/${manifestId}/manifest.json`
   )
   let toGet = _manifestUrls.filter(url => !_manifestCache[url])
+  console.log(`loadManifests: manifests=${_manifestUrls.length} cached=${_manifestUrls.length - toGet.length}`)
 
   if (toGet.length > 0) {
     let requests: any = toGet

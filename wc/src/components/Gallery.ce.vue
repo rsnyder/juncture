@@ -2,20 +2,12 @@
 
   <div ref="root" id="image-grid">
 
-    <div v-if="layout.length > 0" v-for="img, idx in imageData"
+    <div v-if="layout.length > 0" v-for="img, idx in images"
       class="pig-figure"
-      :id="imageData.id"
+      :id="images.id"
       :style="layout[idx]"
     >
-      <img class="image" onload="this.style.opacity = 1" :src="imageData[idx].thumbnail" @click="imageSelected(idx)">
-      <div class="caption">
-        <div class="icons">
-          <img v-if="imageData[idx].logo" class="provider-logo" :src="imageData[idx].logo" alt="Provider Logo">
-        </div>
-        <div class="size">
-          <span v-if="imageData[idx].width">{{ imageData[idx].width.toLocaleString() }} x {{ imageData[idx].height.toLocaleString() }}</span>
-        </div>
-      </div>
+      <img class="image" onload="this.style.opacity = 1" :src="images[idx].thumbnail" @click="imageSelected(idx)">
     </div>
   </div>
 
@@ -29,7 +21,7 @@
 <script setup  lang="ts">
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
-  import { isMobile } from '../utils'
+  import { findItem, isMobile, loadManifests } from '../utils'
 
   import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
   import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
@@ -45,10 +37,28 @@
     dialogWidth: { type: String, default: '100vw' }
   })
 
-  const imageData = <any>ref([])
-  watch(imageData, async () => {
-    console.log(toRaw(imageData.value))
-    await checkImagesSizes(imageData.value)
+  const manifestUrls = ref<string[]>([])
+  watch(manifestUrls, async (manifestUrls) => manifests.value = await loadManifests(manifestUrls) )
+
+  const manifests = ref<any[]>([])
+  watch(manifests, (manifests) => {
+    images.value = manifests.map((manifest:any) => {
+      let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
+      return {
+        id: manifest.id,
+        label: manifest.label,
+        summary: manifest.summary,
+        width: imgInfo.width,
+        height: imgInfo.height,
+        format: imgInfo.format,
+        thumbnail: manifest.thumbnail[0].id,
+      }
+    })
+  })
+
+  const images = ref<any[]>([])
+  watch(images, (images) => {
+    // console.log(toRaw(images))
     doLayout()
   })
 
@@ -65,23 +75,29 @@
   const showDialog = ref(false)
   watch(showDialog, () => { dialog.open = showDialog.value })
 
+  function imageIdtoUrl(imageId:string) {
+    let imageIdParts = imageId.split('/')
+    let fname = imageIdParts[imageIdParts.length - 1]
+    let extSeparator = fname.lastIndexOf('.')
+    let name = fname.slice(0, extSeparator)
+    let ext = fname.slice(extSeparator + 1)
+    imageIdParts[imageIdParts.length - 1] = `${encodeURIComponent(name)}.${ext}`
+    imageId = imageIdParts.join('/')
+    return imageId.indexOf('http') === 0 ? imageId : `https://iiif.mdpress.io/${imageId}/manifest.json`
+  }
+
   function getImageData() {
     if (props.data) {
       let dataEl = document.getElementById(props.data) as HTMLElement
-      imageData.value = Array.from(dataEl.querySelectorAll('li'))
+      manifestUrls.value = Array.from(dataEl.querySelectorAll('li'))
         .map((item:any) => item.textContent)
-        .map((imageId:string) => {
-          // encode imageId to handle special characters
-          let imageIdParts = imageId.split('/')
-          let [name, ext] = imageIdParts[imageIdParts.length - 1].split('.')
-          imageIdParts[imageIdParts.length - 1] = `${encodeURIComponent(name)}.${ext}`
-          imageId = imageIdParts.join('/')
-          return { thumbnail: `https://iiif.mdpress.io/thumbnail/${imageId}`, id: imageId, width: 0, height: 0, aspect_ratio: 1}
-        })
+        .map((imageId:string) => imageIdtoUrl(imageId))
     } else {
       let slot = host.value.parentElement
       function parseSlot() {
-        imageData.value = Array.from(slot.querySelectorAll('li')).map((li: any) => li.innerText)
+        manifestUrls.value = Array.from(slot.querySelectorAll('li'))
+        .map((li: any) => li.innerText)
+        .map((imageId:string) => imageIdtoUrl(imageId))
       }
       parseSlot()
       new MutationObserver(
@@ -93,10 +109,10 @@
   }
 
   function doLayout() {
-    // console.log(`doLayout: width=${width.value} images=${imageData.value.length} layout=${layout.value.length}`)
-    if (imageData.value.length === 0) return
+    console.log(`doLayout: width=${width.value} images=${manifests.value.length}`)
+    if (manifests.value.length === 0) return
 
-    let numImages = imageData.value.length
+    let numImages = manifests.value.length
     const minAspectRatio = width.value <= 640 ? 2
                          : width.value <= 960 ? 3
                          : width.value <= 1280 ? 4
@@ -115,9 +131,12 @@
 
     // Loop through all our images, building them up into rows and computing
     // the working rowAspectRatio.
-    imageData.value.forEach((image, index) => {
-      rowAspectRatio += image.aspect_ratio
-      row.push(image)
+    manifests.value.forEach((manifest, index) => {
+      let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
+      let imageAspectRatio = 
+      manifest.aspect_ratio = Number((imgInfo.width/imgInfo.height).toFixed(4))
+      rowAspectRatio += imageAspectRatio
+      row.push(manifest)
 
       if (rowAspectRatio >= minAspectRatio || index + 1 === numImages) {
 
@@ -150,7 +169,7 @@
   }
 
   function imageSelected(index:number) {
-    selectedImage.value = imageData.value[index] as any
+    selectedImage.value = images.value[index] as any
   }
 
   onMounted(() => {

@@ -34,11 +34,15 @@
 
   const props = defineProps({
     data: { type: String },
+    ghDir: { type: String},
     dialogWidth: { type: String, default: '100vw' }
   })
 
   const manifestUrls = ref<string[]>([])
-  watch(manifestUrls, async (manifestUrls) => manifests.value = await loadManifests(manifestUrls) )
+  watch(manifestUrls, async (manifestUrls) => {
+    // console.log(toRaw(manifestUrls))
+    manifests.value = await loadManifests(manifestUrls) 
+  })
 
   const manifests = ref<any[]>([])
   watch(manifests, (manifests) => {
@@ -100,6 +104,13 @@
       manifestUrls.value = Array.from(dataEl.querySelectorAll('li'))
         .map((item:any) => item.textContent)
         .map((imageId:string) => imageIdtoUrl(imageId))
+    } else if (props.ghDir) {
+      let ghDir = (props.ghDir[0] === '/') ? props.ghDir.slice(1) : props.ghDir
+      fetch (`https://iiif.mdpress.io/gh-dir/${ghDir}?filter=images`)
+      .then(response => response.json())
+      .then(data => {
+        manifestUrls.value = data.map((item:any) => `https://iiif.mdpress.io/gh:${props.ghDir}/${item.name}/manifest.json`)
+      })
     } else {
       let slot = host.value.parentElement
       function parseSlot() {

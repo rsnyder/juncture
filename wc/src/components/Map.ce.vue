@@ -67,12 +67,13 @@
         data: { type: String },
         entities: { type: String },
         essayBase: { type: String },
+        gestureHandling: { type: Boolean, default: isMobile() },
         ghDir: { type: String},
         marker: { type: Boolean },
         overlay: { type: String },
         popupOnHover: { type: Boolean },
         preferGeojson: { type: Boolean },
-        scrollWheelZoom: { type: Boolean, default: true },
+        scrollWheelZoom: { type: Boolean, default: false },
         zoom: { type: Number, default: 2 },
         zoomOnClick: { type: Boolean }
       })
@@ -368,7 +369,7 @@
       }
     
       async function initMap() {
-        // console.log(toRaw(props))
+        console.log(toRaw(props))
         zoom.value = props.zoom
 
         let center: L.LatLng
@@ -406,7 +407,6 @@
         })
         let mapOptions: any = {
           preferCanvas: false,
-          // scrollWheelZoom: false, // disable original zoom function
           smoothWheelZoom: true,  // enable smooth zoom 
           smoothSensitivity: 1.5,   // zoom speed. default is 1
           zoomSnap: 0.1,

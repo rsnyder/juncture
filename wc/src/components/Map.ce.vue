@@ -399,7 +399,7 @@
 
         // console.log(`initMap: center=${center} zoom=${zoom.value}`)
         if (!mapEl.value) return
-        if (isMobile()) L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling)
+        if (props.gestureHandling === true) L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling)
         mapEl.value.style.cursor = 'default'
         let _basemaps = props.basemaps.split(',').map(name => {
           let [url, options] = baseMapsConfigs[name]
@@ -414,7 +414,7 @@
           zoom: zoom.value,
           zoomAnimation: true,
           scrollWheelZoom: props.scrollWheelZoom,
-          gestureHandling: isMobile(),
+          gestureHandling: props.gestureHandling === true,
           layers: [_basemaps[0][1] as L.Layer]
         }
         map.value = L.map(mapEl.value, mapOptions)

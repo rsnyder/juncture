@@ -399,7 +399,10 @@
 
         // console.log(`initMap: center=${center} zoom=${zoom.value}`)
         if (!mapEl.value) return
-        if (props.gestureHandling === true) L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling)
+        if (props.gestureHandling === true) {
+          console.log('add gestureHandling')
+          L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling)
+        }
         mapEl.value.style.cursor = 'default'
         let _basemaps = props.basemaps.split(',').map(name => {
           let [url, options] = baseMapsConfigs[name]

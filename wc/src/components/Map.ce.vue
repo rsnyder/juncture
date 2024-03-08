@@ -72,7 +72,7 @@
         overlay: { type: String },
         popupOnHover: { type: Boolean },
         preferGeojson: { type: Boolean },
-        scrollWheelZoom: { type: Boolean },
+        scrollWheelZoom: { type: Boolean, default: true },
         zoom: { type: Number, default: 2 },
         zoomOnClick: { type: Boolean }
       })
@@ -406,14 +406,14 @@
         })
         let mapOptions: any = {
           preferCanvas: false,
-          scrollWheelZoom: false, // disable original zoom function
+          // scrollWheelZoom: false, // disable original zoom function
           smoothWheelZoom: true,  // enable smooth zoom 
           smoothSensitivity: 1.5,   // zoom speed. default is 1
           zoomSnap: 0.1,
           center, 
           zoom: zoom.value,
           zoomAnimation: true,
-          // scrollWheelZoom: props.scrollWheelZoom,
+          scrollWheelZoom: props.scrollWheelZoom,
           gestureHandling: isMobile(),
           layers: [_basemaps[0][1] as L.Layer]
         }

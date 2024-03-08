@@ -263,8 +263,11 @@
       watch(mapEl, (mapEl) => {
         if (!mapEl) return
         if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
-        new ResizeObserver(e => mapEl.style.height = `${e[0].contentRect.width * mapAspectRatio.value}px`).observe(mapEl)
-        init()
+        new ResizeObserver(e => {
+          mapEl.style.height = `${e[0].contentRect.width * mapAspectRatio.value}px`
+          if (!map.value && mapEl.clientHeight > 0) init()
+        }).observe(mapEl)
+        if (mapEl.clientHeight > 0) init()
       })
     
       watch(layerObjs, async () => {
@@ -1098,7 +1101,7 @@
         background-color: rgba(100, 100, 100, 0.5);
       }
 
-      .leaflet-top {
+      .leaflet-top, .leaflet-bottom {
         z-index: unset;
       }
 

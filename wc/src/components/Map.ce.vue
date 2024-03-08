@@ -8,8 +8,13 @@
         <div v-if="caption" id="caption" v-html="caption"></div>
       </div>
     </div>
-    
-    </template>
+
+    <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
+      <mdp-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></mdp-image>
+      <sl-button slot="footer" variant="primary" @click="showDialog = false">Close</sl-button>
+    </sl-dialog>
+
+</template>
       
     <script setup lang="ts">
     
@@ -26,8 +31,25 @@
       import 'leaflet.smoothwheelzoom'
       import { WarpedMapLayer } from '@allmaps/leaflet'
 
-      import { isQid, getEntity, getManifest, kebabToCamel, metadataAsObj, isMobile } from '../utils'
+      import { isQid, getEntity, getManifest, kebabToCamel, metadataAsObj, isMobile, loadManifests } from '../utils'
+      import EventBus from './EventBus'
 
+      let dialog: any
+      const showDialog = ref(false)
+      watch(showDialog, () => { dialog.open = showDialog.value })
+      const dialogWidth = ref('100vw')
+
+      const selectedImage = ref()
+
+      onMounted(() => {
+        dialog = shadowRoot.value?.querySelector('.dialog')
+        dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
+        EventBus.on('imageSelected', (evt) => { 
+          selectedImage.value = evt.src 
+          showDialog.value = true
+        })
+      })
+    
       const markerIconTemplate = {
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-icon.png',
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-icon-2x.png',
@@ -39,19 +61,20 @@
       }
     
       const props = defineProps({
-        overlay: { type: String },
-        zoom: { type: Number, default: 2 },
-        center: { type: String, default: '32.32347,-80.97122' },
-        data: { type: String },
-        marker: { type: Boolean },
         basemaps: { type: String, default: 'OpenStreetMap' },
+        center: { type: String, default: '32.32347,-80.97122' },
         caption: { type: String },
+        data: { type: String },
         entities: { type: String },
-        preferGeojson: { type: Boolean },
+        essayBase: { type: String },
+        ghDir: { type: String},
+        marker: { type: Boolean },
+        overlay: { type: String },
         popupOnHover: { type: Boolean },
-        zoomOnClick: { type: Boolean },
+        preferGeojson: { type: Boolean },
         scrollWheelZoom: { type: Boolean },
-        essayBase: { type: String }
+        zoom: { type: Number, default: 2 },
+        zoomOnClick: { type: Boolean }
       })
     
       const baseMapsConfigs:any = {
@@ -215,6 +238,7 @@
       const root = ref<HTMLElement | null>(null)
       const host = computed(() => (root.value?.getRootNode() as any)?.host as HTMLElement)
       const mapEl = ref<HTMLElement | null>(null)
+      const shadowRoot = computed(() => root?.value?.parentNode)
 
       const mapAspectRatio = ref<number>(1.0)
 
@@ -245,7 +269,7 @@
     
       watch(layerObjs, async () => {
         let _layerObjs = await Promise.all(layerObjs.value)
-        console.log(toRaw(_layerObjs))
+        if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
           .filter(item => item.geojson && item.preferGeojson)
@@ -463,11 +487,12 @@
               let entityData = await getEntity(feature.properties.qid)
               feature.properties.entityData = entityData
               let serializedEntityData = JSON.stringify(entityData).replace(/"/g, '&quot;')
-              let html = `<ve-info-card data="${serializedEntityData}" style="width:100%;"></ve-info-card>`
+              let html = `<mdp-info-card data="${serializedEntityData}"></mdp-info-card>`
               layer.bindPopup(html)
             } else {
-              let featureData = JSON.stringify(feature.properties).replace(/"/g, '&quot;')
-              let html = `<ve-info-card data="${featureData}" style="width:100%;"></ve-info-card>`
+              // console.log(toRaw(feature.properties))
+              let stringifiedFeatureData = JSON.stringify(feature.properties).replace(/"/g, '&quot;')
+              let html = `<mdp-info-card data="${stringifiedFeatureData}"></mdp-info-card>`
               layer.bindPopup(html)
             }
     
@@ -523,16 +548,25 @@
           // id: _props.qid
         })
       }
+
+      let fitBounds = () => {
+        let coords = Object.values(geoJSONs.value).map((item:any) => {
+          return item[0].features.map((feature:any) => feature.geometry.coordinates)
+        }).flat()
+        if (coords.length > 0) map.value?.fitBounds(coords.map(lc => [lc[1], lc[0]]), {padding: [100, 100]})
+      }
     
       let mapUpdated = false
       function updateMap() {
         
+        // console.log(`updateMap: map=${map.value !== undefined} mapUpdated=${mapUpdated} geoJSONs=${geoJSONs.value?.length || 0} warpedMapLayers=${warpedMapLayers.value?.length || 0}`)
+
         if (map.value && geoJSONs.value && warpedMapLayers.value && !mapUpdated) {
-          mapUpdated = true
+          // mapUpdated = true
           let geoJsonLayers = Object.keys(geoJSONs.value || {})
           let numWarpedMapLayers = warpedMapLayers.value ? warpedMapLayers.value.length : 0
     
-          // console.log(`updateMap: geoJsonLayers=${geoJsonLayers.length} warpedMapLayers=${numWarpedMapLayers}`)
+          console.log(`updateMap: geoJsonLayers=${geoJsonLayers.length} warpedMapLayers=${numWarpedMapLayers}`)
     
           if (!layerControl.value && (
               (geoJsonLayers.length > 1 || geoJsonLayers.length === 1 && geoJsonLayers[0] !== 'Locations') ||
@@ -548,6 +582,7 @@
             opacityLayers[item.name] = item.layer
           })
           
+
           Object.keys(geoJSONs.value || {}).forEach(layerName => {
             let layerGroup: any = new L.LayerGroup()
             let isDisabled = false
@@ -590,7 +625,7 @@
                 }
               })
           }
-
+          fitBounds()
         }    
       }
     
@@ -608,7 +643,22 @@
         return data
       }
       
+      async function getLocationImagesForGhPath(ghDir:string) {
+        let manifestUrls = await fetch (`https://iiif.mdpress.io/gh-dir/${ghDir}?filter=images`)
+          .then(response => response.json())
+          .then(data => data.map((item:any) => `https://iiif.mdpress.io/gh:${ghDir}/${item.name}/manifest.json`))
+        let manifests = await loadManifests(manifestUrls)
+        return manifests.filter((manifest:any) => manifest.navPlace)
+          .map((manifest:any) => manifestToInfoObj(manifest, manifest.id))
+      }
+
       async function getLayerStrings() {
+        if (props.ghDir) {
+          layerObjs.value = [
+            ...layerObjs.value, 
+            ...await getLocationImagesForGhPath(props.ghDir)
+          ]
+        } 
         let dataEl = (props.data ? document.getElementById(props.data) : host.value) as HTMLElement
         let _layerObjs = Array.from(dataEl.querySelectorAll('li'))
           .map((item:any) => toObj(item.firstChild?.textContent))
@@ -662,9 +712,7 @@
     
       function manifestToInfoObj(manifest:any, id:string) {
         let obj:any = {id}
-        let metadata = metadataAsObj(manifest)
-        if (metadata.location) obj.coords = metadata.location[0]
-        if (metadata.coordinates_of_the_point_of_view) obj.coords = metadata.coordinates_of_the_point_of_view[0]
+        if (manifest.navPlace) obj.coords = manifest.navPlace.features[0].geometry.coordinates.map((val:number) => val.toFixed(5)).join(',')
         if (manifest.label) obj.label = manifest.label.en
         if (manifest.summary) obj.description = manifest.summary.en[0]
         if (manifest.thumbnail) obj.image = manifest.thumbnail[0].id
@@ -1036,4 +1084,22 @@
         background-image: url(https://unpkg.com/leaflet@1.9.3/dist/images/layers-2x.png)
       }
     
+      sl-dialog::part(panel) {
+        max-width: unset;
+        max-height: unset;
+        height: 100dvh;
+      }
+
+      sl-dialog::part(overlay) {
+        --sl-overlay-background-color: rgba(100, 100, 100, 0.8);
+      }
+
+      sl-dialog::part(footer) {
+        background-color: rgba(100, 100, 100, 0.5);
+      }
+
+      .leaflet-top {
+        z-index: unset;
+      }
+
     </style>

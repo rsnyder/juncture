@@ -6,9 +6,10 @@
 <link rel="apple-touch-icon" href="https://mdpress.io/images/mobile-icon.png">
 <link href="{{ site.baseurl }}/index.css" rel="stylesheet">
 
-<script>window.options = `
+<script>
+  window.site = JSON.parse(`{{ site }}`)
+  window.options = `
   baseurl: '{{ site.baseurl }}'
-  github: {{ site.github }}
   title: MDPress
   description: Website framework using Markdown, Github Pages, and custom web components.
   defaults:

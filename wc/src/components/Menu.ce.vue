@@ -225,9 +225,11 @@
       let href = `${location.pathname}${location.hash}`
       window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
+      console.log(`setupGithubAuth: url=${url}`)
       let resp = await fetch(url)
       if (resp.ok) {
         let token = await resp.text()
+        console.log(`setupGithubAuth: token=${token}`)
         let _user = await getGhUserInfo(token)
         user.value = _user
       }

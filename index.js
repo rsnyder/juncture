@@ -699,7 +699,7 @@ function readMoreSetup() {
 
 function init() {
   // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
-  window.config = {...parse(window.options || ''), ...(window.config || {}), ...{isJunctureV1}}
+  window.config = {...parse(window.options || ''), ...(window.site || {}), ...(window.config || {}), ...{isJunctureV1}}
   structureContent()
   setMeta()
   console.log(window.config)

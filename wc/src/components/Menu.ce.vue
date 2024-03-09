@@ -7,15 +7,31 @@
       </svg>
     </sl-button>
     <sl-menu>
+      
       <sl-menu-item v-for="item in menuItems" @click="menuItemSelected(item, $event)">
         <span v-html="item.label"></span>
         <svg v-if="item.icon" slot="prefix" v-html="item.icon"></svg>
         <span v-else slot="prefix" style="width:1em; margin-right:1em;"></span>
       </sl-menu-item>
+      
       <sl-menu-item v-if="pdfDownloadEnabled" @click="generatePDF">
         <span>Download as PDF</span>
         <img slot="prefix" width="16" src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Noun_Project_PDF_icon_117327_cc.svg" alt="PDF Download Icon">
       </sl-menu-item>
+
+      <!-- Auth -->
+      <sl-menu-item v-if="props.auth && isLoggedIn" @click="logout">
+        <span class="font-medium">({{user?.name || user?.email}})</span>
+        <span class="font-medium"> Logout</span>
+        <svg slot="prefix" v-html="icons.logout"></svg>
+      </sl-menu-item>
+
+      <sl-menu-item v-if="props.auth && !isLoggedIn" @click="login">
+        <span class="font-medium">Login with {{ titleCase(props.auth) }}</span>
+        <svg slot="prefix" v-html="icons.login"></svg>
+      </sl-menu-item>
+      <!-- End Auth -->
+
     </sl-menu>
   </sl-dropdown>
 
@@ -37,7 +53,7 @@
   
 <script setup lang="ts">
 
-  import { computed, ref, toRaw, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
 
   // @ts-ignore
   import { HSOverlay } from '../lib/preline/components/hs-overlay'
@@ -71,8 +87,14 @@
   })
 
   const props = defineProps({
+    auth: { type: String },
     contact: { type: String },
     pdfDownloadEnabled: { type: Boolean, default: false}
+  })
+
+  onMounted(async () => {
+    if (props.auth === 'github') setupGithubAuth()
+    console.log(`isLoggedIn=${isLoggedIn.value}`)
   })
 
   const menuItems = ref<any[]>([])
@@ -148,11 +170,109 @@
   }
 
   const icons = {
-    home: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>',
     about: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>',
-    contact: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>'
+    contact: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>',
+    home: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>',
+    login: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>',
+    user: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>',
   }
 
+  const user = ref<any>(null)
+
+  watch(user, () => {
+    if (user.value) localStorage.setItem('auth-user', JSON.stringify(user.value))
+    else if (localStorage.getItem('auth-user')) localStorage.removeItem('auth-user')
+  })
+
+  const isLoggedIn = computed(() => {
+    console.log(user.value?.token, user.value?.token)
+    return user.value?.token || user.value?.token || false
+  })
+  watch(isLoggedIn, () => console.log(`isLoggedIn=${isLoggedIn.value}`))
+
+  function tokenIsValid(expiration:number) {
+    let isExpired = expiration <= Date.now()
+    return !isExpired
+  }
+
+  function titleCase(word:string) {
+    return word[0].toUpperCase() + word.slice(1).toLowerCase()
+  }
+
+  function login(evt:Event) {
+    evt.preventDefault()
+    ghLogin()
+  }
+
+  function logout(evt:Event) {
+    evt.preventDefault()
+    user.value = null
+    ghLogout()
+  }
+
+  /***************** Github auth *****************/
+  
+  const clientIds:any = {
+    'www.mdpress.io': '226eaf757c87b5be8379'
+  }
+
+  async function setupGithubAuth() {
+    console.log('setupGithubAuth')
+    let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
+    if (_user?.provider === 'github') user.value = _user
+    else user.value = null
+    let code = (new URL(window.location.href)).searchParams.get('code')
+    if (code) {
+      let href = `${location.pathname}${location.hash}`
+      window.history.replaceState({}, '', href)
+      let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
+      let resp = await fetch(url)
+      if (resp.ok) {
+        let token = await resp.text()
+        let _user = await getGhUserInfo(token)
+        user.value = _user
+      }
+    }
+  }
+
+  async function ghLogin() {
+    let hostname = (new URL(window.location.href)).hostname
+    let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
+    if (isDev) {
+      let resp = await fetch('http://localhost:8088/gh-token?hostname=localhost&code=testing')
+      if (resp.ok) {
+        let token = await resp.text()
+        let _user = await getGhUserInfo(token)
+        user.value = _user
+      }
+    } else {
+      let redirectTo = `${window.location.href}`
+      let href = clientIds[location.hostname] !== undefined
+        ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=mdpress&redirect_uri=${redirectTo}`
+        : null
+      console.log(`ghLogin: hostname=${hostname} isDev=${isDev} href=${href}`)
+      if (href) window.location.href = href
+    }
+  }
+
+  function ghLogout() {
+    Object.keys(localStorage).forEach(key => localStorage.removeItem(key))
+    user.value = null
+    // location.href = ''
+  }
+
+  async function getGhUserInfo(token:string) {
+    let resp = await fetch('https://api.github.com/user' ,{
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `token ${token}`
+      }
+    })
+    if (resp.ok) {
+      let info = await resp.json()
+      return { provider: 'github', username: info.login, name: info.name, email: info.email, token }
+    }
+  }
 </script>
 
 <style>

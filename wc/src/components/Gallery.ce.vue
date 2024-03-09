@@ -38,6 +38,17 @@
     dialogWidth: { type: String, default: '100vw' }
   })
 
+  const window = (self as any).window
+  const config = ref<any>(window.config || {})
+  const user = ref<any>(null)
+  watch(user, async () => {
+    if (config.value?.github && user.value?.token) {
+      userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, user.value.token)
+    }
+  })
+  const userCanUpdateRepo = ref(false)
+  watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
+
   const manifestUrls = ref<string[]>([])
   watch(manifestUrls, async (manifestUrls) => {
     // console.log(toRaw(manifestUrls))
@@ -46,7 +57,7 @@
 
   const manifests = ref<any[]>([])
   watch(manifests, (manifests) => {
-    console.log(toRaw(manifests))
+    // console.log(toRaw(manifests))
     images.value = manifests.map((manifest:any) => {
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
       let orientation = manifest.metadata?.filter((item:any) => (item.label.en || item.label.none)[0] === 'orientation')
@@ -70,7 +81,7 @@
 
   const images = ref<any[]>([])
   watch(images, (images) => {
-    console.log(toRaw(images))
+    // console.log(toRaw(images))
     doLayout()
   })
 
@@ -128,7 +139,7 @@
   }
 
   function doLayout() {
-    console.log(`doLayout: width=${width.value} images=${images.value.length}`)
+    // console.log(`doLayout: width=${width.value} images=${images.value.length}`)
     if (images.value.length === 0) return
 
     let numImages = images.value.length
@@ -185,11 +196,12 @@
 
   function imageSelected(index:number) {
     let manifest = manifests.value[index]
-    console.log(toRaw(manifest))
+    // (toRaw(manifest))
     selectedImage.value = images.value[index] as any
   }
 
   onMounted(() => {
+    user.value = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     dialog = shadowRoot.value?.querySelector('.dialog')
     dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
   })
@@ -207,6 +219,18 @@
       resizeObserver.observe(root.value)
     }
   })
+
+  async function isCollaborator(owner: string, repo: string, username: string, token: string) {
+    // console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
+    let resp = await fetch(url, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `token ${token}`
+      }
+    })
+    return resp.ok && resp.status === 204
+  }
 
 </script>
 

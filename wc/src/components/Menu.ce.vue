@@ -180,7 +180,7 @@
   const config = ref<any>(window.config || {})
   const user = ref<any>(null)
   const userCanUpdateRepo = ref(false)
-  watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
+  // watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
 
   watch(user, () => {
     if (user.value) localStorage.setItem('auth-user', JSON.stringify(user.value))
@@ -225,11 +225,9 @@
       let href = `${location.pathname}${location.hash}`
       window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
-      console.log(`setupGithubAuth: url=${url}`)
       let resp = await fetch(url)
       if (resp.ok) {
         let token = await resp.text()
-        console.log(`setupGithubAuth: token=${token}`)
         let _user = await getGhUserInfo(token)
         user.value = _user
       }
@@ -262,6 +260,7 @@
   function ghLogout() {
     Object.keys(localStorage).forEach(key => localStorage.removeItem(key))
     user.value = null
+    location.reload()
   }
 
   async function getGhUserInfo(token:string) {
@@ -278,7 +277,7 @@
   }
 
   async function isCollaborator(owner: string, repo: string, username: string, token: string) {
-    console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    // console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
     let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
     let resp = await fetch(url, {
       headers: {

@@ -176,6 +176,8 @@
     user: '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg>',
   }
 
+  const window = (self as any).window
+  const config = ref<any>(window.config || {})
   const user = ref<any>(null)
   const userCanUpdateRepo = ref(false)
   watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
@@ -230,6 +232,9 @@
         user.value = _user
       }
     }
+    if (user.value) {
+      userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, user.value.token)
+    }
   }
 
   async function ghLogin() {
@@ -241,6 +246,7 @@
         let token = await resp.text()
         let _user = await getGhUserInfo(token)
         user.value = _user
+        userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, token)
       }
     } else {
       let redirectTo = `${window.location.href}`
@@ -254,7 +260,6 @@
   function ghLogout() {
     Object.keys(localStorage).forEach(key => localStorage.removeItem(key))
     user.value = null
-    // location.href = ''
   }
 
   async function getGhUserInfo(token:string) {
@@ -268,6 +273,18 @@
       let info = await resp.json()
       return { provider: 'github', username: info.login, name: info.name, email: info.email, token }
     }
+  }
+
+  async function isCollaborator(owner: string, repo: string, username: string, token: string) {
+    console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
+    let resp = await fetch(url, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `token ${token}`
+      }
+    })
+    return resp.ok && resp.status === 204
   }
 </script>
 

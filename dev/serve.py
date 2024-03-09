@@ -68,6 +68,7 @@ html_template = html_template.replace('https://mdpress.io', '')
 if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
+html_template = html_template.replace('{{ site.github }}', '{}')
 html_template = html_template.replace('{%- seo -%}', '')
 
 def html_from_markdown(md, baseurl):

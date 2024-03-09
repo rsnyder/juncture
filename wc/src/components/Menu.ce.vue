@@ -213,6 +213,7 @@
   /***************** Github auth *****************/
   
   const clientIds:any = {
+    'iiif.mdpress.io': '9baccef56771878fd304',
     'www.mdpress.io': '226eaf757c87b5be8379'
   }
 

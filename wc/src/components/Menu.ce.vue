@@ -23,7 +23,7 @@
       <sl-menu-item v-if="props.auth && isLoggedIn" @click="logout">
         <span class="font-medium">({{user?.name || user?.email}})</span>
         <span class="font-medium"> Logout</span>
-        <svg slot="prefix" v-html="icons.logout"></svg>
+        <svg slot="prefix" v-html="icons.user"></svg>
       </sl-menu-item>
 
       <sl-menu-item v-if="props.auth && !isLoggedIn" @click="login">
@@ -94,7 +94,6 @@
 
   onMounted(async () => {
     if (props.auth === 'github') setupGithubAuth()
-    console.log(`isLoggedIn=${isLoggedIn.value}`)
   })
 
   const menuItems = ref<any[]>([])
@@ -178,6 +177,8 @@
   }
 
   const user = ref<any>(null)
+  const userCanUpdateRepo = ref(false)
+  watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
 
   watch(user, () => {
     if (user.value) localStorage.setItem('auth-user', JSON.stringify(user.value))
@@ -185,15 +186,11 @@
   })
 
   const isLoggedIn = computed(() => {
-    console.log(user.value?.token, user.value?.token)
     return user.value?.token || user.value?.token || false
   })
-  watch(isLoggedIn, () => console.log(`isLoggedIn=${isLoggedIn.value}`))
-
-  function tokenIsValid(expiration:number) {
-    let isExpired = expiration <= Date.now()
-    return !isExpired
-  }
+  watch(isLoggedIn, () => {
+    if (!isLoggedIn.value) userCanUpdateRepo.value = false
+  })
 
   function titleCase(word:string) {
     return word[0].toUpperCase() + word.slice(1).toLowerCase()
@@ -218,7 +215,6 @@
   }
 
   async function setupGithubAuth() {
-    console.log('setupGithubAuth')
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
@@ -251,7 +247,6 @@
       let href = clientIds[location.hostname] !== undefined
         ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=mdpress&redirect_uri=${redirectTo}`
         : null
-      console.log(`ghLogin: hostname=${hostname} isDev=${isDev} href=${href}`)
       if (href) window.location.href = href
     }
   }

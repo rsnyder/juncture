@@ -202,6 +202,7 @@
 
   onMounted(() => {
     user.value = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
+    console.log('Gallery.onMounted', toRaw(user))
     dialog = shadowRoot.value?.querySelector('.dialog')
     dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
   })

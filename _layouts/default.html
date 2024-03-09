@@ -7,7 +7,7 @@
 <link href="{{ site.baseurl }}/index.css" rel="stylesheet">
 
 <script>
-  window.github = `{{ site.github }}`
+  window.site = {github: JSON.parse(`{{ site.github }}`)};
   window.options = `
   baseurl: '{{ site.baseurl }}'
   title: MDPress

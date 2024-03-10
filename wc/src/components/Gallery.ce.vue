@@ -1,19 +1,31 @@
 <template>
 
-  <div ref="root" id="image-grid">
+  <div ref="root" id="gallery">
 
     <div v-if="layout.length > 0" v-for="img, idx in images"
-      class="pig-figure"
+      class="gallery-item"
       :id="images.id"
       :style="layout[idx]"
     >
-      <img class="image" onload="this.style.opacity = 1" :src="images[idx].thumbnail" @click="imageSelected(idx)">
+      <img class="image fade-in" onload="this.style.opacity = 1" :src="images[idx].thumbnail" @click="imageSelected(idx)">
+      <div v-if="caption" style="height:32px;display:flex;align-items:center;margin-left:0.25em" v-html="images[idx].label"></div>
     </div>
+    
   </div>
 
   <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
     <mdp-image v-if="selectedImage" no-caption :src="selectedImage.id" fit="cover"></mdp-image>
-    <sl-button slot="footer" variant="primary" @click="selectedImage = null">Close</sl-button>
+    <div slot="footer" class="footer">
+      <div v-if="selectedImage" class="caption" v-html="selectedImage.label"></div>
+      <div v-if="selectedImage?.photoDetails" class="photo-details">({{ selectedImage.photoDetails }})</div>
+      <div class="controls push">
+        <div v-if="userCanUpdateRepo" class="toolbar">
+          <svg class="push edit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152V424c0 48.6 39.4 88 88 88H360c48.6 0 88-39.4 88-88V312c0-13.3-10.7-24-24-24s-24 10.7-24 24V424c0 22.1-17.9 40-40 40H88c-22.1 0-40-17.9-40-40V152c0-22.1 17.9-40 40-40H200c13.3 0 24-10.7 24-24s-10.7-24-24-24H88z"/></svg>
+          <svg class="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M170.5 51.6L151.5 80h145l-19-28.4c-1.5-2.2-4-3.6-6.7-3.6H177.1c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80H368h48 8c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V432c0 44.2-35.8 80-80 80H112c-44.2 0-80-35.8-80-80V128H24c-13.3 0-24-10.7-24-24S10.7 80 24 80h8H80 93.8l36.7-55.1C140.9 9.4 158.4 0 177.1 0h93.7c18.7 0 36.2 9.4 46.6 24.9zM80 128V432c0 17.7 14.3 32 32 32H336c17.7 0 32-14.3 32-32V128H80zm80 64V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0V400c0 8.8-7.2 16-16 16s-16-7.2-16-16V192c0-8.8 7.2-16 16-16s16 7.2 16 16z"/></svg>
+        </div>
+        <sl-button variant="primary" @click="selectedImage = null">Close</sl-button>
+      </div>
+    </div>
   </sl-dialog>
 
 </template>
@@ -23,9 +35,6 @@
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import { findItem, isMobile, loadManifests } from '../utils'
 
-  import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
-  import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
-
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   watch(host, () => { getImageData() })
@@ -34,8 +43,9 @@
 
   const props = defineProps({
     data: { type: String },
+    dialogWidth: { type: String, default: '100vw' },
     ghDir: { type: String},
-    dialogWidth: { type: String, default: '100vw' }
+    caption: { type: Boolean, default: false }
   })
 
   const window = (self as any).window
@@ -55,10 +65,22 @@
     manifests.value = await loadManifests(manifestUrls) 
   })
 
+  function metadata(manifest:any) {
+    return Object.fromEntries(
+      manifest.metadata?.map((item:any) => [
+        (item.label.en || item.label.none || Object.keys(item.label)[0])[0], 
+        (item.value.en || item.value.none || Object.keys(item.value)[0])[0]
+      ]
+    ))
+  }
+
   const manifests = ref<any[]>([])
   watch(manifests, (manifests) => {
     // console.log(toRaw(manifests))
     images.value = manifests.map((manifest:any) => {
+      // console.log(toRaw(manifest))
+      let meta = metadata(manifest)
+      let photoDetails = [meta.camera, meta.exposure, meta.mode].filter((item:any) => item).join(', ')
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, 1).body
       let orientation = manifest.metadata?.filter((item:any) => (item.label.en || item.label.none)[0] === 'orientation')
         .map((item) => (item.value.en || item.value.none)[0])[0] || 1
@@ -67,21 +89,22 @@
       let height = (orientation === 1 || orientation === 3) ? imgInfo.height : imgInfo.width
       return {
         id: manifest.id,
-        label: manifest.label,
-        summary: manifest.summary,
+        label: manifest.label ? manifest.label.en || manifest.label.none || Object.values(manifest.label)[0] : null,
+        summary: manifest.summary ? manifest.summary.en || manifest.summary.none || Object.values(manifest.summary)[0] : null,
         width,
         height,
         format: imgInfo.format,
         orientation,
         aspect_ratio: Number((width/height).toFixed(4)),
-        thumbnail: manifest.thumbnail[0].id
+        thumbnail: manifest.thumbnail[0].id,
+        photoDetails
       }
     })
   })
 
   const images = ref<any[]>([])
   watch(images, (images) => {
-    // console.log(toRaw(images))
+    console.log(toRaw(images))
     doLayout()
   })
 
@@ -142,6 +165,8 @@
     // console.log(`doLayout: width=${width.value} images=${images.value.length}`)
     if (images.value.length === 0) return
 
+    let captionHeight = props.caption ? 32 : 0
+
     let numImages = images.value.length
     const minAspectRatio = width.value <= 640 ? 2
                          : width.value <= 960 ? 3
@@ -176,7 +201,7 @@
           const imageWidth: number = rowHeight * img.aspect_ratio
           _layout.push( {
             width: `${Math.round(imageWidth)}px`,
-            height: `${Math.round(rowHeight)}px`,
+            height: `${Math.round(rowHeight + captionHeight)}px`,
             transform: `translate3d(${Math.round(translateX)}px, ${Math.round(translateY)}px, 0)`,
           })
           translateX += imageWidth + spaceBetweenImages
@@ -185,7 +210,7 @@
         // Reset our state variables for next row.
         row = []
         rowAspectRatio = 0
-        translateY += rowHeight + spaceBetweenImages
+        translateY += rowHeight + spaceBetweenImages + captionHeight
         translateX = 0
       }
     })
@@ -202,7 +227,7 @@
 
   onMounted(() => {
     user.value = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
-    console.log('Gallery.onMounted', toRaw(user))
+    console.log('Gallery.onMounted', toRaw(user.value))
     dialog = shadowRoot.value?.querySelector('.dialog')
     dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
   })
@@ -222,7 +247,7 @@
   })
 
   async function isCollaborator(owner: string, repo: string, username: string, token: string) {
-    // console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
     let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
     let resp = await fetch(url, {
       headers: {
@@ -241,13 +266,13 @@
 
   * { box-sizing: border-box; }
 
-  #image-grid {
+  #gallery {
     position: relative;
     margin: 1rem;    
   }
 
   @media only screen and (max-width: 768px) {
-    #image-grid {
+    #gallery {
       margin: 0;
     }
   }
@@ -266,7 +291,7 @@
     background-color: rgba(100, 100, 100, 0.5);
   }
 
-  .pig-figure {
+  .gallery-item {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -275,7 +300,7 @@
     box-shadow: 2px 2px 4px 0 #ccc;
   }
 
-  .pig-figure:hover {
+  .gallery-item:hover {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   }
 
@@ -283,19 +308,21 @@
     left: 0;
     top: 0;
     width: 100%;
+    height: 100%;
     opacity: 0;
     background-color: #D5D5D5;
   }
 
+  .fade-in {
+    opacity: 0;
+    -webkit-transition: all 1s ease; 
+    -moz-transition: all 1s ease; 
+    -ms-transition: all 1s ease; 
+    -o-transition: all 1s ease; 
+  } 
+
   .image:hover {
     cursor: pointer;
-  }
-
-  .caption {
-    height: 100%;
-    width: 100%;
-    z-index: 1;
-    padding: 6px 3px 3px 3px;
   }
 
   .icons {
@@ -375,6 +402,49 @@
 
   .push {
     margin-left: auto;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+
+  .toolbar {
+    height: 32px;
+    justify-content: flex-end;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0 0.2em
+  }
+
+  .toolbar svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    fill: #777;
+  }
+
+  .toolbar svg:hover {
+    fill: #444;
+  }
+
+  .dialog .footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em;
+    text-align: left;
+  }
+
+  .caption {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+
+  .photo-details {
+    font-size: 0.9em;
   }
 
 </style>

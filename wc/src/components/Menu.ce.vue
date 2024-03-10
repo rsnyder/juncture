@@ -247,6 +247,7 @@
         let _user = await getGhUserInfo(token)
         user.value = _user
         userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, token)
+        location.reload()
       }
     } else {
       let redirectTo = `${window.location.href}`

@@ -11,7 +11,12 @@
 
     <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
       <mdp-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></mdp-image>
-      <sl-button slot="footer" variant="primary" @click="showDialog = false">Close</sl-button>
+      <div slot="footer" class="footer">
+        <mdp-caption :src="selectedImage"></mdp-caption>
+        <div class="push">
+          <sl-button variant="primary" @click="selectedImage = null">Close</sl-button>
+        </div>
+      </div>
     </sl-dialog>
 
 </template>
@@ -1108,4 +1113,15 @@
         z-index: unset;
       }
 
+      .dialog .footer {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      padding: 0.5em;
+      text-align: left;
+    }
+
+    .push {
+      margin-left: auto;
+    }
     </style>

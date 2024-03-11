@@ -21,6 +21,7 @@ import Footer from './components/Footer.ce.vue'
 import Gallery from './components/Gallery.ce.vue'
 import Header from './components/Header.ce.vue'
 import Image from './components/Image.ce.vue'
+import Caption from './components/Caption.ce.vue'
 import InfoCard from './components/InfoCard.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
@@ -41,6 +42,7 @@ function defineCustomElements() {
 	customElements.define('mdp-gallery', defineCustomElement(Gallery))
 	customElements.define('mdp-header', defineCustomElement(Header))
 	customElements.define('mdp-image', defineCustomElement(Image))
+	customElements.define('mdp-caption', defineCustomElement(Caption))
 	customElements.define('mdp-info-card', defineCustomElement(InfoCard))
 	customElements.define('mdp-manifest', defineCustomElement(Manifest))
 	customElements.define('mdp-manifest-popup', defineCustomElement(ManifestPopup))

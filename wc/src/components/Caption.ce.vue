@@ -4,6 +4,15 @@
   import { getManifest } from '../utils';
 
   const root = ref<HTMLElement | null>(null)
+  const details = ref<HTMLElement | null>(null)
+  watch(details, () => { 
+    console.log(details.value)
+    details.value?.addEventListener('sl-hide', (evt) => { 
+      console.log('hide', evt) 
+      evt.stopPropagation()
+      evt.preventDefault()
+    })
+  })
 
   const manifest = ref<any>()
   watch(manifest, (manifest) => { console.log(toRaw(manifest)) })
@@ -36,6 +45,12 @@
     ]
     .filter((item:any) => item)
     .join(', ')
+  )
+
+  const navPlace = computed(() => manifest.value?.navPlace)
+
+  const coords = computed(() =>
+    navPlace.value?.features[0]?.geometry.coordinates.join(',')
   )
 
   const props = defineProps({
@@ -72,18 +87,32 @@
 <template>
   <div class="caption" ref="root">
     <div class="label">{{ label }}</div>
-    <div v-if="attribution" class="attribution" v-html="attribution"></div>
-    <!--<div class="summary">{{ summary }}</div>-->
-    <div v-if="photoDetails" class="photo-details">{{ photoDetails }}</div>
+    <sl-dropdown ref="details" distance="12" skidding="-30">
+      <div slot="trigger" style="display:flex; flex-direction: column;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+      </div>
+      <div class="details">
+        <div class="label" v-html="label"></div>
+        <div v-if="attribution" class="attribution" v-html="attribution"></div>
+        <div v-if="photoDetails" class="photo-details">{{ photoDetails }}</div>
+        <sl-dropdown v-if="coords" ref="details" distance="12" skidding="-30" placement="top">
+          <div slot="trigger" style="cursor:pointer;">
+            <span v-html="coords"></span>
+          </div>
+          <div class="location" style="width:200px;">
+            <mdp-map v-if="coords" :center="coords" zoom="6" marker></mdp-map>
+          </div>
+        </sl-dropdown>
+      </div>
+    </sl-dropdown>
   </div>
 </template>
 
 <style>
   .caption {
     display: flex;
-    align-items: first baseline;
-    flex-wrap: wrap;
-    gap: 0.3em;
+    align-items: center;
+    gap: 1em;
   }
   .label {
     font-size: 1.4em;
@@ -97,5 +126,23 @@
   .attribution {
     font-size: 0.8em;
     font-weight: 400;
+  }
+
+  .details,
+  .location {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    background-color: white;
+    padding: 0.5em;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    max-width: 300px;
+  }
+  sl-dropdown svg {
+    width: 1.2em;
+    height: 1.2em;
+    cursor: pointer;
   }
 </style>

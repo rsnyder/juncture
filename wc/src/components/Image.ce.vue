@@ -321,7 +321,8 @@ function copyTextToClipboard(text: string) {
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
   <div v-if="tileSource" ref="osdEl" id="osd" class="w-full h-[100%]" role="img" :aria-label="caption" :alt="caption"></div>
   <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">
-    <div class="font-bold text-xl mb-2" v-html="caption"></div>
+    <!--<div class="font-bold text-xl mb-2" v-html="caption"></div> -->
+    <mdp-caption v-if="manifest && !noCaption" :manifest="manifest"></mdp-caption>
     <div v-if="coords"
       class="invisible group-hover:visible 
             absolute pr-4 pl-4 pt-2 pb-2 mt-24 
@@ -331,7 +332,7 @@ function copyTextToClipboard(text: string) {
       @click="copyTextToClipboard(coords || '')">
     </div>
   </div>
-  <mdp-manifest-popup v-if="manifest" :manifest="manifest" class="z-20"></mdp-manifest-popup>
+  <!-- <mdp-manifest-popup v-if="manifest" :manifest="manifest" class="z-20"></mdp-manifest-popup> -->
 </div>
 
 </template>

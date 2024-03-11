@@ -402,7 +402,7 @@
           // mapEl?.replaceWith(newMapEl)
         }
 
-        // console.log(`initMap: center=${center} zoom=${zoom.value}`)
+        console.log(`initMap: center=${center} zoom=${zoom.value}`)
         if (!mapEl.value) return
         if (props.gestureHandling === true) {
           console.log('add gestureHandling')
@@ -425,6 +425,7 @@
           gestureHandling: props.gestureHandling === true,
           layers: [_basemaps[0][1] as L.Layer]
         }
+        console.log(mapOptions)
         map.value = L.map(mapEl.value, mapOptions)
   
         if (_basemaps.length > 1 || Object.keys(geoJSONs.value || {}).length > 1)
@@ -564,7 +565,7 @@
         let coords = Object.values(geoJSONs.value).map((item:any) => {
           return item[0].features.map((feature:any) => feature.geometry.coordinates)
         }).flat()
-        if (coords.length > 0) map.value?.fitBounds(coords.map(lc => [lc[1], lc[0]]), {padding: [100, 100]})
+        if (coords.length > 1) map.value?.fitBounds(coords.map(lc => [lc[1], lc[0]]), {padding: [100, 100]})
       }
     
       let mapUpdated = false

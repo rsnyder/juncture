@@ -7,7 +7,7 @@ Documentarians are only often able to use only a small percentage of the intervi
 ## Interview
 `.mcol`
 
-### &nbsp;
+### Video
 
 `mdp-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`
 

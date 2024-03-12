@@ -22,7 +22,7 @@ export async function getEntity(qid: string, language: string = 'en') {
 let entityData:any = {}
 export async function getEntityData(qids: string[] = [], language: string = 'en') {
   let values = qids.filter(qid => !entityData[qid]).map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
-  // console.log(`getEntityData: qids=${qids.length} toGet=${values.length}`)
+  console.log(`getEntityData: qids=${qids.length} cached=${qids.length - values.length}`)
   if (values.length > 0) {
     let query = `
       SELECT ?item ?label ?description ?alias ?image ?logoImage ?coords ?pageBanner ?whosOnFirst ?wikipedia WHERE {

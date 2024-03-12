@@ -132,6 +132,10 @@ mdp-header {
   z-index: 1;
 }
 
+.hide {
+  display: none;
+}
+
 mdp-footer.sticky {
   bottom: 0;
 }

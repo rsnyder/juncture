@@ -26,7 +26,9 @@ function parseHeadline(s) {
   while (tokenIdx < tokens.length) {
     let token = tokens[tokenIdx]
     if (token.indexOf('=') > 0) {
-      let [key, value] = token.split('=')
+      let idx = token.indexOf('=')
+      let key = token.slice(0, idx)
+      let value = token.slice(idx+1)
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
       if (parsed[key]) parsed[key] += ` ${value}`
       else parsed[key] = value
@@ -706,7 +708,7 @@ function init() {
   
   if (isJunctureV1) createJunctureV1App()
   else setTimeout(() => {
-    observeVisible()
+    if (!document.querySelector('mdp-video[sync]')) observeVisible() // Conditionally enable this based the presence video sync
     readMoreSetup()
   }, 0)
 

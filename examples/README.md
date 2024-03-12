@@ -6,3 +6,4 @@
 - [Layouts](layouts)
 - [Images](images)
 - [Import](import)
+- [Video sync](kitw-baez)

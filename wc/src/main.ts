@@ -16,6 +16,7 @@ import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
+import Entities from './components/Entities.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Footer from './components/Footer.ce.vue'
 import Gallery from './components/Gallery.ce.vue'
@@ -30,13 +31,14 @@ import Menu from './components/Menu.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
-import { createSemanticDiagnosticsBuilderProgram } from 'typescript'
+import Video from './components/Video.ce.vue'
 
 
 function defineCustomElements() {
 	customElements.define('mdp-breadcrumbs', defineCustomElement(Breadcrumbs))
 	// customElements.define('mdp-button', defineCustomElement(Button))
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
+	customElements.define('mdp-entities', defineCustomElement(Entities))
 	customElements.define('mdp-entity-infobox', defineCustomElement(EntityInfobox))
 	customElements.define('mdp-footer', defineCustomElement(Footer))
 	customElements.define('mdp-gallery', defineCustomElement(Gallery))
@@ -51,6 +53,7 @@ function defineCustomElements() {
 	customElements.define('mdp-meta', defineCustomElement(Meta))
 	customElements.define('mdp-modal', defineCustomElement(Modal))
 	customElements.define('mdp-site-search', defineCustomElement(SiteSearch))
+	customElements.define('mdp-video', defineCustomElement(Video))
 }
 
 // @ts-ignore

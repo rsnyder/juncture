@@ -315,6 +315,9 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
+  let restructuredHTML = restructured.outerHTML
+  setTimeout(() => console.log('structureContent.intermediate', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
+
   restructured.querySelectorAll('section').forEach(section => {
     console.log(section)
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
@@ -499,8 +502,6 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
-  let restructuredHTML = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
 
   main?.replaceWith(restructured)
   

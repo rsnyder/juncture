@@ -177,8 +177,11 @@ function handleCodeEl(rootEl, codeEl) {
 
 function structureContent() {
   let main = document.querySelector('main')
+
   let inputHTML = main.outerHTML
-  // setTimeout(() => console.log('structureContent.input', new DOMParser().parseFromString(inputHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  setTimeout(() => {
+    console.log('structureContent.input', new DOMParser().parseFromString(inputHTML, 'text/html').firstChild.children[1].firstChild)
+  }, 0)
 
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
@@ -493,8 +496,8 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
-  // let restructuredHTML = restructured.outerHTML
-  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  let restructuredHTML = restructured.outerHTML
+  setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
 
   main?.replaceWith(restructured)
   

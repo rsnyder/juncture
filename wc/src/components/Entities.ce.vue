@@ -29,7 +29,7 @@
   })
 
   const entities = ref<any>({})
-  watch(entities, (entities) => { console.log(toRaw(entities)) })
+  // watch(entities, (entities) => { console.log(toRaw(entities)) })
 
   onMounted(() => {
     EventBus.on('video-at-time', (evt) => { 

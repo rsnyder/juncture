@@ -436,9 +436,11 @@ function structureContent() {
     }
 
     if (section.classList.contains('mcol') && !section.classList.contains('wrapper')) {
+      console.log(section)
       let wrapper = document.createElement('section')
       wrapper.className = 'mcol wrapper'
       section.classList.remove('mcol')
+      console.log(section,children)
       Array.from(section.children)
         .filter(child => child.tagName === 'SECTION')
         .forEach((col, idz) => {

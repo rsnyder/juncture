@@ -316,6 +316,7 @@ function structureContent() {
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
   restructured.querySelectorAll('section').forEach(section => {
+    console.log(section)
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
       section.classList.remove('cards')
       let wrapper = document.createElement('section')
@@ -440,7 +441,7 @@ function structureContent() {
       let wrapper = document.createElement('section')
       wrapper.className = 'mcol wrapper'
       section.classList.remove('mcol')
-      console.log(section,children)
+      console.log(section.children)
       Array.from(section.children)
         .filter(child => child.tagName === 'SECTION')
         .forEach((col, idz) => {

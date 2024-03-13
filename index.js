@@ -177,11 +177,8 @@ function handleCodeEl(rootEl, codeEl) {
 
 function structureContent() {
   let main = document.querySelector('main')
-
   let inputHTML = main.outerHTML
-  setTimeout(() => {
-    console.log('structureContent.input', new DOMParser().parseFromString(inputHTML, 'text/html').firstChild.children[1].firstChild)
-  }, 0)
+  // setTimeout(() => console.log('structureContent.input', new DOMParser().parseFromString(inputHTML, 'text/html').firstChild.children[1].firstChild), 0)
 
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
@@ -198,7 +195,7 @@ function structureContent() {
     Array.from(main?.querySelectorAll('p'))
     .filter(p => {
       // console.log(p)
-      return /^#{1,6}$/.test(p.childNodes.item(0).nodeValue?.trim() || '')
+      return /^[#*]{1,6}$/.test(p.childNodes.item(0).nodeValue?.trim() || '')
     })
     .forEach(p => {
       let ptext = p.childNodes.item(0).nodeValue?.trim()
@@ -315,11 +312,7 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
-  let restructuredHTML = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.intermediate', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
-
   restructured.querySelectorAll('section').forEach(section => {
-    console.log(section)
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
       section.classList.remove('cards')
       let wrapper = document.createElement('section')
@@ -440,11 +433,9 @@ function structureContent() {
     }
 
     if (section.classList.contains('mcol') && !section.classList.contains('wrapper')) {
-      console.log(section)
       let wrapper = document.createElement('section')
       wrapper.className = 'mcol wrapper'
       section.classList.remove('mcol')
-      console.log(section.children)
       Array.from(section.children)
         .filter(child => child.tagName === 'SECTION')
         .forEach((col, idz) => {
@@ -502,6 +493,8 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
+  // let restructuredHTML = restructured.outerHTML
+  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
 
   main?.replaceWith(restructured)
   

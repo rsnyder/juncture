@@ -107,6 +107,19 @@ def html_from_markdown(md, baseurl):
     if para.renderContents().decode('utf-8').strip() == '':
       para.decompose()
       
+  for heading in soup.find_all(re.compile('^h[1-6]$')):
+    if not heading.text:
+      para = soup.new_tag('p')
+      para.string = ''.join(['*' for i in range(int(heading.name[1]))])
+      for sibling in heading.next_siblings:
+        if sibling.name:
+          if sibling.name == 'p' and sibling.code:
+            logger.info([token for token in sibling.code.string.split() if not token[0] in '#.:'])
+            if len([token for token in sibling.code.string.split() if not token[0] in '#.:']) == 0:
+              para.append(sibling.code)
+          break
+      heading.replace_with(para)
+      
   # logger.info(soup.prettify())
   return soup.prettify()
   

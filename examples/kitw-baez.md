@@ -14,13 +14,15 @@ Documentarians are only often able to use only a small percentage of the intervi
 ####
 `#transcript .showactive`
 
-----
+---
+
 - [Joan Baez](Q131725)
 - Musician and Activist
 - Interviewed by [Trey Ellis](Q15458944)
 - July 27, 2017
 - Total Running Time: 38 minutes
-----
+
+---
 
 00:00:00:00	TREY ELLIS:
 Can you just start telling us about the first time you met Doctor King, and what that was like, and how you felt?

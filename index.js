@@ -238,6 +238,7 @@ function structureContent() {
   Array.from(main?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
+      console.log(heading)
       let sectionLevel = parseInt(heading.tagName.slice(1))
       if (currentSection) {
         (Array.from(currentSection.children))
@@ -268,6 +269,7 @@ function structureContent() {
       let parent = sectionLevel === 1 || headings.length === 0 ? restructured : headings.pop()?.parentElement
       parent?.appendChild(currentSection)
       currentSection.setAttribute('data-id', computeDataId(currentSection))
+      console.log(currentSection)
 
     } else  {
       if (el.tagName !== 'PARAM') {

@@ -209,7 +209,7 @@ function structureContent() {
       }
     })
 
-  /* For compatibility with Juncture V2 */
+  // For compatibility with Juncture V2
   Array.from(main?.querySelectorAll('p'))
   .filter(p => /^\.\w+-\w+\S/.test(p.textContent.trim()))
   .forEach(p => {
@@ -222,7 +222,7 @@ function structureContent() {
     p.appendChild(codeEl)
   })
 
-  /* For compatibility with Juncture V2 */
+  // For compatibility with Juncture V2
   Array.from(main?.querySelectorAll('param'))
   .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length === 0)
   .forEach(param => {
@@ -233,8 +233,7 @@ function structureContent() {
     param.remove()
   })
 
-  let intermediate = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.intermediate1', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
+  console.log('structureContent.intermediate1', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   Array.from(main?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
@@ -281,6 +280,7 @@ function structureContent() {
     }
   })
 
+  console.log('structureContent.intermediate2', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
   .filter(heading => !heading.innerHTML.trim())
@@ -318,8 +318,7 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
-  intermediate = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.intermediate2', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
+  console.log('structureContent.intermediate3', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   restructured.querySelectorAll('section').forEach(section => {
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {

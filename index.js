@@ -198,7 +198,6 @@ function structureContent() {
       return /^[#*]{1,6}$/.test(p.childNodes.item(0)?.nodeValue?.trim() || '')
     })
     .forEach(p => {
-      console.log(p)
       let ptext = p.childNodes.item(0).nodeValue?.trim()
       let codeEl = p.querySelector('code')
       let heading = document.createElement(`h${ptext?.length}`)
@@ -281,7 +280,10 @@ function structureContent() {
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
   .filter(heading => !heading.innerHTML.trim())
-  .forEach(heading => heading.remove())
+  .forEach(heading => {
+    console.log(heading)
+    heading.remove()
+  })
 
   Array.from(restructured?.querySelectorAll('p'))
   .forEach(para => {

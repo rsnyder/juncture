@@ -7,11 +7,11 @@ Documentarians are only often able to use only a small percentage of the intervi
 ## Interview
 `.mcol`
 
-### Video
+###
 
 `mdp-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`
 
-#### Transcript
+####
 `#transcript .showactive`
 
 ----
@@ -424,6 +424,6 @@ Q190507 Q1062741 Q208160 Q76611
 
 00:38:51:00	END OF INTERVIEW
 
-### Entities
+###
 
 `mdp-entities .sticky`

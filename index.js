@@ -177,8 +177,7 @@ function handleCodeEl(rootEl, codeEl) {
 
 function structureContent() {
   let main = document.querySelector('main')
-  let inputHTML = main.outerHTML
-  console.log('structureContent.input', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // console.log('structureContent.input', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'
@@ -193,10 +192,7 @@ function structureContent() {
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
   if (main)
     Array.from(main?.querySelectorAll('p'))
-    .filter(p => {
-      // console.log(p)
-      return /^[#*]{1,6}$/.test(p.childNodes.item(0)?.nodeValue?.trim() || '')
-    })
+    .filter(p => /^[#*]{1,6}$/.test(p.childNodes.item(0)?.nodeValue?.trim() || ''))
     .forEach(p => {
       let ptext = p.childNodes.item(0).nodeValue?.trim()
       let codeEl = p.querySelector('code')
@@ -233,12 +229,9 @@ function structureContent() {
     param.remove()
   })
 
-  console.log('structureContent.intermediate1', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
-
   Array.from(main?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
-      console.log(heading)
       let sectionLevel = parseInt(heading.tagName.slice(1))
       if (currentSection) {
         (Array.from(currentSection.children))
@@ -269,7 +262,6 @@ function structureContent() {
       let parent = sectionLevel === 1 || headings.length === 0 ? restructured : headings.pop()?.parentElement
       parent?.appendChild(currentSection)
       currentSection.setAttribute('data-id', computeDataId(currentSection))
-      console.log(currentSection)
 
     } else  {
       if (el.tagName !== 'PARAM') {
@@ -281,8 +273,6 @@ function structureContent() {
       if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
   })
-
-  console.log('structureContent.intermediate2', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
   .filter(heading => !heading.innerHTML.trim())
@@ -319,8 +309,6 @@ function structureContent() {
 
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
-
-  console.log('structureContent.intermediate3', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   restructured.querySelectorAll('section').forEach(section => {
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
@@ -503,8 +491,8 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
-  let restructuredHTML = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  // let restructuredHTML = restructured.outerHTML
+  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
 
   main?.replaceWith(restructured)
   

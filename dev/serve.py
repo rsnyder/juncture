@@ -121,7 +121,7 @@ def html_from_markdown(md, baseurl):
       heading.replace_with(para)
       
   # logger.info(soup.prettify())
-  return soup.prettify()
+  return str(soup)
   
 @app.get('{path:path}')
 async def serve(path: Optional[str] = None):

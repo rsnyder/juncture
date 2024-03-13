@@ -195,7 +195,7 @@ function structureContent() {
     Array.from(main?.querySelectorAll('p'))
     .filter(p => {
       // console.log(p)
-      return /^[#*]{1,6}$/.test(p.childNodes.item(0).nodeValue?.trim() || '')
+      return /^[#*]{1,6}$/.test(p.childNodes.item(0)?.nodeValue?.trim() || '')
     })
     .forEach(p => {
       let ptext = p.childNodes.item(0).nodeValue?.trim()

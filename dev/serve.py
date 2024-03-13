@@ -110,13 +110,14 @@ def html_from_markdown(md, baseurl):
   for heading in soup.find_all(re.compile('^h[1-6]$')):
     if not heading.text:
       para = soup.new_tag('p')
-      para.string = ''.join(['*' for i in range(int(heading.name[1]))])
+      para.string = ''.join(['#' for i in range(int(heading.name[1]))])
       for sibling in heading.next_siblings:
         if sibling.name:
           if sibling.name == 'p' and sibling.code:
             logger.info([token for token in sibling.code.string.split() if not token[0] in '#.:'])
             if len([token for token in sibling.code.string.split() if not token[0] in '#.:']) == 0:
               para.append(sibling.code)
+              sibling.decompose()
           break
       heading.replace_with(para)
       

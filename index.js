@@ -281,9 +281,11 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
   .filter(heading => !heading.innerHTML.trim())
   .forEach(heading => {
-    console.log(heading)
     heading.remove()
   })
+
+  let intermediate = restructured.outerHTML
+  setTimeout(() => console.log('structureContent.intermediate1', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
 
   Array.from(restructured?.querySelectorAll('p'))
   .forEach(para => {
@@ -315,8 +317,8 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
-  let intermediate = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.intermediate', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
+  intermediate = restructured.outerHTML
+  setTimeout(() => console.log('structureContent.intermediate2', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
 
   restructured.querySelectorAll('section').forEach(section => {
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {

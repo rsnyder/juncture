@@ -178,7 +178,7 @@ function handleCodeEl(rootEl, codeEl) {
 function structureContent() {
   let main = document.querySelector('main')
   let inputHTML = main.outerHTML
-  setTimeout(() => console.log('structureContent.input', new DOMParser().parseFromString(inputHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  console.log('structureContent.input', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   let restructured = document.createElement('main')
   restructured.className = 'page-content markdown-body'

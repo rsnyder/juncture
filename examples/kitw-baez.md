@@ -11,13 +11,13 @@ Documentarians are only often able to use only a small percentage of the intervi
 
 `mdp-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`
 
-#### Transcript for Joan Baez's interview
+#### Transcript
 `#transcript .showactive`
 
 ----
-- ==Joan Baez=={Q131725}
+- [Joan Baez](Q131725)
 - Musician and Activist
-- Interviewed by ==Trey Ellis=={Q15458944}
+- Interviewed by [Trey Ellis](Q15458944)
 - July 27, 2017
 - Total Running Time: 38 minutes
 ----
@@ -426,8 +426,4 @@ Q190507 Q1062741 Q208160 Q76611
 
 ### Entities
 
-Entities para
-
-## Another level-2 section
-
-blah blah blah
+`mdp-entities .sticky`

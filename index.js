@@ -233,6 +233,9 @@ function structureContent() {
     param.remove()
   })
 
+  let intermediate = restructured.outerHTML
+  setTimeout(() => console.log('structureContent.intermediate1', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
+
   Array.from(main?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
@@ -278,8 +281,6 @@ function structureContent() {
     }
   })
 
-  let intermediate = restructured.outerHTML
-  setTimeout(() => console.log('structureContent.intermediate1', new DOMParser().parseFromString(intermediate, 'text/html').firstChild.children[1].firstChild), 0)
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
   .filter(heading => !heading.innerHTML.trim())

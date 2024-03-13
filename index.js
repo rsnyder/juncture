@@ -198,6 +198,7 @@ function structureContent() {
       return /^[#*]{1,6}$/.test(p.childNodes.item(0)?.nodeValue?.trim() || '')
     })
     .forEach(p => {
+      console.log(p)
       let ptext = p.childNodes.item(0).nodeValue?.trim()
       let codeEl = p.querySelector('code')
       let heading = document.createElement(`h${ptext?.length}`)

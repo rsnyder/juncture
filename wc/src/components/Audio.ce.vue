@@ -2,21 +2,16 @@
 
   <div ref="root">
 
-    <div v-if="isYouTube" id="youtube-player" style="width:100%;"></div>
-
-    <video v-if="manifest" ref="html5Player" id="html5-player" controls playsinline :muted="props.muted" :autoplay="props.autoplay" :poster="props.poster">
+    <audio v-if="manifest" ref="html5Player" id="html5-player" controls>
       <source :src="src" :type="mime"/>
-    </video>
-  
+    </audio>
   </div>
 
 </template>
   
 <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
-  import YouTubePlayer from 'youtube-player'
-  // import VimeoPlayer from '@vimeo/player'
+  import { computed, ref, toRaw, watch } from 'vue'
 
   import { getItemInfo, getManifest } from '../utils'
 
@@ -40,27 +35,17 @@
   const shadowRoot = computed(() => root?.value?.parentNode)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const html5Player = ref<HTMLVideoElement | null>(null)
-  watch(html5Player, (html5Player) => {
+  watch(html5Player, async (html5Player) => {
+    if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
     mediaPlayer = html5Player
     monitor()
   })
-  const isYouTube = computed(() => props.src?.includes('youtube.com'))
-  const isVimeo = computed(() => props.src?.includes('vimeo.com'))
-  const isHTML5 = computed(() => !isYouTube.value && !isVimeo.value)
-  watch(isHTML5, async (isHTML5) => { 
-    if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
-   })
 
   const manifest = ref<any>(null)
   const itemInfo = computed(() => manifest.value ? getItemInfo(manifest.value) : null)
   const src = computed(() => itemInfo.value?.id)
   const mime = computed(() => {
-    let fileExtension = src.value?.split('#')[0].split('.').pop()
-    return fileExtension === 'mp4'
-      ? 'video/mp4'
-      : fileExtension === 'webm'
-        ? 'video/webm'
-        : 'application/ogg'
+    console.log(toRaw(itemInfo.value))
   })
 
   let mediaPlayer
@@ -68,16 +53,14 @@
   const isPlaying = ref(false)
 
   watch (host, async () => {
-    let videoType = isYouTube ? 'youtube' : isVimeo ? 'vimeo' : 'html5'
-    console.log(`video: type=${videoType} src=${props.src}`)
+    console.log(`audio: type=html5 src=${props.src}`)
     if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
     addInteractionHandlers()
     EventBus.on('seekto', (evt) => seekTo(evt.start, evt.end))
-    if (isYouTube.value) await initYoutubePlayer()
-    if (props.sync) syncVideoWithText()
+    if (props.sync) syncAudioWithText()
   })
 
-  function syncVideoWithText() {
+  function syncAudioWithText() {
     let syncData = Array.from(document.querySelectorAll(`p[data-head]`))
       .map((el:any) => {
         let [timestamp, ...rest] = el.dataset.head.split(/\s+/)
@@ -141,7 +124,7 @@
     function checkSibs(el:any) {
       let sib = el.previousSibling
       while (sib) {
-        if (sib.nodeName === 'MDP-VIDEO') return sib === host.value ? sib : null
+        if (sib.nodeName === 'MDP-AUDIO') return sib === host.value ? sib : null
         sib = sib.previousSibling
       }
     }
@@ -149,38 +132,8 @@
     checkSibs(el)
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
-      let videoEl = el.querySelector(':scope mdp-video')
+      let videoEl = el.querySelector(':scope mdp-audio')
       if (videoEl) return videoEl === host.value ? videoEl : null
-    }
-  }
-
-  async function initYoutubePlayer() {
-    let playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-    if (props.src && playerEl) {
-      let parsed = new URL(props.src)
-      let videoId = parsed.searchParams.get('v') || ''
-      let metadata = await youtubeMetadata(videoId)
-  
-      if (host.value) new ResizeObserver(() => { 
-        playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-        let width = playerEl?.clientWidth
-        let height =  Math.round(width / metadata.aspect)
-        // console.log(`Resize player: ${width} x ${height}`)
-        playerEl.style.height = `${height}px`
-       } ).observe(host.value)
-
-      mediaPlayer = YouTubePlayer(
-        playerEl as HTMLElement, {
-          videoId,
-          width: playerEl?.clientWidth,
-          playerVars: {
-            color: 'white',
-            rel: 0,
-            modestbranding: 1,
-            playsinline: 1
-          }
-      })
-      mediaPlayer.on('ready', (evt:any) => monitor())
     }
   }
 
@@ -197,40 +150,19 @@
   }
 
   async function getIsPlaying() {
-    if (isYouTube.value) return await mediaPlayer.getPlayerState() === 1
-    else if (isVimeo.value) return !(await mediaPlayer.getEnded() || await mediaPlayer.getPaused())
-    else if (isHTML5) return ! (mediaPlayer.ended || mediaPlayer.paused)
-    return false
+    return ! (mediaPlayer.ended || mediaPlayer.paused)
   }
 
   async function getIsMuted() {
-    if (isYouTube.value) return await mediaPlayer.isMuted()
-    else if (isVimeo.value) return await mediaPlayer.getMuted()
-    else return await props.muted
+    return await props.muted
   }
 
   function setMuted(mute:boolean) {
-    if (isYouTube.value) {
-      if (mute) mediaPlayer.mute()
-      else mediaPlayer.unMute()
-    } 
-    else if (isVimeo.value) mediaPlayer.setMuted(mute)
-    else if (isHTML5.value) mediaPlayer.muted = mute
+    mediaPlayer.muted = mute
   }
 
   async function getCurrentTime() {
-    if (isYouTube.value) return mediaPlayer.getCurrentTime()
-    else if (isVimeo.value) return await mediaPlayer.getCurrentTime()
-    else if (isHTML5.value) return mediaPlayer.currentTime
-  }
-
-  async function youtubeMetadata(videoId:any) {
-    let videoUrl = encodeURI(`https://www.youtube.com/watch?v=${videoId}`)
-    let url = `https://youtube.com/oembed?url=${videoUrl}&format=json`
-    let resp = await fetch(url)
-    let data:any = await resp.json()
-    data.aspect = data.width/data.height
-    return data
+    return mediaPlayer.currentTime
   }
 
   function hmsToSeconds(str:string) {
@@ -262,47 +194,17 @@
     let wasMuted = isMuted.value
     // if (forceMuteOnPlay) setMuted(true)
 
-    if (isYouTube.value) {
-      mediaPlayer.playVideo()
-      mediaPlayer.seekTo(startSecs).then((_:any) => {
-        if (endSecs >= startSecs) {
-          timeoutId = setTimeout(() => {
-            mediaPlayer.pauseVideo().then((_:any) => {
-              timeoutId = null
-              if (!wasMuted && forceMuteOnPlay) setMuted(false)
-            })
-          }, endSecs === startSecs ? 200 : (endSecs-startSecs)*1000)
-        }
-      })
-    }
-  
-    else if (isVimeo.value) {
-      mediaPlayer.setCurrentTime(startSecs)
-      mediaPlayer.play().then((_:any) => {
-        if (endSecs >= startSecs) {
-          timeoutId = setTimeout(() => {
-            mediaPlayer.pause().then((_:any) => {
-              timeoutId = null
-              if (!wasMuted && forceMuteOnPlay) setMuted(false)
-            })
-          }, endSecs === startSecs ? 200 : (endSecs-startSecs)*1000)
-        }
-      })
-    }
-
-    else if (isHTML5.value) {
-      setTimeout(() => {
-        mediaPlayer.play()
-        mediaPlayer.currentTime = startSecs
-        if (endSecs >= startSecs) {
-          timeoutId = setTimeout(() => {
-            timeoutId = null
-            mediaPlayer.pause()
-            if (!wasMuted && forceMuteOnPlay) setMuted(false)
-          }, endSecs === startSecs ? 200 : (endSecs-startSecs)*1000)
-        }
-      }, 200)
-    } 
+    setTimeout(() => {
+      mediaPlayer.play()
+      mediaPlayer.currentTime = startSecs
+      if (endSecs >= startSecs) {
+        timeoutId = setTimeout(() => {
+          timeoutId = null
+          mediaPlayer.pause()
+          if (!wasMuted && forceMuteOnPlay) setMuted(false)
+        }, endSecs === startSecs ? 200 : (endSecs-startSecs)*1000)
+      }
+    }, 200)
 
   }
 
@@ -317,9 +219,8 @@
     background-color: inherit;
   }
 
-  video {
+  audio {
     width: 100%;
-    height: auto;
   }
 
 </style>

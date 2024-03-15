@@ -1,3 +1,5 @@
+`mdp-header background=wc:Martin_Luther_King,_Jr._Day_(3306311257).jpg breadcrumbs`
+
 # King in the Wilderness - Joan Baez interview
 
 [King in the Wilderness](https://www.hbo.com/movies/king-in-the-wilderness) chronicles the final chapters of Dr. Martin Luther King Jr.’s life, revealing a conflicted leader who faced an onslaught of criticism from both sides of the political spectrum.

@@ -227,6 +227,10 @@ a.zoom::after {
     content: "🔎";
 }
 
+p span.headline {
+  font-weight: 500;
+}
+
 /*********** resume ***********/
 
 .resume > section:first-of-type { /* header */

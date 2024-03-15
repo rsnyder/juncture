@@ -70,7 +70,8 @@
 <template>
   <div v-html="secondsToHms(time)"></div>
   <div>
-    <p v-for="entity in Object.values(entities)" :key="entity.id" v-html="entity.label"></p>
+    <!-- <p v-for="entity in Object.values(entities)" :key="entity.id" v-html="entity.label"></p> -->
+    <mdp-entity-card v-for="entity in Object.values(entities)" :key="entity.id" :qid="entity.id"></mdp-entity-card>
   </div>
 </template>
 

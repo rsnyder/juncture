@@ -206,19 +206,20 @@ function structureContent() {
     })
 
   // For compatibility with Juncture V2
+  let isJunctureV2 = false
   Array.from(main?.querySelectorAll('p'))
   .filter(p => /^\.\w+-\w+\S/.test(p.textContent.trim()))
   .forEach(p => {
     let codeEl = document.createElement('code')
-    // console.log(p.innerHTML.trim().slice(1))
     let replacementText = p.innerHTML.trim().slice(1).replace(/\n\s*-\s+/g, '\n')
-    // console.log(replacementText)
     codeEl.textContent = replacementText
     p.textContent = ''
     p.appendChild(codeEl)
+    isJunctureV2 = true
   })
+  if (isJunctureV2) loadDependency({tag: 'script', src: `${window.config.scriptBasePath}/juncture/v2/dist/js/index.js`, type: 'module'})
 
-  // For compatibility with Juncture V2
+  // For compatibility with Juncture V1
   Array.from(main?.querySelectorAll('param'))
   .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length === 0)
   .forEach(param => {
@@ -575,17 +576,14 @@ function computeStickyOffsets(root) {
 
   function topIsVisible(el) {
     let bcr = el.getBoundingClientRect()
-    return bcr.top >= 0 && bcr.top <= window.innerHeight
+    return el.tagName === 'MDP-HEADER' || el.tagName === 'MDP-BREADCRUMBS' || (bcr.top >= 0 && bcr.top <= window.innerHeight)
   }
 
-  /*
   let stickyElems = [
     ...Array.from(root.querySelectorAll('mdp-header[sticky], mdp-header[sticky], mdp-breadcrumbs[sticky]')),
     ...Array.from(root.querySelectorAll('.sticky'))
   ]
-  */
-  let stickyElems = Array.from(root.querySelectorAll('.sticky'))
-
+  // let stickyElems = Array.from(root.querySelectorAll('.sticky'))
   .filter(stickyEl => {
     return topIsVisible(stickyEl)
   })
@@ -595,7 +593,7 @@ function computeStickyOffsets(root) {
       return aTop < bTop ? -1 : 1
     })
   
-  // console.log('computeStickyOffsets', stickyElems.length)
+  // console.log('computeStickyOffsets', stickyElems)
   // stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) )
   // stickyElems.forEach(stickyEl => console.log(stickyEl) )
 
@@ -620,6 +618,7 @@ function computeStickyOffsets(root) {
             let priorTop = parseInt(priorSticky.style.top.replace(/px/,'')) || 0
             // console.log(priorSticky, priorTop)
             // stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
+            console.log(stickyElems[i].style)
             stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
             stickyElems[i].style.zIndex = stickyElems.length - i
             break
@@ -681,6 +680,7 @@ function loadDependencies(dependencies, callback, i) {
     else return
   } else {
     loadDependency(dependencies[i], () => {
+      console.log('callback')
       if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
       else if (callback) callback()
     })
@@ -706,7 +706,8 @@ function init() {
   
   if (isJunctureV1) createJunctureV1App()
   else setTimeout(() => {
-    if (!document.querySelector('mdp-video[sync]')) observeVisible() // Conditionally enable this based the presence video sync
+    // if (!document.querySelector('mdp-video[sync]')) 
+    observeVisible() // Conditionally enable this based the presence video sync
     readMoreSetup()
   }, 0)
 

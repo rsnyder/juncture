@@ -13,10 +13,12 @@ import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 
+import Audio from './components/Audio.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
 import Entities from './components/Entities.ce.vue'
+import EntityCard from './components/EntityCard.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Footer from './components/Footer.ce.vue'
 import Gallery from './components/Gallery.ce.vue'
@@ -35,10 +37,12 @@ import Video from './components/Video.ce.vue'
 
 
 function defineCustomElements() {
+	customElements.define('mdp-audio', defineCustomElement(Audio))
 	customElements.define('mdp-breadcrumbs', defineCustomElement(Breadcrumbs))
 	// customElements.define('mdp-button', defineCustomElement(Button))
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
 	customElements.define('mdp-entities', defineCustomElement(Entities))
+	customElements.define('mdp-entity-card', defineCustomElement(EntityCard))
 	customElements.define('mdp-entity-infobox', defineCustomElement(EntityInfobox))
 	customElements.define('mdp-footer', defineCustomElement(Footer))
 	customElements.define('mdp-gallery', defineCustomElement(Gallery))

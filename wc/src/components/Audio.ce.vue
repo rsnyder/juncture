@@ -32,7 +32,6 @@
   })
 
   const root = ref<HTMLElement | null>(null)
-  const shadowRoot = computed(() => root?.value?.parentNode)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const html5Player = ref<HTMLVideoElement | null>(null)
   watch(html5Player, async (html5Player) => {
@@ -44,9 +43,7 @@
   const manifest = ref<any>(null)
   const itemInfo = computed(() => manifest.value ? getItemInfo(manifest.value) : null)
   const src = computed(() => itemInfo.value?.id)
-  const mime = computed(() => {
-    console.log(toRaw(itemInfo.value))
-  })
+  const mime = computed(() => { return itemInfo.value?.format })
 
   let mediaPlayer
   const isMuted = ref(false)

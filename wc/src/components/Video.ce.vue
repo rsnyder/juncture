@@ -14,7 +14,7 @@
   
 <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, ref, toRaw, watch } from 'vue'
   import YouTubePlayer from 'youtube-player'
   // import VimeoPlayer from '@vimeo/player'
 
@@ -47,7 +47,7 @@
   const isYouTube = computed(() => props.src?.includes('youtube.com'))
   const isVimeo = computed(() => props.src?.includes('vimeo.com'))
   const isHTML5 = computed(() => !isYouTube.value && !isVimeo.value)
-  watch(isHTML5, async (isHTML5) => { 
+  watch(isHTML5, async () => {
     if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
    })
 
@@ -68,9 +68,9 @@
   const isPlaying = ref(false)
 
   watch (host, async () => {
-    let videoType = isYouTube ? 'youtube' : isVimeo ? 'vimeo' : 'html5'
+    let videoType = isYouTube.value ? 'youtube' : isVimeo.value ? 'vimeo' : 'html5'
     console.log(`video: type=${videoType} src=${props.src}`)
-    if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
+    if (videoType === 'html5' && !manifest.value && props.src) manifest.value = await getManifest(props.src)
     addInteractionHandlers()
     EventBus.on('seekto', (evt) => seekTo(evt.start, evt.end))
     if (isYouTube.value) await initYoutubePlayer()
@@ -121,7 +121,7 @@
           if (imageEl) {
             let start = path[platAtIdx+1]
             let end = path.length > platAtIdx + 1 ? path[platAtIdx+2] : null
-            console.log(`Found play link: ${start} ${end}`)
+            // console.log(`Found play link: ${start} ${end}`)
             anchorElem.classList.add('play')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-play', end ? `${start} ${end}` : start)

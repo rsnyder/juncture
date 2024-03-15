@@ -343,13 +343,14 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
       : `https://${iiifServer}/${manifestId}/manifest.json`
   )
   let toGet = _manifestUrls.filter(url => !_manifestCache[url])
-  // console.log(`loadManifests: manifests=${_manifestUrls.length} cached=${_manifestUrls.length - toGet.length}`)
+  console.log(`loadManifests: manifests=${_manifestUrls.length} cached=${_manifestUrls.length - toGet.length}`)
 
   if (toGet.length > 0) {
     let requests: any = toGet
       .map(manifestUrl => {
         if (refresh && ['localhost', iiifServer].includes(new URL(manifestUrl).hostname)) {
           manifestUrl += '?refresh'
+          console.log(manifestUrl)
         }
         return fetch(manifestUrl)
       })

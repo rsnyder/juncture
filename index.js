@@ -618,7 +618,7 @@ function computeStickyOffsets(root) {
             let priorTop = parseInt(priorSticky.style.top.replace(/px/,'')) || 0
             // console.log(priorSticky, priorTop)
             // stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
-            console.log(stickyElems[i].style)
+            // console.log(stickyElems[i].style)
             stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
             stickyElems[i].style.zIndex = stickyElems.length - i
             break
@@ -680,7 +680,6 @@ function loadDependencies(dependencies, callback, i) {
     else return
   } else {
     loadDependency(dependencies[i], () => {
-      console.log('callback')
       if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
       else if (callback) callback()
     })

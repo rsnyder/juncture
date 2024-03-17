@@ -33,8 +33,8 @@
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
-  const html5Player = ref<HTMLVideoElement | null>(null)
-  watch(html5Player, async (html5Player) => {
+  const html5Player = ref<HTMLAudioElement | null>(null)
+  watch (html5Player, async (html5Player) => {
     if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
     mediaPlayer = html5Player
     monitor()
@@ -44,6 +44,17 @@
   const itemInfo = computed(() => manifest.value ? getItemInfo(manifest.value) : null)
   const src = computed(() => itemInfo.value?.id)
   const mime = computed(() => { return itemInfo.value?.format })
+  const isInline = computed(() => { return host.value?.style.display === 'inline-block' ? true : false })
+  watch (isInline, (isInline) => {
+    host.value.style.width = isInline ? '180px' : '100%'
+  })
+
+  watch (html5Player, (html5Player) => {
+    if (html5Player && isInline.value) {
+      html5Player.style.height = '24px'
+      html5Player.style.verticalAlign = 'middle'
+    }
+  })
 
   let mediaPlayer
   const isMuted = ref(false)
@@ -213,7 +224,7 @@
 
   :host {
     display: block;
-    background-color: inherit;
+    width: 100%;
   }
 
   audio {

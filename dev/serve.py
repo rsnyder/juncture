@@ -17,6 +17,7 @@ BASEDIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 LOCAL_WC = os.environ.get('LOCAL_WC', 'false').lower() == 'true'
 LOCAL_WC_JUNCTURE = os.environ.get('LOCAL_WC_JUNCTURE', 'false').lower() == 'true'
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
+LOCAL_WC_PORT_JUNCTURE = os.environ.get('LOCAL_WC_PORT_JUNCTURE', '5174')
 CONTENT_ROOT = os.environ.get('CONTENT_ROOT', BASEDIR)
 
 from bs4 import BeautifulSoup
@@ -61,12 +62,12 @@ media_types = {
 
 favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASEDIR}/favicon.ico') else None
 
-html_template = open(f'{CONTENT_ROOT}/_layouts/default.html', 'r').read().replace('/essays', 'http://localhost:8080/')
+html_template = open(f'{CONTENT_ROOT}/_layouts/default.html', 'r').read()
 html_template = re.sub(r'https:\/\/.+\/mdpress\/', '/', html_template)
-
 html_template = html_template.replace('https://mdpress.io', '')
+
 if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
-if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
+if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github }}', '{}')
 html_template = html_template.replace('{%- seo -%}', '')
@@ -175,6 +176,7 @@ if __name__ == '__main__':
   parser.add_argument('--localwc', default=False, action='store_true', help='Use local web components')
   parser.add_argument('--localwc-juncture', default=False, action='store_true', help='Use local Juncture web components')
   parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
+  parser.add_argument('--wcport-juncture', type=int, default=5174, help='Port used by local Juncture WC server')
   parser.add_argument('--content', default=BASEDIR, help='Content root directory')
 
   args = vars(parser.parse_args())
@@ -182,8 +184,9 @@ if __name__ == '__main__':
   os.environ['LOCAL_WC'] = str(args['localwc'])
   os.environ['LOCAL_WC_JUNCTURE'] = str(args['localwc_juncture'])
   os.environ['LOCAL_WC_PORT'] = str(args['wcport'])
+  os.environ['LOCAL_WC_PORT_JUNCTURE'] = str(args['wcport_juncture'])
   os.environ['CONTENT_ROOT'] = os.path.abspath(str(args['content']))
 
-  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} ')
+  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]}  LOCAL_WC_PORT_JUNCTURE={os.environ["LOCAL_WC_PORT_JUNCTURE"]}')
 
   uvicorn.run('serve:app', port=args['port'], log_level='info', reload=args['reload'])

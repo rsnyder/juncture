@@ -25,7 +25,7 @@
 </script>
 
 <template>
-  <div class="inline-flex items-center gap-1 w-full flex-wrap leading-6" ref="root">
+  <div class="inline-flex items-center gap-1 w-full flex-wrap leading-6 mb-6" ref="root">
     <template v-if="crumbs?.length > 1" v-for="(crumb, idx) in crumbs" :key="crumb.path">
       <a v-if="idx < crumbs.length - 1" :href="crumb.path" class="text-[#0645ad] hover:underline">{{ crumb.name }}</a>
       <span v-else class="text-gray-500">{{ crumb.name }}</span>

@@ -86,7 +86,7 @@
     display: flex;
     flex-direction: column;
     max-width: 300px;
-    height: 400px;
+    max-height: 600px;
     background-color: white;
     margin: 1em;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
@@ -95,7 +95,7 @@
   }
 
   img {
-    height: 60%;
+    max-height: 375px;
     object-fit: cover;
   }
 

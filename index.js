@@ -85,6 +85,7 @@ function handleCodeEl(rootEl, codeEl) {
   
   let parentTag = codeEl.parentElement?.tagName
   let previousElTag = codeEl.previousElementSibling?.tagName
+  let isEmbedded = false
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
@@ -95,6 +96,7 @@ function handleCodeEl(rootEl, codeEl) {
     else if (parentTag === 'P') {
       let paraText = Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
       codeWrapper = paraText ? codeEl : codeEl.parentElement
+      isEmbedded = paraText ? true : false
     } 
     else if (parentTag === 'LI') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
@@ -114,7 +116,10 @@ function handleCodeEl(rootEl, codeEl) {
       : 'mdpress'
     if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
-      // console.log(parsed)
+      if (isEmbedded) {
+        parsed.style = parsed.style ? `${parsed.style}display:inline-block;` : 'display:inline-block;'
+      }
+      console.log(parsed)
       if (parsed.tag) {
         let newEl = document.createElement(parsed.tag)
         if (parsed.id) newEl.id = parsed.id
@@ -206,7 +211,6 @@ function structureContent() {
     })
 
   // For compatibility with Juncture V2
-  let isJunctureV2 = false
   Array.from(main?.querySelectorAll('p'))
   .filter(p => /^\.\w+-\w+\S/.test(p.textContent.trim()))
   .forEach(p => {
@@ -215,9 +219,28 @@ function structureContent() {
     codeEl.textContent = replacementText
     p.textContent = ''
     p.appendChild(codeEl)
-    isJunctureV2 = true
   })
-  if (isJunctureV2) loadDependency({tag: 'script', src: `${window.config.scriptBasePath}/juncture/v2/dist/js/index.js`, type: 'module'})
+
+  Array.from(main?.querySelectorAll('p, li'))
+  .filter(p => /==.+=={.+}/.test(p.textContent.trim()))
+  .forEach(el => {
+    console.log(el.innerHTML)
+    let replHtml = []
+    let matches = Array.from(el.innerHTML.matchAll(/==(?<text>[^=]+)=={(?<attrs>[^}]+)}/g))
+    matches.forEach((match, idx) => {
+      if (idx === 0) replHtml.push(el.innerHTML.slice(0, match.index))
+      let {text, attrs} = match.groups
+      if (/\s*Q\d+\s*/.test(attrs)) {
+        replHtml.push(`<a href="${attrs}">${text}</a>`)
+      } else if (attrs.indexOf('=') > 0) {
+        let [key, value] = attrs.split('=')
+        if (value[0] !== '"') attrs = `${key}="${value}"`
+        replHtml.push(`<mark ${attrs}>${text}</mark>`)
+      }
+      replHtml.push(el.innerHTML.slice(match.index + match[0].length, matches[idx+1]?.index || el.innerHTML.length))
+    })
+    el.innerHTML = replHtml.join('')
+  })
 
   // For compatibility with Juncture V1
   Array.from(main?.querySelectorAll('param'))

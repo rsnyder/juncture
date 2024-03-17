@@ -46,7 +46,7 @@
   const mime = computed(() => { return itemInfo.value?.format })
   const isInline = computed(() => { return host.value?.style.display === 'inline-block' ? true : false })
   watch (isInline, (isInline) => {
-    host.value.style.width = isInline ? '180px' : '100%'
+    host.value.style.width = isInline ? '250px' : '100%'
   })
 
   watch (html5Player, (html5Player) => {

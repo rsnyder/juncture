@@ -336,6 +336,8 @@ function structureContent() {
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
+  console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+
   restructured.querySelectorAll('section').forEach(section => {
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
       section.classList.remove('cards')

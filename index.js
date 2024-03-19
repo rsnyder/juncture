@@ -331,6 +331,8 @@ function structureContent() {
     attrs.remove()
   })
 
+  console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 

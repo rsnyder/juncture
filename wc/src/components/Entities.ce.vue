@@ -5,20 +5,17 @@
   import { getEntityData } from '../utils'
 
   const props = defineProps({
-    class: { type: String }
+    cards: { type: Boolean, default: false},
+    class: { type: String },
+    // style: { type: String }
   })
 
   const time = ref(0)
   const current = ref(null)
-  watch (current, (current) => { 
-    let el = current ? document.getElementById(current) : null
-    document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
-    if (el) el.classList.add('active')
-  })
 
   const qids = computed(() => {
     let el = current.value ? document.getElementById(current.value) : null
-    return el?.dataset.qids ? el?.dataset.qids?.split(/\s+/) : []
+    return el?.dataset.entities ? el?.dataset.entities?.split(/\s+/) : []
   })
   watch(qids, async (qids) => { 
     if (qids.length > 0) {
@@ -29,7 +26,7 @@
   })
 
   const entities = ref<any>({})
-  // watch(entities, (entities) => { console.log(toRaw(entities)) })
+  watch(entities, (entities) => { console.log(toRaw(Object.values(entities).map(e => `${e.label}`))) })
 
   onMounted(() => {
     EventBus.on('video-at-time', (evt) => { 
@@ -69,11 +66,23 @@
 
 <template>
   <div v-html="secondsToHms(time)"></div>
-  <div>
+  <div class="entities">
     <!-- <p v-for="entity in Object.values(entities)" :key="entity.id" v-html="entity.label"></p> -->
-    <mdp-entity-card v-for="entity in Object.values(entities)" :key="entity.id" :qid="entity.id"></mdp-entity-card>
+    <mdp-entity-card v-if="cards" v-for="(entity, qid, idx) in entities" :key="`entity-card-${idx}`" :qid="qid"></mdp-entity-card>
+    <!--<sl-button v-for="entity in Object.values(entities)" :key="entity.id" pill v-html="entity.label"></sl-button>-->
+    <mdp-entity-infobox v-else v-for="(entity, qid, idx) in entities" :key="`entity-infobox-${idx}`" :qid="qid" :text="entity.label">{{ entities[qid].label }} ({{ qid }})</mdp-entity-infobox>
   </div>
 </template>
 
 <style>
+  .entities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+  mdp-entity-infobox {
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 6px;
+  }
 </style>

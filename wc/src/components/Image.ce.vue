@@ -25,20 +25,38 @@
   const aspectRatio = computed(() =>  Number(((imageSize.value?.width || 1)/(imageSize.value?.height || 1)).toFixed(4)) )
   watch(aspectRatio, () => { 
     resize()
-    if (osdEl.value) initOpenSeadragon()
+    if (osdEl.value && !osd.value) initOpenSeadragon()
   })
 
-  // TODO: debounce size updates
   watch(osdEl, () => {
     if (!osdEl.value) return
     if (props.width) {
       root.value?.setAttribute('style', `width: ${props.width}px;margin: auto`)
       osdWidth.value = props.width
     } else {
-      new ResizeObserver(() => { osdWidth.value = osdEl.value?.clientWidth } ).observe(osdEl.value)
+      new ResizeObserver(() => {
+        // console.log(`ResizeObserver: osd.width=${osdEl.value?.clientWidth} osd.height=${osdEl.value?.clientHeight} image.width=${imageSize.value?.width} image.height=${imageSize.value?.height}`)
+        osdWidth.value = osdEl.value?.clientWidth || osdWidth.value
+        if (imageSize.value && osdWidth.value && !osd.value) initOpenSeadragon()
+      } ).observe(osdEl.value)
+      osdWidth.value = osdEl.value?.clientWidth 
     }
-    if (imageSize.value) initOpenSeadragon()
+    // console.log(`osd.width=${osdEl.value?.clientWidth} osd.height=${osdEl.value?.clientHeight} image.width=${imageSize.value?.width} image.height=${imageSize.value?.height}`)
+    if (imageSize.value && osdWidth.value && !osd.value) initOpenSeadragon()
+    
   })
+
+  /*
+  watch(mapEl, (mapEl) => {
+    if (!mapEl) return
+    if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
+    new ResizeObserver(e => {
+      mapEl.style.height = `${e[0].contentRect.width * mapAspectRatio.value}px`
+      if (!map.value && mapEl.clientHeight > 0) init()
+    }).observe(mapEl)
+    if (mapEl.clientHeight > 0) init()
+  })
+  */
 
   const props = defineProps({
     caption: { type: String },
@@ -168,7 +186,7 @@
     if (osdEl.value?.clientWidth) {
       let osdHeight = props.height || Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)
       // console.log(`setOsdHeight() width:=${osdWidth.value} height=${osdHeight}`)
-      // osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
+      osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
     }
   }
 

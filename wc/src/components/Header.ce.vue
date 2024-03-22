@@ -118,8 +118,14 @@
 
   onMounted(() => {
     nextTick(() => {
-      let ul = (host.value.querySelector('ul') as HTMLUListElement)
-      if (!ul && config.value.defaults?.header?.nav) {
+      let ul: HTMLUListElement = (host.value.querySelector('ul') as HTMLUListElement) // child ul
+      if (!ul) {
+        let nextSibling = host.value.nextElementSibling as HTMLElement
+        if (nextSibling && nextSibling.tagName === 'UL') ul = nextSibling as HTMLUListElement // next sibling ul
+      }
+      if (ul) {
+        ul.style.display = 'none'
+      } else if (config.value.defaults?.header?.nav) { // create ul from config
         ul = document.createElement('ul')
         config.value.defaults?.header?.nav.forEach((item:any) => {
           const li = document.createElement('li')

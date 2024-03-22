@@ -62,7 +62,7 @@
 <template>
 
 <sl-card class="card" hoist>
-  <img
+  <img v-if="entity?.thumbnail"
     slot="image"
     :src="entity?.thumbnail"
     :alt="label"

@@ -9,13 +9,13 @@
           <div class="author" v-html="author || tagline"></div>
         </div>
 
-        <ve-menu style="margin-left:auto;margin-right:1rem;" auth="github">
+        <mdp-menu style="margin-left:auto;margin-right:1rem;" auth="github">
           <ul>
             <li v-for="(navItem, idx) in nav" :key="`nav=${idx}`"> 
               <a :href="navItem.href"><svg v-if="navItem.icon" v-html="navItem.icon"></svg> {{  navItem.label }}</a>
             </li>
           </ul>
-        </ve-menu>
+        </mdp-menu>
     
     </div>
     

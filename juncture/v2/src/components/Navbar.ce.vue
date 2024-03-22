@@ -18,7 +18,7 @@
     
     <div class="flex items-center gap-4 mr-4 ml-auto">
       <ve-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></ve-site-search>
-      <ve-menu v-if="navEl !== undefined" :auth="auth" :contact="contact" v-html="navEl"></ve-menu>
+      <mdp-menu v-if="navEl !== undefined" :auth="auth" :contact="contact" v-html="navEl"></mdp-menu>
     </div>
 
   </section>

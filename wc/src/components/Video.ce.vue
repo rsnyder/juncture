@@ -99,12 +99,18 @@
         el.insertBefore(timestampLink, el.firstChild)
         return { start: hmsToSeconds(el.dataset.head.split(/\s+/)[0]), id: el.id }
       })
+    
+    let activePara = null
     EventBus.on('video-at-time', (evt) => {
       let time = evt.time
       let text = syncData.find((t:any) => t.start <= time && (syncData[syncData.indexOf(t)+1]?.start || Infinity) > time)
-      if (text && mediaPlayer && isPlaying.value) {
-        let el = document.getElementById(text.id)
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      // if (text && mediaPlayer && isPlaying.value) {
+      if (text && text?.id !== activePara) {
+        activePara = text.id
+        let textEl = document.getElementById(text.id)
+        document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+        if (textEl) textEl.classList.add('active')
+        if (textEl) textEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
     })
   }

@@ -3,6 +3,7 @@ import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min
 
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
+function camelToKebab(input) { return input.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}
 
 function computeDataId(el) {
   let dataId = []
@@ -30,8 +31,17 @@ function parseHeadline(s) {
       let key = token.slice(0, idx)
       let value = token.slice(idx+1)
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
-      if (parsed[key]) parsed[key] += ` ${value}`
-      else parsed[key] = value
+      if (key[0] === ':') { // style
+        key = camelToKebab(key.slice(1))
+        if (parsed.style) parsed.style[key] = value
+        else parsed.style = {key: value}
+      } else { // kwargs
+        if (parsed.kwargs) {
+          if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
+          else parsed.kwargs[key] = value
+        }
+        else parsed.kwargs = {[key]: value}
+      }
     }
     else if (token[0] === '.') {
       let key = 'class'
@@ -40,31 +50,25 @@ function parseHeadline(s) {
       if (parsed[key]) parsed[key] += ` ${value}`
       else parsed[key] = value
     }
-    else if (token[0] === ':') {
-      let key = 'style'
-      let value
-      if (token.length === 1 && tokenIdx < token.length && tokens[tokenIdx+1][0] === '"') {
-        value = tokens[tokenIdx+1].slice(1, -1)
-        tokenIdx++
-      } else {
-        value = token.slice(1)
-      }
-      if (parsed[key]) parsed[key] += ` ${value}`
-      else parsed[key] = value
-    }
     else if (token[0] === '"') {
-      let key = 'args'
       let value = token.slice(1,-1)
-      if (parsed[key]) parsed[key].push(value)
-      else parsed[key] = [value]
+      if (parsed.args) parsed.args.push(value)
+      else parsed.args = [value]
     }
     else if (token[0] === '#') parsed['id'] = token.slice(1)
+    else if (/^Q\d+$/.test(token)) { // entity identifier
+      if (parsed.entities) parsed.entities.push(token)
+      else parsed.entities = [token]
+    } 
     else if (/^\w+-[-\w]*\w+$/.test(token) && !parsed.tag) parsed['tag'] = token
     else if (token === 'script' || token === 'link') parsed['tag'] = token
     else {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
       else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
-      else parsed[token] = true
+      else {
+        if (parsed.args) parsed.args.push(token)
+        else parsed.args = [token]
+      }
     }
     tokenIdx++
   }
@@ -85,7 +89,8 @@ function handleCodeEl(rootEl, codeEl) {
   
   let parentTag = codeEl.parentElement?.tagName
   let previousElTag = codeEl.previousElementSibling?.tagName
-  let isEmbedded = false
+  let isInline = false
+
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
@@ -96,7 +101,7 @@ function handleCodeEl(rootEl, codeEl) {
     else if (parentTag === 'P') {
       let paraText = Array.from(codeEl.parentElement?.childNodes).map(c => c.nodeValue?.trim()).filter(x => x).join('')
       codeWrapper = paraText ? codeEl : codeEl.parentElement
-      isEmbedded = paraText ? true : false
+      isInline = paraText ? true : false
     } 
     else if (parentTag === 'LI') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
@@ -106,35 +111,34 @@ function handleCodeEl(rootEl, codeEl) {
     if (!codeWrapper) return
 
     let parent = parentTag === 'LI'
-        ? codeEl.parentElement.parentElement
+        ? codeEl.previousElementSibling
+          ? codeEl.parentElement.parentElement
+          : codeEl.parentElement
         : codeWrapper.parentElement
-
-    // console.log(parent)
 
     let codeLang = parentTag === 'PRE' 
       ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'mdpress'
       : 'mdpress'
     if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
-      if (isEmbedded) {
-        parsed.style = parsed.style ? `${parsed.style}display:inline-block;` : 'display:inline-block;'
+      if (isInline) {
+        if (parsed.style) parsed.style.display = 'inline-block'
+        else parsed.style = {display: 'inline-block'}
       }
       console.log(parsed)
       if (parsed.tag) {
         let newEl = document.createElement(parsed.tag)
         if (parsed.id) newEl.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => newEl.classList.add(c))
-        if (parsed.style) newEl.setAttribute('style', parsed.style)
-        for (const [k,v] of Object.entries(parsed)) {
-          if (k === 'tag' || k === 'id' || k === 'class' || k === 'style' || k === 'args') continue
-          newEl.setAttribute(k, v === true ? '' : v)
-        }
+        if (parsed.style) newEl.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
+        if (parsed.entities) newEl.setAttribute('entities', parsed.entities.join(' '))
+        if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) newEl.setAttribute(k, v === true ? '' : v)
         if (parsed.args) {
+          // for (const arg of parsed.args) newEl.setAttribute(arg, '')
           let ul = document.createElement('ul')
           newEl.appendChild(ul)
           for (const arg of parsed.args) {
             let li = document.createElement('li')
-            // li.innerHTML = marked.parse(arg)
             li.innerHTML = arg
             ul.appendChild(li)
           }
@@ -161,20 +165,22 @@ function handleCodeEl(rootEl, codeEl) {
       } else if (parsed.class || parsed.style || parsed.id) {
         let target
         let priorEl = codeEl.previousElementSibling
-        // if (parent.tagName !== 'P' && (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG')) {
         if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
-        } else if (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG') {
+        } else if (parent.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
           target = priorEl
         } else {
           target = parent
         }
         if (parsed.id) target.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
-        if (parsed.style) target.setAttribute('style', parsed.style)
+        if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
+        if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
+        if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) newEl.setAttribute(k, v === true ? '' : v)
         codeWrapper.remove()
+        console.log(target)
       }
     }
   }
@@ -224,7 +230,7 @@ function structureContent() {
   Array.from(main?.querySelectorAll('p, li'))
   .filter(p => /==.+=={.+}/.test(p.textContent.trim()))
   .forEach(el => {
-    console.log(el.innerHTML)
+    // console.log(el.innerHTML)
     let replHtml = []
     let matches = Array.from(el.innerHTML.matchAll(/==(?<text>[^=]+)=={(?<attrs>[^}]+)}/g))
     matches.forEach((match, idx) => {
@@ -264,10 +270,10 @@ function structureContent() {
           .filter(child => !/STYLE/.test(child.tagName))
           .filter(child => !/^MDP-/.test(child.tagName))
           .forEach((child, idx) => { 
-            let segId = `${currentSection.getAttribute('data-id') || 1}.${idx+1}`
+            let segId = `${currentSection.getAttribute('data-id') || 0}.${idx+1}`
             child.setAttribute('data-id', segId)
             child.id = segId
-            child.className = 'segment'
+            child.classList.add('segment')
           })
       }
 
@@ -289,10 +295,10 @@ function structureContent() {
 
     } else  {
       if (el.tagName !== 'PARAM') {
-        el.className = 'segment'
-        let segId = `${currentSection.getAttribute('data-id')}.${currentSection.children.length}`
+        let segId = `${currentSection.getAttribute('data-id') || 0}.${currentSection.children.length}`
         el.setAttribute('data-id', segId)
         el.id = segId
+        el.classList.add('segment')
       }
       if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
     }
@@ -312,13 +318,14 @@ function structureContent() {
     // console.log(lines)
     if (lines.length > 1 && hasTimestamp(lines[0])) {
       para.setAttribute('data-head', lines[0])
-      if (lines.length > 2) para.setAttribute('data-qids', lines[2])
+      if (lines.length > 2) para.setAttribute('data-entities', lines[2])
       if (lines.length > 3) para.setAttribute('data-related', lines[3])
       para.innerHTML = lines[1]
       if (codeEl) para.appendChild(codeEl)
     }
   })
 
+  // For Juncture 1/2 compatibility, apply attributes found in paragraphs
   Array.from(restructured?.querySelectorAll('p'))
   .filter(p => /^{.*}$/.test(p.textContent.trim()))
   .forEach(attrs => {
@@ -327,14 +334,21 @@ function structureContent() {
     let parsed = parseHeadline(attrs.textContent.trim().slice(1,-1))
     if (parsed.id) target.id = parsed.id
     if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
-    if (parsed.style) target.setAttribute('style', parsed.style)
+    if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
+    if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
+    if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) newEl.setAttribute(k, v === true ? '' : v)
     attrs.remove()
   })
+
+  console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
+  console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+
   restructured.querySelectorAll('section').forEach(section => {
+    
     if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
       section.classList.remove('cards')
       let wrapper = document.createElement('section')
@@ -370,7 +384,6 @@ function structureContent() {
       section.appendChild(wrapper)
     }
 
-    /*
     if (section.classList.contains('tabs')) {
       let tabGroup = document.createElement('sl-tab-group');
       Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls))
@@ -392,7 +405,6 @@ function structureContent() {
       })
       section.replaceWith(tabGroup)
     }
-    */
 
     /*
     if (section.classList.contains('tabs')) {
@@ -424,8 +436,9 @@ function structureContent() {
     }
     */
     
+    /*
     if (section.classList.contains('tabs')) {
-      /* from https://codepen.io/alvarotrigo/pen/GRMbzBR */
+      // from https://codepen.io/alvarotrigo/pen/GRMbzBR
       ++tabGroup
       let tabsWrap = document.createElement('section')
       tabsWrap.className = 'tab-wrap'
@@ -453,10 +466,13 @@ function structureContent() {
       })
       section.appendChild(tabsWrap)
     }
+    */
 
-    if (section.classList.contains('mcol') && !section.classList.contains('wrapper')) {
+    console.log(section)
+    if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
       let wrapper = document.createElement('section')
-      wrapper.className = 'mcol wrapper'
+      wrapper.className = 'columns wrapper'
+      section.classList.remove('columns')
       section.classList.remove('mcol')
       Array.from(section.children)
         .filter(child => child.tagName === 'SECTION')
@@ -509,7 +525,7 @@ function structureContent() {
       let parsed = parseHeadline(li.textContent.trim().slice(1,-1))
       if (parsed.id) li.id = parsed.id
       if (parsed.class) parsed.class.split(' ').forEach(c => li.classList.add(c))
-      if (parsed.style) li.setAttribute('style', parsed.style)
+      if (parsed.style) li.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
       li.textContent = ''
     })
     restructured.appendChild(footer)
@@ -642,8 +658,12 @@ function computeStickyOffsets(root) {
             // console.log(priorSticky, priorTop)
             // stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.y + bcrPrior.height)}px`
             // console.log(stickyElems[i].style)
-            stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
-            stickyElems[i].style.zIndex = stickyElems.length - i
+            if (stickyElems[i].style) {
+              stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
+              stickyElems[i].style.zIndex = stickyElems.length - i
+            } else {
+              console.log('no style', stickyElems[i])
+            }
             break
           }
         }
@@ -653,14 +673,15 @@ function computeStickyOffsets(root) {
 }
 
 
-let activeParagraph
+let priorActiveParagraph
+let currentActiveParagraph
 
-function observeVisible(callback = null) {
+function observeVisible(setActiveParagraph = false) {
+
+  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph}`)
 
   let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
-
-  // console.log(`observeVisible: topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
@@ -675,13 +696,32 @@ function observeVisible(callback = null) {
     let sortedVisible = Object.values(visible)
       .sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.para.getBoundingClientRect().top - b.para.getBoundingClientRect().top)
 
-    if (activeParagraph !== sortedVisible[0]?.para) {
-      activeParagraph = sortedVisible[0]?.para
-      // console.log('activeParagraph', activeParagraph)
-      document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
-      activeParagraph?.classList.add('active')
+    // console.log('sortedVisible', sortedVisible)
+
+    if (setActiveParagraph) {
+
+        currentActiveParagraph = sortedVisible[0]?.para
+    
+    } else {
+
+      let found = sortedVisible.find(e => e.para.classList.contains('active'))
+      if (found) {
+        currentActiveParagraph = found.para
+        // console.log('activeParagraph', currentActiveParagraph)
+      }
+
+    }
+      
+    if (currentActiveParagraph !== priorActiveParagraph) {
+      console.log('activeParagraph', currentActiveParagraph)
+      priorActiveParagraph = currentActiveParagraph
+      if (setActiveParagraph) { 
+        document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+        currentActiveParagraph?.classList.add('active')
+      }
       computeStickyOffsets(document.querySelector('main'))
     }
+
   }, { root: null, threshold: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
   // target the elements to be observed
@@ -728,8 +768,7 @@ function init() {
   
   if (isJunctureV1) createJunctureV1App()
   else setTimeout(() => {
-    // if (!document.querySelector('mdp-video[sync]')) 
-    observeVisible() // Conditionally enable this based the presence video sync
+    observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
     readMoreSetup()
   }, 0)
 

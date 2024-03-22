@@ -9,10 +9,9 @@
         :essay-config="essayConfig"
         :content-source="contentSource"
         :path="path"
-        :logins-enabled="loginsEnabled"
         :is-juncture="isJuncture"
-        :is-authenticated="authenticatedUser !== null && loginsEnabled"
-        :is-admin="isAdminUser"
+        :is-authenticated="isAuthenticated"
+        :gh-token="ghToken"
         :version="junctureVersion"
         :do-action-callback="doActionCallback"
         component-name="ve-header"
@@ -43,10 +42,9 @@
         :site-config="siteConfig"
         :essay-config="essayConfig"
         :content-source="contentSource"
-        :logins-enabled="loginsEnabled"
         :is-juncture="isJuncture"
-        :is-authenticated="authenticatedUser !== null && loginsEnabled"
-        :is-admin="isAdminUser"
+        :is-authenticated="isAuthenticated"
+        :gh-token="ghToken"
         :do-action-callback="doActionCallback"
         :version="junctureVersion"
         @set-entities="entities = $event"
@@ -71,7 +69,7 @@
                  :content-source="contentSource"
                  :gh-token:="ghToken"
                  :md-dir="mdDir"
-                 :is-authenticated="authenticatedUser !== null && loginsEnabled"
+                 :is-authenticated="isAuthenticated"
                  :component-name="viewer"
                  @update-component-data="updateComponentData"
                  @set-hover-item="hoverItem = $event"
@@ -123,13 +121,13 @@ const componentPrefix = 've1-'
 
 const contentSource = {
   basePath: window.config.baseurl, 
-  acct: window.config.owner, 
-  repo: window.config.repo, 
-  ref: window.config.branch, 
+  acct: window.config?.github?.owner_name, 
+  repo: window.config?.github?.repository_name, 
+  ref: window.config?.github?.source?.branch,
   baseUrl: `https://raw.githubusercontent.com/${window.config.owner}/${window.config.repo}/${window.config.branch}/`
 }
+console.log('contentSource', contentSource)
 const siteConfig = {}
-const ghToken = ''
 const isJuncture = true
 const qargs = {}
 
@@ -165,7 +163,7 @@ module.exports = {
     entities: {},
     essayConfig: null,
     forceHorizontalLayout: window.matchMedia('only screen and (max-width: 1000px)').matches,
-    ghToken,
+    ghToken: null,
     hoverItem: undefined,
     html: '',
     items: [],
@@ -190,7 +188,10 @@ module.exports = {
     viewerIsOpen: false
   }),
   computed: {
-    isAdminUser() { return ENV === 'DEV' || this.authenticatedUser !== null && (this.authenticatedUser.isAdmin || contentSource.acct === this.authenticatedUser.acct) },
+    isAuthenticated() {
+      console.log('isAuthenticated', localStorage.getItem('gh-auth-token'))
+      return localStorage.getItem('gh-auth-token') !== undefined 
+    },
     viewerStyle() { return { 
       height: this.viewerIsOpen
         ? this.isVerticalLayout 
@@ -200,7 +201,6 @@ module.exports = {
       } 
     },
     isVerticalLayout() { return !this.forceHorizontalLayout && this.layouts.indexOf('vertical') >= 0 },
-    loginsEnabled() { return this.oauthCredsFound && (!this.essayConfig || !this.essayConfig['logins-disabled']) }
   },
   async mounted() {
     let path
@@ -229,9 +229,18 @@ module.exports = {
       onShow: async (instance) => { instance.setContent(this.$refs.markdownViewer.innerHTML) },
       onHide: (instance) => {}
     })
+    this.ghToken = localStorage.getItem('gh-auth-token')
+    if (!this.ghToken) this.ghToken = await this.getGhUnscopedToken()
+    console.log('ghToken', this.ghToken)
     this.parseEssay()
   },
   methods: {
+
+    async getGhUnscopedToken() {
+      let resp = await fetch('https://api.juncture-digital.org/gh-token')
+      if (resp.ok) return await resp.text()
+    },
+
     authenticate() {
       let provider = new firebase.auth.GithubAuthProvider()
       provider.addScope('repo')
@@ -753,7 +762,7 @@ Vue.mixin({
     },
 
     async ghDirList(url) {
-      let resp = await fetch(url, { headers: {Authorization: `Token ${ghToken}`}} )
+      let resp = await fetch(url, { headers: {Authorization: `Token ${this.ghToken}`}} )
       return resp.ok ? await resp.json() : null
     },
 
@@ -796,7 +805,7 @@ Vue.mixin({
         let payload = { message, branch, content: btoa(content) }
         if (existing) payload.sha = existing.sha
         let url = `https://api.github.com/repos/${acct}/${repo}/contents${path}?ref=${branch}`
-        let resp = await fetch(url, { method: 'PUT', body: JSON.stringify(payload), headers: {Authorization: `Token ${ghToken}`} })
+        let resp = await fetch(url, { method: 'PUT', body: JSON.stringify(payload), headers: {Authorization: `Token ${this.ghToken}`} })
         resp = await resp.json()
       } else {
         let url = `${this.contentSource.baseUrl}${this.contentSource.basePath}${path}`

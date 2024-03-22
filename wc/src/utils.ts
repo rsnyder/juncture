@@ -6,7 +6,6 @@ const window = (globalThis as any).window as any
 let options:any = yaml.load(window.options)
 
 export const iiifServer = options?.defaults?.iiifServer || 'iiif.mdpress.io'
-console.log(`iiifServer=${iiifServer}`)
 
 export function isURL(str:string) { return /^https*:\/\//.test(str) }
 export function isQid(s:string) { return /^Q\d+$/.test(s) }

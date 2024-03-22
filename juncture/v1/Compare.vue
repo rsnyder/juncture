@@ -18,7 +18,8 @@
 
 <script>
 
-const iiifService = 'https://iiif.juncture-digital.org'
+const iiifService = window.config?.defaults?.iiifServer ? `https://${window.config?.defaults?.iiifServer}` : 'https://iiif.juncture-digital.org'
+
 const prefixUrl = 'https://openseadragon.github.io/openseadragon/images/'
 
 module.exports = {
@@ -97,7 +98,15 @@ module.exports = {
       }
     },
     async loadManifests() {
-      let requests = this.compareItems.map(item => {
+      let requests = this.compareItems
+      .map(item => {
+        if (item.manifest?.indexOf('http') !== 0) {
+          item.manifest = `${iiifService}/${item.manifest}/manifest.json`
+        }
+        return item
+      })       
+      .map(item => {
+        console.log(item.manifest)
         if (item.manifest) return fetch(item.manifest)
         else if (item.url) {
           let data = {};
@@ -116,7 +125,7 @@ module.exports = {
       let manifests = await Promise.all(responses.map(resp => resp.json()))
       requests = manifests
         .filter(manifest => !Array.isArray(manifest['@context']) && parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
-        .map(manifest => fetch('https://iiif.juncture-digital.org/prezi2to3/', {
+        .map(manifest => fetch(`${iiifService}/prezi2to3/`, {
           method: 'POST', 
           body: JSON.stringify(manifest)
         }))

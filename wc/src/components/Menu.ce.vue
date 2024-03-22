@@ -184,8 +184,15 @@
   // watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
 
   watch(user, () => {
-    if (user.value) localStorage.setItem('auth-user', JSON.stringify(user.value))
-    else if (localStorage.getItem('auth-user')) localStorage.removeItem('auth-user')
+    if (user.value) {
+      localStorage.setItem('auth-user', JSON.stringify(user.value))
+      localStorage.setItem('gh-auth-token', user.value.token) // For J1 compatibility
+      localStorage.setItem('gh-username', user.value.username) // For J1 compatibility
+    } else {
+      if (localStorage.getItem('auth-user')) localStorage.removeItem('auth-user')
+      if (localStorage.getItem('gh-auth-token')) localStorage.removeItem('gh-auth-token')
+      if (localStorage.getItem('gh-username')) localStorage.removeItem('gh-username')
+    }
   })
 
   const isLoggedIn = computed(() => {
@@ -233,7 +240,7 @@
         user.value = _user
       }
     }
-    if (user.value) {
+    if (user.value && config.value?.github) {
       userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, user.value.token)
     }
   }
@@ -242,7 +249,8 @@
     let hostname = (new URL(window.location.href)).hostname
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
     if (isDev) {
-      let resp = await fetch('http://localhost:8088/gh-token?hostname=localhost&code=testing')
+      // let resp = await fetch('http://localhost:8088/gh-token?hostname=localhost&code=testing')
+      let resp = await fetch('https:iiif.mdpress.io/gh-token?hostname=localhost&code=testing')
       if (resp.ok) {
         let token = await resp.text()
         let _user = await getGhUserInfo(token)

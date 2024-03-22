@@ -60,7 +60,7 @@
 <script>
 /* global _, OpenSeadragon, sjcl */
 
-const iiifService = 'https://iiif.juncture-digital.org'
+const iiifService = window.config?.defaults?.iiifServer ? `https://${window.config?.defaults?.iiifServer}` : 'https://iiif.juncture-digital.org'
 
 const viewerLabel = 'Image Viewer'
 const viewerIcon = 'far fa-file-image'
@@ -92,16 +92,11 @@ module.exports = {
     actions: { type: Object, default: () => ({}) },
     contentSource:  { type: Object, default: () => ({}) },
     mdDir: String,
-    isAuthenticated: { type: Boolean, default: false },
 
-    // actions: { type: Array, default: () => ([]) },
     actionSources: { type: Array, default: () => ([]) },
     siteInfo: { type: Object, default: () => ({}) },
 
     path: String,
-    // items: Array,
-    // active: Boolean,
-    // actions: { type: Object, default: () => ({}) },
 
     width: Number,
     height: Number,
@@ -153,8 +148,8 @@ module.exports = {
     viewerItems() { return this.items
       .filter(item => item.viewer === this.$options.name)
       .map(item => {
-        if (item.manifest && item.manifest.indexOf('http') !== 0) {
-          item.manifest = `https://iiif.juncture-digital.org/${item.manifest}/manifest.json`
+        if (item.manifest && item.manifest?.indexOf('http') !== 0) {
+          item.manifest = `${iiifService}/${item.manifest}/manifest.json`
         }
         return item
       }) 
@@ -168,7 +163,6 @@ module.exports = {
         : 'contain'
     },
     currentItemSource() {
-      // console.log('currentItemSource', this.currentItem, this.currentItem?.seq || 1)
       return this.currentItem && this.findItem({type:'Annotation', motivation:'painting'}, this.currentItem, this.currentItem.seq || 1).body.id
     },
     currentItemSourceHash() {
@@ -189,7 +183,6 @@ module.exports = {
         return `${this.contentSource.acct}/${this.contentSource.repo}/${this.contentSource.ref}${path ? '/'+path : ''}/${imageSourceHash}`
       }
     },
-    // annotations() { const annos = this.currentItem ? this.currentItem.annotations || [] : []; return annos; },
     numAnnotations() { return this.annotations.length },
     hasAnnotations() { return this.numAnnotations > 0 },
     hasNextAnnotation() { return this.annoCursor < this.numAnnotations - 1 },
@@ -200,7 +193,6 @@ module.exports = {
         ? Object.fromEntries(this.currentItem.metadata.map(md => [md.label, md.value])) 
         : {}
     },
-    //label() { return this.currentItem ? this.currentItem.label || this.metadata.label : null },
     itemLabel() {
       return this.currentItem && this.metadata && this.metadata.title_formatted
         ? this.metadata.title_formatted
@@ -215,6 +207,8 @@ module.exports = {
     license() { return this.currentItem ? this.currentItem.license || this.metadata.license : null },
     annosEndpoint() { return `${this.serviceBase}/annotations/`},
     annosTool() { return `${this.serviceBase}/annotator`},
+    ghToken() { return localStorage.getItem('gh-auth-token') },
+    isAuthenticated() { return this.ghToken },
     source() {
       if (this.metadata.info && this.metadata.info.indexOf('http') === 0) {
         return `Source: <a href="${this.metadata.info}" target="_blank">${this.metadata.info}</a>`
@@ -231,12 +225,10 @@ module.exports = {
   },
   methods: {
     init() {
-      // console.log(`${this.$options.name}.init`, this.viewerItems, this.viewerIsActive, this.width, this.height, this.selected, this.currentItme)
       if (this.viewerIsActive) {
         this.initViewer()
         this.loadManifests(this.viewerItems).then(manifests => this.manifests = manifests)
       }
-      //this.displayInfoBox()
     },
     sha256(s) {
       return sjcl.codec.hex.fromBits(sjcl.hash.sha256.hash(s))
@@ -249,19 +241,12 @@ module.exports = {
         let options = {
           id: 'osd',
           prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-          // toolbar:        'osd-toolbar',
           zoomInButton:   'zoom-in',
           zoomOutButton:  'zoom-out',
           homeButton:     'go-home',
-          // infoButton: 'info-box',
-          // fullPageButton: 'full-page',
-          // nextButton:     'next',
-          // previousButton: 'previous',
           visibilityRatio: 1.0,
           constrainDuringPan: true,
-          // minZoomImageRatio: 0, 
           minZoomImageRatio: 0.6,
-          // maxZoomPixelRatio: Infinity,
           maxZoomPixelRatio: 10,
           homeFillsViewer: this.fit === 'cover',
           viewportMargins: {left:0, top:0, bottom:0, right:0},
@@ -290,16 +275,12 @@ module.exports = {
         this.viewer = OpenSeadragon(options)
         this.initAnnotator()
 
-        // this.viewer.viewport.goHome = function(immediately) { if (this.viewer) this.viewer.raiseEvent('home', { immediately: immediately }) }
         this.viewer.addHandler('home', (e) => {
           this.positionImage(e.immediately, 'home')
-          // this.showAnnotationsNavigator = false
         })
         this.viewer.addHandler('page', this.newPage)
         this.viewer.addHandler('viewport-change', this.viewportChange)
         this.viewer.world.addHandler('add-item', (e) => {
-          // console.log('add-item', e.item.source['@id'])
-          // let idx  = this.tileSources.findIndex(ts => ts.tileSource.indexOf(e.item.source['@id']) === 0)
           const numItems = this.viewer.world.getItemCount()
           if (this.currentItem && this.currentItem.rotate) {
             e.item.setRotation(parseInt(this.currentItem.rotate), true)
@@ -360,13 +341,8 @@ module.exports = {
       let responses = await Promise.all(requests)
       let manifests = await Promise.all(responses.map(resp => resp.json()))
       requests = manifests
-        .filter(manifest => {
-          let version = !Array.isArray(manifest['@context']) && manifest['@context'].indexOf('iiif.io') > 0
-            ? manifest['@context'].split('/').slice(-2,-1).pop()
-            : 2
-          return version < 3
-        })
-        .map(manifest => fetch('https://iiif.juncture-digital.org/prezi2to3/', {
+        .filter(manifest => !Array.isArray(manifest['@context']) && parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
+        .map(manifest => fetch(`${iiifService}/prezi2to3/`, {
           method: 'POST', 
           body: JSON.stringify(manifest)
         }))
@@ -384,7 +360,7 @@ module.exports = {
 
     // convert IIIF v2 manifest to v3; all operations in this component are based on v3
     async prezi2to3(manifest) {
-      let resp = await fetch('https://iiif.juncture-digital.org/prezi2to3/', {
+      let resp = await fetch(`${iiifService}/prezi2to3/`, {
         method: 'POST', 
         body: JSON.stringify(manifest)
       })
@@ -395,7 +371,6 @@ module.exports = {
       immediately = immediately || false
       if (this.currentItem) {
         this.$nextTick(() => {
-          // console.log(`positionImage: fit=${this.fit} region=${this.currentItem.region}`)
           if (this.currentItem.region) {
             this.viewer.viewport.fitBounds(this.parseRegionString(this.currentItem.region), immediately)
           } else {
@@ -444,31 +419,12 @@ module.exports = {
     },
     async loadAnnotations() {
       let annosFile = `${this.currentItemSourceHash}.json`
-      /*
-      let annosPath = `${location.pathname}/${annosFile}`
-      console.log(`loadAnnotations: ${annosPath}`)
-      let resp = await fetch(`${location.pathname}/${annosFile}`)
-      if (resp.ok) {
-        let annos = await resp.json()
-        console.log('annos', annos)
-        if (annos.length > 0) {
-          this.annotations = annos
-          if (!Array.isArray(this.annotations) && this.annotations.items) this.annotations = this.annotations.items
-          this.annotations.forEach(anno => this.annotator.addAnnotation(anno))
-        } else {
-          this.annotations = []
-        }
-        this.annoCursor = 0
-        if (this.annotations.length > 0) this.showAnnotationsNavigator = true
-      }
-      */
       let path = `${this.mdDir}/${annosFile}`
       this.getFile(path, this.contentSource.acct, this.contentSource.repo, this.contentSource.ref).then(annos => {
         if (annos && annos.content) {
           this.annotations = annos.content.items
             ? annos.content.items
             : annos.content
-          // this.annotations = JSON.parse(annos.content)
           if (!Array.isArray(this.annotations) && this.annotations.items) this.annotations = this.annotations.items
 
           this.annotations.forEach(anno => this.annotator.addAnnotation(anno))
@@ -478,6 +434,35 @@ module.exports = {
         this.annoCursor = 0
         if (this.annotations.length > 0) this.showAnnotationsNavigator = true
       })
+    },
+    async getFile(path, acct, repo, branch) {
+      acct = acct || window.config?.github?.owner_name, 
+      repo = repo || window.config?.github?.repository_name
+      branch = branch || window.config?.github?.source?.branch
+      // console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path='${path}`)
+      let url = `https://api.github.com/repos/${acct}/${repo}/contents${path}?ref=${branch}`
+      let resp = await fetch(url)
+      if (resp.ok) {
+        resp = await resp.json()
+        return { sha: resp.sha, content: JSON.parse(decodeURIComponent(escape(atob(resp.content)))) }
+      } else {
+        return null
+      }
+    },
+    async putFile(path, content, acct, repo, branch, message) {
+      acct = acct || this.contentSource.acct || window.config?.github?.owner_name
+      repo = repo || this.contentSource.repo || window.config?.github?.repository_name
+      branch = branch || this.contentSource.ref || window.config?.github?.source?.branch
+      message = message || 'API Commit'
+      if (acct) {
+        let existing = await this.getFile(path, acct, repo, branch)
+        let payload = { message, branch, content: btoa(content) }
+        if (existing) payload.sha = existing.sha
+        // console.log(`putFile: acct=${acct} repo=${repo} branch=${branch} path='${path} sha=${existing ? existing.sha : ''}`)
+        let url = `https://api.github.com/repos/${acct}/${repo}/contents${path}?ref=${branch}`
+        let resp = await fetch(url, { method: 'PUT', body: JSON.stringify(payload), headers: {Authorization: `Token ${this.ghToken}`} })
+        resp = await resp.json()
+      }
     },
     saveAnnotations() {
       this.annotations = this.annotator.getAnnotations()
@@ -725,7 +710,6 @@ module.exports = {
             else {
               html+= '<td style="background:none; padding: 5px;max-width: 200px;overflow: auto;">' + content[key]+ '</td>';
             }
-            //html+= '<td style="background:none; padding: 5px;max-width: 200px;overflow: auto;">' + content[key]+ '</td>';
             html+= '</tr>';
         }
         html+='</tbody></table>';
@@ -761,11 +745,9 @@ module.exports = {
           zIndex: 11,
           preventOverflow: { enabled: true },
           hideOnClick: true,
-          // theme: 'light-border',
           
           onShow: (instance) => {
             instance.setContent(this.imageInfo)
-            //setTimeout(() => { instance.hide() }, 10000)
           },
           onHide(instance) {
             instance.setProps({trigger: 'mouseenter'});
@@ -774,10 +756,7 @@ module.exports = {
       }
     
     }
-  },
-  beforeDestroy() {
-    // this.actionSources.forEach(elem => elem.classList.remove('image-interaction'))
-  },        
+  },       
   watch: {
     isAuthenticated() {
       if (this.annotator) this.annotator.readOnly = !this.isAuthenticated
@@ -872,7 +851,6 @@ module.exports = {
       this.displayInfoBox()
     },
     currentItemSourceHash() { 
-      // console.log(`currentItemSource=${this.currentItemSource} hash=${this.currentItemSourceHash}`)
       this.loadAnnotations()
     },
     mode() {
@@ -1093,7 +1071,7 @@ module.exports = {
       color: black;
       width: 100%;
       font-size: 18px;
-      padding: 12px 0;
+      margin-top: 12px;
     }
 
     .controls span {

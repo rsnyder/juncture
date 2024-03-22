@@ -7,13 +7,16 @@
 <link href="{{ site.baseurl }}/index.css" rel="stylesheet">
 
 <script>
-  window.site = {github: JSON.parse(`{{ site.github }}`)};
+  window.site = {
+    github: JSON.parse(`{{ site.github }}`),
+    url: JSON.parse(`{{ page.url }}`)
+  };
   window.options = `
   baseurl: '{{ site.baseurl }}'
   title: MDPress
   description: Website framework using Markdown, Github Pages, and custom web components.
   defaults:
-    iiifServer: iiif.mdpress.io
+    iiifServer: iiif.juncture-digital.org
     header:
       backgroundImage: wc:Mont_Blanc_from_Les_Arcs_1950.jpg
       logo: /images/logo.svg

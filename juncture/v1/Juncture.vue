@@ -215,6 +215,7 @@ module.exports = {
     }
     this.path = path
     let pathIsDir = true
+    console.log(window.config?.page?.dir)
     this.mdir = window.config?.page?.dir
       ? window.config?.page?.dir.length === 1
         ? '/'

@@ -215,12 +215,12 @@ module.exports = {
     }
     this.path = path
     let pathIsDir = true
-    console.log(window.config?.page?.dir)
     this.mdir = window.config?.page?.dir
       ? window.config?.page?.dir.length === 1
         ? '/'
         : window.config?.page?.dir.slice(0,-1)
       : '/'
+    console.log(this.mdir)
     this.mdPath = pathIsDir ? path === '/' ? '/README.md' : `${path}/README.md` : `${path}.md`
     // Initialize Markdown source viewer
     //this.markdown = await getGhFile(this.mdPath)

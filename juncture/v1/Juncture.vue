@@ -210,8 +210,8 @@ module.exports = {
       if (path) this.anchor = anchor
       else path = anchor
     } else {
-      path = window.location.pathname.slice(contentSource.basePath.length) || '/'
-      path = path.length > 1 && path.slice(-1) === '/' ? path.slice(0,-1) : path
+      path = window.location.pathname.slice(contentSource.basePath?.length) || '/'
+      path = path?.length > 1 && path.slice(-1) === '/' ? path.slice(0,-1) : path
     }
     this.path = path
     let pathIsDir = true

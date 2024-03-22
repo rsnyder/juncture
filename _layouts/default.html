@@ -9,7 +9,9 @@
 <script>
   window.site = {
     github: JSON.parse(`{{ site.github }}`),
-    url: `{{ page.url }}`
+    url: `{{ page.url }}`,
+    dir: `{{ page.dir }}`,
+    path: `{{ page.path }}`,
   };
   window.options = `
   baseurl: '{{ site.baseurl }}'

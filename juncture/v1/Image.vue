@@ -418,6 +418,7 @@ module.exports = {
       }
     },
     async loadAnnotations() {
+      console.log(`loadAnnotations: mdir=${this.mdDir} currentItemSourceHash=${this.currentItemSourceHash}`)
       let annosFile = `${this.currentItemSourceHash}.json`
       let path = `${this.mdDir}/${annosFile}`
       this.getFile(path, this.contentSource.acct, this.contentSource.repo, this.contentSource.ref).then(annos => {

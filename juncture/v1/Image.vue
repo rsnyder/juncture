@@ -218,6 +218,7 @@ module.exports = {
     }    
   },
   mounted() {
+    console.log('Image Viewer mounted', this.mdir)
     this.osdElem = document.getElementById('osd')
     const osdElem = document.getElementById('osd')
     if (osdElem) { osdElem.style.background = this.osdContainerStyle.background }

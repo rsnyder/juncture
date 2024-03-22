@@ -1,0 +1,22 @@
+[
+  {
+    "type": "Annotation",
+    "body": [
+      {
+        "type": "TextualBody",
+        "value": "test",
+        "purpose": "commenting"
+      }
+    ],
+    "target": {
+      "source": "https://iiif-image.juncture-digital.org/iiif/2/4f9302a6a5047b9494b01b6acb90cc29bdca3033408aaa8ac68d428748671cc1",
+      "selector": {
+        "type": "FragmentSelector",
+        "conformsTo": "http://www.w3.org/TR/media-frags/",
+        "value": "xywh=pixel:521.3178100585938,1416.035888671875,1414.7352905273438,557.46142578125"
+      }
+    },
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "#5edd7d82-d26b-4cbc-8f27-4d6c8f09c1e4"
+  }
+]

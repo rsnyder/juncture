@@ -171,7 +171,15 @@ async def serve(path: Optional[str] = None):
     if LOCAL_WC and ext == 'html':
       content = content.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
   if ext is None: # markdown file
+    if os.path.exists(local_file_path) and not ext:
+      local_file_path = local_file_path.replace(CONTENT_ROOT, '').split('/')[1:]
+      md_name = local_file_path[-1]
+      md_dir = '/' if len(local_file_path) == 1 else f'/{"/".join(local_file_path[:-1])}/'
+    logger.info(f'md_dir={md_dir} md_name={md_name}')
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
+    content = content.replace('{{ page.dir }}', md_dir)
+    content = content.replace('{{ page.name }}', md_name)
+
   media_type = media_types[ext] if ext in media_types else 'text/html'
 
   logger.debug(f'path: {path} ext: {ext} local_file_path: {local_file_path}')

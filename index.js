@@ -125,7 +125,7 @@ function handleCodeEl(rootEl, codeEl) {
         if (parsed.style) parsed.style.display = 'inline-block'
         else parsed.style = {display: 'inline-block'}
       }
-      console.log(parsed)
+      // console.log(parsed)
       if (parsed.tag) {
         let newEl = document.createElement(parsed.tag)
         if (parsed.id) newEl.id = parsed.id
@@ -180,7 +180,7 @@ function handleCodeEl(rootEl, codeEl) {
         if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
         if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) newEl.setAttribute(k, v === true ? '' : v)
         codeWrapper.remove()
-        console.log(target)
+        // console.log(target)
       }
     }
   }
@@ -340,12 +340,12 @@ function structureContent() {
     attrs.remove()
   })
 
-  console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
-  console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   restructured.querySelectorAll('section').forEach(section => {
     
@@ -468,7 +468,7 @@ function structureContent() {
     }
     */
 
-    console.log(section)
+    // console.log(section)
     if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
       let wrapper = document.createElement('section')
       wrapper.className = 'columns wrapper'
@@ -662,7 +662,7 @@ function computeStickyOffsets(root) {
               stickyElems[i].style.top = `${Math.floor(priorTop + bcrPrior.height)}px`
               stickyElems[i].style.zIndex = stickyElems.length - i
             } else {
-              console.log('no style', stickyElems[i])
+              // console.log('no style', stickyElems[i])
             }
             break
           }
@@ -678,7 +678,7 @@ let currentActiveParagraph
 
 function observeVisible(setActiveParagraph = false) {
 
-  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph}`)
+  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph}`)
 
   let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
@@ -713,7 +713,7 @@ function observeVisible(setActiveParagraph = false) {
     }
       
     if (currentActiveParagraph !== priorActiveParagraph) {
-      console.log('activeParagraph', currentActiveParagraph)
+      // console.log('activeParagraph', currentActiveParagraph)
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 
         document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))

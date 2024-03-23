@@ -227,7 +227,7 @@
 
 
   function onIiifDrag(dragEvent: DragEvent) {
-    console.log('onIiifDrag')
+    // console.log('onIiifDrag')
     dragEvent.dataTransfer?.setData('text/uri-list', `${manifest.value.id}?manifest=${manifest.value.id}`)
   }
 

@@ -278,7 +278,7 @@
     
       watch(layerObjs, async () => {
         let _layerObjs = await Promise.all(layerObjs.value)
-        if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
+        // if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
           .filter(item => item.geojson && item.preferGeojson)
@@ -374,7 +374,6 @@
       }
     
       async function initMap() {
-        console.log(toRaw(props))
         zoom.value = props.zoom
 
         let center: L.LatLng
@@ -402,10 +401,9 @@
           // mapEl?.replaceWith(newMapEl)
         }
 
-        console.log(`initMap: center=${center} zoom=${zoom.value}`)
+        // console.log(`initMap: center=${center} zoom=${zoom.value}`)
         if (!mapEl.value) return
         if (props.gestureHandling === true) {
-          console.log('add gestureHandling')
           L.Map.addInitHook('addHandler', 'gestureHandling', GestureHandling)
         }
         mapEl.value.style.cursor = 'default'
@@ -425,7 +423,6 @@
           gestureHandling: props.gestureHandling === true,
           layers: [_basemaps[0][1] as L.Layer]
         }
-        console.log(mapOptions)
         map.value = L.map(mapEl.value, mapOptions)
   
         if (_basemaps.length > 1 || Object.keys(geoJSONs.value || {}).length > 1)
@@ -578,7 +575,7 @@
           let geoJsonLayers = Object.keys(geoJSONs.value || {})
           let numWarpedMapLayers = warpedMapLayers.value ? warpedMapLayers.value.length : 0
     
-          console.log(`updateMap: geoJsonLayers=${geoJsonLayers.length} warpedMapLayers=${numWarpedMapLayers}`)
+          // console.log(`updateMap: geoJsonLayers=${geoJsonLayers.length} warpedMapLayers=${numWarpedMapLayers}`)
     
           if (!layerControl.value && (
               (geoJsonLayers.length > 1 || geoJsonLayers.length === 1 && geoJsonLayers[0] !== 'Locations') ||

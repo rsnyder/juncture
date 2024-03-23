@@ -69,7 +69,6 @@ module.exports = {
       return window.location.origin;
     },
     input() { 
-      console.log(this.items[0])
       return this.items[0] && this.items[0].file || this.items[0].url
     }
   },

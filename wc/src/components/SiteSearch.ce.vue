@@ -64,7 +64,6 @@
   onMounted(() => init())
 
   function open(evt:MouseEvent) {
-    console.log('open', evt)
     evt.preventDefault()
     isVisible.value = true
   }

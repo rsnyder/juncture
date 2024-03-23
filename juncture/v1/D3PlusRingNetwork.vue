@@ -54,7 +54,6 @@ module.exports = {
     },
     methods: {
         init() {
-            console.log(this.items, this.item)
             var links;
             fetch(this.item.url).then(resp => resp.text())
             .then(delimitedDataString => {

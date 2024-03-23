@@ -61,7 +61,7 @@
   const isPlaying = ref(false)
 
   watch (host, async () => {
-    console.log(`audio: type=html5 src=${props.src}`)
+    // console.log(`audio: type=html5 src=${props.src}`)
     if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
     addInteractionHandlers()
     EventBus.on('seekto', (evt) => seekTo(evt.start, evt.end))
@@ -112,7 +112,7 @@
           if (imageEl) {
             let start = path[platAtIdx+1]
             let end = path.length > platAtIdx + 1 ? path[platAtIdx+2] : null
-            console.log(`Found play link: ${start} ${end}`)
+            // console.log(`Found play link: ${start} ${end}`)
             anchorElem.classList.add('play')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-play', end ? `${start} ${end}` : start)
@@ -191,7 +191,7 @@
     // console.log(`seekTo: start=${start} end=${end}`)
     let startSecs = hmsToSeconds(start)
     let endSecs = end ? hmsToSeconds(end) + 1 : -1
-    console.log(`seekTo: start=${startSecs} end=${endSecs} isMuted=${isMuted.value} forceMuteOnPlay=${forceMuteOnPlay}`)
+    // console.log(`seekTo: start=${startSecs} end=${endSecs} isMuted=${isMuted.value} forceMuteOnPlay=${forceMuteOnPlay}`)
 
     // clear delayed pause
     if (timeoutId) {

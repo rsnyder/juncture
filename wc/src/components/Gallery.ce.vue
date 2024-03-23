@@ -56,7 +56,7 @@
     }
   })
   const userCanUpdateRepo = ref(false)
-  watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
+  // watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
 
   const manifestUrls = ref<string[]>([])
   watch(manifestUrls, async (manifestUrls) => {
@@ -243,7 +243,7 @@
   })
 
   async function isCollaborator(owner: string, repo: string, username: string, token: string) {
-    console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    // console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
     let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
     let resp = await fetch(url, {
       headers: {

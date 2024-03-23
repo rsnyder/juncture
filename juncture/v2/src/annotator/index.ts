@@ -50,7 +50,7 @@ export class Annotator {
       this.sha = ghFile.sha
     }
   
-    console.log(`Adding ${annotations.length} annotations`)
+    // console.log(`Adding ${annotations.length} annotations`)
     this.annotorious.setAnnotations(annotations)
     if (this.annotorious.readOnly) {
       annotations.forEach((anno: any) => {

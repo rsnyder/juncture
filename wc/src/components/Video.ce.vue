@@ -69,7 +69,6 @@
 
   watch (host, async () => {
     let videoType = isYouTube.value ? 'youtube' : isVimeo.value ? 'vimeo' : 'html5'
-    console.log(`video: type=${videoType} src=${props.src}`)
     if (videoType === 'html5' && !manifest.value && props.src) manifest.value = await getManifest(props.src)
     addInteractionHandlers()
     EventBus.on('seekto', (evt) => seekTo(evt.start, evt.end))
@@ -257,7 +256,7 @@
     // console.log(`seekTo: start=${start} end=${end}`)
     let startSecs = hmsToSeconds(start)
     let endSecs = end ? hmsToSeconds(end) + 1 : -1
-    console.log(`seekTo: start=${startSecs} end=${endSecs} isMuted=${isMuted.value} forceMuteOnPlay=${forceMuteOnPlay}`)
+    // console.log(`seekTo: start=${startSecs} end=${endSecs} isMuted=${isMuted.value} forceMuteOnPlay=${forceMuteOnPlay}`)
 
     // clear delayed pause
     if (timeoutId) {

@@ -103,7 +103,6 @@
     function parseSlot() {
       let items = Array.from(host.value.querySelectorAll('li'))
         .map((li: any) => {
-          console.log('li', li)
           const a = li.querySelector('a') as HTMLAnchorElement
           let label = a.innerText.trim()
           let icon = (li.querySelector('svg') as SVGElement)?.outerHTML

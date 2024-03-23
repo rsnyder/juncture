@@ -106,7 +106,6 @@ module.exports = {
         return item
       })       
       .map(item => {
-        console.log(item.manifest)
         if (item.manifest) return fetch(item.manifest)
         else if (item.url) {
           let data = {};

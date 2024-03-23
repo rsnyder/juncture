@@ -126,7 +126,6 @@ const contentSource = {
   ref: window.config?.github?.source?.branch,
   baseUrl: `https://raw.githubusercontent.com/${window.config.owner}/${window.config.repo}/${window.config.branch}/`
 }
-console.log('contentSource', contentSource)
 const siteConfig = {}
 const isJuncture = true
 const qargs = {}
@@ -189,7 +188,6 @@ module.exports = {
   }),
   computed: {
     isAuthenticated() {
-      console.log('isAuthenticated', localStorage.getItem('gh-auth-token'))
       return localStorage.getItem('gh-auth-token') !== undefined 
     },
     viewerStyle() { return { 
@@ -235,7 +233,6 @@ module.exports = {
     })
     this.ghToken = localStorage.getItem('gh-auth-token')
     if (!this.ghToken) this.ghToken = await this.getGhUnscopedToken()
-    console.log('ghToken', this.ghToken)
     this.parseEssay()
   },
   methods: {

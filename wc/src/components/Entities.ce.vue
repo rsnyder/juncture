@@ -26,7 +26,7 @@
   })
 
   const entities = ref<any>({})
-  watch(entities, (entities) => { console.log(toRaw(Object.values(entities).map(e => `${e.label}`))) })
+  // watch(entities, (entities) => { console.log(toRaw(Object.values(entities).map(e => `${e.label}`))) })
 
   onMounted(() => {
     EventBus.on('video-at-time', (evt) => { 

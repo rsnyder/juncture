@@ -43,7 +43,7 @@ export class Annotator {
           anno.id = anno.id.split('/').filter((pe:string) => pe).pop()
           return anno
         })
-        console.log(`Adding ${resp.annotations.length} annotations`)
+        // console.log(`Adding ${resp.annotations.length} annotations`)
       }
     }
     this.annotorious.setAnnotations(annotations)
@@ -74,7 +74,7 @@ export class Annotator {
   }
 
   toggleVisibility(evt:MouseEvent) {
-    console.log('toggleVisibility')
+    // console.log('toggleVisibility')
     if (evt) evt.stopPropagation()
     this.setVisible(!this.visible)
   }
@@ -113,7 +113,7 @@ export class Annotator {
   async createAnnotation(anno:any) {
     anno.id = sha256(anno.id).slice(0,8)
     anno.target.id = this.imageId
-    console.log('createAnnotation', anno)
+    // ('createAnnotation', anno)
     let resp = await fetch(`${annotationsEndpoint}/annotation/`, {
       method: 'POST',
       headers: {
@@ -127,14 +127,14 @@ export class Annotator {
       let annotation = await resp.json()
       this.annotorious.addAnnotation(annotation)
     } else {
-      console.log(`createAnnotation: unexpected resp_code=${resp.status}`)
+      // console.log(`createAnnotation: unexpected resp_code=${resp.status}`)
     }
   }
 
   async updateAnnotation(anno:any) {
     anno.target.id = this.imageId
     let url = `${annotationsEndpoint}/annotation/${this.base}/${this.imageId}/${anno.id.split('/').pop()}/`
-    console.log(`updateAnnotation: url=${url}`)
+    // console.log(`updateAnnotation: url=${url}`)
     let resp = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -145,7 +145,7 @@ export class Annotator {
       body: JSON.stringify(anno)
     })
     if (resp.status !== 202) {
-      console.log(`updateAnnotation: unexpected resp_code=${resp.status}`)
+      // console.log(`updateAnnotation: unexpected resp_code=${resp.status}`)
     }
   }
 
@@ -155,7 +155,7 @@ export class Annotator {
       headers: {Authorization: `Bearer: ${this.ghAuthToken}`}
     })
     if (resp.status !== 204) {
-      console.log(`deleteAnnotation: unexpected resp_code=${resp.status}`)
+      // console.log(`deleteAnnotation: unexpected resp_code=${resp.status}`)
     }
   }
 

@@ -59,7 +59,6 @@ module.exports = {
   mounted() { this.init() },
   methods: {
     init() {
-      console.log(this.input)
       //check if svg
       if (this.input?.split('.').pop() == 'svg') {
         fetch(this.input.url).then((resp) => resp.text())
@@ -76,9 +75,6 @@ module.exports = {
   watch: {
     items() {
       this.init()
-    },
-    input() {
-      console.log(this.input)
     }
   }
 }

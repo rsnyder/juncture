@@ -11,9 +11,7 @@
     github: JSON.parse(`{{ site.github }}`),
     page: {
       dir: `{{ page.dir }}`,
-      name: `{{ page.name }}`,
-      path: `{{ page.path }}`,
-      url: `{{ page.url }}`
+      name: `{{ page.name }}`
     }
   };
   window.options = `
@@ -42,4 +40,5 @@
   {{ content }}
 </main>
 <script src="{{ site.baseurl }}/wc/dist/js/index.js" type="module"></script>
+<script src="{{ site.baseurl }}/juncture/v2/dist/js/index.js" type="module"></script>
 <script src="{{ site.baseurl }}/index.js" type="module"></script>

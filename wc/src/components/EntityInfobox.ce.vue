@@ -11,7 +11,7 @@
     text: { type: String }
   })
   const qid = ref(props.qid)
-  watch(qid, (qid) => { console.log('entityInfobox', qid, host.value?.textContent) })
+  // watch(qid, (qid) => { console.log('entityInfobox', qid, host.value?.textContent) })
 
   const text = ref (props.text)
 
@@ -21,7 +21,6 @@
   })
 
   onMounted(() => {
-    console.log('mounted', qid.value, host.value?.textContent)
     text.value = props.text || host.value?.textContent
   })
 

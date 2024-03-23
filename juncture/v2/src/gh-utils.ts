@@ -71,7 +71,7 @@ export class GithubClient {
       
     async createRepository({org=null, name='', description='', auto_init=true}): Promise<any> {
       let url = org ? `https://api.github.com/orgs/${org}/repos` : 'https://api.github.com/user/repos'
-      console.log(`createUserRepository: org=${org} name=${name} description=${description} auto_init=${auto_init} url=${url}`)
+      // console.log(`createUserRepository: org=${org} name=${name} description=${description} auto_init=${auto_init} url=${url}`)
       let resp = await fetch(url, {
         method: 'POST', 
         body: JSON.stringify({name, description, auto_init}), 
@@ -104,7 +104,7 @@ export class GithubClient {
     }
   
     async getSha(acct:string, repo:string, path:string, ref:string): Promise<any> {
-      console.log(`getSha: acct=${acct} repo=${repo} path=${path} ref=${ref}`)
+      // console.log(`getSha: acct=${acct} repo=${repo} path=${path} ref=${ref}`)
       let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
       if (ref) url += `?ref=${ref}`
       let resp:any = await fetch(url, { headers: {Authorization: `Token ${this.authToken}`} })
@@ -118,7 +118,7 @@ export class GithubClient {
       let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
       let shaKey = `${acct}/${repo}/${ref}/${path}`
       sha = sha || this._shas[shaKey] || await this.getSha(acct, repo, path, ref)
-      console.log(`putFile: acct=${acct} repo=${repo} path=${path} ref=${ref} sha=${sha} isBinaryString=${isBinaryString}`)
+      // console.log(`putFile: acct=${acct} repo=${repo} path=${path} ref=${ref} sha=${sha} isBinaryString=${isBinaryString}`)
       // let payload:any = { message: 'API commit', content: btoa(unescape(encodeURIComponent(content))) }
       let payload:any = { 
         message: 'API commit', 
@@ -132,13 +132,13 @@ export class GithubClient {
         sha = body.content.sha
         this._shas[shaKey] = sha
       } else {
-        console.log(resp)
+        // console.log(resp)
       }
       return {status:resp.status, statusText:resp.statusText, sha}
     }
   
     async deleteFile(acct:string, repo:string, path:string, ref:string, sha:string=''): Promise<any> {
-      console.log(`deleteFile: acct=${acct} repo=${repo} path=${path} sha=${sha}`)
+      // console.log(`deleteFile: acct=${acct} repo=${repo} path=${path} sha=${sha}`)
       sha = sha || await this.getSha(acct, repo, path, ref)
       let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
       let payload = { message: 'API commit', sha }

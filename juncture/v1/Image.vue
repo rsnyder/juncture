@@ -418,7 +418,7 @@ module.exports = {
       }
     },
     async loadAnnotations() {
-      // console.log(`loadAnnotations: mdir=${this.mdDir} currentItemSourceHash=${this.currentItemSourceHash}`)
+      console.log(`loadAnnotations: mdir=${this.mdDir} currentItemSourceHash=${this.currentItemSourceHash}`)
       let annosFile = `${this.currentItemSourceHash}.json`
       let path = `${this.mdDir}/${annosFile}`
       this.getFile(path, this.contentSource.acct, this.contentSource.repo, this.contentSource.ref).then(annos => {
@@ -440,12 +440,25 @@ module.exports = {
       acct = acct || window.config?.github?.owner_name, 
       repo = repo || window.config?.github?.repository_name
       branch = branch || window.config?.github?.source?.branch
-      // console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path='${path}`)
+      console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path='${path} token=${this.ghToken}`)
       let url = `https://api.github.com/repos/${acct}/${repo}/contents${path}?ref=${branch}`
-      let resp = await fetch(url)
-      if (resp.ok) {
+      if (this.ghToken) return null
+      let resp = this.ghToken
+        ? await fetch(url, { headers: {Authorization: `Token ${this.ghToken}`} })
+        : await fetch(url)
+      if (resp.status === 222) {
         resp = await resp.json()
         return { sha: resp.sha, content: JSON.parse(decodeURIComponent(escape(atob(resp.content)))) }
+      } else if (resp.status === 200) { // 403
+        console.log(`getFile: rate limit exceeded`)
+        url = `https://raw.githubusercontent.com/${acct}/${repo}/${branch}/${path}`
+        resp = await fetch(url)
+        if (resp.ok) {
+          resp = await resp.json()
+          return { sha: null, content: resp }
+        } else {
+          return null
+        }
       } else {
         return null
       }

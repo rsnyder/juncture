@@ -6,16 +6,14 @@
   const root = ref<HTMLElement | null>(null)
   const details = ref<HTMLElement | null>(null)
   watch(details, () => { 
-    console.log(details.value)
     details.value?.addEventListener('sl-hide', (evt) => { 
-      console.log('hide', evt) 
       evt.stopPropagation()
       evt.preventDefault()
     })
   })
 
   const manifest = ref<any>()
-  watch(manifest, (manifest) => { console.log(toRaw(manifest)) })
+  // watch(manifest, (manifest) => { console.log(toRaw(manifest)) })
   
   const metadata = computed(() => manifest.value?.metadata
     ? Object.fromEntries(

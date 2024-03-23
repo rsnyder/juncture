@@ -446,10 +446,10 @@ module.exports = {
       let resp = this.ghToken
         ? await fetch(url, { headers: {Authorization: `Token ${this.ghToken}`} })
         : await fetch(url)
-      if (resp.status === 222) {
+      if (resp.status === 200) {
         resp = await resp.json()
         return { sha: resp.sha, content: JSON.parse(decodeURIComponent(escape(atob(resp.content)))) }
-      } else if (resp.status === 200) { // 403
+      } else if (resp.status === 403) {
         console.log(`getFile: rate limit exceeded`)
         url = `https://raw.githubusercontent.com/${acct}/${repo}/${branch}/${path}`
         resp = await fetch(url)

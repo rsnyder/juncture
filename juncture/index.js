@@ -29,15 +29,13 @@ const isJunctureV1 = Array.from(document.querySelectorAll('param'))
   .find(param =>
     Array.from(param.attributes).find(attr => attr.name.indexOf('ve-') === 0)
   ) !== undefined
-
+  
 function _createJunctureV1App() {
   
   let main = document.querySelector('main')
   let tmp = new DOMParser().parseFromString(main.innerHTML, 'text/html').children[0].children[1]
   let img = tmp.querySelector('a img')
   if (img?.src.indexOf('ve-button') > -1) img.parentElement?.parentElement?.remove()
-
-  // Array.from(tmp.querySelectorAll('p > param')).forEach(param => param.parentElement?.after(param))
 
   Array.from(tmp.querySelectorAll('[data-id]'))
     .forEach(seg => {
@@ -51,13 +49,7 @@ function _createJunctureV1App() {
       seg.removeAttribute('data-id')
       seg.className = ''
       wrapper.appendChild(seg.cloneNode(true))
-      /*
-      let sib = seg.nextSibling
-      while (sib && sib.nodeName === 'PARAM') {
-        wrapper.appendChild(sib)
-        sib = sib.nextSibling
-      }
-      */
+
       while (seg.nextSibling) {
         let sib = seg.nextSibling
         if (sib.nodeName !== 'PARAM') break
@@ -71,26 +63,12 @@ function _createJunctureV1App() {
     if (div.firstChild?.tagName === 'PARAM' && div.textContent?.trim() == '') div.replaceWith(div.firstChild)
   })
 
-  /*
-  Array.from(tmp.querySelectorAll('div'))
-    .filter(div => {
-      let content = div.textContent?.trim()
-      return content === '' || content === '#'
-    })
-    .forEach(div => div.remove())
-  */
-
   let html = tmp.innerHTML
   // console.log('createJunctureV1App', new DOMParser().parseFromString(html, 'text/html').firstChild.children[1])
 
   Array.from(document.body.children).forEach(child => {
     if (child.tagName !== 'VE-HEADER') document.body.removeChild(child)
   })
-
-  main = document.createElement('div')
-  main.id = 'vue'
-  main.innerHTML = `<juncture-v1 :input-html="html"></juncture-v1>`
-  document.body.appendChild(main)
 
   window.Vue.directive('highlightjs', {
     deep: true,
@@ -113,6 +91,12 @@ function _createJunctureV1App() {
       })
     }
   })
+
+  main = document.createElement('div')
+  main.id = 'vue'
+  main.innerHTML = `<juncture-v1 :input-html="html"></juncture-v1>`
+  document.body.appendChild(main)
+
   new window.Vue({
     el: '#vue',
     components: {

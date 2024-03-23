@@ -335,10 +335,10 @@ function copyTextToClipboard(text: string) {
 
 <template>
 
-<div ref="root" class="h-[100%] image flex flex-col relative rounded overflow-hidden shadow-lg">
+<div ref="root" class="image flex flex-col relative rounded overflow-hidden shadow-lg">
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
   <div v-if="tileSource" ref="osdEl" id="osd" class="w-full h-[100%]" role="img" :aria-label="caption" :alt="caption"></div>
-  <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">
+  <div v-if="tileSource && caption && !noCaption" class="flex items-center ml-2 h-10">
     <!--<div class="font-bold text-xl mb-2" v-html="caption"></div> -->
     <mdp-caption v-if="manifest && !noCaption" :manifest="manifest" :caption="caption"></mdp-caption>
     <div v-if="coords"

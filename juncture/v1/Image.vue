@@ -437,9 +437,10 @@ module.exports = {
       })
     },
     async getFile(path, acct, repo, branch) {
-      acct = acct || window.config?.github?.owner_name, 
-      repo = repo || window.config?.github?.repository_name
-      branch = branch || window.config?.github?.source?.branch
+      let source = window.config?.source || {}
+      acct = acct || source.owner
+      repo = repo || source.repository
+      branch = branch || source.branch
       // console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path='${path} token=${this.ghToken}`)
       let url = `https://api.github.com/repos/${acct}/${repo}/contents${path}?ref=${branch}`
       if (this.ghToken) return null
@@ -463,9 +464,10 @@ module.exports = {
       }
     },
     async putFile(path, content, acct, repo, branch, message) {
-      acct = acct || this.contentSource.acct || window.config?.github?.owner_name
-      repo = repo || this.contentSource.repo || window.config?.github?.repository_name
-      branch = branch || this.contentSource.ref || window.config?.github?.source?.branch
+      let source = window.config?.source || {}
+      acct = acct || source.owner
+      repo = repo || source.repository
+      branch = branch || source.branch
       message = message || 'API Commit'
       if (acct) {
         let existing = await this.getFile(path, acct, repo, branch)

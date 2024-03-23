@@ -121,10 +121,10 @@ const componentPrefix = 've1-'
 
 const contentSource = {
   basePath: window.config.baseurl, 
-  acct: window.config?.github?.owner_name, 
-  repo: window.config?.github?.repository_name, 
-  ref: window.config?.github?.source?.branch,
-  baseUrl: `https://raw.githubusercontent.com/${window.config.owner}/${window.config.repo}/${window.config.branch}/`
+  acct: window.config?.source?.owner, 
+  repo: window.config?.source?.repository, 
+  ref: window.config?.source?.branch,
+  baseUrl: `https://raw.githubusercontent.com/${window.config?.source?.owner}/${window.config?.source?.repository}/${window.config?.source?.branch}/`
 }
 const siteConfig = {}
 const isJuncture = true
@@ -213,10 +213,10 @@ module.exports = {
     }
     this.path = path
     let pathIsDir = true
-    this.mdDir = window.config?.page?.dir
-      ? window.config?.page?.dir.length === 1
+    this.mdDir = window.config?.source?.dir
+      ? window.config.source.dir.length === 1
         ? '/'
-        : window.config?.page?.dir.slice(0,-1)
+        : window.config.source.dir.slice(0,-1)
       : '/'
     this.mdPath = pathIsDir ? path === '/' ? '/README.md' : `${path}/README.md` : `${path}.md`
     // Initialize Markdown source viewer

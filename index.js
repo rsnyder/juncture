@@ -761,16 +761,19 @@ function readMoreSetup() {
 
 function init() {
   // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
-  window.config = {...parse(window.options || ''), ...(window.site || {}), ...(window.config || {}), ...{isJunctureV1}}
+  window.config = {...parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {}), ...{isJunctureV1}}
   structureContent()
   setMeta()
   console.log(window.config)
   
-  if (isJunctureV1) createJunctureV1App()
-  else setTimeout(() => {
-    observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
-    readMoreSetup()
-  }, 0)
+  if (isJunctureV1) {
+    createJunctureV1App()
+  } else {
+    setTimeout(() => {
+      observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
+      readMoreSetup()
+    }, 0)
+  }
 
   readMoreSetup
 }

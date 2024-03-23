@@ -52,7 +52,7 @@
   const user = ref<any>(null)
   watch(user, async () => {
     if (config.value?.github && user.value?.token) {
-      userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, user.value.token)
+      userCanUpdateRepo.value = await isCollaborator(config.value?.source?.owner, config.value?.source?.repository, user.value.username, user.value.token)
     }
   })
   const userCanUpdateRepo = ref(false)

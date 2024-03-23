@@ -68,17 +68,16 @@ favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASED
 template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CONTENT_ROOT}/_layouts/default.html') else f'{BASEDIR}/_layouts/default.html'
 html_template = open(template_path, 'r').read()
 html_template = re.sub(r'https:\/\/.+\/mdpress\/', '/', html_template)
+html_template = html_template.replace('https://www.mdpress.io', '')
 html_template = html_template.replace('https://mdpress.io', '')
 
 if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
-html_template = html_template.replace('{{ site.github }}', 
-  json.dumps({
-    'owner_name': GH_ACCT,
-    'repository_name': GH_REPO,
-    'source': {'branch': GH_BRANCH},
-  }))
+if GH_ACCT: html_template = html_template.replace('{{ site.github.owner_name }}', GH_ACCT)
+if GH_REPO: html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPO)
+if GH_BRANCH: html_template = html_template.replace('{{ site.github.source.branch }}', GH_BRANCH)
+
 html_template = html_template.replace('{%- seo -%}', '')
 
 def html_from_markdown(md, baseurl):
@@ -172,7 +171,8 @@ async def serve(path: Optional[str] = None):
       content = content.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:
-      local_file_path = local_file_path.replace(CONTENT_ROOT, '').split('/')[1:]
+      local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']
+      logger.info(local_file_path)
       md_name = local_file_path[-1]
       md_dir = '/' if len(local_file_path) == 1 else f'/{"/".join(local_file_path[:-1])}/'
     logger.info(f'md_dir={md_dir} md_name={md_name}')
@@ -211,6 +211,6 @@ if __name__ == '__main__':
   os.environ['GH_REPO'] = str(args['gh_repo'])
   os.environ['GH_BRANCH'] = str(args['gh_branch'])
 
-  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]}  LOCAL_WC_PORT_JUNCTURE={os.environ["LOCAL_WC_PORT_JUNCTURE"]}')
+  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} LOCAL_WC_PORT_JUNCTURE={os.environ["LOCAL_WC_PORT_JUNCTURE"]}')
 
   uvicorn.run('serve:app', port=args['port'], log_level='info', reload=args['reload'])

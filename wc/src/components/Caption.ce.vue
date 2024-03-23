@@ -114,8 +114,8 @@
     gap: 1em;
   }
   .label {
-    font-size: 1.4em;
-    font-weight: bold;
+    font-size: 1em;
+    font-weight: 500;
   }
   .summary {
     font-size: 1em;
@@ -140,8 +140,14 @@
     max-width: 300px;
   }
   sl-dropdown svg {
+    width: 1em;
+    height: 1em;
+    cursor: pointer;
+    fill: darkgray;
+  }
+  sl-dropdown svg:hover {
     width: 1.2em;
     height: 1.2em;
-    cursor: pointer;
+    fill: #333;
   }
 </style>

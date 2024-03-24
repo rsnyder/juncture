@@ -1,4 +1,4 @@
-import { isJunctureV1, createJunctureV1App } from './juncture/index.js'
+import { isJunctureV1, createJunctureV1App } from './v1/index.js'
 import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 function isNumeric(arg) { return !isNaN(arg) }

@@ -19,10 +19,10 @@ const dependencies = [
     'https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js',
     'https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js',
     'https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js',
-    'https://jstor-labs.github.io/juncture/js/L.Control.Opacity.js',
-    'https://jstor-labs.github.io/juncture/js/leaflet-fa-markers.js',
-    'https://jstor-labs.github.io/juncture/js/heatmap.min.js',
-    'https://jstor-labs.github.io/juncture/js/leaflet-heatmap.js'
+    'https://www.mdpress.io/v1/lib/L.Control.Opacity.js',
+    'https://www.mdpress.io/v1/lib/leaflet-fa-markers.js',
+    'https://www.mdpress.io/v1/lib/heatmap.min.js',
+    'https://www.mdpress.io/v1/lib/leaflet-heatmap.js'
 ]
 
 // Some leaflet baselayers

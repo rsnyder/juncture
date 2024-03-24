@@ -71,8 +71,8 @@ html_template = re.sub(r'https:\/\/.+\/mdpress\/', '/', html_template)
 html_template = html_template.replace('https://www.mdpress.io', '')
 html_template = html_template.replace('https://mdpress.io', '')
 
-if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
-if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/juncture/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
+if LOCAL_WC: html_template = html_template.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
+if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
 if GH_ACCT: html_template = html_template.replace('{{ site.github.owner_name }}', GH_ACCT)
 if GH_REPO: html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPO)
@@ -168,7 +168,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = content.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
+      content = content.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:
       local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']

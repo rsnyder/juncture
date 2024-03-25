@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-Python dev server for Plant Humanities Lab site.
+Python dev server for Juncture.
 Dependencies: bs4 fastapi html5lib Markdown pymdown-extensions PyYAML uvicorn
 '''
 
@@ -172,10 +172,9 @@ async def serve(path: Optional[str] = None):
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:
       local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']
-      logger.info(local_file_path)
       md_name = local_file_path[-1]
       md_dir = '/' if len(local_file_path) == 1 else f'/{"/".join(local_file_path[:-1])}/'
-    logger.info(f'md_dir={md_dir} md_name={md_name}')
+    logger.debug(f'md_dir={md_dir} md_name={md_name}')
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
     content = content.replace('{{ page.dir }}', md_dir)
     content = content.replace('{{ page.name }}', md_name)

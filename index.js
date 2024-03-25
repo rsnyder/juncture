@@ -218,7 +218,7 @@ function structureContent() {
 
   // For compatibility with Juncture V2
   Array.from(main?.querySelectorAll('p'))
-  .filter(p => /^\.\w+-\w+\S/.test(p.textContent.trim()))
+  .filter(p => /^\.\w+-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim()))
   .forEach(p => {
     let codeEl = document.createElement('code')
     let replacementText = p.innerHTML.trim().slice(1).replace(/\n\s*-\s+/g, '\n')

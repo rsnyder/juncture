@@ -10,6 +10,7 @@
 - [Tabs](tabs)
 - [Juncture 1](juncture1)
 - [Juncture 1 simulated](juncture1-sim)
+- [Juncture 2](juncture2)
 - [Sticky](sticky)
 - [Header](header)
 - [Footer](footer)

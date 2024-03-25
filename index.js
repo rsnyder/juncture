@@ -121,7 +121,7 @@ function handleCodeEl(rootEl, codeEl) {
       : 'mdpress'
     if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
-      if (isInline) {
+      if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
         else parsed.style = {display: 'inline-block'}
       }

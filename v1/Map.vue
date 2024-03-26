@@ -19,6 +19,7 @@ const dependencies = [
     'https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js',
     'https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js',
     'https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js',
+    'https://cdn.jsdelivr.net/npm/@allmaps/leaflet/dist/bundled/allmaps-leaflet-1.9.umd.js',
     'https://www.mdpress.io/v1/lib/L.Control.Opacity.js',
     'https://www.mdpress.io/v1/lib/leaflet-fa-markers.js',
     'https://www.mdpress.io/v1/lib/heatmap.min.js',
@@ -175,7 +176,6 @@ module.exports = {
     },
     methods: {
         init() {
-            // console.log(this.$options.name, this.mapDef, this.items)
             
             if (this.viewerIsActive) {
                 this.$nextTick(() => {
@@ -314,7 +314,7 @@ module.exports = {
                     if (layerId === 'heatmap') {
                         this.addHeatmap(layerDef)
                     } else {
-                        const layer = L.tileLayer(`https://allmaps.xyz/maps/${layerDef['allmaps-id']}/{z}/{x}/{y}.png`, { maxZoom: 19, attribution: 'Allmaps' })
+                        let layer = new Allmaps.WarpedMapLayer(`https://annotations.allmaps.org/maps/${layerDef['allmaps-id']}`)
                         next.push({id: layerId, label: layerDef.label || layerDef.title, layer})
                         layer.options.id = layerDef.id
                         layer.options.label = layerDef.label || layerDef.title

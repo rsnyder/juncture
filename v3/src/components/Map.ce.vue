@@ -72,6 +72,7 @@
         data: { type: String },
         entities: { type: String },
         essayBase: { type: String },
+        fit: { type: Boolean, default: false},
         gestureHandling: { type: Boolean, default: isMobile() },
         ghDir: { type: String},
         marker: { type: Boolean },
@@ -346,23 +347,19 @@
         
         warpedMapLayers.value = _layerObjs
           .filter(ls => ls.allmaps)
-          .map(ls => {
-            // @ts-ignore
-            let layer = new WarpedMapLayer(`https://annotations.allmaps.org/images/${ls.allmaps}`)
-            return {
-              name: ls.layer || 'Image layer',
-              type: 'allmaps',
-              disabled: ls.disabled,
-              opacity: ls.opacity || 100,
-              layer
-            }
-        })
+          .map(ls => ({
+            name: ls.layer || 'Image layer',
+            type: 'allmaps',
+            disabled: ls.disabled,
+            opacity: ls.opacity || 100,
+            layer: new WarpedMapLayer(`https://annotations.allmaps.org/maps/${ls.allmaps}`)
+        }))
 
       })
     
       watch(geoJSONs, () => updateMap())
-      watch(warpedMapLayers, () => updateMap())
-      watch(map, () => updateMap())
+      // watch(warpedMapLayers, () => updateMap())
+      // watch(map, () => updateMap())
     
       function init() {
         entities.value = props.entities ? props.entities.split(/\s+/).filter(qid => qid) : []
@@ -559,16 +556,21 @@
       }
 
       let fitBounds = () => {
-        let coords = Object.values(geoJSONs.value).map((item:any) => {
-          return item[0].features.map((feature:any) => feature.geometry.coordinates)
-        }).flat()
+        let coords = Object.values(geoJSONs.value)
+        .map((item:any) => item[0])
+        .flatMap((item:any) => item.features || item)
+        .flatMap((feature:any) =>
+          feature.bbox
+            ? [feature.bbox.slice(0,2), feature.bbox.slice(2)]
+            : feature.geometry.type === 'Point' ? [feature.geometry.coordinates] : feature.geometry.coordinates.flat()
+        )
         if (coords.length > 1) map.value?.fitBounds(coords.map(lc => [lc[1], lc[0]]), {padding: [100, 100]})
       }
     
       let mapUpdated = false
       function updateMap() {
         
-        // console.log(`updateMap: map=${map.value !== undefined} mapUpdated=${mapUpdated} geoJSONs=${geoJSONs.value?.length || 0} warpedMapLayers=${warpedMapLayers.value?.length || 0}`)
+        console.log(`updateMap: map=${map.value !== undefined} mapUpdated=${mapUpdated} geoJSONs=${geoJSONs.value?.length || 0} warpedMapLayers=${warpedMapLayers.value?.length || 0}`)
 
         if (map.value && geoJSONs.value && warpedMapLayers.value && !mapUpdated) {
           // mapUpdated = true
@@ -634,7 +636,7 @@
                 }
               })
           }
-          fitBounds()
+          if (props.fit) fitBounds()
         }    
       }
     
@@ -723,7 +725,7 @@
         let obj:any = {id}
         if (manifest.navPlace) obj.coords = manifest.navPlace.features[0].geometry.coordinates.map((val:number) => val.toFixed(5)).join(',')
         if (manifest.label) obj.label = manifest.label.en
-        if (manifest.summary) obj.description = manifest.summary.en[0]
+        if (manifest.summary) obj.description = manifest.summary?.en?.[0]
         if (manifest.thumbnail) obj.image = manifest.thumbnail[0].id
         return obj
       }

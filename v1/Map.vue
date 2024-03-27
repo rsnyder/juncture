@@ -106,6 +106,7 @@ module.exports = {
             opacity: undefined
         },
         markers: [],
+        warpedMapLayers: []
     }),
     computed: {
         // item() { return this.items.length > 0 ? this.items[0] : {} },
@@ -176,7 +177,7 @@ module.exports = {
     },
     methods: {
         init() {
-            
+
             if (this.viewerIsActive) {
                 this.$nextTick(() => {
                     this.createMap()
@@ -315,11 +316,13 @@ module.exports = {
                         this.addHeatmap(layerDef)
                     } else {
                         let layer = new Allmaps.WarpedMapLayer(`https://annotations.allmaps.org/maps/${layerDef['allmaps-id']}`)
-                        next.push({id: layerId, label: layerDef.label || layerDef.title, layer})
+                        let warpedMapLayer = {id: layerId, label: layerDef.label || layerDef.title || `Overlay ${layerDef['allmaps-id']}`, layer}
+                        next.push(warpedMapLayer)
                         layer.options.id = layerDef.id
                         layer.options.label = layerDef.label || layerDef.title
                         layer.options.type = 'allmaps'
                         if (layerDef.active) layer.addTo(this.map)
+                        this.warpedMapLayers.push(warpedMapLayer)
                     }
                 }
             }
@@ -336,6 +339,26 @@ module.exports = {
                     { collapsed: true } //options
                 ).addTo(this.map)
                 this.controls.opacity = L.control.opacity(layers, { collapsed: true }).addTo(this.map)
+                Array.from(this.controls.opacity.getContainer().querySelectorAll('.leaflet-control-layers-overlays label'))
+                    .forEach((overlay) => {
+                        let label = overlay.children[0].textContent.trim()
+                        let warpedMapLayer
+                        this.warpedMapLayers?.forEach(item => {
+                            if (item.label === label) warpedMapLayer = item
+                        })
+                        if (warpedMapLayer) {
+                            let startingOpacity = warpedMapLayer.opacity || 75
+                            let rangeControl = overlay.children[1].children[0]
+                            rangeControl.value = startingOpacity
+                            warpedMapLayer.layer.setOpacity(startingOpacity / 100)
+                            rangeControl.addEventListener('input', (evt) => {
+                                evt.preventDefault()
+                                evt.stopPropagation()
+                                let opacity = parseInt(rangeControl.value)/100
+                                warpedMapLayer.layer.setOpacity(opacity)
+                            })
+                        }
+                    })
             } 
             this.tileLayers = next
         },

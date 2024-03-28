@@ -23,7 +23,8 @@ const dependencies = [
     'https://www.mdpress.io/v1/lib/L.Control.Opacity.js',
     'https://www.mdpress.io/v1/lib/leaflet-fa-markers.js',
     'https://www.mdpress.io/v1/lib/heatmap.min.js',
-    'https://www.mdpress.io/v1/lib/leaflet-heatmap.js'
+    'https://www.mdpress.io/v1/lib/leaflet-heatmap.js',
+    'https://cdn.jsdelivr.net/gh/rsnyder/Leaflet.SmoothWheelZoom/Leaflet.SmoothWheelZoom.js'
 ]
 
 // Some leaflet baselayers
@@ -192,12 +193,16 @@ module.exports = {
                 this.map = undefined
             }
             if (!this.map) {
+                console.log(window)
                 //this.$nextTick(() => {
                     // this.labelsLayer = L.layerGroup()
                     // this.baseLayer = L.tileLayer(...baseLayers[this.basemap])
                     this.tileLayers.basemap = this.basemap
                     this.map = L.map('map', {
                         center: this.center,
+                        scrollWheelZoom: false, // disable original zoom function
+                        smoothWheelZoom: true,  // enable smooth zoom 
+                        smoothSensitivity: 1,   // zoom speed. default is 1                        
                         zoom: this.zoom,
                         zoomSnap: 0.1,
                         maxZoom: this.maxZoom,

@@ -496,7 +496,10 @@ function structureContent() {
       let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
       mdpEntityInfobox.innerHTML = anchorElem.innerHTML
       if (qid) mdpEntityInfobox.setAttribute('qid', qid)
-      else {mdpEntityInfobox.setAttribute('file', path.slice(link.pathname.indexOf(window.config?.baseurl) === 0 ? 1 : 0).map(pe => pe.replace(/~/,'')).filter(pe => pe).join('/'))}
+      else {
+        let pathIdx = (window.config?.baseurl && link.pathname.indexOf(window.config?.baseurl) === 0) ? 1 : 0
+        mdpEntityInfobox.setAttribute('file', path.slice(pathIdx).map(pe => pe.replace(/~/,'')).filter(pe => pe).join('/'))
+      }
       anchorElem.replaceWith(mdpEntityInfobox)
     }
     // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`

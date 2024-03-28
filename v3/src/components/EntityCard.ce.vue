@@ -36,7 +36,7 @@
       entity.value = await getEntityFromWikidata(qid.value)
     } else {
       let _baseUrl = source.value?.owner
-        ? `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}/${source.value.dir}`
+        ? `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}/`
         : '/'
       let [mdEntity, yamlEntity] = await Promise.all([fetch(`${_baseUrl}${file.value}.md`), fetch(`${_baseUrl}${file.value}.yaml`)])
       let _entity = yamlEntity.ok ? yamlToEntity(await yamlEntity.text()) : {}

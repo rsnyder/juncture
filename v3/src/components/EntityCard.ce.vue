@@ -25,6 +25,7 @@
   const entity = ref<any>()
   // watch (entity, () => { console.log(toRaw(entity.value)) })
 
+  // const baseUrl = computed(() => (window as any).config?.baseUrl)
   const source = computed(() => (window as any).config?.source)
 
   onMounted(() => { getEntity() })
@@ -34,10 +35,10 @@
     if (qid.value) {
       entity.value = await getEntityFromWikidata(qid.value)
     } else {
-      let baseUrl = source.value?.owner
+      let _baseUrl = source.value?.owner
         ? `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}/${source.value.dir}`
         : '/'
-      let [mdEntity, yamlEntity] = await Promise.all([fetch(`${baseUrl}${file.value}.md`), fetch(`${baseUrl}${file.value}.yaml`)])
+      let [mdEntity, yamlEntity] = await Promise.all([fetch(`${_baseUrl}${file.value}.md`), fetch(`${_baseUrl}${file.value}.yaml`)])
       let _entity = yamlEntity.ok ? yamlToEntity(await yamlEntity.text()) : {}
       if (mdEntity.ok) _entity = { ..._entity, ...mdToEntity(await mdEntity.text()) }
       if (_entity.id) _entity = {...(await getEntityFromWikidata(_entity.id)), ..._entity }

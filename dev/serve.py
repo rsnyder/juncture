@@ -74,9 +74,9 @@ html_template = html_template.replace('https://mdpress.io', '')
 if LOCAL_WC: html_template = html_template.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
-if GH_ACCT: html_template = html_template.replace('{{ site.github.owner_name }}', GH_ACCT)
-if GH_REPO: html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPO)
-if GH_BRANCH: html_template = html_template.replace('{{ site.github.source.branch }}', GH_BRANCH)
+html_template = html_template.replace('{{ site.github.owner_name }}', GH_ACCT)
+html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPO)
+html_template = html_template.replace('{{ site.github.source.branch }}', GH_BRANCH)
 
 html_template = html_template.replace('{%- seo -%}', '')
 
@@ -138,7 +138,7 @@ async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
 
-  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'images', 'juncture', 'css', 'wc']:
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'images', 'v1', 'v2', 'v3', 'css']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
 
   elif ext:
@@ -194,8 +194,8 @@ if __name__ == '__main__':
   parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
   parser.add_argument('--wcport-juncture', type=int, default=5174, help='Port used by local Juncture WC server')
   parser.add_argument('--content', default=BASEDIR, help='Content root directory')
-  parser.add_argument('--gh-acct', help='Github account')
-  parser.add_argument('--gh-repo', help='Github repository')
+  parser.add_argument('--gh-acct', default='', help='Github account')
+  parser.add_argument('--gh-repo', default='', help='Github repository')
   parser.add_argument('--gh-branch', default='main', help='Github branch')
 
 

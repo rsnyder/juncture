@@ -489,17 +489,15 @@ function structureContent() {
   .forEach(anchorElem => {
     let link = new URL(anchorElem.href)
     let path = link.pathname.split('/').filter(p => p)
-    if (path[0] === 'zoom') {
-      anchorElem.classList.add('zoom')
-      anchorElem.setAttribute('rel', 'nofollow')
-    } else {
-      let lastPathElem = path[path.length-1]
-      if (/^Q\d+$/.test(lastPathElem)) {
-        let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
-        mdpEntityInfobox.innerHTML = anchorElem.innerHTML
-        mdpEntityInfobox.setAttribute('qid', lastPathElem)
-        anchorElem.replaceWith(mdpEntityInfobox)
-      }
+    if (path.length === 0) return
+    let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
+    let isEntityPath = path.find(pe => pe[0] === '~')
+    if (qid || isEntityPath) {
+      let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
+      mdpEntityInfobox.innerHTML = anchorElem.innerHTML
+      if (qid) mdpEntityInfobox.setAttribute('qid', qid)
+      else {mdpEntityInfobox.setAttribute('file', path.map(pe => pe.replace(/~/,'')).filter(pe => pe).join('/'))}
+      anchorElem.replaceWith(mdpEntityInfobox)
     }
     // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
   })
@@ -531,8 +529,7 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
-  // let restructuredHTML = restructured.outerHTML
-  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  // console.log('structureContent.output', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   main?.replaceWith(restructured)
   

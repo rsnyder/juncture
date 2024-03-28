@@ -1,60 +1,70 @@
 <script setup lang="ts">
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
-  import { Md5 } from 'ts-md5'
+  import { marked } from 'marked'
+  import * as yaml from 'js-yaml'
+
+  import { getEntity as getEntityFromWikidata } from '../utils'
 
   const props = defineProps({
+    file: { type: String },
     language: { type: String, default: 'en' },
     qid: { type: String }
   })
-  watch(props, () => { qid.value = props.qid })
+  watch(props, () => { 
+    if (props.qid) qid.value = props.qid 
+    if (props.file) file.value = props.file 
+  })
 
   const qid = ref(props.qid)
-  watch(qid, () => { getEntity(qid.value) })
+  watch(qid, () => { getEntity() })
 
-  const entities = ref<any>({})
-  const entity = computed(() => qid.value && entities.value[qid.value])
-  // watch(entity, () => { console.log(toRaw(entity.value)) })
+  const file = ref(props.file)
+  watch(file, () => { getEntity() })
 
-  const label = computed(() => entity.value?.labels?.[props.language]?.value)
-  const description = computed(() => entity.value?.descriptions?.[props.language]?.value)
-  const wikipediaLink = computed(() => entity.value && entity.value.sitelinks[`${props.language}wiki`]?.url)
+  const entity = ref<any>()
+  // watch (entity, () => { console.log(toRaw(entity.value)) })
 
-  onMounted(() => { getEntity(qid.value) })
+  const source = computed(() => (window as any).config?.source)
 
-  async function getEntity(qid:any) {
-    if (!qid || entities.value[qid]) return
-    let url = `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`
-    const response = await fetch(url)
-    const result = await response.json()
-    Object.values(result.entities).forEach((entity:any) => {
-      entity.summaryText = {}
-      if (entity.claims.P18) {
-        entity.image = entity.claims.P18[0].mainsnak.datavalue.value
-        entity.thumbnail = mwImage(entity.image)
-      }
-    })
-    entities.value = {...entities.value, ...result.entities}
+  onMounted(() => { getEntity() })
+
+  async function getEntity() {
+    
+    if (qid.value) {
+      entity.value = await getEntityFromWikidata(qid.value)
+    } else {
+      let baseUrl = source.value?.owner
+        ? `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}/${source.value.dir}`
+        : '/'
+      let [mdEntity, yamlEntity] = await Promise.all([fetch(`${baseUrl}${file.value}.md`), fetch(`${baseUrl}${file.value}.yaml`)])
+      let _entity = yamlEntity.ok ? yamlToEntity(await yamlEntity.text()) : {}
+      if (mdEntity.ok) _entity = { ..._entity, ...mdToEntity(await mdEntity.text()) }
+      if (_entity.id) _entity = {...(await getEntityFromWikidata(_entity.id)), ..._entity }
+      entity.value = _entity
+    }
   }
 
-  function mwImage(mwImg:any, width:number=400) {
-    // Converts Wikimedia commons image URL to a thumbnail link
-    if (Array.isArray(mwImg)) mwImg = mwImg[0]
-    mwImg = mwImg.split('/').pop()
-    mwImg = decodeURIComponent(mwImg).replace(/ /g,'_')
-    const _md5 = Md5.hashStr(mwImg)
-    const extension = mwImg.split('.').pop()
-    let url = `https://upload.wikimedia.org/wikipedia/commons${width ? '/thumb' : ''}`
-    url += `/${_md5.slice(0,1)}/${_md5.slice(0,2)}/${mwImg}`
-    if (width) {
-      url += `/${width}px-${mwImg}`
-      if (extension === 'svg') {
-        url += '.png'
-      } else if (extension === 'tif' || extension === 'tiff') {
-        url += '.jpg'
-      }
-    }
-    return url
+  function mdToEntity(s: string) {
+    let el = new DOMParser().parseFromString(marked.parse(s), 'text/html')?.firstChild as HTMLElement
+    let label = el?.querySelector('h1,h2,h3,h4,h5,h6')?.textContent
+    let thumbnail = el?.querySelector('img')?.src
+    let id
+    let description: string[] = []
+    el.querySelectorAll('p').forEach(p => {
+      if (/^Q\d+$/.test(p.textContent?.trim() || '')) id = p.textContent?.trim()
+      else description.push(p.textContent || '')
+    })
+    let _entity: any = {}
+    if (label) _entity.label = label
+    if (id) _entity.id = id
+    if (description.length) _entity.description = description.join('\n')
+    if (thumbnail) _entity.thumbnail = thumbnail
+    return _entity
+  }
+
+  function yamlToEntity(s: string) {
+    return yaml.load(s)
   }
 
 </script>
@@ -68,12 +78,12 @@
     :alt="label"
   />
   <div class="content">
-    <h2 v-html="label"></h2>
-    <p v-if="description" class="description" v-html="description"></p>
+    <h2 v-if="entity?.label" v-html="entity.label"></h2>
+    <p v-if="entity?.description" class="description" v-html="entity.description"></p>
   </div>
 
   <div slot="footer">
-    <a :href="wikipediaLink" target="_blank">Wikipedia</a>
+    <a v-if="entity?.wikipedia"  :href="entity.wikipedia" target="_blank">Wikipedia</a>
   </div>
 
 </sl-card>
@@ -85,6 +95,7 @@
   .card {
     display: flex;
     flex-direction: column;
+    min-width: 200px;
     max-width: 300px;
     max-height: 600px;
     background-color: white;
@@ -105,6 +116,7 @@
     flex: 1;
     gap: 0.5em;
     padding: 0.5em;
+    overflow-y: scroll;
   }
 
   h2 {

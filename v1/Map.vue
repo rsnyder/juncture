@@ -19,10 +19,12 @@ const dependencies = [
     'https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js',
     'https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js',
     'https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js',
-    'https://jstor-labs.github.io/juncture/js/L.Control.Opacity.js',
-    'https://jstor-labs.github.io/juncture/js/leaflet-fa-markers.js',
-    'https://jstor-labs.github.io/juncture/js/heatmap.min.js',
-    'https://jstor-labs.github.io/juncture/js/leaflet-heatmap.js'
+    'https://cdn.jsdelivr.net/npm/@allmaps/leaflet/dist/bundled/allmaps-leaflet-1.9.umd.js',
+    'https://www.mdpress.io/v1/lib/L.Control.Opacity.js',
+    'https://www.mdpress.io/v1/lib/leaflet-fa-markers.js',
+    'https://www.mdpress.io/v1/lib/heatmap.min.js',
+    'https://www.mdpress.io/v1/lib/leaflet-heatmap.js',
+    'https://cdn.jsdelivr.net/gh/rsnyder/Leaflet.SmoothWheelZoom/Leaflet.SmoothWheelZoom.js'
 ]
 
 // Some leaflet baselayers
@@ -105,6 +107,7 @@ module.exports = {
             opacity: undefined
         },
         markers: [],
+        warpedMapLayers: []
     }),
     computed: {
         // item() { return this.items.length > 0 ? this.items[0] : {} },
@@ -175,8 +178,7 @@ module.exports = {
     },
     methods: {
         init() {
-            // console.log(this.$options.name, this.mapDef, this.items)
-            
+
             if (this.viewerIsActive) {
                 this.$nextTick(() => {
                     this.createMap()
@@ -191,12 +193,16 @@ module.exports = {
                 this.map = undefined
             }
             if (!this.map) {
+                console.log(window)
                 //this.$nextTick(() => {
                     // this.labelsLayer = L.layerGroup()
                     // this.baseLayer = L.tileLayer(...baseLayers[this.basemap])
                     this.tileLayers.basemap = this.basemap
                     this.map = L.map('map', {
                         center: this.center,
+                        scrollWheelZoom: false, // disable original zoom function
+                        smoothWheelZoom: true,  // enable smooth zoom 
+                        smoothSensitivity: 1,   // zoom speed. default is 1                        
                         zoom: this.zoom,
                         zoomSnap: 0.1,
                         maxZoom: this.maxZoom,
@@ -314,12 +320,14 @@ module.exports = {
                     if (layerId === 'heatmap') {
                         this.addHeatmap(layerDef)
                     } else {
-                        const layer = L.tileLayer(`https://allmaps.xyz/maps/${layerDef['allmaps-id']}/{z}/{x}/{y}.png`, { maxZoom: 19, attribution: 'Allmaps' })
-                        next.push({id: layerId, label: layerDef.label || layerDef.title, layer})
+                        let layer = new Allmaps.WarpedMapLayer(`https://annotations.allmaps.org/maps/${layerDef['allmaps-id']}`)
+                        let warpedMapLayer = {id: layerId, label: layerDef.label || layerDef.title || `Overlay ${layerDef['allmaps-id']}`, layer}
+                        next.push(warpedMapLayer)
                         layer.options.id = layerDef.id
                         layer.options.label = layerDef.label || layerDef.title
                         layer.options.type = 'allmaps'
                         if (layerDef.active) layer.addTo(this.map)
+                        this.warpedMapLayers.push(warpedMapLayer)
                     }
                 }
             }
@@ -336,6 +344,26 @@ module.exports = {
                     { collapsed: true } //options
                 ).addTo(this.map)
                 this.controls.opacity = L.control.opacity(layers, { collapsed: true }).addTo(this.map)
+                Array.from(this.controls.opacity.getContainer().querySelectorAll('.leaflet-control-layers-overlays label'))
+                    .forEach((overlay) => {
+                        let label = overlay.children[0].textContent.trim()
+                        let warpedMapLayer
+                        this.warpedMapLayers?.forEach(item => {
+                            if (item.label === label) warpedMapLayer = item
+                        })
+                        if (warpedMapLayer) {
+                            let startingOpacity = warpedMapLayer.opacity || 75
+                            let rangeControl = overlay.children[1].children[0]
+                            rangeControl.value = startingOpacity
+                            warpedMapLayer.layer.setOpacity(startingOpacity / 100)
+                            rangeControl.addEventListener('input', (evt) => {
+                                evt.preventDefault()
+                                evt.stopPropagation()
+                                let opacity = parseInt(rangeControl.value)/100
+                                warpedMapLayer.layer.setOpacity(opacity)
+                            })
+                        }
+                    })
             } 
             this.tileLayers = next
         },

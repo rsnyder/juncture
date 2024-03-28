@@ -1,4 +1,4 @@
-import { isJunctureV1, createJunctureV1App } from './juncture/index.js'
+import { isJunctureV1, createJunctureV1App } from './v1/index.js'
 import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 function isNumeric(arg) { return !isNaN(arg) }
@@ -121,7 +121,7 @@ function handleCodeEl(rootEl, codeEl) {
       : 'mdpress'
     if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
-      if (isInline) {
+      if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
         else parsed.style = {display: 'inline-block'}
       }
@@ -218,7 +218,7 @@ function structureContent() {
 
   // For compatibility with Juncture V2
   Array.from(main?.querySelectorAll('p'))
-  .filter(p => /^\.\w+-\w+\S/.test(p.textContent.trim()))
+  .filter(p => /^\.\w+-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim()))
   .forEach(p => {
     let codeEl = document.createElement('code')
     let replacementText = p.innerHTML.trim().slice(1).replace(/\n\s*-\s+/g, '\n')
@@ -489,17 +489,18 @@ function structureContent() {
   .forEach(anchorElem => {
     let link = new URL(anchorElem.href)
     let path = link.pathname.split('/').filter(p => p)
-    if (path[0] === 'zoom') {
-      anchorElem.classList.add('zoom')
-      anchorElem.setAttribute('rel', 'nofollow')
-    } else {
-      let lastPathElem = path[path.length-1]
-      if (/^Q\d+$/.test(lastPathElem)) {
-        let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
-        mdpEntityInfobox.innerHTML = anchorElem.innerHTML
-        mdpEntityInfobox.setAttribute('qid', lastPathElem)
-        anchorElem.replaceWith(mdpEntityInfobox)
+    if (path.length === 0) return
+    let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
+    let isEntityPath = path.find(pe => pe[0] === '~')
+    if (qid || isEntityPath) {
+      let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
+      mdpEntityInfobox.innerHTML = anchorElem.innerHTML
+      if (qid) mdpEntityInfobox.setAttribute('qid', qid)
+      else {
+        let pathIdx = (window.config?.baseurl && link.pathname.indexOf(window.config?.baseurl) === 0) ? 1 : 0
+        mdpEntityInfobox.setAttribute('file', path.slice(pathIdx).map(pe => pe.replace(/~/,'')).filter(pe => pe).join('/'))
       }
+      anchorElem.replaceWith(mdpEntityInfobox)
     }
     // if (isGHP && window.config.repo && link.origin === location.origin && link.pathname.indexOf(`/${window.config.repo}/`) !== 0) anchorElem.href = `/${window.config.repo}${link.pathname}`
   })
@@ -531,8 +532,7 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
-  // let restructuredHTML = restructured.outerHTML
-  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructuredHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  // console.log('structureContent.output', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   main?.replaceWith(restructured)
   

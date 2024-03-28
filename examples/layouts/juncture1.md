@@ -4,22 +4,22 @@
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit 
 <param ve-image 
        title="Feijoada with rice, fried kale, cassava starch crisps (biscoito de polvilho), cassava flour (farinha), and a mix of olive oil, alcohol vinegar, tomatoes, onions and sometimes bell peppers called vinagrete."
-       manifest="https://iiif.juncture-digital.org/wc%3A%D9%81%D9%8A%D8%AC%D9%88%D8%A7%D8%AF%D8%A7_feijoada.jpg/manifest.json">       
+       manifest="wc:%D9%81%D9%8A%D8%AC%D9%88%D8%A7%D8%AF%D8%A7_feijoada.jpg">       
 <param ve-image 
        title="Feijoada à brasileira."
-       manifest="https://iiif.juncture-digital.org/wc%3AFeijoada_%C3%A0_brasileira_-02.jpg/manifest.json">
+       manifest="wc:Feijoada_%C3%A0_brasileira_-02.jpg">
 <param ve-image 
        title="P & C Soul Food Deli, Shreveport, Louisiana."
-       manifest="https://iiif.juncture-digital.org/wc%3ASoul_Food_Deli_Shreveport.jpg/manifest.json"
+       manifest="wc:Soul_Food_Deli_Shreveport.jpg"
        fit="contain">
 
 # ve-compare
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit 
 <param ve-compare 
-	manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/cassava/Cassava_leaf_Flickr.jpg/manifest.json">
+	manifest="gh:plant-humanities/media/cassava/Cassava_leaf_Flickr.jpg">
 <param ve-compare 
-	manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/cassava/25b71d314c539bf910224b4f131fcf97a37e0a50bc180d26ba66be53922979cb.yaml/manifest.json"
+	manifest="gh:plant-humanities/media/cassava/25b71d314c539bf910224b4f131fcf97a37e0a50bc180d26ba66be53922979cb.yaml"
 	region="pct:0,0,90,90">
 
 # ve-map
@@ -29,48 +29,54 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 <param ve-map title="Jalisco, Mexico" center="Q13160" basemap="Esri_WorldPhysical" zoom="5" stroke-width="0">
 <param ve-map-marker qid="Q13160" label="Test Label">
 
+## allmaps
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<param ve-map title="Test" center="32.325,-80.96302" zoom="15">
+<param ve-map-layer active allmaps allmaps-id="dcbf95935e8119cd">
+
 # ve-compare
 
 ## Curtain (broken)
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <param ve-compare curtain
-    manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_1.jpg/manifest.json">
+    manifest="gh:plant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_1.jpg">
 <param ve-compare
-    manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_2.jpg/manifest.json">
+    manifest="gh:plant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_2.jpg">
     
 ## Sync (works)
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <param ve-compare sync
-    manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_1.jpg/manifest.json">
+    manifest="gh:plant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_1.jpg">
 <param ve-compare
-    manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_2.jpg/manifest.json">
+    manifest="gh:plant-humanities/media/ayahuasca/Yage_Is_Our_Life_YouTube_posted_by_Yage_Is_Our_Life_no_known_restrictions_2.jpg">
 
 # ve-image 
 
 ## Contain fit
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <param ve-image primary 
-    manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/cassava/Screen_Shot_2021-01-06_at_12.02.11_PM.jpg/manifest.json"
+    manifest="gh:plant-humanities/media/cassava/Screen_Shot_2021-01-06_at_12.02.11_PM.jpg"
     fit="contain">
 
 ## Cover fit
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <param ve-image primary 
-    manifest="https://iiif.juncture-digital.org/gh%3Aplant-humanities/media/cassava/Screen_Shot_2021-01-06_at_12.02.11_PM.jpg/manifest.json"
+    manifest="gh:plant-humanities/media/cassava/Screen_Shot_2021-01-06_at_12.02.11_PM.jpg"
     fit="cover">
 
 ## Rotate 90
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <param ve-image
-    manifest="https://iiif.juncture-digital.org/gh:plant-humanities/media/cryptomeria/IMG_0548.jpg/manifest.json"
+    manifest="gh:plant-humanities/media/cryptomeria/IMG_0548.jpg"
     rotate="90">
 
 ## Region
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 <param ve-image
-    manifest="https://iiif.juncture-digital.org/gh:plant-humanities/media/cryptomeria/IMG_0548.jpg/manifest.json"
+    manifest="gh:plant-humanities/media/cryptomeria/IMG_0548.jpg"
     rotate="90"
     region="829,1251,1351,872">
 

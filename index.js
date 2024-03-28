@@ -490,11 +490,9 @@ function structureContent() {
     let link = new URL(anchorElem.href)
     let path = link.pathname.split('/').filter(p => p)
     if (path.length === 0) return
-    console.log(path)
     let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
     let isEntityPath = path.find(pe => pe[0] === '~')
     if (qid || isEntityPath) {
-      console.log(window.config?.baseurl, link.pathname.indexOf(window.config?.baseurl))
       let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
       mdpEntityInfobox.innerHTML = anchorElem.innerHTML
       if (qid) mdpEntityInfobox.setAttribute('qid', qid)

@@ -19,9 +19,9 @@ LOCAL_WC_JUNCTURE = os.environ.get('LOCAL_WC_JUNCTURE', 'false').lower() == 'tru
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
 LOCAL_WC_PORT_JUNCTURE = os.environ.get('LOCAL_WC_PORT_JUNCTURE', '5174')
 CONTENT_ROOT = os.environ.get('CONTENT_ROOT', BASEDIR)
-GH_ACCT = os.environ.get('GH_ACCT')
-GH_REPO = os.environ.get('GH_REPO')
-GH_BRANCH = os.environ.get('GH_BRANCH')
+GH_ACCT = os.environ.get('GH_ACCT', '')
+GH_REPO = os.environ.get('GH_REPO', '')
+GH_BRANCH = os.environ.get('GH_BRANCH', 'main')
 
 from bs4 import BeautifulSoup
 import markdown
@@ -67,9 +67,9 @@ favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASED
 
 template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CONTENT_ROOT}/_layouts/default.html') else f'{BASEDIR}/_layouts/default.html'
 html_template = open(template_path, 'r').read()
-html_template = re.sub(r'https:\/\/.+\/mdpress\/', '/', html_template)
-html_template = html_template.replace('https://www.mdpress.io', '')
-html_template = html_template.replace('https://mdpress.io', '')
+html_template = re.sub(r'https:\/\/.+\/(mdpress|juncture)\/', '/', html_template)
+# html_template = html_template.replace('https://www.mdpress.io', '')
+# html_template = html_template.replace('https://mdpress.io', '')
 
 if LOCAL_WC: html_template = html_template.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
@@ -123,7 +123,6 @@ def html_from_markdown(md, baseurl):
       for sibling in heading.next_siblings:
         if sibling.name:
           if sibling.name == 'p' and sibling.code:
-            logger.info([token for token in sibling.code.string.split() if not token[0] in '#.:'])
             if len([token for token in sibling.code.string.split() if not token[0] in '#.:']) == 0:
               para.append(sibling.code)
               sibling.decompose()

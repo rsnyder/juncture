@@ -39,7 +39,7 @@
         ? `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}/`
         : '/'
       let [mdEntity, yamlEntity] = await Promise.all([fetch(`${_baseUrl}${file.value}.md`), fetch(`${_baseUrl}${file.value}.yaml`)])
-      let _entity = yamlEntity.ok ? yamlToEntity(await yamlEntity.text()) : {}
+      let _entity:any = yamlEntity.ok ? yamlToEntity(await yamlEntity.text()) : {}
       if (mdEntity.ok) _entity = { ..._entity, ...mdToEntity(await mdEntity.text()) }
       if (_entity.id) _entity = {...(await getEntityFromWikidata(_entity.id)), ..._entity }
       entity.value = _entity
@@ -84,7 +84,7 @@
   </div>
 
   <div slot="footer">
-    <a v-if="entity?.wikipedia"  :href="entity.wikipedia" target="_blank">Wikipedia</a>
+    <a v-if="qid && entity?.wikipedia"  :href="entity.wikipedia" target="_blank">Wikipedia</a>
   </div>
 
 </sl-card>

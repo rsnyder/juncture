@@ -8,7 +8,7 @@ window.config.scriptBasePath = Array.from(document.querySelectorAll('script'))
     return path.length > 0 
       ? `${srcUrl.origin}/${path.join('/')}` 
       : location.hostname == 'localhost'
-        ? 'http://localhost:8080/'
+        ? 'http://localhost:8080'
         : srcUrl.origin
   })
   ?.[0] || 'https://www.mdpress.io'
@@ -29,11 +29,9 @@ const isJunctureV1 = Array.from(document.querySelectorAll('param'))
   .find(param =>
     Array.from(param.attributes).find(attr => attr.name.indexOf('ve-') === 0)
   ) !== undefined
-  
-function _createJunctureV1App() {
-  
-  let main = document.querySelector('main')
-  let tmp = new DOMParser().parseFromString(main.innerHTML, 'text/html').children[0].children[1]
+
+function juncture1El() {
+  let tmp = new DOMParser().parseFromString(document.querySelector('main').innerHTML, 'text/html').children[0].children[1]
   let img = tmp.querySelector('a img')
   if (img?.src.indexOf('ve-button') > -1) img.parentElement?.parentElement?.remove()
 
@@ -63,7 +61,12 @@ function _createJunctureV1App() {
     if (div.firstChild?.tagName === 'PARAM' && div.textContent?.trim() == '') div.replaceWith(div.firstChild)
   })
 
-  let html = tmp.innerHTML
+  return tmp
+}
+
+function _createJunctureV1App() {
+
+  let html = juncture1El().innerHTML
   // console.log('createJunctureV1App', new DOMParser().parseFromString(html, 'text/html').firstChild.children[1])
 
   Array.from(document.body.children).forEach(child => {
@@ -92,7 +95,7 @@ function _createJunctureV1App() {
     }
   })
 
-  main = document.createElement('div')
+  let main = document.createElement('div')
   main.id = 'vue'
   main.innerHTML = `<juncture-v1 :input-html="html"></juncture-v1>`
   document.body.appendChild(main)
@@ -131,4 +134,4 @@ function createJunctureV1App() {
   loadDependencies(junctureDependencies, () => _createJunctureV1App())
 }
 
-export { isJunctureV1, createJunctureV1App }
+export { isJunctureV1, createJunctureV1App, juncture1El }

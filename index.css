@@ -166,7 +166,8 @@ p audio {
   vertical-align: middle;
 }
 
-.showactive .active {
+.showactive .active,
+.j1 .active {
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }
@@ -286,6 +287,62 @@ p span.headline {
   .page-content {
     font-size: 1rem;
     padding-bottom: 4em !important; 
+  }
+}
+
+/*********** Juncture 1 ***********/
+
+.j1 {
+  width: unset;
+}
+
+.j1 section {
+  margin: 0 1em;
+}
+
+.j1 .segment {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5em;
+  margin-bottom: 2em;
+}
+
+.viewers {
+  height: 100dvw;
+}
+
+@media only screen and (min-width: 768px) {
+
+  .j1 .segment {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr ;
+  }
+
+  .j1 h1, .j1 h2, .j1 h3, .j1 h4, .j1 h5, .j1 h6 {
+    width: 50%
+  }
+
+  .j1 section {
+    width: 50%;
+  }
+
+  .viewers {
+    display: none;
+  }
+
+  p.active + .viewers {
+    display: block;
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    /* height: calc(100% - 150px); */
+    /* width: min(600px, 50% - 2rem); */
+    width: 50%;
+
+    border: 1px solid #ccc;
+    background-color: white;
+
   }
 
 }

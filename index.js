@@ -1,4 +1,4 @@
-import { isJunctureV1, createJunctureV1App } from './v1/index.js'
+import { isJunctureV1, createJunctureV1App, juncture1El } from './v1/index.js'
 import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 function isNumeric(arg) { return !isNaN(arg) }
@@ -534,6 +534,13 @@ function structureContent() {
 
   // console.log('structureContent.output', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
+  /*
+  Array.from(restructured.querySelectorAll('div'))
+  .forEach(div => {
+    if (div.firstChild?.tagName === 'PARAM' && div.textContent?.trim() == '') div.replaceWith(div.firstChild)
+  })
+  */
+
   main?.replaceWith(restructured)
   
 }
@@ -678,38 +685,32 @@ let currentActiveParagraph
 
 function observeVisible(setActiveParagraph = false) {
 
-  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph}`)
-
   let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
+
+  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
     
     for (const entry of entries) {
       let para = entry.target
+      let paraId = para.id || para.parentElement?.id
       let intersectionRatio = entry.intersectionRatio
-      if (intersectionRatio > 0) visible[para.id] = {para, intersectionRatio}
-      else delete visible[para.id]
+      if (intersectionRatio > 0) visible[paraId] = {para, intersectionRatio}
+      else delete visible[paraId]
     }
 
     let sortedVisible = Object.values(visible)
       .sort((a,b) => b.intersectionRatio - a.intersectionRatio || a.para.getBoundingClientRect().top - b.para.getBoundingClientRect().top)
 
-    // console.log('sortedVisible', sortedVisible)
+    // if (sortedVisible.length) console.log(sortedVisible)
 
     if (setActiveParagraph) {
-
         currentActiveParagraph = sortedVisible[0]?.para
-    
     } else {
-
       let found = sortedVisible.find(e => e.para.classList.contains('active'))
-      if (found) {
-        currentActiveParagraph = found.para
-        // console.log('activeParagraph', currentActiveParagraph)
-      }
-
+      if (found) currentActiveParagraph = found.para
     }
       
     if (currentActiveParagraph !== priorActiveParagraph) {
@@ -759,6 +760,59 @@ function readMoreSetup() {
   ps.forEach(p => observer.observe(p))
 }
 
+function Juncture1Setup() {
+  console.log('Juncture1Setup')
+  let veConfig = document.querySelector('param[ve-config]')
+  let header = document.createElement('mdp-header')
+  Array.from(veConfig.attributes).forEach(attr => {
+    if (attr.name === 'banner') header.setAttribute('background', attr.value)
+    if (attr.name === 'title') header.setAttribute('title', attr.value)
+    if (attr.name === 'subtitle') header.setAttribute('subtitle', attr.value)
+  })
+  veConfig.replaceWith(header)
+
+  let img = document.querySelector('a img')
+  if (img?.src.indexOf('ve-button') > -1) img.parentElement?.parentElement?.remove()
+
+  //setTimeout(() => {
+    Array.from(document.querySelectorAll('[data-id]'))
+      .forEach(seg => {
+        if (seg.tagName === 'SECTION') return
+        let id = seg.getAttribute('data-id') || ''
+        let wrapper = document.createElement('div')
+        wrapper.setAttribute('data-id', id)
+        wrapper.id = id
+        wrapper.className = seg.className
+        seg.removeAttribute('id')
+        seg.removeAttribute('data-id')
+        seg.className = ''
+        wrapper.appendChild(seg.cloneNode(true))
+        let viewers = document.createElement('mdp-j1-viewers')
+        viewers.className = 'viewers'
+        viewers.dataset.id = id
+        wrapper.appendChild(viewers)
+
+        function setViewersPosition() {
+          let top = header.getBoundingClientRect().top
+          let height = header.getBoundingClientRect().height
+          let offset = top + height
+          viewers.style.top = `${offset}px`
+        }
+        while (seg.nextSibling) {
+          let sib = seg.nextSibling
+          if (sib.nodeName !== 'PARAM') break
+          viewers.appendChild(sib)
+        }
+
+        document.addEventListener('scroll', () => setViewersPosition())
+        setViewersPosition()
+    
+        seg.replaceWith(wrapper)
+      })
+    //}, 0)
+    document.querySelector('main').classList.add('j1')
+}
+
 function init() {
   // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
   window.config = {...parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {}), ...{isJunctureV1}}
@@ -767,15 +821,19 @@ function init() {
   console.log(window.config)
   
   if (isJunctureV1) {
-    createJunctureV1App()
+    // createJunctureV1App()
+    
+    Juncture1Setup()
+    observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
+
   } else {
     setTimeout(() => {
       observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
       readMoreSetup()
     }, 0)
   }
+  readMoreSetup()
 
-  readMoreSetup
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init() }) // Loading hasn't finished yet, wait for it

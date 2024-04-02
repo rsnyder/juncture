@@ -119,7 +119,7 @@
 
   // convert IIIF v2 manifest to v3; all operations in this component assume v3
   async function prezi2to3(manifest: any) {
-    let resp = await fetch('https://${iiifServer}/prezi2to3/', {
+    let resp = await fetch(`https://${iiifServer}/prezi2to3/`, {
       method: 'POST', 
       body: JSON.stringify(manifest)
     })
@@ -186,7 +186,7 @@
     if (osdEl.value?.clientWidth) {
       let osdHeight = props.height || Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)
       // console.log(`setOsdHeight() width:=${osdWidth.value} height=${osdHeight}`)
-      osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
+      // osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
     }
   }
 

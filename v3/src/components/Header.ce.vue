@@ -35,6 +35,7 @@
 
   import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
   import { getManifest, imageDataUrl, getItemInfo, parseImageOptions } from '../utils'
+  import EventBus from './EventBus'
 
   const window = (self as any).window
 
@@ -139,6 +140,11 @@
         })
       }
       navEl.value = ul?.innerHTML
+    })
+
+    document.addEventListener('scroll', () => {
+      let offset = root.value ? root.value.getBoundingClientRect().height + root.value.getBoundingClientRect().top : 0
+      EventBus.emit('offset', offset)
     })
   })
 

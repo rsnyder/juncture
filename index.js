@@ -1,9 +1,14 @@
-import { isJunctureV1, createJunctureV1App, juncture1El } from './v1/index.js'
+import { isJunctureV1 } from './v1/index.js'
 import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
 function camelToKebab(input) { return input.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}
+
+function isMobile() {
+  let _isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
+  return _isMobile
+}
 
 function computeDataId(el) {
   let dataId = []
@@ -288,7 +293,12 @@ function structureContent() {
 
       currentSection.innerHTML += heading.outerHTML
 
-      let headings = [...restructured.querySelectorAll(`H${sectionLevel-1}`)]
+      let headings = []
+      for (let lvl = 1; lvl < sectionLevel; lvl++) {
+        headings = [...headings, ...restructured.querySelectorAll(`H${lvl}`)]
+      }
+      //let headings = [...restructured.querySelectorAll(`H${sectionLevel-1}`)]
+
       let parent = sectionLevel === 1 || headings.length === 0 ? restructured : headings.pop()?.parentElement
       parent?.appendChild(currentSection)
       currentSection.setAttribute('data-id', computeDataId(currentSection))
@@ -532,7 +542,7 @@ function structureContent() {
     restructured.appendChild(footer)
   }
 
-  // console.log('structureContent.output', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild), 0)
 
   /*
   Array.from(restructured.querySelectorAll('div'))
@@ -761,7 +771,6 @@ function readMoreSetup() {
 }
 
 function Juncture1Setup() {
-  console.log('Juncture1Setup')
   let veConfig = document.querySelector('param[ve-config]')
   let header = document.createElement('mdp-header')
   Array.from(veConfig.attributes).forEach(attr => {
@@ -797,6 +806,7 @@ function Juncture1Setup() {
           let height = header.getBoundingClientRect().height
           let offset = top + height
           viewers.style.top = `${offset}px`
+          viewers.style.height = `calc(100dvh - ${offset+2}px)`
         }
         while (seg.nextSibling) {
           let sib = seg.nextSibling
@@ -804,8 +814,10 @@ function Juncture1Setup() {
           viewers.appendChild(sib)
         }
 
-        document.addEventListener('scroll', () => setViewersPosition())
-        setViewersPosition()
+        if (!isMobile()) {
+          document.addEventListener('scroll', () => setViewersPosition())
+          setTimeout(() => setViewersPosition(), 0)
+        }
     
         seg.replaceWith(wrapper)
       })

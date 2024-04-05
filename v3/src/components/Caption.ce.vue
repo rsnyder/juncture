@@ -31,9 +31,19 @@
   const requiredStatement = computed(() => manifest.value?.requiredStatement)
 
   const attribution = computed(() => {
-    let labelLang = requiredStatement.value ? lang(requiredStatement.value.label, props.language) : ''
-    let label = labelLang ? requiredStatement.value.label[labelLang][0].toLowerCase() : ''
-    return label === 'attribution' ? requiredStatement.value.value[lang(requiredStatement.value.value, labelLang)][0] : null
+    if (!requiredStatement.value) return null
+    if (requiredStatement.value.label  && requiredStatement.value.value) {
+      let labelLang = requiredStatement.value ? lang(requiredStatement.value.label, props.language) : ''
+      let label = labelLang ? requiredStatement.value.label[labelLang][0].toLowerCase() : ''
+      return label === 'attribution' ? requiredStatement.value.value[lang(requiredStatement.value.value, labelLang)][0] : null
+    } else {
+      let label = Object.keys(requiredStatement.value).find(key => key.toLowerCase() === 'attribution')
+      return label
+        ? Array.isArray(requiredStatement.value[label])
+          ? requiredStatement.value[label].join(', ')
+          : requiredStatement.value[label]
+        : null
+    }
   })
 
   const photoDetails = computed(() => [
@@ -86,7 +96,7 @@
 <template>
   <div class="caption" ref="root">
     <div class="label">{{ caption || label }}</div>
-    <sl-dropdown ref="details" distance="12" skidding="-30">
+    <sl-dropdown ref="details" distance="12" skidding="-30" style="align-self: flex-start;">
       <div slot="trigger" style="display:flex; flex-direction: column;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
       </div>
@@ -112,10 +122,12 @@
     display: flex;
     align-items: center;
     gap: 1em;
+    padding: 0.5em;
   }
   .label {
     font-size: 1em;
-    font-weight: 500;
+    font-weight: 450;
+    line-height: 1.2;
   }
   .summary {
     font-size: 1em;

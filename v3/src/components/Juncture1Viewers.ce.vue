@@ -1,10 +1,32 @@
 <script setup lang="ts">
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { isMobile } from '../utils'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
-  watch(host, () => { getViewerData() })
+  const tabs = ref<HTMLElement | null>(null)
+
+  watch(host, (host) => {
+    console.log(`isMobile=${isMobile()}`)
+    if (!isMobile()) {
+      function setPanelHeight(el: HTMLElement) {
+        let isActive = el && el.previousElementSibling?.classList.contains('active')
+        if (isActive) {
+          let _panelHeight = el.clientHeight
+          let _tabsHeight = tabs.value?.querySelector('sl-tab')?.clientHeight || 0
+          panelHeight.value = _panelHeight - _tabsHeight
+        }
+      }
+      new ResizeObserver(e => setPanelHeight(e[0].target as HTMLElement)).observe(host)
+      setPanelHeight(host.value)
+    }
+  
+    getViewerData() 
+  })
+
+  const panelHeight = ref()
+  // watch(panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
 
   const params = ref<any[]>([])
   // watch(params, (params) => { console.log(toRaw(params)) })
@@ -14,14 +36,14 @@
       .filter(p => p['ve-image'] !== undefined)
       .map(p => toRaw(p))
   })
-  watch(images, (images) => { if (images.length) console.log('images', toRaw(images)) })
+  // watch(images, (images) => { if (images.length) console.log('images', toRaw(images)) })
 
   const maps = computed(() => {
     return params.value
       .filter(p => p['ve-map'] !== undefined)
       .map(p => toRaw(p))
   })
-  watch(maps, (maps) => { if (maps.length) console.log('maps', toRaw(maps)) })
+  // watch(maps, (maps) => { if (maps.length) console.log('maps', toRaw(maps)) })
 
   const props = defineProps({
     dataId: { type: String },
@@ -44,9 +66,14 @@
 </script>
 
 <template>
-  <div ref="root">
+  <div ref="root" id="main">
     <!-- <div v-html="dataId"></div> -->
-    <sl-tab-group>
+    <!--
+    <mdp-image v-if="images[0]?.src" :src="images[0].src || images[0].manifest"></mdp-image>
+    -->
+
+    <sl-tab-group ref="tabs">
+
       <sl-tab v-if="images.length" slot="nav" panel="image">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
       </sl-tab>
@@ -57,12 +84,12 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>
       </sl-tab>
       
-      <sl-tab-panel v-if="images.length" name="image" style="height:500px;">
-        <mdp-image :src="images[0].src || images[0].manifest" style="height:500px"></mdp-image>
+      <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest)" name="image" :style="`height:${panelHeight}px`">
+        <mdp-image :src="images[0].src || images[0].manifest" :height="panelHeight"></mdp-image>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="maps.length" name="map">
-        <mdp-map :center="maps[0].center" :zoom="maps[0].zoom" style="height:500px"></mdp-map>
+        <mdp-map :center="maps[0].center" :zoom="maps[0].zoom"></mdp-map>
       </sl-tab-panel>
 
       <sl-tab-panel name="data">
@@ -76,6 +103,15 @@
 </template>
 
 <style>
+
+  sl-tab-panel {
+    /* border: 1px solid red; */
+  }
+
+  sl-tab-panel::part(base) {
+    padding: 0;
+  }
+
   svg { width: 1.5em; height: 1.5em; }
 
   pre {

@@ -271,7 +271,8 @@
         if (!mapEl) return
         if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
         new ResizeObserver(e => {
-          mapEl.style.height = `${e[0].contentRect.width * mapAspectRatio.value}px`
+          let mapHeight = e[0].contentRect.width * mapAspectRatio.value
+          mapEl.style.height = `${mapHeight}px`
           if (!map.value && mapEl.clientHeight > 0) init()
         }).observe(mapEl)
         if (mapEl.clientHeight > 0) init()
@@ -570,7 +571,7 @@
       let mapUpdated = false
       function updateMap() {
         
-        console.log(`updateMap: map=${map.value !== undefined} mapUpdated=${mapUpdated} geoJSONs=${geoJSONs.value?.length || 0} warpedMapLayers=${warpedMapLayers.value?.length || 0}`)
+        // console.log(`updateMap: map=${map.value !== undefined} mapUpdated=${mapUpdated} geoJSONs=${geoJSONs.value?.length || 0} warpedMapLayers=${warpedMapLayers.value?.length || 0}`)
 
         if (map.value && geoJSONs.value && warpedMapLayers.value && !mapUpdated) {
           // mapUpdated = true

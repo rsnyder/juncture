@@ -1,6 +1,22 @@
-<script setup lang="ts">
+<template>
 
-  import { computed, h, onMounted, ref, toRaw, watch } from 'vue'
+  <div ref="root" class="image">
+
+    <div v-if="tileSource" ref="osdEl" class="osd" id="osd" role="img" :aria-label="caption" :alt="caption">
+      <div v-if="coords"
+        class="coords"
+        v-html="coords" 
+        @click="copyTextToClipboard(coords || '')">
+      </div>
+    </div>
+    <mdp-caption v-if="manifest && !noCaption" :manifest="manifest" :caption="caption"></mdp-caption>
+  </div>
+  
+  </template>
+  
+  <script setup lang="ts">
+
+  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TiledImage } from 'openseadragon'
 
   import { iiifServer } from '../utils'
@@ -30,33 +46,12 @@
 
   watch(osdEl, () => {
     if (!osdEl.value) return
-    if (props.width) {
-      root.value?.setAttribute('style', `width: ${props.width}px;margin: auto`)
-      osdWidth.value = props.width
-    } else {
-      new ResizeObserver(() => {
-        // console.log(`ResizeObserver: osd.width=${osdEl.value?.clientWidth} osd.height=${osdEl.value?.clientHeight} image.width=${imageSize.value?.width} image.height=${imageSize.value?.height}`)
-        osdWidth.value = osdEl.value?.clientWidth || osdWidth.value
-        if (imageSize.value && osdWidth.value && !osd.value) initOpenSeadragon()
-      } ).observe(osdEl.value)
+    if (!width.value) {
+      new ResizeObserver(() => osdWidth.value = osdEl.value?.clientWidth || osdWidth.value).observe(osdEl.value)
       osdWidth.value = osdEl.value?.clientWidth 
     }
-    // console.log(`osd.width=${osdEl.value?.clientWidth} osd.height=${osdEl.value?.clientHeight} image.width=${imageSize.value?.width} image.height=${imageSize.value?.height}`)
-    if (imageSize.value && osdWidth.value && !osd.value) initOpenSeadragon()
-    
+    if (!osd.value && aspectRatio.value) initOpenSeadragon()
   })
-
-  /*
-  watch(mapEl, (mapEl) => {
-    if (!mapEl) return
-    if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
-    new ResizeObserver(e => {
-      mapEl.style.height = `${e[0].contentRect.width * mapAspectRatio.value}px`
-      if (!map.value && mapEl.clientHeight > 0) init()
-    }).observe(mapEl)
-    if (mapEl.clientHeight > 0) init()
-  })
-  */
 
   const props = defineProps({
     caption: { type: String },
@@ -70,6 +65,18 @@
   })
   watch(props, () => { evalProps() })
   
+  const width = ref<number>(0)
+  watch(width, (width) => { 
+    root.value?.setAttribute('style', `width: ${props.width}px; margin: auto;`)
+    osdWidth.value = width
+   })
+
+  const height = ref<number>(0)
+  watch(height, (height) => { 
+    host.value.style.height = `${height}px`
+    osd.value?.viewport?.goHome(true)
+   })
+
   // OpenSeadragon - https://openseadragon.github.io/docs/
   const osd = ref<OpenSeadragon.Viewer>()
 
@@ -81,7 +88,7 @@
   const src = ref()
   watch(src, () => { getTileSource(src.value) })
   function setSrc(_src: string) {
-    if (osd.value) tileSource.value = null
+    // if (osd.value) tileSource.value = null
     if (/upload\.wikimedia\.org/.test(_src)) {
       let parts = _src.split('/')
       let file = parts[5] === 'thumb' ? parts[8] : parts[7]
@@ -103,6 +110,8 @@
 
   function evalProps() {
     setSrc(props.src)
+    if (props.width) width.value = props.width
+    if (props.height) height.value = props.height
   }
 
   onMounted(() => {
@@ -167,7 +176,7 @@
       let _manifest:any = await resp.json()
       let context = Array.isArray(_manifest['@context']) ? _manifest['@context'].find(c => c.indexOf('/presentation/') > 0) : _manifest['@context']
       let version = parseFloat(context.split('/').slice(-2,-1).pop())
-      manifest.value = version < 3 ? await prezi2to3(manifest) : _manifest
+      manifest.value = version < 3 ? await prezi2to3(_manifest) : _manifest
       return manifest.value
     }
   }
@@ -184,10 +193,9 @@
 
   function setOsdHeight() {
     if (osdEl.value?.clientWidth) {
-      let osdHeight = props.height || Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)
-      // console.log(`setOsdHeight() width:=${osdWidth.value} height=${osdHeight}`)
-      // osdEl.value?.setAttribute('style', `height: ${osdHeight}px;`)
-    }
+      if (height.value) osdEl.value.style.flex = '1'
+      else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
+    } 
   }
 
   // resize OSD viewer
@@ -197,12 +205,12 @@
   }
 
   function initOpenSeadragon() {
-    if (!osdEl.value) return
-    let container = shadowRoot.value.querySelector('#osd') as HTMLElement
-    // console.log(`initOpenSeadragon() width: ${osdEl.value?.clientWidth} imageHeight: ${imageSize.value?.height} osdHeight: ${osdEl.value?.clientHeight} tileSource: ${tileSource.value}`)
+    if (osd.value || !osdEl.value) return
+    // console.log(`initOpenSeadragon() osdEl: ${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} image: ${imageSize.value?.width}x${imageSize.value?.height} tileSource: ${tileSource.value}`)
+    // console.log(`initOpenSeadragon: osdEl=${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} image=${imageSize.value?.width}x${imageSize.value?.height}`)
     setOsdHeight()
     const osdOptions: OpenSeadragon.Options = {
-      element: container,
+      element: osdEl.value,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
       tileSources: tileSource.value,
       homeFillsViewer: props.cover || props.fit === 'cover',
@@ -328,47 +336,39 @@ let coordsDebounce: any = null
   }
 
 function copyTextToClipboard(text: string) {
+  console.log('copyTextToClipboard', text)
   if (navigator.clipboard) navigator.clipboard.writeText(text)
 }
 
 </script>
 
-<template>
-
-<div ref="root" class="image flex flex-col relative rounded overflow-hidden shadow-lg">
-  <!-- <img class="w-full" :src="src" alt="Image title"> -->
-  <div v-if="tileSource" ref="osdEl" id="osd" class="w-full h-[100%]" role="img" :aria-label="caption" :alt="caption"></div>
-  <div v-if="tileSource && caption && !noCaption" class="flex items-center ml-2 h-10">
-    <!--<div class="font-bold text-xl mb-2" v-html="caption"></div> -->
-    <mdp-caption v-if="manifest && !noCaption" :manifest="manifest" :caption="caption"></mdp-caption>
-    <div v-if="coords"
-      class="invisible group-hover:visible 
-            absolute pr-4 pl-4 pt-2 pb-2 mt-24 
-            bottom-0 right-0 cursor-copy
-            ml-4 bg-slate-100 text-black"
-      v-html="coords" 
-      @click="copyTextToClipboard(coords || '')">
-    </div>
-  </div>
-  <!-- <mdp-manifest-popup v-if="manifest" :manifest="manifest" class="z-20"></mdp-manifest-popup> -->
-</div>
-
-</template>
-
 <style>
-  @import '../tailwind.css';
+  .image {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgb(0,0,0,0.5) !important;
+  }
 
-  mdp-manifest-popup {
-  visibility: hidden;
-  position: absolute;
-  top: 1em;
-  right: 1em;
-  z-index: 10;
-}
+  .osd {
+    width: 100%;
+    /* border: 1px solid #ddd; */
+  }
 
-.image:hover mdp-manifest-popup {
-  visibility: visible;
-  transition: all .5s ease-in;
-}
+  .coords {
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 0.5em;
+    z-index: 10;
+    transition: all 0.5s ease-out;
+  }
+
+  .coords:hover {
+    opacity: 1;
+    cursor: copy;
+  }
 
 </style>

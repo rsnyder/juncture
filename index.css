@@ -322,13 +322,16 @@ p span.headline {
   .j1 h1, .j1 h2, .j1 h3, .j1 h4, .j1 h5, .j1 h6 {
     width: 50%
   }
-
-  .j1 section {
+  .segment p {
     width: 50%;
+  }
+  section {
+    background: none;
   }
 
   .viewers {
     display: none;
+    height: 100%;
   }
 
   p.active + .viewers {
@@ -339,10 +342,27 @@ p span.headline {
     /* height: calc(100% - 150px); */
     /* width: min(600px, 50% - 2rem); */
     width: 50%;
-
     border: 1px solid #ccc;
     background-color: white;
-
   }
 
+}
+
+.footnote div {
+  white-space: pre-wrap;
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }

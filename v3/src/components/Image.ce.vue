@@ -60,8 +60,19 @@
     fit: { type: String, default: 'contain' },
     height: { type: Number },
     noCaption: { type: Boolean, default: false },
-    src: { type: String, required: true },
-    width: { type: Number }
+    src: { type: String },
+    width: { type: Number },
+
+    // for ad-hoc manifest creation
+    attribution: { type: String },
+    description: { type: String },
+    label: { type: String },
+    license: { type: String },
+    owner: { type: String },
+    summary: { type: String },
+    title: { type: String },
+    url: { type: String }
+
   })
   watch(props, () => { evalProps() })
   
@@ -87,6 +98,7 @@
   // Image source, can be an image or IIIF manifest URL
   const src = ref()
   watch(src, () => { getTileSource(src.value) })
+  
   function setSrc(_src: string) {
     // if (osd.value) tileSource.value = null
     if (/upload\.wikimedia\.org/.test(_src)) {
@@ -104,12 +116,20 @@
 
   const manifest = ref()
   const caption = computed(() => props.caption || (manifest.value && manifest.value?.label?.en?.[0]))
-  // watch(manifest, () => { console.log('manifest', toRaw(manifest.value)) })
+  watch(manifest, (manifest) => {
+    // console.log('manifest', toRaw(manifest))
+    let itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest).body
+    imageSize.value = { width: itemInfo.width, height: itemInfo.height}
+      tileSource.value = itemInfo.service
+        ? `${(itemInfo.service[0].id || itemInfo.service[0]['@id'])}/info.json`
+        : { url: itemInfo.id, type: 'image', buildPyramid: true }
+  })
 
   const coords = ref<string>()
 
   function evalProps() {
-    setSrc(props.src)
+    if (props.src) setSrc(props.src)
+    else if (props.url) getOrCreateManifest()
     if (props.width) width.value = props.width
     if (props.height) height.value = props.height
   }
@@ -172,6 +192,21 @@
   // get a IIIF manifest, convert to v3 if necessary
   async function getManifest(src:any) {
     let resp = await fetch(src)
+    if (resp.ok) {
+      let _manifest:any = await resp.json()
+      let context = Array.isArray(_manifest['@context']) ? _manifest['@context'].find(c => c.indexOf('/presentation/') > 0) : _manifest['@context']
+      let version = parseFloat(context.split('/').slice(-2,-1).pop())
+      manifest.value = version < 3 ? await prezi2to3(_manifest) : _manifest
+      return manifest.value
+    }
+  }
+
+  // creates a manifest from props data
+  async function getOrCreateManifest() {
+    let resp = await fetch(`https://${iiifServer}/manifest/`, {
+      method: 'POST', 
+      body: JSON.stringify(props)
+    })
     if (resp.ok) {
       let _manifest:any = await resp.json()
       let context = Array.isArray(_manifest['@context']) ? _manifest['@context'].find(c => c.indexOf('/presentation/') > 0) : _manifest['@context']

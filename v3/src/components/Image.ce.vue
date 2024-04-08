@@ -2,64 +2,39 @@
 
   <div ref="root" class="image">
 
-    <div v-if="tileSource" ref="osdEl" class="osd" id="osd" role="img" :aria-label="caption" :alt="caption">
+    <div v-if="tileSources" ref="osdEl" class="osd" id="osd" role="img" :aria-label="caption" :alt="caption">
       <div v-if="coords"
         class="coords"
         v-html="coords" 
         @click="copyTextToClipboard(coords || '')">
       </div>
     </div>
-    <mdp-caption v-if="manifest && !noCaption" :manifest="manifest" :caption="caption"></mdp-caption>
+    <mdp-caption v-if="manifests.length && !noCaption" :manifest="manifests[selected]" :caption="caption"></mdp-caption>
   </div>
   
   </template>
   
   <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
-  import OpenSeadragon, { TiledImage } from 'openseadragon'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import OpenSeadragon, { TileSource } from 'openseadragon'
 
-  import { iiifServer } from '../utils'
-
-  type ImageSize = {
-    width: number,
-    height: number
-  }
+  import { iiifServer, getManifest } from '../utils'
 
   const root = ref<HTMLElement | null>(null)
-  const osdEl = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
+
   const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
-  watch(shadowRoot, (shadowRoot) => {
-    shadowRoot.children[1].classList.remove('sticky')
-  })
-
-  const osdWidth = ref<number>()
-  watch(osdWidth, () => { resize() })
-
-  const imageSize = ref<ImageSize>()
-  const aspectRatio = computed(() =>  Number(((imageSize.value?.width || 1)/(imageSize.value?.height || 1)).toFixed(4)) )
-  watch(aspectRatio, () => { 
-    resize()
-    if (osdEl.value && !osd.value) initOpenSeadragon()
-  })
-
-  watch(osdEl, () => {
-    if (!osdEl.value) return
-    if (!width.value) {
-      new ResizeObserver(() => osdWidth.value = osdEl.value?.clientWidth || osdWidth.value).observe(osdEl.value)
-      osdWidth.value = osdEl.value?.clientWidth 
-    }
-    if (!osd.value && aspectRatio.value) initOpenSeadragon()
-  })
-
+  watch(shadowRoot, (shadowRoot) => { shadowRoot.children[1].classList.remove('sticky') })
+  
   const props = defineProps({
     caption: { type: String },
-    cover: { type: Boolean, default: false },
     data: { type: String },
     fit: { type: String, default: 'contain' },
     height: { type: Number },
     noCaption: { type: Boolean, default: false },
+    region: { type: String },
+    seq: { type: Number, default: 1},
     src: { type: String },
     width: { type: Number },
 
@@ -72,10 +47,97 @@
     summary: { type: String },
     title: { type: String },
     url: { type: String }
-
   })
-  watch(props, () => { evalProps() })
-  
+  watch(props, () => { evalProps() }) 
+
+  const osdEl = ref<HTMLElement | null>(null)
+
+  const osdWidth = ref<number>(0)
+  watch(osdWidth, () => {
+    resize()
+    if (osdWidth.value > 0 && !tileSources.value.length) init()
+    if (osdWidth.value > 0 && !osd.value) initOpenSeadragon()
+  })
+
+  const imageDefs = ref<any[]>([])
+  watch(imageDefs, async (imageDefs) => {
+    // (toRaw(imageDefs))
+    manifests.value = await Promise.all(imageDefs.map(def => 
+      def.src || def.manifest
+        ? getManifest(def.src || def.manifest)
+        : fetch(`https://${iiifServer}/manifest/`, { method: 'POST', body: JSON.stringify(def) }).then(resp => resp.json())
+    )).then((responses) => responses.flat() )
+  })
+
+  const manifests = ref<any[]>([])
+
+  const tileSources = computed(() => {
+    return manifests.value.map((manifest, idx) => {
+      let itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, imageDefs.value[idx].seq || 1).body
+      return itemInfo.service
+        ? `${(itemInfo.service[0].id || itemInfo.service[0]['@id'])}/info.json` as unknown as TileSource
+        : { url: itemInfo.id, type: 'image', buildPyramid: true } as unknown as TileSource
+     
+    })
+  })
+  watch(tileSources, (tileSources) => { osd.value?.open(tileSources) })
+
+  const selected = ref<number>(0)
+
+  const selectedItemInfo = computed(() => 
+    manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
+  )
+  const imageSize = computed(() => selectedItemInfo.value && { width: selectedItemInfo.value.width, height: selectedItemInfo.value.height} )
+  const aspectRatio = computed(() => Number(((imageSize.value?.width || 1)/(imageSize.value?.height || 1)).toFixed(4)) )
+  watch(aspectRatio, () => { resize() })
+
+  function init() {
+
+    function parseImageDefStr(s:String): Object {
+      let tokens: String[] = []
+      s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+      s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
+        if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
+        else tokens.push(token)
+      })
+      let parsed:any = {}
+      tokens.forEach(token => {
+        let idx = token.indexOf('=')
+        let key = token.slice(0, idx)
+        let value = token.slice(idx+1)
+        parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+      })
+      return parsed
+    }
+
+    function getImageDefs () {
+      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'seq', 'src', 'summary', 'title', 'url'])
+      let imageDefFromProps = props.src ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
+      let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
+      Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
+        .map((li:HTMLLIElement) => parseImageDefStr(li.textContent || ''))
+        .filter((def:any ) => def.src || def.manifest || def.url)
+        .forEach((def:any, idx) => _imageDefs.push({...def, idx}))
+      imageDefs.value = _imageDefs
+    }
+
+    new MutationObserver((mutationsList:any) => {
+      for (let mutation of mutationsList) {
+        if (mutation.type === 'childList' && Array.from(mutation.target.classList).indexOf('hydrated') >= 0) {
+          getImageDefs()       
+        }
+      }
+    }).observe(host.value, { childList: true, subtree: true, characterData: true })
+    getImageDefs()
+  }
+
+  watch(osdEl, () => {
+    if (osdEl.value  && !width.value) {
+      new ResizeObserver(() => osdWidth.value = osdEl.value?.clientWidth || osdWidth.value).observe(osdEl.value)
+      osdWidth.value = osdEl.value?.clientWidth 
+    }
+  })
+
   const width = ref<number>(0)
   watch(width, (width) => { 
     root.value?.setAttribute('style', `width: ${props.width}px; margin: auto;`)
@@ -91,45 +153,11 @@
   // OpenSeadragon - https://openseadragon.github.io/docs/
   const osd = ref<OpenSeadragon.Viewer>()
 
-  // OpenSeadragon tile source - https://openseadragon.github.io/docs/OpenSeadragon.TileSource.html
-  const tileSource:any = ref<TiledImage>()
-  watch(tileSource, () => { osd.value?.open(tileSource.value) })
-
-  // Image source, can be an image or IIIF manifest URL
-  const src = ref()
-  watch(src, () => { getTileSource(src.value) })
-  
-  function setSrc(_src: string) {
-    // if (osd.value) tileSource.value = null
-    if (/upload\.wikimedia\.org/.test(_src)) {
-      let parts = _src.split('/')
-      let file = parts[5] === 'thumb' ? parts[8] : parts[7]
-      src.value = `https://${iiifServer}/wc:${file.replace(/ /g, '_')}/manifest.json` 
-    } else {
-      src.value = /^http/.test(_src) 
-        ? _src
-        : /^\w+:/.test(_src)
-          ? `https://${iiifServer}/${_src.replace(/ /g, '_')}/manifest.json` 
-          : _src
-    }
-  }
-
-  const manifest = ref()
-  const caption = computed(() => props.caption || (manifest.value && manifest.value?.label?.en?.[0]))
-  watch(manifest, (manifest) => {
-    // console.log('manifest', toRaw(manifest))
-    let itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest).body
-    imageSize.value = { width: itemInfo.width, height: itemInfo.height}
-      tileSource.value = itemInfo.service
-        ? `${(itemInfo.service[0].id || itemInfo.service[0]['@id'])}/info.json`
-        : { url: itemInfo.id, type: 'image', buildPyramid: true }
-  })
+  const caption = computed(() => props.caption || (manifests.value[selected.value] && manifests.value[selected.value]?.label?.en?.[0]))
 
   const coords = ref<string>()
 
   function evalProps() {
-    if (props.src) setSrc(props.src)
-    else if (props.url) getOrCreateManifest()
     if (props.width) width.value = props.width
     if (props.height) height.value = props.height
   }
@@ -138,36 +166,6 @@
     evalProps()
     addInteractionHandlers()
   })
-
-  // detect if src is a IIIF manifest
-  async function isIIIFfManifest(src: string) {
-    if (src.indexOf('manifest.json') > 0) return true
-    let resp = await fetch(src, {method: 'HEAD'})
-    return resp.headers.get('Content-Type')?.indexOf('image') === -1
-  }
-
-  // convert IIIF v2 manifest to v3; all operations in this component assume v3
-  async function prezi2to3(manifest: any) {
-    let resp = await fetch(`https://${iiifServer}/prezi2to3/`, {
-      method: 'POST', 
-      body: JSON.stringify(manifest)
-    })
-    if (resp.ok) return (await resp).json()
-  }
-
-  async function getTileSource(src:string) {
-    if (await isIIIFfManifest(src)) {
-      let manifest = await getManifest(src)
-      let itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest).body
-      imageSize.value = { width: itemInfo.width, height: itemInfo.height}
-      tileSource.value = itemInfo.service
-        ? `${(itemInfo.service[0].id || itemInfo.service[0]['@id'])}/info.json`
-        : { url: itemInfo.id, type: 'image', buildPyramid: true }
-    } else {
-      getImageSize(src).then((size) => { imageSize.value = size })
-      tileSource.value = { url: src, type: 'image', buildPyramid: true }
-    }
-  }
 
   // find an item in a IIIF manifest
   function findItem(toMatch: object, current: object, seq: number = 1): any {
@@ -189,43 +187,6 @@
     return found
   }
 
-  // get a IIIF manifest, convert to v3 if necessary
-  async function getManifest(src:any) {
-    let resp = await fetch(src)
-    if (resp.ok) {
-      let _manifest:any = await resp.json()
-      let context = Array.isArray(_manifest['@context']) ? _manifest['@context'].find(c => c.indexOf('/presentation/') > 0) : _manifest['@context']
-      let version = parseFloat(context.split('/').slice(-2,-1).pop())
-      manifest.value = version < 3 ? await prezi2to3(_manifest) : _manifest
-      return manifest.value
-    }
-  }
-
-  // creates a manifest from props data
-  async function getOrCreateManifest() {
-    let resp = await fetch(`https://${iiifServer}/manifest/`, {
-      method: 'POST', 
-      body: JSON.stringify(props)
-    })
-    if (resp.ok) {
-      let _manifest:any = await resp.json()
-      let context = Array.isArray(_manifest['@context']) ? _manifest['@context'].find(c => c.indexOf('/presentation/') > 0) : _manifest['@context']
-      let version = parseFloat(context.split('/').slice(-2,-1).pop())
-      manifest.value = version < 3 ? await prezi2to3(_manifest) : _manifest
-      return manifest.value
-    }
-  }
-
-  // get image size
-  async function getImageSize(src: string): Promise<ImageSize> {
-    return new Promise((resolve, reject) => {
-      let img = new Image()
-      img.onload = () => resolve({ width:img.width, height:img.height })
-      img.onerror = () => reject()
-      img.src = src
-    })
-  }
-
   function setOsdHeight() {
     if (osdEl.value?.clientWidth) {
       if (height.value) osdEl.value.style.flex = '1'
@@ -242,13 +203,13 @@
   function initOpenSeadragon() {
     if (osd.value || !osdEl.value) return
     // console.log(`initOpenSeadragon() osdEl: ${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} image: ${imageSize.value?.width}x${imageSize.value?.height} tileSource: ${tileSource.value}`)
-    // console.log(`initOpenSeadragon: osdEl=${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} image=${imageSize.value?.width}x${imageSize.value?.height}`)
+    console.log(`initOpenSeadragon: osdEl=${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} tileSources=${tileSources.value.length}`)
     setOsdHeight()
     const osdOptions: OpenSeadragon.Options = {
       element: osdEl.value,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
-      tileSources: tileSource.value,
-      homeFillsViewer: props.cover || props.fit === 'cover',
+      // tileSources: tileSources.value,
+      homeFillsViewer: props.fit === 'cover',
       // showNavigationControl: true,
       // minZoomImageRatio: 1,
       maxZoomPixelRatio: 10,
@@ -257,8 +218,8 @@
       // showZoomControl: true,
       // showFullPageControl: true,
       // showNavigator: false,
-      // sequenceMode: true,
-      // showReferenceStrip: true,
+      sequenceMode: true,
+      showReferenceStrip: true,
       
       // animationTime: 0.5,
       // springStiffness: 10,
@@ -269,7 +230,9 @@
     }
     osd.value = OpenSeadragon(osdOptions)
     osd.value.addHandler('viewport-change', () => watchCoords())
+    osd.value.addHandler('page', (e) => { selected.value = e.page })
     setTimeout(() => setViewportCoords(), 500)
+    if (tileSources.value.length) osd.value.open(tileSources.value)
   }
 
   function addInteractionHandlers() {
@@ -386,6 +349,7 @@ function copyTextToClipboard(text: string) {
 
   .osd {
     width: 100%;
+    background-color: black;
     /* border: 1px solid #ddd; */
   }
 

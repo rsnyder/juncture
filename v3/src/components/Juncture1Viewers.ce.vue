@@ -8,7 +8,7 @@
   const tabs = ref<HTMLElement | null>(null)
 
   watch(host, (host) => {
-    console.log(`isMobile=${isMobile()}`)
+    // console.log(`isMobile=${isMobile()}`)
     if (!isMobile()) {
       function setPanelHeight(el: HTMLElement) {
         let isActive = el && el.previousElementSibling?.classList.contains('active')
@@ -63,6 +63,10 @@
     ).observe(host.value, { childList: true, subtree: true })
   }
 
+  function serializeProps(props: any) {
+    return Object.entries(props).map(([key, value]) => `${key}="${value}"`).join(' ')
+  }
+
 </script>
 
 <template>
@@ -85,12 +89,11 @@
       </sl-tab>
       
       <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :style="`height:${panelHeight}px`">
-        <mdp-image 
-          :height="panelHeight"
-          :label="images[0].label"
-          :src="images[0].src || images[0].manifest" 
-          :url="images[0].url" 
-        ></mdp-image>
+        <mdp-image  :height="panelHeight">
+        <ul>
+          <li v-for="imgDef, idx in images" :key="`image-${idx}`" v-text="serializeProps(imgDef)"></li>
+        </ul>
+      </mdp-image>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="maps.length" name="map">
@@ -109,12 +112,16 @@
 
 <style>
 
-  sl-tab-panel {
-    /* border: 1px solid red; */
+  sl-tab-group::part(tabs) {
+    background-color: #ddd;
   }
 
   sl-tab-panel::part(base) {
     padding: 0;
+  }
+
+  sl-tab::part(base) {
+    padding: 0.5em;
   }
 
   svg { width: 1.5em; height: 1.5em; }

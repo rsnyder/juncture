@@ -290,64 +290,6 @@ p span.headline {
   }
 }
 
-/*********** Juncture 1 ***********/
-
-.j1 {
-  width: unset;
-}
-
-.j1 section {
-  margin: 0 1em;
-}
-
-.j1 .segment {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 0.5em;
-  margin-bottom: 2em;
-}
-
-.viewers {
-  height: 100dvw;
-}
-
-@media only screen and (min-width: 768px) {
-
-  .j1 .segment {
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr ;
-  }
-
-  .j1 h1, .j1 h2, .j1 h3, .j1 h4, .j1 h5, .j1 h6 {
-    width: 50%
-  }
-  .segment p {
-    width: 50%;
-  }
-  section {
-    background: none;
-  }
-
-  .viewers {
-    display: none;
-    height: 100%;
-  }
-
-  p.active + .viewers {
-    display: block;
-    position: fixed;
-    left: 50%;
-    bottom: 0;
-    /* height: calc(100% - 150px); */
-    /* width: min(600px, 50% - 2rem); */
-    width: 50%;
-    border: 1px solid #ccc;
-    background-color: white;
-  }
-
-}
-
 .footnote div {
   white-space: pre-wrap;
   /* These are technically the same, but use both */
@@ -366,3 +308,76 @@ p span.headline {
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+
+/*********** Juncture 1 ***********/
+
+.j1 {
+  width: unset;
+  background: #f8f8f8;
+}
+
+.j1 section {
+  margin: 0 1em;
+}
+
+.j1 .segment {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5em;
+  margin-bottom: 0;
+}
+
+.viewers {
+  height: 100dvw;
+}
+
+@media only screen and (min-width: 768px) {
+
+  .j1 section {
+    margin: 0;
+  }
+
+  .j1 > section {
+    width: calc(50% - 1em);
+    margin: 0 1em;
+  }
+
+  .j1 p {
+    margin-right: 1em;
+    padding: 0.5em;
+    font-size: 1.2em;
+    line-height: 1.6;
+  }
+
+  .j1 .segment {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr ;
+  }
+
+  .viewers {
+    display: none;
+    height: 100%;
+  }
+
+  p.active {
+    background-color: #ffffff;
+    box-shadow: 0 0 3px 1px rgb(0 0 0 / 25%);
+    border: 1px solid #9e9e9e;
+    border-radius: 8px;
+  }
+
+  p.active + .viewers {
+    display: block;
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    /* height: calc(100% - 150px); */
+    /* width: min(600px, 50% - 2rem); */
+    width: 50%;
+    border: 1px solid #ccc;
+    background-color: white;
+  }
+
+}
+

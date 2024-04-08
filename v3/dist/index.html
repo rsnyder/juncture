@@ -5,47 +5,32 @@
     <link rel="icon" href="/mdpress/mdpress/dist/img/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MDPress</title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="http://localhost:8080/index.css" rel="stylesheet">
     <style>
-      * { box-sizing: border-box; }
-      html {
-        font-family: Roboto, sans-serif;
-      }
-      wz-map ul {
-        display: none;
-      }
-      main {
-        padding-bottom: 100vh;
-      }
-      mdp-map ul {
-        display: none
-      }
-      .zoom {
-        text-decoration: none;
-      }
-      .sticky { /* Safari */
-        position: sticky;
-        top: 0;
-        background-color: inherit
-      }
     </style>
     <script type="module" crossorigin src="/mdpress/mdpress/dist/js/index.js"></script>
   </head>
   <body>
 
     <main>
+      
+      <section style="width:50%;">
 
-      <div style="width:50%;">
-        <!-- <mdp-entity-infobox qid="Q8027">Some text</mdp-entity-infobox> -->
+        <mdp-image src="gh:rsnyder/media/michigan-up/Arched_Rock.jpg" fit="cover"></mdp-image>
 
-        <mdp-video src="https://www.youtube.com/watch?v=W4LT8-dEhJg"></mdp-video>
-        <mdp-video src="wc:Barmont_Maple_in_Huntsville_prepares_for_maple_syrup_production.webm"></mdp-video>
-        <mdp-audio src="wc:Tubes_(Antti_Luode).mp3" style="width:300px;"></mdp-audio>
+        <mdp-image>
+          <ul>
+            <li>src=gh:rsnyder/media/michigan-up/Arched_Rock.jpg</li>
+            <li>src=gh:rsnyder/pinckney-island/Gator.jpg</li>
+            <li>src=gh:rsnyder/media/italy/amalfi-coast/Positano__1.jpg</li>
+            <li>url=https://raw.githubusercontent.com/rsnyder/media/main/italy/florence/Ponte_Vecchio__1.jpg label="Ponte_Vecchio" description="A medieval stone closed-spandrel segmental arch bridge over the Arno, in Florence, Italy."</li>
+            <li>url=https://raw.githubusercontent.com/rsnyder/media/main/italy/florence/Florence_Cathedral.jpg label="Florence Cathedral" description="The cathedral complex, in Piazza del Duomo, includes the Baptistery and Giotto's Campanile."</li>
+          </ul>
+        </mdp-image>
 
-      </div>
-      <mdp-entities></mdp-entities>
+    </section>
 
-    </main>
+  </main>
 
     
 

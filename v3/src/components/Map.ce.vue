@@ -73,6 +73,7 @@
         entities: { type: String },
         essayBase: { type: String },
         fit: { type: Boolean, default: false},
+        height: { type: Number },
         gestureHandling: { type: Boolean, default: isMobile() },
         ghDir: { type: String},
         marker: { type: Boolean },
@@ -280,21 +281,23 @@
     
       watch(layerObjs, async () => {
         let _layerObjs = await Promise.all(layerObjs.value)
-        // if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
+        if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
-          .filter(item => item.geojson && item.preferGeojson)
+          .filter(item => (item.geojson || item.url) && item.preferGeojson !== undefined)
           .map (item => {
-            if (item.geojson.indexOf('http') !== 0) {
-              if (item.geojson[0] === '/') {
+            let geoJsonUrl = item.geojson || item.url
+            if (geoJsonUrl.indexOf('http') !== 0) {
+              if (geoJsonUrl === '/') {
                 let [acct, repo, ...rest] = item.geojson.split('/').filter((pe:string) => pe)
                 let path = rest.join('/')
                 let ref = 'main'
                 item.geojson = `https://raw.githubusercontent.com/${acct}/${repo}/${ref}/${path}`
               } else {
-                item.geojson = `https://raw.githubusercontent.com/${props.essayBase}/${item.geojson}`
+                item.geojson = `https://raw.githubusercontent.com/${props.essayBase}/${geoJsonUrl}`
               }
             }
+            console.log(item.geojson)
             return item
           })
           .map(item => ({url:item.geojson, item}))

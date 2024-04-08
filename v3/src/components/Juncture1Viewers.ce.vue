@@ -43,6 +43,11 @@
       .filter(p => p['ve-map'] !== undefined)
       .map(p => toRaw(p))
   })
+  const mapLayers = computed(() => {
+    return params.value
+      .filter(p => p['ve-map-layer'] !== undefined)
+      .map(p => toRaw(p))
+  })
   // watch(maps, (maps) => { if (maps.length) console.log('maps', toRaw(maps)) })
 
   const props = defineProps({
@@ -89,15 +94,19 @@
       </sl-tab>
       
       <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :style="`height:${panelHeight}px`">
-        <mdp-image  :height="panelHeight">
-        <ul>
-          <li v-for="imgDef, idx in images" :key="`image-${idx}`" v-text="serializeProps(imgDef)"></li>
-        </ul>
-      </mdp-image>
+        <mdp-image :height="panelHeight">
+          <ul>
+            <li v-for="imgDef, idx in images" :key="`image-${idx}`" v-text="serializeProps(imgDef)"></li>
+          </ul>
+        </mdp-image>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="maps.length" name="map">
-        <mdp-map :center="maps[0].center" :zoom="maps[0].zoom"></mdp-map>
+        <mdp-map :center="maps[0].center" :zoom="maps[0].zoom" :height="panelHeight" essayBase="plant-humanities/essays/main">
+          <ul>
+            <li v-for="mapLayerDef, idx in mapLayers" :key="`map-layer-${idx}`" v-text="serializeProps(mapLayerDef)"></li>
+          </ul>
+        </mdp-map>
       </sl-tab-panel>
 
       <sl-tab-panel name="data">

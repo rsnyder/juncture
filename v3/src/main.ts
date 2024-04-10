@@ -5,6 +5,7 @@ import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
 import '@shoelace-style/shoelace/dist/components/icon/icon.js'
+import '@shoelace-style/shoelace/dist/components/image-comparer/image-comparer.js'
 import '@shoelace-style/shoelace/dist/components/menu/menu.js'
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js'
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js'
@@ -16,6 +17,7 @@ import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 import Audio from './components/Audio.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
+import Compare from './components/Compare.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
 import Entities from './components/Entities.ce.vue'
 import EntityCard from './components/EntityCard.ce.vue'
@@ -27,6 +29,7 @@ import Image from './components/Image.ce.vue'
 import Caption from './components/Caption.ce.vue'
 import InfoCard from './components/InfoCard.ce.vue'
 import Juncture1Viewers from './components/Juncture1Viewers.ce.vue'
+import KnightlabTimeline from './components/KnightlabTimeline.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
 import Map from './components/Map.ce.vue'
@@ -41,6 +44,7 @@ import Video from './components/Video.ce.vue'
 function defineCustomElements() {
 	customElements.define('mdp-audio', defineCustomElement(Audio))
 	customElements.define('mdp-breadcrumbs', defineCustomElement(Breadcrumbs))
+	customElements.define('mdp-compare', defineCustomElement(Compare))
 	// customElements.define('mdp-button', defineCustomElement(Button))
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
 	customElements.define('mdp-entities', defineCustomElement(Entities))
@@ -53,6 +57,7 @@ function defineCustomElements() {
 	customElements.define('mdp-caption', defineCustomElement(Caption))
 	customElements.define('mdp-info-card', defineCustomElement(InfoCard))
 	customElements.define('mdp-j1-viewers', defineCustomElement(Juncture1Viewers))
+	customElements.define('mdp-knightlab-timeline', defineCustomElement(KnightlabTimeline))
 	customElements.define('mdp-manifest', defineCustomElement(Manifest))
 	customElements.define('mdp-manifest-popup', defineCustomElement(ManifestPopup))
 	customElements.define('mdp-map', defineCustomElement(Map))

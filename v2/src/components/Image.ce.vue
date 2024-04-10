@@ -314,17 +314,19 @@ function copyTextToClipboard(text: string) {
   }"
 >
   <!-- <img class="w-full" :src="src" alt="Image title"> -->
-  <div v-if="tileSource" ref="osdEl" id="osd" class="w-full" role="img" :aria-label="caption" :alt="caption"></div>
-  <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">
-    <div class="font-bold text-xl mb-2" v-html="caption"></div>
+  <div v-if="tileSource" ref="osdEl" id="osd" class="w-full relative" role="img" :aria-label="caption" :alt="caption">
     <div v-if="coords"
-      class="invisible group-hover:visible 
+      class="
             absolute pr-4 pl-4 pt-2 pb-2 mt-24 
             bottom-0 right-0 cursor-copy
             ml-4 bg-slate-100 text-black"
       v-html="coords" 
       @click="copyTextToClipboard(coords || '')">
     </div>
+  </div>
+  <div v-if="tileSource && caption && !noCaption" class="group relative h-10 p-2">
+    <div class="font-bold text-xl mb-2" v-html="caption"></div>
+
   </div>
 </div>
 

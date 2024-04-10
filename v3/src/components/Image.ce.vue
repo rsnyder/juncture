@@ -356,7 +356,7 @@ function copyTextToClipboard(text: string) {
   .coords {
     opacity: 0;
     position: absolute;
-    bottom: 0;
+    bottom: 72px;
     right: 0;
     background-color: white;
     border: 1px solid #ccc;

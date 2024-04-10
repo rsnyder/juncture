@@ -50,6 +50,18 @@
   })
   // watch(maps, (maps) => { if (maps.length) console.log('maps', toRaw(maps)) })
 
+  const compare = computed(() => {
+    return params.value
+      .filter(p => p['ve-compare'] !== undefined)
+      .map(p => toRaw(p))
+  })
+
+  const timelinejs = computed(() => {
+    return params.value
+      .filter(p => p['ve-knightlab-timeline'] !== undefined)
+      .map(p => toRaw(p))
+  })
+
   const props = defineProps({
     dataId: { type: String },
     // style: { type: String }
@@ -76,10 +88,6 @@
 
 <template>
   <div ref="root" id="main">
-    <!-- <div v-html="dataId"></div> -->
-    <!--
-    <mdp-image v-if="images[0]?.src" :src="images[0].src || images[0].manifest"></mdp-image>
-    -->
 
     <sl-tab-group ref="tabs">
 
@@ -89,6 +97,11 @@
       <sl-tab v-if="maps.length" slot="nav" panel="map">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
       </sl-tab>
+      <sl-tab v-if="compare.length" slot="nav" panel="compare">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M160 32c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H160zM396 138.7l96 144c4.9 7.4 5.4 16.8 1.2 24.6S480.9 320 472 320H328 280 200c-9.2 0-17.6-5.3-21.6-13.6s-2.9-18.2 2.9-25.4l64-80c4.6-5.7 11.4-9 18.7-9s14.2 3.3 18.7 9l17.3 21.6 56-84C360.5 132 368 128 376 128s15.5 4 20 10.7zM192 128a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM48 120c0-13.3-10.7-24-24-24S0 106.7 0 120V344c0 75.1 60.9 136 136 136H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H136c-48.6 0-88-39.4-88-88V120z"/></svg>      </sl-tab>
+      <sl-tab v-if="timelinejs.length" slot="nav" panel="timelinejs">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg>
+      </sl-tab>
       <sl-tab slot="nav" panel="data">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>
       </sl-tab>
@@ -96,7 +109,7 @@
       <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :style="`height:${panelHeight}px`">
         <mdp-image :height="panelHeight">
           <ul>
-            <li v-for="imgDef, idx in images" :key="`image-${idx}`" v-text="serializeProps(imgDef)"></li>
+            <li v-for="def, idx in images" :key="`image-${idx}`" v-text="serializeProps(def)"></li>
           </ul>
         </mdp-image>
       </sl-tab-panel>
@@ -104,9 +117,21 @@
       <sl-tab-panel v-if="maps.length" name="map">
         <mdp-map :center="maps[0].center" :zoom="maps[0].zoom" :height="panelHeight" essayBase="plant-humanities/essays/main">
           <ul>
-            <li v-for="mapLayerDef, idx in mapLayers" :key="`map-layer-${idx}`" v-text="serializeProps(mapLayerDef)"></li>
+            <li v-for="def, idx in mapLayers" :key="`map-layer-${idx}`" v-text="serializeProps(def)"></li>
           </ul>
         </mdp-map>
+      </sl-tab-panel>
+
+      <sl-tab-panel v-if="compare.length" name="compare">
+        <mdp-compare :height="panelHeight">
+          <ul>
+            <li v-for="def, idx in compare" :key="`compare-${idx}`" v-text="serializeProps(def)"></li>
+          </ul>
+        </mdp-compare>
+      </sl-tab-panel>
+
+      <sl-tab-panel v-if="timelinejs.length" name="timelinejs" :style="{height:`${panelHeight}px`}">
+        <mdp-knightlab-timeline :source="timelinejs[0].source" :height="panelHeight"></mdp-knightlab-timeline>
       </sl-tab-panel>
 
       <sl-tab-panel name="data">

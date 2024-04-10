@@ -685,7 +685,6 @@
             _layerObjs.push(Promise.resolve({coords: props.center, zoom: props.zoom || 10}))
           }
         }
-        // layerObjs.value = _layerObjs
         layerObjs.value = [...layerObjs.value, ..._layerObjs]
       }
     

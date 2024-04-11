@@ -281,7 +281,7 @@
     
       watch(layerObjs, async () => {
         let _layerObjs = await Promise.all(layerObjs.value)
-        if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
+        // if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
           .filter(item => (item.geojson || item.url) && item.preferGeojson !== undefined)
@@ -297,7 +297,7 @@
                 item.geojson = `https://raw.githubusercontent.com/${props.essayBase}/${geoJsonUrl}`
               }
             }
-            console.log(item.geojson)
+            // console.log(item.geojson)
             return item
           })
           .map(item => ({url:item.geojson, item}))

@@ -25,6 +25,7 @@ import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Footer from './components/Footer.ce.vue'
 import Gallery from './components/Gallery.ce.vue'
 import Header from './components/Header.ce.vue'
+import IFrame from './components/IFrame.ce.vue'
 import Image from './components/Image.ce.vue'
 import Caption from './components/Caption.ce.vue'
 import InfoCard from './components/InfoCard.ce.vue'
@@ -36,6 +37,7 @@ import Map from './components/Map.ce.vue'
 import Menu from './components/Menu.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
+import PlantSpecimen from './components/PlantSpecimen.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
 import SpcWrapper from './components/SpcWrapper.ce.vue'
 import Video from './components/Video.ce.vue'
@@ -53,6 +55,7 @@ function defineCustomElements() {
 	customElements.define('mdp-footer', defineCustomElement(Footer))
 	customElements.define('mdp-gallery', defineCustomElement(Gallery))
 	customElements.define('mdp-header', defineCustomElement(Header))
+	customElements.define('mdp-iframe', defineCustomElement(IFrame))
 	customElements.define('mdp-image', defineCustomElement(Image))
 	customElements.define('mdp-caption', defineCustomElement(Caption))
 	customElements.define('mdp-info-card', defineCustomElement(InfoCard))
@@ -64,6 +67,7 @@ function defineCustomElements() {
 	customElements.define('mdp-menu', defineCustomElement(Menu))
 	customElements.define('mdp-meta', defineCustomElement(Meta))
 	customElements.define('mdp-modal', defineCustomElement(Modal))
+	customElements.define('mdp-plant-specimen', defineCustomElement(PlantSpecimen))
 	customElements.define('mdp-site-search', defineCustomElement(SiteSearch))
 	customElements.define('mdp-sfc-wrapper', defineCustomElement(SpcWrapper))
 	customElements.define('mdp-video', defineCustomElement(Video))

@@ -34,7 +34,7 @@
 <script setup lang="ts">
 
   import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
-  import { getManifest, imageDataUrl, getItemInfo, parseImageOptions } from '../utils'
+  import { getManifest, iiifServer, imageDataUrl, getItemInfo, parseImageOptions } from '../utils'
   import EventBus from './EventBus'
 
   const window = (self as any).window
@@ -96,7 +96,7 @@
   watch(host, (host) => {
     config.value = window.config || {}
     imageOptions.value = parseImageOptions(props.options || '')
-    if (backgroundImage.value) getManifest(backgroundImage.value).then(_manifest => manifest.value = _manifest)
+    if (backgroundImage.value) getBackgroundManifest()
     if (background.value) background.value.style.height = props.height
       ? `${props.height}px`
       : backgroundImage.value
@@ -117,6 +117,23 @@
       host.style.top = `${top}px`
     }
   })
+
+  function getBackgroundManifest() {
+    getManifest(backgroundImage.value)
+      .then(_manifest => {
+        console.log(_manifest)
+        manifest.value = _manifest
+      })
+      .catch(err => {
+        console.error(err)
+        fetch(`https://${iiifServer}/manifest/`, { method: 'POST', body: JSON.stringify({url: backgroundImage.value}) })
+        .then(resp => resp.json())
+        .then(_manifest => {
+          console.log(_manifest)
+          manifest.value = _manifest
+        })
+      })
+  }
 
   onMounted(() => {
     nextTick(() => {

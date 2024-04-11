@@ -26,45 +26,20 @@
   })
 
   const panelHeight = ref()
-  // watch(panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
 
   const params = ref<any[]>([])
-  // watch(params, (params) => { console.log(toRaw(params)) })
 
-  const images = computed(() => {
-    return params.value
-      .filter(p => p['ve-image'] !== undefined)
-      .map(p => toRaw(p))
-  })
-  // watch(images, (images) => { if (images.length) console.log('images', toRaw(images)) })
-
-  const maps = computed(() => {
-    return params.value
-      .filter(p => p['ve-map'] !== undefined)
-      .map(p => toRaw(p))
-  })
-  const mapLayers = computed(() => {
-    return params.value
-      .filter(p => p['ve-map-layer'] !== undefined)
-      .map(p => toRaw(p))
-  })
-  // watch(maps, (maps) => { if (maps.length) console.log('maps', toRaw(maps)) })
-
-  const compare = computed(() => {
-    return params.value
-      .filter(p => p['ve-compare'] !== undefined)
-      .map(p => toRaw(p))
-  })
-
-  const timelinejs = computed(() => {
-    return params.value
-      .filter(p => p['ve-knightlab-timeline'] !== undefined)
-      .map(p => toRaw(p))
-  })
+  const compare = computed(() => params.value.filter(p => p['ve-compare'] !== undefined).map(p => toRaw(p)))
+  const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
+  const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
+  const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
+  const mapLayers = computed(() => params.value.filter(p => p['ve-map-layer'] !== undefined).map(p => toRaw(p)))
+  const plantSpecimens = computed(() => params.value.filter(p => p['ve-plant-specimen'] !== undefined).map(p => toRaw(p)))
+  const timelinejs = computed(() => params.value.filter(p => p['ve-knightlab-timeline'] !== undefined).map(p => toRaw(p)))
+  const videos = computed(() => params.value.filter(p => p['ve-video'] !== undefined).map(p => toRaw(p)))
 
   const props = defineProps({
-    dataId: { type: String },
-    // style: { type: String }
+    dataId: { type: String }
   })
 
   function getViewerData() {
@@ -102,6 +77,15 @@
       <sl-tab v-if="timelinejs.length" slot="nav" panel="timelinejs">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg>
       </sl-tab>
+      <sl-tab v-if="videos.length" slot="nav" panel="videos">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128zM559.1 99.8c10.4 5.6 16.9 16.4 16.9 28.2V384c0 11.8-6.5 22.6-16.9 28.2s-23 5-32.9-1.6l-96-64L416 337.1V320 192 174.9l14.2-9.5 96-64c9.8-6.5 22.4-7.2 32.9-1.6z"/></svg>
+      </sl-tab>
+      <sl-tab v-if="plantSpecimens.length" slot="nav" panel="plantSpecimens">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M512 32c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 46.3 364 0 448 0h32c17.7 0 32 14.3 32 32zM0 96C0 78.3 14.3 64 32 64H64c123.7 0 224 100.3 224 224v32V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V320C100.3 320 0 219.7 0 96z"/></svg>
+      </sl-tab>
+      <sl-tab v-if="iframes.length" slot="nav" panel="iframes">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>
+      </sl-tab>
       <sl-tab slot="nav" panel="data">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>
       </sl-tab>
@@ -134,12 +118,32 @@
         <mdp-knightlab-timeline :source="timelinejs[0].source" :height="panelHeight"></mdp-knightlab-timeline>
       </sl-tab-panel>
 
+      <sl-tab-panel v-if="videos.length" name="videos" :style="{height:`${panelHeight}px`}">
+        <mdp-video :src="`https://www.youtube.com/watch?v=${videos[0].id || videos[0].vid}`" :height="panelHeight"></mdp-video>
+      </sl-tab-panel>
+      
+      <sl-tab-panel v-if="iframes.length" name="iframes" :style="{height:`${panelHeight}px`}">
+        <mdp-iframe :src="iframes[0].src" :height="panelHeight"></mdp-iframe>
+      </sl-tab-panel>
+      
+      <sl-tab-panel v-if="plantSpecimens.length" name="plantSpecimens" :style="{height:`${panelHeight}px`}">
+        <mdp-plant-specimen :height="panelHeight"
+          :eid="plantSpecimens[0].eid"
+          :qid="plantSpecimens[0].qid"
+          :jpid="plantSpecimens[0].jpid"
+          :wdid="plantSpecimens[0].wdid"
+          :taxonName="plantSpecimens[0].taxonName"
+          :caption="plantSpecimens[0].caption"
+          :max="plantSpecimens[0].max"
+        ></mdp-plant-specimen>
+      </sl-tab-panel>
+    
       <sl-tab-panel name="data">
         <div v-if="params" v-for="param, idx in params" :key="`param-${idx}`">
           <pre v-html="JSON.stringify(param, null, 2)"></pre>
         </div>
       </sl-tab-panel>
-    
+
     </sl-tab-group>
   </div>
 </template>

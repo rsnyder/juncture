@@ -170,7 +170,7 @@
         playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
         let width = playerEl?.clientWidth
         let height =  Math.round(width / metadata.aspect)
-        // console.log(`Resize player: ${width} x ${height}`)
+        console.log(`Resize player: ${width} x ${height}`)
         playerEl.style.height = `${height}px`
        } ).observe(host.value)
 

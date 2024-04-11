@@ -61,9 +61,9 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    // (toRaw(imageDefs))
+    // console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
-      def.src || def.manifest
+      (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
         : fetch(`https://${iiifServer}/manifest/`, { method: 'POST', body: JSON.stringify(def) }).then(resp => resp.json())
     )).then((responses) => responses.flat() )

@@ -19,8 +19,8 @@ LOCAL_WC_JUNCTURE = os.environ.get('LOCAL_WC_JUNCTURE', 'false').lower() == 'tru
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
 LOCAL_WC_PORT_JUNCTURE = os.environ.get('LOCAL_WC_PORT_JUNCTURE', '5174')
 CONTENT_ROOT = os.environ.get('CONTENT_ROOT', BASEDIR)
-GH_ACCT = os.environ.get('GH_ACCT', '')
-GH_REPO = os.environ.get('GH_REPO', '')
+GH_OWNER = os.environ.get('GH_OWNER', '')
+GH_REPOSITORY = os.environ.get('GH_REPOSITORY', '')
 GH_BRANCH = os.environ.get('GH_BRANCH', 'main')
 
 from bs4 import BeautifulSoup
@@ -74,8 +74,8 @@ html_template = re.sub(r'https:\/\/.+\/(mdpress|juncture)\/', '/', html_template
 if LOCAL_WC: html_template = html_template.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
-html_template = html_template.replace('{{ site.github.owner_name }}', GH_ACCT)
-html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPO)
+html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
+html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPOSITORY)
 html_template = html_template.replace('{{ site.github.source.branch }}', GH_BRANCH)
 
 html_template = html_template.replace('{%- seo -%}', '')
@@ -193,9 +193,9 @@ if __name__ == '__main__':
   parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
   parser.add_argument('--wcport-juncture', type=int, default=5174, help='Port used by local Juncture WC server')
   parser.add_argument('--content', default=BASEDIR, help='Content root directory')
-  parser.add_argument('--gh-acct', default='', help='Github account')
-  parser.add_argument('--gh-repo', default='', help='Github repository')
-  parser.add_argument('--gh-branch', default='main', help='Github branch')
+  parser.add_argument('--owner', default='', help='Github owner')
+  parser.add_argument('--repo', default='', help='Github repository')
+  parser.add_argument('--branch', default='main', help='Github branch')
 
 
   args = vars(parser.parse_args())
@@ -205,9 +205,9 @@ if __name__ == '__main__':
   os.environ['LOCAL_WC_PORT'] = str(args['wcport'])
   os.environ['LOCAL_WC_PORT_JUNCTURE'] = str(args['wcport_juncture'])
   os.environ['CONTENT_ROOT'] = os.path.abspath(str(args['content']))
-  os.environ['GH_ACCT'] = str(args['gh_acct'])
-  os.environ['GH_REPO'] = str(args['gh_repo'])
-  os.environ['GH_BRANCH'] = str(args['gh_branch'])
+  os.environ['GH_OWNER'] = str(args['owner'])
+  os.environ['GH_REPOSITORY'] = str(args['repo'])
+  os.environ['GH_BRANCH'] = str(args['branch'])
 
   logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} LOCAL_WC_PORT_JUNCTURE={os.environ["LOCAL_WC_PORT_JUNCTURE"]}')
 

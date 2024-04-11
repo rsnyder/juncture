@@ -50,6 +50,10 @@
   })
   watch(props, () => { evalProps() }) 
 
+  const window = (self as any).window
+  const config = ref<any>(window.config || {})
+  const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${config.value.source?.owner}/${config.value.source?.repository}/${config.value.source?.branch}${config.value.source?.dir}`)
+
   const osdEl = ref<HTMLElement | null>(null)
 
   const osdWidth = ref<number>(0)
@@ -65,7 +69,18 @@
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
-        : fetch(`https://${iiifServer}/manifest/`, { method: 'POST', body: JSON.stringify(def) }).then(resp => resp.json())
+        : fetch(`https://${iiifServer}/manifest/`, {
+          method: 'POST', 
+          body: JSON.stringify(
+            Object.fromEntries(
+              Object.entries(def)
+              .filter(([k,v]) => ['attribution', 'caption', 'description', 'label', 'license', 'summary', 'title', 'url'].includes(k))
+              .map(([k,v]) => {
+                if (k === 'url' && v.indexOf('http') < 0) v = `${ghBaseurl.value}/${v}`
+                return [k, v]
+              })
+            )) 
+        }).then(resp => resp.json())
     )).then((responses) => responses.flat() )
   })
 
@@ -92,7 +107,6 @@
   watch(aspectRatio, () => { resize() })
 
   function init() {
-
     function parseImageDefStr(s:String): Object {
       let tokens: String[] = []
       s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")

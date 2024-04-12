@@ -32,10 +32,8 @@ export class Annotator {
     this.annotorious.on('selectAnnotation', async (anno:any) => this.onSelect(anno))
     this.setVisible(true)
     this.ghAuthToken = localStorage.getItem('gh-auth-token') || ''
-    if (this.ghAuthToken) {
-      this.ghClient = new GithubClient(this.ghAuthToken)
-    }
-    // console.log(`Annotator: base=${base} readOnly=${this.annotorious.readOnly} authenticated=${this.ghAuthToken !== ''}`)
+    this.ghClient = new GithubClient(this.ghAuthToken)
+    console.log(`Annotator: base=${base} readOnly=${this.annotorious.readOnly} authenticated=${this.ghAuthToken !== ''}`)
   }
 
   async loadAnnotations(imageId:string) {

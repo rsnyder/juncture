@@ -771,7 +771,7 @@ function readMoreSetup() {
 }
 
 function Juncture1Setup() {
-  console.log('Juncture1Setup')
+  // console.log('Juncture1Setup')
   let veConfig = document.querySelector('param[ve-config]')
   let header = document.createElement('mdp-header')
   Array.from(veConfig.attributes).forEach(attr => {

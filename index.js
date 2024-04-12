@@ -777,7 +777,7 @@ function Juncture1Setup() {
   Array.from(veConfig.attributes).forEach(attr => {
     if (attr.name === 'banner') header.setAttribute('background', attr.value)
     if (attr.name === 'title') header.setAttribute('title', attr.value)
-    if (attr.name === 'subtitle') header.setAttribute('subtitle', attr.value)
+    if (attr.name === 'subtitle' || attr.name === 'author') header.setAttribute('subtitle', attr.value)
   })
   veConfig.replaceWith(header)
 

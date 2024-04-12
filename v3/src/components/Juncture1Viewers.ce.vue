@@ -123,7 +123,17 @@
       </sl-tab-panel>
       
       <sl-tab-panel v-if="iframes.length" name="iframes" :style="{height:`${panelHeight}px`}">
-        <mdp-iframe :src="iframes[0].src" :height="panelHeight"></mdp-iframe>
+        <mdp-iframe 
+        :allow="iframes[0].allow" 
+        :allowfullscreen="iframes[0].allowfullscreen" 
+        :allowtransparency="iframes[0].allowtransparency" 
+        :caption="iframes[0].caption" 
+        :frameborder="iframes[0].frameborder" 
+        :height="panelHeight"
+        :name="iframes[0].name" 
+        :referrerpolicy="iframes[0].referrerpolicy"
+        :src="iframes[0].src" 
+      ></mdp-iframe>
       </sl-tab-panel>
       
       <sl-tab-panel v-if="plantSpecimens.length" name="plantSpecimens" :style="{height:`${panelHeight}px`}">

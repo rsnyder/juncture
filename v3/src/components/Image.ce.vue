@@ -2,14 +2,21 @@
 
   <div ref="root" class="image">
 
-    <div v-if="tileSources" ref="osdEl" class="osd" id="osd" role="img" :aria-label="caption" :alt="caption">
+    <div v-if="tileSources" ref="osdEl" :class="annotationsEditable ? 'osd edit' : 'osd view'" id="osd" role="img" :aria-label="caption" :alt="caption">
       <div v-if="coords"
         class="coords"
         v-html="coords" 
         @click="copyTextToClipboard(coords || '')">
       </div>
     </div>
-    <mdp-caption v-if="manifests.length && !noCaption" :manifest="manifests[selected]" :caption="caption"></mdp-caption>
+
+    <div class="status">
+      <div v-if="annotations.length > 0" class="annotations-indicator" @click="toggleAnnotations">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg>
+        <sl-badge variant="primary" pill>{{annotations.length}}</sl-badge>
+      </div>
+      <mdp-caption v-if="manifests.length && !noCaption" :manifest="manifests[selected]" :caption="caption" :annoid="annoid"></mdp-caption>
+    </div>
   </div>
   
   </template>
@@ -19,7 +26,10 @@
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TileSource } from 'openseadragon'
 
-  import { iiifServer, getManifest } from '../utils'
+  import { iiifServer, getManifest, sha256 } from '../utils'
+
+
+  import { Annotator } from '../annotator'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
@@ -28,6 +38,7 @@
   watch(shadowRoot, (shadowRoot) => { shadowRoot.children[1].classList.remove('sticky') })
   
   const props = defineProps({
+    base: { type: String },
     caption: { type: String },
     data: { type: String },
     fit: { type: String, default: 'contain' },
@@ -48,13 +59,23 @@
     title: { type: String },
     url: { type: String }
   })
-  watch(props, () => { evalProps() }) 
+  watch(props, () => { evalProps() })
 
   const window = (self as any).window
   const config = ref<any>(window.config || {})
-  const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${config.value.source?.owner}/${config.value.source?.repository}/${config.value.source?.branch}${config.value.source?.dir}`)
+  const source = computed(() => {
+    if (config.value.source) return config.value.source
+    else if (props.base) {
+      let [owner, repository, branch, ...dir] = props.base.split('/')
+      return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
+    }
+    return null
+  })
+  const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}${source.value?.dir}`)
 
   const osdEl = ref<HTMLElement | null>(null)
+
+  const annotator = ref<any>()
 
   const osdWidth = ref<number>(0)
   watch(osdWidth, () => {
@@ -65,7 +86,6 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    // console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
@@ -76,7 +96,7 @@
               Object.entries(def)
               .filter(([k,v]) => ['attribution', 'caption', 'description', 'label', 'license', 'summary', 'title', 'url'].includes(k))
               .map(([k,v]) => {
-                if (k === 'url' && v.indexOf('http') < 0) v = `${ghBaseurl.value}/${v}`
+                if (k === 'url' && (v as string).indexOf('http') < 0) v = `${ghBaseurl.value}/${v}`
                 return [k, v]
               })
             )) 
@@ -98,10 +118,26 @@
   watch(tileSources, (tileSources) => { osd.value?.open(tileSources) })
 
   const selected = ref<number>(0)
-
+  
   const selectedItemInfo = computed(() => 
     manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
   )
+
+  const annoid = computed(() => selectedItemInfo.value && sha256(decodeURIComponent(selectedItemInfo.value.id?.split('/').pop().toLowerCase().replace('.jpeg','.jpg'))).slice(0,8))
+  watch(annoid, async(annoid) =>
+    annotations.value = annotator.value
+      ? await annotator.value.loadAnnotations(annoid) || []
+      : 0
+  )
+
+  const annotationsEditable = ref<boolean>(false)
+  const annotationsVisible = ref<boolean>(false)
+  watch(annotationsVisible, () => annotator.value.setVisible(annotationsVisible.value) )
+
+  const annotations = ref<any[]>([])
+  watch(annotations, (annotations) => { console.log('annotations', toRaw(annotations)) })
+  function toggleAnnotations() { annotationsVisible.value = !annotationsVisible.value }
+
   const imageSize = computed(() => selectedItemInfo.value && { width: selectedItemInfo.value.width, height: selectedItemInfo.value.height} )
   const aspectRatio = computed(() => Number(((imageSize.value?.width || 1)/(imageSize.value?.height || 1)).toFixed(4)) )
   watch(aspectRatio, () => { resize() })
@@ -126,7 +162,7 @@
 
     function getImageDefs () {
       let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'seq', 'src', 'summary', 'title', 'url'])
-      let imageDefFromProps = props.src ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
+      let imageDefFromProps = (props.src || props.url) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
       Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
         .map((li:HTMLLIElement) => parseImageDefStr(li.textContent || ''))
@@ -247,6 +283,8 @@
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     setTimeout(() => setViewportCoords(), 500)
     if (tileSources.value.length) osd.value.open(tileSources.value)
+    let annoBase = `${source.value?.owner}/${source.value?.repository}${source.value?.dir.slice(0,-1)}`
+    annotator.value = new Annotator(osd.value, annoBase)
   }
 
   function addInteractionHandlers() {
@@ -355,6 +393,8 @@ function copyTextToClipboard(text: string) {
 </script>
 
 <style>
+  @import '../annotator/annotorious.css';
+
   .image {
     display: flex;
     flex-direction: column;
@@ -382,6 +422,74 @@ function copyTextToClipboard(text: string) {
   .coords:hover {
     opacity: 1;
     cursor: copy;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+  } 
+  .annotations-indicator {
+    display: flex;
+    position: relative;
+    width: 1.8em;
+    padding: 0.5em;
+    cursor: pointer;
+  }
+  .annotations-indicator svg {
+    width: 1.3em;
+    height: 1.3em;
+  }
+  .annotations-indicator sl-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .view .r6o-footer {
+    /* display: none; */
+  }
+  .r6o-readonly-comment {
+    display: inline;
+    padding: 0 !important;
+    line-height: 1 !important;
+  }
+  .view .r6o-editor, 
+  .view .r6o-editor-inner, 
+  .view .r6o-widget {
+    display: inline-block;
+    min-height: unset !important;
+    font-size: 1.0em;
+    line-height: 1.2;
+    /* padding: 9px; */
+    border-bottom: none;
+  }
+
+  .view .r6o-widget.comment {
+    padding: 10px;
+  }
+
+  /*
+  .view .r6o-icon.r6o-arrow-down,
+  .view .r6o-btn.delete-annotation,
+  .view .r6o-btn.outline {
+    display: none !important;
+  }
+  */
+
+  .r6o-tag,
+  .comment.editable:nth-of-type(2) {
+    display: none !important;
+  }
+  .edit .r6o-editor {
+    width: 216px;
+  }
+
+  /** New style for the annotation outlines **/
+  svg.a9s-annotationlayer .a9s-selection .a9s-inner,
+  svg.a9s-annotationlayer .a9s-annotation .a9s-inner  {
+    stroke-width: 3;
+    stroke: rgba(255,255,0,1.0);
   }
 
 </style>

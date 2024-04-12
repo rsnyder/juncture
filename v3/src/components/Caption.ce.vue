@@ -62,6 +62,7 @@
   )
 
   const props = defineProps({
+    annoid: { type: String },
     caption: { type: String },
     language: { type: String, default: 'en' },
     manifest: { type: Object},
@@ -112,6 +113,7 @@
             <mdp-map v-if="coords" :center="coords" zoom="6" marker></mdp-map>
           </div>
         </sl-dropdown>
+        <div v-if="annoid" class="annoid" v-text="annoid"></div>
       </div>
     </sl-dropdown>
   </div>
@@ -161,5 +163,10 @@
     width: 1.2em;
     height: 1.2em;
     fill: #333;
+  }
+  .annoid {
+    font-size: 0.8em;
+    font-weight: 400;
+    color: #666;
   }
 </style>

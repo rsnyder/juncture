@@ -341,9 +341,10 @@ p span.headline {
     margin: 0;
   }
 
-  .j1 > section {
+  .j1 > section,
+  .j1 > div.segment {
     width: calc(50% - 1em);
-    margin: 0 1em;
+    margin: 0.5em 1em;
   }
 
   .j1 p {

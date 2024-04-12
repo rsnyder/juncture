@@ -1,12 +1,16 @@
 import { nextTick } from 'vue'
 import { Md5 } from 'ts-md5'
 import * as yaml from 'js-yaml'
+import { sha256 as __sha256 } from 'js-sha256'
 
 const window = (globalThis as any).window as any
 let options:any = yaml.load(window.options)
 
 export const iiifServer = options?.defaults?.iiifServer || 'iiif.mdpress.io'
 
+export function sha256(str: string) {
+  return __sha256(str)
+}
 export function isURL(str:string) { return /^https*:\/\//.test(str) }
 export function isQid(s:string) { return /^Q\d+$/.test(s) }
 export function isCoords(s:string) { return /^[+-]?\d+(.\d*|\d*),{1}[+-]?\d+(.\d*|\d*)$/.test(s) }

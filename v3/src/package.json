@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@allmaps/leaflet": "^1.0.0-beta.25",
-    "@recogito/annotorious-openseadragon": "^2.7.17",
+    "@openseadragon-imaging/openseadragon-viewerinputhook": "^2.2.1",
+    "@recogito/annotorious-openseadragon": "2.6.0",
     "@shoelace-style/shoelace": "^2.13.1",
     "@types/leaflet": "^1.9.8",
     "js-sha256": "^0.11.0",
@@ -23,7 +24,7 @@
     "leaflet.control.opacity": "^1.6.0",
     "leaflet.smoothwheelzoom": "github:rsnyder/Leaflet.SmoothWheelZoom",
     "marked": "^7.0.4",
-    "openseadragon": "^3.1.0",
+    "openseadragon": "2.4.2",
     "preline": "^1.9.0",
     "ts-md5": "^1.3.1",
     "vue": "^3.3.4",

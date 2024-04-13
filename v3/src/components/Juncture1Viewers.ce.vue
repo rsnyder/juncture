@@ -1,14 +1,39 @@
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, ref, toRaw, watch } from 'vue'
   import { isMobile } from '../utils'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const tabs = ref<HTMLElement | null>(null)
 
+  const textElement = computed(() => host.value?.previousElementSibling as HTMLElement )
+  watch (textElement, (textElement) => {
+    if (textElement) {
+      new MutationObserver((mutationsList:any) => {
+        for (let mutation of mutationsList) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            isActive.value = textElement.classList.contains('active')
+          }
+        }  
+      }).observe(textElement, { attributes: true })
+    }
+  })
+
+  const isActive = ref(false)
+  watch (isActive, (isActive) => {
+    if (isActive) {
+      console.log('active', textElement.value)
+      /*
+      let indicator = document.createElement('div')
+      textElement.value.style.position = 'relative'
+      textElement.value?.appendChild(indicator)
+      indicator.outerHTML = '<div style="position:absolute; top:0; right:0; padding:6px;">XX</div>'
+      */
+    }
+  })
+
   watch(host, (host) => {
-    // console.log(`isMobile=${isMobile()}`)
     if (!isMobile()) {
       function setPanelHeight(el: HTMLElement) {
         let isActive = el && el.previousElementSibling?.classList.contains('active')
@@ -148,7 +173,7 @@
         ></mdp-plant-specimen>
       </sl-tab-panel>
     
-      <sl-tab-panel name="data">
+      <sl-tab-panel name="data" style="background-color:white;">
         <div v-if="params" v-for="param, idx in params" :key="`param-${idx}`">
           <pre v-html="JSON.stringify(param, null, 2)"></pre>
         </div>
@@ -159,6 +184,10 @@
 </template>
 
 <style>
+
+  #main {
+    background-color: black;
+  }
 
   sl-tab-group::part(tabs) {
     background-color: #ddd;

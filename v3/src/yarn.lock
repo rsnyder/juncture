@@ -641,6 +641,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
+"@openseadragon-imaging/openseadragon-viewerinputhook@^2.2.1":
+  "integrity" "sha512-ofAA065muVbEsCClUPw8uItk35PwQV6zx7yMcRdJrFBm5IBu9NjWm/RxPf6d/OdnGjger53BsMkKi6DlfNiGiw=="
+  "resolved" "https://registry.npmjs.org/@openseadragon-imaging/openseadragon-viewerinputhook/-/openseadragon-viewerinputhook-2.2.1.tgz"
+  "version" "2.2.1"
+
 "@placemarkio/geojson-rewind@^1.0.2":
   "integrity" "sha512-ulBdZOCvKlUIe9v+/PDVfe4wDvfkJRzRXstGEHbAJGiUN8IDYw3wD3156DcN/rO9DiHfjcF8KUQlQ7iiMd+rrA=="
   "resolved" "https://registry.npmjs.org/@placemarkio/geojson-rewind/-/geojson-rewind-1.0.2.tgz"
@@ -651,30 +656,46 @@
   "resolved" "https://registry.npmjs.org/@popperjs/core/-/core-2.11.8.tgz"
   "version" "2.11.8"
 
-"@recogito/annotorious-openseadragon@^2.7.17":
-  "integrity" "sha512-JnEUiPIp2SBvLcPc77IwBCwfIBrhGPaSvmFzkRKA3kfWydISs/ubtZBx2pLeqiFPXZi8TyL2rUWpEu8xJkV6ew=="
-  "resolved" "https://registry.npmjs.org/@recogito/annotorious-openseadragon/-/annotorious-openseadragon-2.7.17.tgz"
-  "version" "2.7.17"
+"@recogito/annotorious-openseadragon@2.6.0":
+  "integrity" "sha512-ThnS0a9hqpKikv5rHn5MhpcKUySzSGZRA2tNeGYOkJakLcQyAELoZpT/PvtOHPEDFmnMda5GrCS2vUrAmo10YQ=="
+  "resolved" "https://registry.npmjs.org/@recogito/annotorious-openseadragon/-/annotorious-openseadragon-2.6.0.tgz"
+  "version" "2.6.0"
   dependencies:
-    "@recogito/annotorious" "2.7.13"
-    "@recogito/recogito-client-core" "^1.7.9"
+    "@recogito/annotorious" "2.6.0"
+    "@recogito/recogito-client-core" "^1.6.0"
     "preact" "^10.5.13"
     "rbush" "^3.0.1"
     "tiny-emitter" "^2.1.0"
 
-"@recogito/annotorious@2.7.13":
-  "integrity" "sha512-dcNK+bCv7Mcq/KExCVDm3mfTYYGVsll5VbOg15m0IQszjq7Ra4bhponUGDrFpqingeiaZ56cQSRqygd/7RNKMQ=="
-  "resolved" "https://registry.npmjs.org/@recogito/annotorious/-/annotorious-2.7.13.tgz"
-  "version" "2.7.13"
+"@recogito/annotorious@2.6.0":
+  "integrity" "sha512-w60677Vm7vOnlW66yRd7eflbkuuyyLWHal11J3aUWZOx2TFJFjcNtsHSwXpeMh8HMEj/55vrq69GCmCVZP2Ccg=="
+  "resolved" "https://registry.npmjs.org/@recogito/annotorious/-/annotorious-2.6.0.tgz"
+  "version" "2.6.0"
   dependencies:
-    "@recogito/recogito-client-core" "1.7.9"
+    "@recogito/recogito-client-core" "1.6.0"
     "preact" "^10.5.13"
     "tiny-emitter" "^2.1.0"
 
-"@recogito/recogito-client-core@^1.7.9", "@recogito/recogito-client-core@1.7.9":
+"@recogito/recogito-client-core@^1.6.0":
   "integrity" "sha512-fPkBUlNP5WDwlqPKUDLB0O6DnZQG2mtOBiS78wLJjbbyU8b8yYt8RN9VVui1gji3diCPz+oWpH22eWZTQlADlQ=="
   "resolved" "https://registry.npmjs.org/@recogito/recogito-client-core/-/recogito-client-core-1.7.9.tgz"
   "version" "1.7.9"
+  dependencies:
+    "core-js" "^3.18.3"
+    "fast-deep-equal" "^3.1.3"
+    "node-polyglot" "^2.4.0"
+    "react-autosize-textarea" "^7.1.0"
+    "react-draggable" "^4.4.3"
+    "react-select" "^4.3.1"
+    "react-transition-group" "^4.4.2"
+    "regenerator-runtime" "^0.13.9"
+    "timeago-react" "^3.0.2"
+    "uuid" "^8.3.2"
+
+"@recogito/recogito-client-core@1.6.0":
+  "integrity" "sha512-30ZYo/0QIClhi/QYeJMc1r66CY/p6ojdG1suvqRqvV5jg67uuy2iNpq7EJm87b0CBNWB6vJGuEWwgG6EtAiDCA=="
+  "resolved" "https://registry.npmjs.org/@recogito/recogito-client-core/-/recogito-client-core-1.6.0.tgz"
+  "version" "1.6.0"
   dependencies:
     "core-js" "^3.18.3"
     "fast-deep-equal" "^3.1.3"
@@ -2524,10 +2545,10 @@
   dependencies:
     "wrappy" "1"
 
-"openseadragon@^3.0.0", "openseadragon@^3.1.0":
-  "integrity" "sha512-0zCbRIWUbCto7xm1tv2ZLEiSl84cDU659W/sfs2zqqTqVRa4CRHzhy7i9nsv6dHA1DryFR8IzjStjmWOqRs9Rg=="
-  "resolved" "https://registry.npmjs.org/openseadragon/-/openseadragon-3.1.0.tgz"
-  "version" "3.1.0"
+"openseadragon@^2.4.2", "openseadragon@2.4.2", "openseadragon@2.x":
+  "integrity" "sha512-398KbZwRtOYA6OmeWRY4Q0737NTacQ9Q6whmr9Lp1MNQO3p0eBz5LIASRne+4gwequcSM1vcHcjfy3dIndQziw=="
+  "resolved" "https://registry.npmjs.org/openseadragon/-/openseadragon-2.4.2.tgz"
+  "version" "2.4.2"
 
 "parent-module@^1.0.0":
   "integrity" "sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g=="

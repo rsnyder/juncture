@@ -25,6 +25,7 @@
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TileSource } from 'openseadragon'
+  import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
   import { iiifServer, getManifest, sha256 } from '../utils'
 
@@ -48,6 +49,7 @@
     seq: { type: Number, default: 1},
     src: { type: String },
     width: { type: Number },
+    zoomOnScroll: { type: Boolean, default: false },
 
     // for ad-hoc manifest creation
     attribution: { type: String },
@@ -281,10 +283,49 @@
     osd.value = OpenSeadragon(osdOptions)
     osd.value.addHandler('viewport-change', () => watchCoords())
     osd.value.addHandler('page', (e) => { selected.value = e.page })
+    configureImageViewerBehavior()
+
     setTimeout(() => setViewportCoords(), 500)
     if (tileSources.value.length) osd.value.open(tileSources.value)
     let annoBase = `${source.value?.owner}/${source.value?.repository}${source.value?.dir.slice(0,-1)}`
     annotator.value = new Annotator(osd.value, annoBase)
+  }
+
+  function configureImageViewerBehavior() {
+    /* This is intended to provide touch-based scrolling of OSD images in mobile mode.  Pan/zoom is
+    disabled to permit scrolling.  The technique for doing this is as described in this
+    OSD Github issue - https://github.com/openseadragon/openseadragon/issues/1791#issuecomment-1000045888
+    Unfortunately, this only works with OSD v2.4.2, which is not compatible with the latest version of the
+    Annotorious plugin (requires 3.0).  As a result, the current configuration is pinned 
+    to OSD 2.4.2 and annotorious 2.6.0
+    */
+    //const canvas: any = this.el.shadowRoot.querySelector('.openseadragon-canvas')
+    //canvas.style.touchAction = 'pan-y'
+
+    if (!props.zoomOnScroll) {
+
+      new OpenSeadragonViewerInputHook({ viewer: osd.value, hooks: [
+        {tracker: 'viewer', handler: 'scrollHandler', hookHandler: (event:any) => {
+          if (!osd.value?.isFullPage() && !event.originalEvent.ctrlKey) {
+            event.preventDefaultAction = true
+            event.stopHandlers = true
+          }
+          return true
+        }}
+      ]})
+
+      /*
+      new OpenSeadragonViewerInputHook({ viewer: viewer.value, hooks: [
+        {tracker: 'viewer', handler: 'clickHandler', hookHandler: (event:any) => {
+          if (!viewer.value?.isFullPage() && !event.originalEvent.ctrlKey) {
+            event.preventDefaultAction = true
+            event.stopHandlers = true
+          }
+          return true
+        }}
+      ]})
+      */
+    }
   }
 
   function addInteractionHandlers() {
@@ -428,6 +469,7 @@ function copyTextToClipboard(text: string) {
     display: flex;
     align-items: center;
     gap: 0.2em;
+    background-color: white;
   } 
   .annotations-indicator {
     display: flex;

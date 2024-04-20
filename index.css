@@ -459,7 +459,7 @@ article.j1 > * {
   z-index: 2;
 }
 
-.j1 .footnote {
+.j1 .footnotes {
   font-size: 0.8em;
   overflow-wrap: break-word;
   word-wrap: break-word;

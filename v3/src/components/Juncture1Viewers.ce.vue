@@ -1,56 +1,47 @@
 <script setup lang="ts">
 
-  import { computed, ref, toRaw, watch } from 'vue'
-  import { isMobile } from '../utils'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const tabs = ref<HTMLElement | null>(null)
+  
+  const props = defineProps({
+    breakpoint: { type: Number, default: 1200 },
+    dataId: { type: String }
+  })
+
+  const isWide = computed(() => documentWidth.value >= props.breakpoint)
 
   const textElement = computed(() => host.value?.previousElementSibling as HTMLElement )
-  watch (textElement, (textElement) => {
-    if (textElement) {
-      new MutationObserver((mutationsList:any) => {
-        for (let mutation of mutationsList) {
-          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-            isActive.value = textElement.classList.contains('active')
-          }
-        }  
-      }).observe(textElement, { attributes: true })
-    }
-  })
+  // watch (textElement, (textElement) => {})
 
   const isActive = ref(false)
-  watch (isActive, (isActive) => {
-    if (isActive) {
-      console.log('active', textElement.value)
-      /*
-      let indicator = document.createElement('div')
-      textElement.value.style.position = 'relative'
-      textElement.value?.appendChild(indicator)
-      indicator.outerHTML = '<div style="position:absolute; top:0; right:0; padding:6px;">XX</div>'
-      */
-    }
-  })
+  // watch (isActive, (isActive) => { console.log(`isActive=${isActive}`) })
 
-  watch(host, (host) => {
-    if (!isMobile()) {
-      function setPanelHeight(el: HTMLElement) {
-        let isActive = el && el.previousElementSibling?.classList.contains('active')
-        if (isActive) {
-          let _panelHeight = el.clientHeight
-          let _tabsHeight = tabs.value?.querySelector('sl-tab')?.clientHeight || 0
-          panelHeight.value = _panelHeight - _tabsHeight
-        }
-      }
-      new ResizeObserver(e => setPanelHeight(e[0].target as HTMLElement)).observe(host)
-      setPanelHeight(host.value)
+  watch(host, () => { getViewerData() })
+
+  function setPanelHeight() {
+    // console.log(`setPanelHeight: documentWidth=${documentWidth.value}`)
+    if (isWide.value) {
+      let _panelHeight = host.value.parentElement?.clientHeight
+      let _tabsHeight = tabs.value?.querySelector('sl-tab')?.clientHeight || 30
+      panelHeight.value = _panelHeight - _tabsHeight
+    } else {
+      panelHeight.value = undefined
     }
-  
-    getViewerData() 
+  }
+
+  const documentWidth = ref(document.body.getBoundingClientRect().width)
+  watch (documentWidth, () => { setPanelHeight() })
+
+  onMounted(() => {
+    setPanelHeight()
+    new ResizeObserver(() => { documentWidth.value = document.body.getBoundingClientRect().width }).observe(document.body)
   })
 
   const panelHeight = ref()
+  // watch (panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
 
   const params = ref<any[]>([])
 
@@ -62,10 +53,6 @@
   const plantSpecimens = computed(() => params.value.filter(p => p['ve-plant-specimen'] !== undefined).map(p => toRaw(p)))
   const timelinejs = computed(() => params.value.filter(p => p['ve-knightlab-timeline'] !== undefined).map(p => toRaw(p)))
   const videos = computed(() => params.value.filter(p => p['ve-video'] !== undefined).map(p => toRaw(p)))
-
-  const props = defineProps({
-    dataId: { type: String }
-  })
 
   function getViewerData() {
     function parseSlot() {
@@ -116,7 +103,7 @@
       </sl-tab>
       
       <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :style="`height:${panelHeight}px`">
-        <mdp-image :height="panelHeight">
+        <mdp-image :height="panelHeight" :doc-width="documentWidth" :breakpoint="breakpoint" :is-wide="isWide" :zoom-on-scroll="isWide ? '' : null">
           <ul>
             <li v-for="def, idx in images" :key="`image-${idx}`" v-text="serializeProps(def)"></li>
           </ul>
@@ -147,7 +134,7 @@
         <mdp-video :src="`https://www.youtube.com/watch?v=${videos[0].id || videos[0].vid}`" :height="panelHeight"></mdp-video>
       </sl-tab-panel>
       
-      <sl-tab-panel v-if="iframes.length" name="iframes" :style="{height:`${panelHeight}px`}">
+      <sl-tab-panel v-if="iframes.length" name="iframes" :style="{height:`${panelHeight || 500}px`}">
         <mdp-iframe 
         :allow="iframes[0].allow" 
         :allowfullscreen="iframes[0].allowfullscreen" 
@@ -201,7 +188,7 @@
     padding: 0.5em;
   }
 
-  svg { width: 1.5em; height: 1.5em; }
+  svg { width: 1em; height: 1em; }
 
   pre {
     white-space: pre-wrap;       /* css-3 */

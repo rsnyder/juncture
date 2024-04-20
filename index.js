@@ -192,10 +192,12 @@ function handleCodeEl(rootEl, codeEl) {
 }
 
 function structureContent() {
+
   let main = document.querySelector('main')
-  // console.log('structureContent.input', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  console.log('structureContent.input', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   let restructured = document.createElement('main')
+  
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')
   restructured.setAttribute('data-theme', 'light')
@@ -527,7 +529,47 @@ function structureContent() {
     })
   */
   
-  restructured.style.paddingBottom = '100vh'
+  // restructured.style.paddingBottom = '100vh'
+
+  let article = document.createElement('article')
+  article.className = ''
+  let header
+
+  let veConfig = restructured.querySelector('param[ve-config]')
+  let isJunctureV1 = veConfig ? true : false
+
+  if (isJunctureV1) { // Juncture 1 style essay
+    article.classList.add('j1')
+    header = document.createElement('mdp-header')
+    header.className = 'sticky'
+    article.appendChild(header)
+
+    Array.from(veConfig.attributes).forEach(attr => {
+      if (attr.name === 'banner') header.setAttribute('background', attr.value)
+      if (attr.name === 'title') header.setAttribute('title', attr.value)
+      if (attr.name === 'subtitle' || attr.name === 'author') header.setAttribute('subtitle', attr.value)
+    })
+    // veConfig.replaceWith(header)
+    veConfig.remove()
+
+    let viewAsButton = Array.from(restructured.querySelectorAll('a > img')).find(img => img.src.indexOf('ve-button') > -1)
+    if (viewAsButton) viewAsButton.parentElement.parentElement.remove()
+    let mainWrapper = document.createElement('main')
+    mainWrapper.className = 'page-content markdown-body'
+    let content = document.createElement('div')
+    content.className = 'content'
+    content.innerHTML = restructured.innerHTML
+    let viewers = document.createElement('div')
+    viewers.className = 'viewers sticky'
+    mainWrapper.appendChild(content)
+    mainWrapper.appendChild(viewers)
+    article.appendChild(mainWrapper)
+  } else {
+    header = restructured.querySelector('mdp-header')
+    if (header) article.appendChild(header)
+    article.appendChild(restructured)
+  }
+
   let footer = restructured.querySelector('mdp-footer, ve-footer')
   if (footer) {
     Array.from(footer.querySelectorAll('li'))
@@ -539,19 +581,50 @@ function structureContent() {
       if (parsed.style) li.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
       li.textContent = ''
     })
-    restructured.appendChild(footer)
+    article.appendChild(footer)
   }
 
-  // setTimeout(() => console.log('structureContent.output', new DOMParser().parseFromString(restructured.outerHTML, 'text/html').firstChild.children[1].firstChild), 0)
+  main?.replaceWith(article)
 
-  /*
-  Array.from(restructured.querySelectorAll('div'))
-  .forEach(div => {
-    if (div.firstChild?.tagName === 'PARAM' && div.textContent?.trim() == '') div.replaceWith(div.firstChild)
-  })
-  */
+  if (isJunctureV1) {
+    Array.from(document.querySelectorAll('[data-id]'))
+    .forEach(seg => {
+      if (seg.tagName === 'SECTION') return
+      let id = seg.getAttribute('data-id') || ''
+      let wrapper = document.createElement('div')
+      wrapper.setAttribute('data-id', id)
+      wrapper.id = id
+      wrapper.className = seg.className
+      seg.removeAttribute('id')
+      seg.removeAttribute('data-id')
+      seg.className = ''
+      wrapper.appendChild(seg.cloneNode(true))
+      let viewers = document.createElement('mdp-j1-viewers')
+      // viewers.className = 'viewers'
+      viewers.dataset.id = id
+      wrapper.appendChild(viewers)
 
-  main?.replaceWith(restructured)
+      function setViewersPosition() {
+        let top = header.getBoundingClientRect().top
+        let height = header.getBoundingClientRect().height
+        let offset = top + height
+        viewers.style.top = `${offset}px`
+        viewers.style.height = `calc(100dvh - ${offset+2}px)`
+      }
+      while (seg.nextSibling) {
+        let sib = seg.nextSibling
+        if (sib.nodeName !== 'PARAM') break
+        viewers.appendChild(sib)
+      }
+
+      if (!isMobile()) {
+        document.addEventListener('scroll', () => setViewersPosition())
+        setTimeout(() => setViewersPosition(), 0)
+      }
+  
+      seg.replaceWith(wrapper)
+    })
+  }
   
 }
 
@@ -618,7 +691,8 @@ function setMeta() {
   window.config = {...window.config, ...{meta: {title, description, robots, seo}}}
 }
 
-function computeStickyOffsets(root) {
+function setStickyOffsets(root) {
+  console.log(root)
 
   const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
     const { top, left, bottom, right } = el.getBoundingClientRect()
@@ -635,12 +709,10 @@ function computeStickyOffsets(root) {
     return el.tagName === 'MDP-HEADER' || el.tagName === 'MDP-BREADCRUMBS' || (bcr.top >= 0 && bcr.top <= window.innerHeight)
   }
 
-  let stickyElems = [
-    ...Array.from(root.querySelectorAll('mdp-header[sticky], mdp-header[sticky], mdp-breadcrumbs[sticky]')),
-    ...Array.from(root.querySelectorAll('.sticky'))
-  ]
+  let stickyElems = Array.from(root.querySelectorAll('.sticky'))
   // let stickyElems = Array.from(root.querySelectorAll('.sticky'))
   .filter(stickyEl => {
+    console.log(stickyEl, topIsVisible(stickyEl))
     return topIsVisible(stickyEl)
   })
   .sort((a,b) => {
@@ -649,7 +721,7 @@ function computeStickyOffsets(root) {
       return aTop < bTop ? -1 : 1
     })
   
-  // console.log('computeStickyOffsets', stickyElems)
+  console.log('setStickyOffsets', stickyElems)
   // stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) )
   // stickyElems.forEach(stickyEl => console.log(stickyEl) )
 
@@ -698,7 +770,7 @@ function observeVisible(setActiveParagraph = false) {
   let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
+  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
@@ -729,8 +801,14 @@ function observeVisible(setActiveParagraph = false) {
       if (setActiveParagraph) { 
         document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
         currentActiveParagraph?.classList.add('active')
+
+        let currentActiveViewers = currentActiveParagraph?.nextElementSibling
+        console.log(currentActiveViewers)
+        console.log(document.querySelector('main .viewers'))
+        if (currentActiveViewers)
+        document.querySelector('.viewers').innerHTML = currentActiveViewers?.outerHTML
       }
-      computeStickyOffsets(document.querySelector('main'))
+      setStickyOffsets(document.querySelector('article'))
     }
 
   }, { root: null, threshold: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
@@ -836,7 +914,7 @@ function init() {
   if (isJunctureV1) {
     // createJunctureV1App()
     
-    Juncture1Setup()
+    // Juncture1Setup()
     observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
 
   } else {

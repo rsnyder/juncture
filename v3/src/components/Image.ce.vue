@@ -23,7 +23,7 @@
   
   <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TileSource } from 'openseadragon'
   import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
@@ -137,7 +137,7 @@
   watch(annotationsVisible, () => annotator.value.setVisible(annotationsVisible.value) )
 
   const annotations = ref<any[]>([])
-  watch(annotations, (annotations) => { console.log('annotations', toRaw(annotations)) })
+  // watch(annotations, (annotations) => { console.log('annotations', toRaw(annotations)) })
   function toggleAnnotations() { annotationsVisible.value = !annotationsVisible.value }
 
   const imageSize = computed(() => selectedItemInfo.value && { width: selectedItemInfo.value.width, height: selectedItemInfo.value.height} )
@@ -175,9 +175,7 @@
 
     new MutationObserver((mutationsList:any) => {
       for (let mutation of mutationsList) {
-        if (mutation.type === 'childList' && Array.from(mutation.target.classList).indexOf('hydrated') >= 0) {
-          getImageDefs()       
-        }
+        if (mutation.type === 'childList') getImageDefs()       
       }
     }).observe(host.value, { childList: true, subtree: true, characterData: true })
     getImageDefs()
@@ -198,8 +196,9 @@
 
   const height = ref<number>(0)
   watch(height, (height) => { 
-    host.value.style.height = `${height}px`
-    osd.value?.viewport?.goHome(true)
+    host.value.style.height = height ? `${height}px` : 'unset'
+    setOsdHeight()
+    setTimeout(() => osd.value?.viewport?.goHome(false), 250)
    })
 
   // OpenSeadragon - https://openseadragon.github.io/docs/
@@ -210,8 +209,8 @@
   const coords = ref<string>()
 
   function evalProps() {
-    if (props.width) width.value = props.width
-    if (props.height) height.value = props.height
+    width.value = props.width || 0
+    height.value = props.height || 0
   }
 
   onMounted(() => {
@@ -240,22 +239,22 @@
   }
 
   function setOsdHeight() {
+    // console.log(`setOsdHeight: height=${height.value} osdWidth=${osdEl.value?.clientWidth} aspectRatio=${aspectRatio.value}`)
     if (osdEl.value?.clientWidth) {
-      if (height.value) osdEl.value.style.flex = '1'
+      if (height.value) osdEl.value?.setAttribute('style', 'flex: 1 1 0%; position: relative')
       else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
-    } 
+    }
   }
 
   // resize OSD viewer
   function resize() {
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(true), 100)
+    setTimeout(() => osd.value?.viewport?.goHome(false), 250)
   }
 
   function initOpenSeadragon() {
     if (osd.value || !osdEl.value) return
-    // console.log(`initOpenSeadragon() osdEl: ${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} image: ${imageSize.value?.width}x${imageSize.value?.height} tileSource: ${tileSource.value}`)
-    console.log(`initOpenSeadragon: osdEl=${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} tileSources=${tileSources.value.length}`)
+    console.log(`initOpenSeadragon: osdEl=${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} tileSources=${tileSources.value.length}`, osdEl.value)
     setOsdHeight()
     const osdOptions: OpenSeadragon.Options = {
       element: osdEl.value,
@@ -286,7 +285,7 @@
     configureImageViewerBehavior()
 
     setTimeout(() => setViewportCoords(), 500)
-    if (tileSources.value.length) osd.value.open(tileSources.value)
+    if (tileSources.value.length) osd.value?.open(tileSources.value)
     let annoBase = `${source.value?.owner}/${source.value?.repository}${source.value?.dir.slice(0,-1)}`
     annotator.value = new Annotator(osd.value, annoBase)
   }

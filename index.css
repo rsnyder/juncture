@@ -16,20 +16,17 @@
   100% { opacity: 1; }
 }
 
-main {
+article {
+  font-family: Roboto, sans-serif;
   animation: fadeInAnimation ease .3s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
-
 }
 
 .page-content {
-  font-family: Roboto, sans-serif;
-  font-size: 1.2rem;
   width: min(1200px, 100% - 4rem);
   margin-inline: auto;
   background-color: #fff;
-
 }
 
 .page-content > * + * {
@@ -309,6 +306,7 @@ p span.headline {
 
 /*********** Juncture 1 ***********/
 
+/*
 .j1 {
   width: 100%;
   padding: 6px;
@@ -325,11 +323,7 @@ p span.headline {
   margin-bottom: 2em;
 }
 
-.viewers {
-  /* height: 100dvw; */
-}
-
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 1200px) {
 
   .j1 {
     width: unset;
@@ -386,12 +380,141 @@ p span.headline {
     position: fixed;
     left: 50%;
     bottom: 0;
-    /* height: calc(100% - 150px); */
-    /* width: min(600px, 50% - 2rem); */
     width: 50%;
     border: 1px solid #ccc;
     background-color: white;
   }
 
 }
+*/
 
+article.j1 {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: 
+    'header'
+    'main'
+    'footer';;
+}
+
+article.j1 > * {
+  width: 100%;
+}
+
+.j1 mdp-header {
+  grid-area: header;
+  position: sticky;
+  top: -300px;
+  z-index: 10;
+}
+
+.j1 main {
+  grid-area: main;
+  display: grid;
+  grid-template-columns: 1fr 0;
+  grid-template-areas: 'content viewers';
+  background-color: #f8f8f8 !important;
+  font-size: 1.2em !important;
+  padding: 0.5em;
+}
+
+.j1 .content {
+  grid-area: content;
+}
+
+.j1 .viewers {
+  grid-area: viewers;
+  display: none;
+}
+
+.j1 footer {
+  grid-area: footer;
+}
+
+.j1 .segment {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 1em 0;
+}
+
+.j1 .segment > mdp-j1-viewers {      
+  width: 100%;
+  align-self: center;
+}
+
+.j1 .segment > p {
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid #f8f8f8;
+}
+
+.j1 .sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.j1 .footnote {
+  font-size: 0.8em;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+.j1 .footnote li > p {
+  margin: 0
+}
+
+@media (min-width: 1200px) { /* wide screens */
+  
+  .j1 main {
+    grid-template-columns: 1fr 1fr;
+    padding: 1em;
+  }
+
+  .j1 .content {
+    padding-right: 1em;
+  }
+  
+  .j1 p.active {
+    background-color: #ffffff;
+    box-shadow: 0 0 3px 1px rgb(0 0 0 / 25%);
+    border-color: #9e9e9e;      
+  }
+
+  .j1 .segment {
+    margin: 0;
+  }
+
+  .j1 .segment > p {
+    padding: 0.5em;
+  }
+
+  .j1 .segment > mdp-j1-viewers {
+    display: none;
+  }
+
+  .j1 .viewers {
+    grid-area: viewers;
+    display: block;
+    border: 1px solid green;
+    height: calc(100dvh - 100px);
+    margin-top: 0;
+  }
+
+}

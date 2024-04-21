@@ -692,7 +692,6 @@ function setMeta() {
 }
 
 function setStickyOffsets(root) {
-  console.log(root)
 
   const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
     const { top, left, bottom, right } = el.getBoundingClientRect()
@@ -712,7 +711,6 @@ function setStickyOffsets(root) {
   let stickyElems = Array.from(root.querySelectorAll('.sticky'))
   // let stickyElems = Array.from(root.querySelectorAll('.sticky'))
   .filter(stickyEl => {
-    console.log(stickyEl, topIsVisible(stickyEl))
     return topIsVisible(stickyEl)
   })
   .sort((a,b) => {
@@ -721,7 +719,7 @@ function setStickyOffsets(root) {
       return aTop < bTop ? -1 : 1
     })
   
-  console.log('setStickyOffsets', stickyElems)
+  // console.log('setStickyOffsets', stickyElems)
   // stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) )
   // stickyElems.forEach(stickyEl => console.log(stickyEl) )
 
@@ -770,7 +768,7 @@ function observeVisible(setActiveParagraph = false) {
   let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
+  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
@@ -803,8 +801,6 @@ function observeVisible(setActiveParagraph = false) {
         currentActiveParagraph?.classList.add('active')
 
         let currentActiveViewers = currentActiveParagraph?.nextElementSibling
-        console.log(currentActiveViewers)
-        console.log(document.querySelector('main .viewers'))
         if (currentActiveViewers)
         document.querySelector('.viewers').innerHTML = currentActiveViewers?.outerHTML
       }

@@ -79,6 +79,8 @@
 
   const annotator = ref<any>()
 
+  // watch(host, (host) => { if (host) init() })
+
   const osdWidth = ref<number>(0)
   watch(osdWidth, () => {
     resize()
@@ -88,6 +90,7 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
+    console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
@@ -145,6 +148,7 @@
   watch(aspectRatio, () => { resize() })
 
   function init() {
+    console.log('init')
     function parseImageDefStr(s:String): Object {
       let tokens: String[] = []
       s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
@@ -163,6 +167,7 @@
     }
 
     function getImageDefs () {
+      console.log('getImageDefs')
       let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'seq', 'src', 'summary', 'title', 'url'])
       let imageDefFromProps = (props.src || props.url) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
@@ -183,7 +188,11 @@
 
   watch(osdEl, () => {
     if (osdEl.value  && !width.value) {
-      new ResizeObserver(() => osdWidth.value = osdEl.value?.clientWidth || osdWidth.value).observe(osdEl.value)
+      console.log('osdEl', osdEl.value?.clientWidth)
+      new ResizeObserver(() => {
+        osdWidth.value = osdEl.value?.clientWidth || osdWidth.value
+        console.log('osdWidth', osdWidth.value)
+      }).observe(osdEl.value)
       osdWidth.value = osdEl.value?.clientWidth 
     }
   })

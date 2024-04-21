@@ -23,12 +23,11 @@
   
   <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TileSource } from 'openseadragon'
   import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
   import { iiifServer, getManifest, sha256 } from '../utils'
-
 
   import { Annotator } from '../annotator'
 

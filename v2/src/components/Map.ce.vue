@@ -1,8 +1,8 @@
 <template>
 
 <div ref="root" :style="{width: '100%', height: '100%'}">
+  <div id="lat-lng-zoom" v-html="latLngZoom" @click="copyTextToClipboard(`${latLngZoom}`)"></div>
   <div class="content">
-    <div id="lat-lng-zoom" v-html="latLngZoom" @click="copyTextToClipboard(`${latLngZoom}`)"></div>
     <div id="map"></div>
     <div v-if="caption" id="caption" v-html="caption"></div>
   </div>
@@ -983,7 +983,10 @@
   }
 
   .content {
+    display: flex;
+    flex-direction: column;
     margin: auto;
+    height: 100%;
     /* box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px; */
   }
 

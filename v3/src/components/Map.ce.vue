@@ -1,12 +1,15 @@
 <template>
 
     <div ref="root" :style="{width: '100%', height: '100%'}">
-      <div class="content" ref="content">
+      <div class="content" ref="contentEl">
         <div id="lat-lng-zoom" v-html="latLngZoom" @click="copyTextToClipboard(`${latLngZoom}`)"></div>
+        
         <div id="map" ref="mapEl">
         </div>
-        <div v-if="caption" id="caption" v-html="caption"></div>
+        <!--<div v-if="captions" id="caption" v-html="caption"></div>-->
+        <div class="caption">{{ caption || 'Caption placeholder' }}</div>
       </div>
+
     </div>
 
     <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
@@ -31,13 +34,15 @@
       import '../leaflet-opacity.js'
     
       import '../turf.min.js'
-      const turf:any = (window as any).turf
-    
+
       import 'leaflet.smoothwheelzoom'
       import { WarpedMapLayer } from '@allmaps/leaflet'
 
       import { isQid, getEntity, getManifest, kebabToCamel, metadataAsObj, isMobile, loadManifests } from '../utils'
       import EventBus from './EventBus'
+
+      const window = (self as any).window
+      const turf:any = window.turf
 
       let dialog: any
       const showDialog = ref(false)
@@ -66,12 +71,13 @@
       }
     
       const props = defineProps({
+        base: { type: String },
         basemaps: { type: String, default: 'OpenStreetMap' },
         center: { type: String, default: '32.32347,-80.97122' },
         caption: { type: String },
         data: { type: String },
         entities: { type: String },
-        essayBase: { type: String },
+        // essayBase: { type: String },
         fit: { type: Boolean, default: false},
         height: { type: Number },
         gestureHandling: { type: Boolean, default: isMobile() },
@@ -81,9 +87,11 @@
         popupOnHover: { type: Boolean },
         preferGeojson: { type: Boolean },
         scrollWheelZoom: { type: Boolean, default: false },
+        title: { type: String },
         zoom: { type: Number, default: 2 },
         zoomOnClick: { type: Boolean }
       })
+      watch(props, () => { evalProps() })
     
       const baseMapsConfigs:any = {
         CartoDB_DarkMatter: ['https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -245,6 +253,7 @@
     
       const root = ref<HTMLElement | null>(null)
       const host = computed(() => (root.value?.getRootNode() as any)?.host as HTMLElement)
+      const contentEl = ref<HTMLElement | null>(null)
       const mapEl = ref<HTMLElement | null>(null)
       const shadowRoot = computed(() => root?.value?.parentNode)
 
@@ -260,7 +269,22 @@
       const geoJSONs = ref<any>()
     
       // const geoJsonLayers = ref<L.LayerGroup[]>()
-    
+      
+      const config = ref<any>(window.config || {})
+      const source = computed(() => {
+        if (config.value.source) return config.value.source
+        else if (props.base) {
+          let [owner, repository, branch, ...dir] = props.base.split('/')
+          return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
+        }
+        return null
+      })    
+      const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}${source.value?.dir}`)
+      watch(ghBaseurl, () => console.log(`ghBaseurl=${ghBaseurl.value}`))
+
+      const caption = computed(() => props.caption || props.title )
+      watch(caption, () => console.log(`caption=${caption.value}`))
+
       const zoom = ref(10) 
       const priorLoc = ref<string>()
     
@@ -268,15 +292,31 @@
     
       const flyto = ref()
 
-      watch(mapEl, (mapEl) => {
-        if (!mapEl) return
-        if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
+      function setHeight() {
+        console.log(`setHeight: ${props.height}`)
+        if (contentEl.value) contentEl.value.style.height = props.height
+          ? `${props.height}px`
+          : `${contentEl.value.clientWidth * mapAspectRatio.value}px`
+      }
+      function evalProps() {
+        console.log(toRaw(props))
+        setHeight()
+      }
+
+      const width = ref<number>(0)
+
+      watch(contentEl, (contentEl) => {
+        if (!contentEl) return
+        width.value = contentEl.clientWidth
+        evalProps()
+        // if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
         new ResizeObserver(e => {
-          let mapHeight = e[0].contentRect.width * mapAspectRatio.value
-          mapEl.style.height = `${mapHeight}px`
-          if (!map.value && mapEl.clientHeight > 0) init()
-        }).observe(mapEl)
-        if (mapEl.clientHeight > 0) init()
+          if (width.value !== contentEl.clientWidth) setHeight()
+          // let mapHeight = e[0].contentRect.width * mapAspectRatio.value
+          // mapEl.style.height = `${mapHeight}px`
+          if (!map.value && contentEl.clientHeight > 0) init()
+        }).observe(contentEl)
+        if (contentEl.clientHeight > 0) init()
       })
     
       watch(layerObjs, async () => {
@@ -287,17 +327,19 @@
           .filter(item => (item.geojson || item.url) && item.preferGeojson !== undefined)
           .map (item => {
             let geoJsonUrl = item.geojson || item.url
-            if (geoJsonUrl.indexOf('http') !== 0) {
+            if (geoJsonUrl.indexOf('http') === 0) {
+              item.geojson = geoJsonUrl
+            } else {
               if (geoJsonUrl === '/') {
                 let [acct, repo, ...rest] = item.geojson.split('/').filter((pe:string) => pe)
                 let path = rest.join('/')
                 let ref = 'main'
                 item.geojson = `https://raw.githubusercontent.com/${acct}/${repo}/${ref}/${path}`
               } else {
-                item.geojson = `https://raw.githubusercontent.com/${props.essayBase}/${geoJsonUrl}`
+                item.geojson = `${ghBaseurl.value}/${geoJsonUrl}`
               }
             }
-            // console.log(item.geojson)
+            console.log(item.geojson)
             return item
           })
           .map(item => ({url:item.geojson, item}))
@@ -971,7 +1013,7 @@
       @import 'leaflet-gesture-handling/dist/leaflet-gesture-handling.css';
       @import '@shoelace-style/shoelace/dist/themes/light.css';
 
-      * { box-sizing: border-box; }
+      /* * { box-sizing: border-box; } */
     
       :host {
         display: flex;
@@ -982,6 +1024,8 @@
       }
     
       .content {
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100%;
         margin: auto;
@@ -993,22 +1037,11 @@
         height: 100%;
       }
       
-      #caption {
-        /*
-        display: flex;
-        align-items: center;
-        */
-        font-family: sans-serif;
-        width: 100%;
-        /* background: rgba(0, 0, 0, 0.7); */
-        white-space: nowrap;
-        background-color: #555;
-        color: white;
-        padding: 4px 6px;
-        bottom: 0;
-        height: 32px;
-        text-overflow: ellipsis;
-        overflow: hidden;
+      .caption {
+        background-color: white;
+        color: black;
+        padding: 6px;
+        line-height: 1.2;
       }
     
       #lat-lng-zoom {

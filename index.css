@@ -417,7 +417,8 @@ article.j1 > * {
   grid-template-columns: 1fr 0;
   grid-template-areas: 'content viewers';
   background-color: #f8f8f8 !important;
-  font-size: 1.2em !important;
+  font-size: 1.3em !important;
+  line-height: 1.6 !important;
   padding: 0.5em;
 }
 
@@ -460,22 +461,8 @@ article.j1 > * {
   z-index: 2;
 }
 
-.j1 .footnotes {
-  font-size: 0.8em;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-
-  -ms-word-break: break-all;
-  /* This is the dangerous one in WebKit, as it breaks things wherever */
-  word-break: break-all;
-  /* Instead use this non-standard one: */
-  word-break: break-word;
-
-  /* Adds a hyphen where the word breaks, if supported (No Blink) */
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
+.j1 .footnote div {
+  white-space: unset
 }
 .j1 .footnote li > p {
   margin: 0

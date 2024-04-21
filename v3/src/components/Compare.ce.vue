@@ -15,7 +15,7 @@
   
   <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, getCurrentScope, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
   import { iiifServer, getManifest } from '../utils'
 
@@ -174,7 +174,8 @@ function scaleImages() {
     // console.log(`scaleImages: targetWidth=${targetWidth} targetHeight=${targetHeight} targetAspectRatio=${targetAspectRatio}`)
 
     return imageDefs.value.map((img, idx) => {
-      
+      getCurrentScope
+
       let imgInfo = findItem({type:'Annotation', motivation:'painting'}, manifests.value[idx], imageDefs.value[idx].seq || 1).body
 
       let x,y,w,h
@@ -245,6 +246,7 @@ function scaleImages() {
   }
 
   .caption {
+    background-color: white;
     margin-top: -0.5em;
     padding: 0.3em;
     width: 100%;

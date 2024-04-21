@@ -121,7 +121,7 @@
   function getBackgroundManifest() {
     getManifest(backgroundImage.value)
       .then(_manifest => {
-        console.log(_manifest)
+        // console.log(_manifest)
         manifest.value = _manifest
       })
       .catch(err => {
@@ -129,7 +129,7 @@
         fetch(`https://${iiifServer}/manifest/`, { method: 'POST', body: JSON.stringify({url: backgroundImage.value}) })
         .then(resp => resp.json())
         .then(_manifest => {
-          console.log(_manifest)
+          // console.log(_manifest)
           manifest.value = _manifest
         })
       })

@@ -408,6 +408,7 @@ article.j1 > * {
   position: sticky;
   top: -300px;
   z-index: 10;
+  margin-bottom: 0;
 }
 
 .j1 main {
@@ -480,7 +481,7 @@ article.j1 > * {
   margin: 0
 }
 
-@media (min-width: 1200px) { /* wide screens */
+@media (min-width: 800px) { /* wide screens */
   
   .j1 main {
     grid-template-columns: 1fr 1fr;

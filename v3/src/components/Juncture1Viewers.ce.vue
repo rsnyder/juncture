@@ -7,7 +7,7 @@
   const tabs = ref<HTMLElement | null>(null)
   
   const props = defineProps({
-    breakpoint: { type: Number, default: 1200 },
+    breakpoint: { type: Number, default: 800 },
     dataId: { type: String }
   })
 
@@ -25,7 +25,7 @@
     // console.log(`setPanelHeight: documentWidth=${documentWidth.value}`)
     if (isWide.value) {
       let _panelHeight = host.value.parentElement?.clientHeight
-      let _tabsHeight = tabs.value?.querySelector('sl-tab')?.clientHeight || 30
+      let _tabsHeight = tabs.value?.querySelector('sl-tab')?.clientHeight || 36
       panelHeight.value = _panelHeight - _tabsHeight
     } else {
       panelHeight.value = undefined
@@ -49,7 +49,6 @@
   const compare = computed(() => params.value.filter(p => p['ve-compare'] !== undefined).map(p => toRaw(p)))
   const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
   const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
-  watch (images, () => { console.log(toRaw(images.value)) })
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
   const mapLayers = computed(() => params.value.filter(p => p['ve-map-layer'] !== undefined).map(p => toRaw(p)))
   const plantSpecimens = computed(() => params.value.filter(p => p['ve-plant-specimen'] !== undefined).map(p => toRaw(p)))
@@ -104,7 +103,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>
       </sl-tab>
       
-      <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :active="true" :style="`height:${panelHeight}px`">
+      <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :style="`height:${panelHeight}px`">
         <mdp-image :height="panelHeight" :zoom-on-scroll="isWide ? '' : null">
           <ul>
             <li v-for="def, idx in images" :key="`image-${idx}`" v-text="serializeProps(def)"></li>
@@ -190,7 +189,7 @@
     padding: 0.5em;
   }
 
-  svg { width: 1em; height: 1em; }
+  svg { width: 20px; height: 20px; }
 
   pre {
     white-space: pre-wrap;       /* css-3 */

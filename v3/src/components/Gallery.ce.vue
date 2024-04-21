@@ -112,7 +112,7 @@
 
   const selected = ref<any | null>(null)
   watch(selected, () => {
-    console.log(toRaw(selected.value))
+    // console.log(toRaw(selected.value))
     showDialog.value = selected.value !== null 
   })
 
@@ -223,7 +223,7 @@
   }
 
   function imageSelected(index:number) {
-    console.log(`imageSelected: ${index}`)
+    // console.log(`imageSelected: ${index}`)
     selected.value = manifests.value[index] as any
   }
 

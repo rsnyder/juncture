@@ -149,7 +149,7 @@
   }
 
   async function generatePDF() {
-    console.log(`Generating PDF for ${location.href}`)
+    // console.log(`Generating PDF for ${location.href}`)
     modalText.value = 'Generating PDF...'
     isOpen.value = !isOpen.value
     let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${location.href}`)

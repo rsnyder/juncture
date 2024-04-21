@@ -33,9 +33,9 @@
   watch(props, () => { evalProps() }) 
 
   watch(compare, (compare) => {
-    console.log(compare?.clientWidth, compare?.clientHeight)
+    // console.log(compare?.clientWidth, compare?.clientHeight)
     if (compare) new ResizeObserver(() => {
-      console.log(`props.height=${props.height} width=${compare?.clientWidth} height=${compare?.clientHeight}`)
+      // console.log(`props.height=${props.height} width=${compare?.clientWidth} height=${compare?.clientHeight}`)
       if (!width.value) width.value = compare?.clientWidth
       if (!height.value) height.value = compare?.clientHeight
     }).observe(compare)
@@ -43,15 +43,15 @@
   })
 
   watch(captionEl, (captionEl) => {
-    console.log('caption', captionEl?.clientWidth, captionEl?.clientHeight)
+    // console.log('caption', captionEl?.clientWidth, captionEl?.clientHeight)
     if (captionEl) new ResizeObserver(() => {
-      console.log('caption', captionEl?.clientWidth, captionEl?.clientHeight)
+      // console.log('caption', captionEl?.clientWidth, captionEl?.clientHeight)
     }).observe(captionEl)
   })
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    console.log(toRaw(imageDefs))
+    // console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       def.src || def.manifest
         ? getManifest(def.src || def.manifest)
@@ -116,9 +116,9 @@
   }
 
   const width = ref<number>(0)
-  watch (width, (width) => { console.log(`width=${width}`) })
+  // watch (width, (width) => { console.log(`width=${width}`) })
   const height = ref<number>(0)
-  watch (height, (height) => { console.log(`height=${height}`) })
+  // watch (height, (height) => { console.log(`height=${height}`) })
 
   function _value(langObj: any, language='en') {
     return typeof langObj === 'object'
@@ -131,7 +131,7 @@
   }
 
   function evalProps() {
-    console.log('evalProps', toRaw(props))
+    // console.log('evalProps', toRaw(props))
     if (props.width) {
       width.value = props.width
       host.value.style.width = `${width.value}px`
@@ -141,7 +141,7 @@
     if (props.height) {
       // height.value = props.height
       host.value.style.height = `${props.height}px`
-      console.log(host.value.style.height)
+      // console.log(host.value.style.height)
     }
   }
 
@@ -171,7 +171,7 @@ function scaleImages() {
     // let targetAspectRatio = aspectRatio.value
     let targetAspectRatio = width.value / height.value
 
-    console.log(`scaleImages: targetWidth=${targetWidth} targetHeight=${targetHeight} targetAspectRatio=${targetAspectRatio}`)
+    // console.log(`scaleImages: targetWidth=${targetWidth} targetHeight=${targetHeight} targetAspectRatio=${targetAspectRatio}`)
 
     return imageDefs.value.map((img, idx) => {
       
@@ -215,7 +215,7 @@ function scaleImages() {
 
       let imgUrl = `${tileSource}/${region}/${targetWidth},${targetHeight}/${img.mirror ? '!' : ''}${img.rotation || 0}/${img.quality || 'default'}.${img.format || 'jpg'}`
 
-      console.log(imgUrl)
+      // console.log(imgUrl)
       return imgUrl
     })
   }

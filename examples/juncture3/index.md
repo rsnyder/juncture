@@ -1,3 +1,4 @@
 # Juncture 3
 
-[Maps](maps)
+- [Maps](maps)
+- [Mermaid](mermaid)

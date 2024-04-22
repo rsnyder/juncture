@@ -88,8 +88,8 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl)
-  // console.log(codeEl.parentElement)
+  console.log(codeEl)
+  console.log(codeEl.parentElement.parentElement)
   // console.log(codeEl.previousElementSibling)
   
   let parentTag = codeEl.parentElement?.tagName
@@ -124,6 +124,7 @@ function handleCodeEl(rootEl, codeEl) {
     let codeLang = parentTag === 'PRE' 
       ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'mdpress'
       : 'mdpress'
+    console.log(codeLang)
     if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {

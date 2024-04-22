@@ -41,6 +41,7 @@
   // watch (params, () => { console.log(toRaw(params.value)) })
 
   const compare = computed(() => params.value.filter(p => p['ve-compare'] !== undefined).map(p => toRaw(p)))
+  const d3plusRing = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] !== undefined).map(p => toRaw(p)))
   const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
   const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
@@ -73,6 +74,9 @@
 
     <sl-tab-group ref="tabs">
 
+      <sl-tab v-if="d3plusRing.length" slot="nav" panel="d3plusRing" :active="d3plusRing[0].idx === 0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 80C0 53.5 21.5 32 48 32h96c26.5 0 48 21.5 48 48V96H384V80c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H432c-26.5 0-48-21.5-48-48V160H192v16c0 1.7-.1 3.4-.3 5L272 288h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H272c-26.5 0-48-21.5-48-48V336c0-1.7 .1-3.4 .3-5L144 224H48c-26.5 0-48-21.5-48-48V80z"/></svg>
+      </sl-tab>
       <sl-tab v-if="images.length" slot="nav" panel="image" :active="images[0].idx === 0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M448 80c8.8 0 16 7.2 16 16V415.8l-5-6.5-136-176c-4.5-5.9-11.6-9.3-19-9.3s-14.4 3.4-19 9.3L202 340.7l-30.5-42.7C167 291.7 159.8 288 152 288s-15 3.7-19.5 10.1l-80 112L48 416.3l0-.3V96c0-8.8 7.2-16 16-16H448zM64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
       </sl-tab>
@@ -161,6 +165,14 @@
         ></mdp-plant-specimen>
       </sl-tab-panel>
     
+      <sl-tab-panel v-if="d3plusRing.length" name="d3plusRing" :style="{height:`${panelHeight}px`}">
+        <mdp-d3plus-ring-network 
+          :center="d3plusRing[0].center"
+          :height="panelHeight" 
+          :url="d3plusRing[0].url"
+        ></mdp-d3plus-ring-network>
+      </sl-tab-panel>
+
       <sl-tab-panel name="data" style="background-color:white;">
         <div v-if="params" v-for="param, idx in params" :key="`param-${idx}`">
           <pre v-html="JSON.stringify(param, null, 2)"></pre>

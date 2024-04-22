@@ -21,6 +21,7 @@ import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 import Compare from './components/Compare.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
+import D3PlusRingNetwork from './components/D3PlusRingNetwork.ce.vue'
 import Entities from './components/Entities.ce.vue'
 import EntityCard from './components/EntityCard.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
@@ -37,6 +38,7 @@ import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
 import Map from './components/Map.ce.vue'
 import Menu from './components/Menu.ce.vue'
+import Mermaid from './components/Mermaid.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import PlantSpecimen from './components/PlantSpecimen.ce.vue'
@@ -51,6 +53,7 @@ function defineCustomElements() {
 	customElements.define('mdp-compare', defineCustomElement(Compare))
 	// customElements.define('mdp-button', defineCustomElement(Button))
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
+	customElements.define('mdp-d3plus-ring-network', defineCustomElement(D3PlusRingNetwork))
 	customElements.define('mdp-entities', defineCustomElement(Entities))
 	customElements.define('mdp-entity-card', defineCustomElement(EntityCard))
 	customElements.define('mdp-entity-infobox', defineCustomElement(EntityInfobox))
@@ -67,6 +70,7 @@ function defineCustomElements() {
 	customElements.define('mdp-manifest-popup', defineCustomElement(ManifestPopup))
 	customElements.define('mdp-map', defineCustomElement(Map))
 	customElements.define('mdp-menu', defineCustomElement(Menu))
+	customElements.define('mdp-mermaid', defineCustomElement(Mermaid))
 	customElements.define('mdp-meta', defineCustomElement(Meta))
 	customElements.define('mdp-modal', defineCustomElement(Modal))
 	customElements.define('mdp-plant-specimen', defineCustomElement(PlantSpecimen))

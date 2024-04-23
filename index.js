@@ -99,7 +99,7 @@ function handleCodeEl(rootEl, codeEl) {
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
-      parentTag === 'TH' ||
+      parentTag === 'TD' ||
       /^H\d/.test(parentTag)) {
     let codeWrapper
     if (previousElTag === 'IMG' || previousElTag === 'A' || previousElTag === 'EM' || previousElTag === 'STRONG') codeWrapper = codeEl
@@ -108,7 +108,7 @@ function handleCodeEl(rootEl, codeEl) {
       codeWrapper = paraText ? codeEl : codeEl.parentElement
       isInline = paraText ? true : false
     } 
-    else if (parentTag === 'PRE' || parentTag === 'LI' || parentTag === 'TH') codeWrapper = codeEl
+    else if (parentTag === 'PRE' || parentTag === 'LI' || parentTag === 'TD') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
@@ -186,10 +186,9 @@ function handleCodeEl(rootEl, codeEl) {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
-        } else if (parent.tagName === 'TH') {
-          let table = parent.parentElement.parentElement.parentElement // table
-          table.querySelectorAll('tr').forEach(row => row.deleteCell(-1))
-          target = table
+        } else if (parent.tagName === 'TD') {
+          target = parent.parentElement.parentElement.parentElement // table
+          parent.parentElement.remove() // row
         } else if (parent.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
           target = priorEl
         } else {

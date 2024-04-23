@@ -188,8 +188,9 @@ function handleCodeEl(rootEl, codeEl) {
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
         } else if (parent.tagName === 'TH') {
-          target = parent.parentElement.parentElement.parentElement // table
-          console.log(target)
+          let table = parent.parentElement.parentElement.parentElement // table
+          table.querySelectorAll('tr').forEach(row => row.deleteCell(-1))
+          target = table
         } else if (parent.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
           target = priorEl
         } else {

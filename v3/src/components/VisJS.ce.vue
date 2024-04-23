@@ -36,7 +36,7 @@
     let table = document.getElementById(tableId)
     let keys = Array.from(table?.querySelectorAll('th') || []).map(th => th.textContent?.trim())
     console.log(keys)
-    let objs = Array.from(table?.querySelectorAll('tbody > tr') || [])
+    return Array.from(table?.querySelectorAll('tbody > tr') || [])
       .map(row =>
         Object.fromEntries(
           Array.from(row.children)
@@ -45,8 +45,6 @@
         )
       )
       .filter(obj => Object.keys(obj).length > 0)
-    console.log(objs)
-    return objs
   }
 
   function tsvToObjs(tsvData:string) {

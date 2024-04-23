@@ -5,12 +5,13 @@
 ## Table data
 `:width=50%`
 
-|id|label|`#g1-nodes`
+|id|label|
 |--|-----|
 |1|Node 1|
 |2|Node 2|
 |3|Node 3|
 |4|Node 4|
+`#g1-nodes`
 
 |from|to|`#g1-edges`
 |----|--|

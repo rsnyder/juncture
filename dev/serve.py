@@ -110,7 +110,7 @@ def html_from_markdown(md, baseurl):
       pre.append(new_code)
       code.parent.replace_with(top_div)
   '''
-      
+    
   for param in soup.find_all('param'):
     node = param.parent
     while node.next_sibling and node.next_sibling.name == 'param':

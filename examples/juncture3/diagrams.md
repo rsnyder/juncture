@@ -14,39 +14,20 @@
 |5|Node 5|
 
 |id|label|
-
 |--|-----|
 |1|Node 1|
 |2|Node 2|
 |3|Node 3|
 |4|Node 4|
-|5|Node 5|
-
-|id|label|
-|--|-----|
-
-|1|Node 1|
-|2|Node 2|
-|3|Node 3|
-|4|Node 4|
-|5|Node 5|
-
-|id |     label     |
-|---|---------------|
-| 1 | Node 1        |
-| 2 | Node 2        |
-| 3 | Node 3        |
-| 4 | Node 4        |
-| 5 | Node 5        |
 `#g1-nodes`
 
-|from|to |
-|----|---|
-| 1 | 3  |
-| 1 | 2  |
-| 2 | 4  |
-| 2 | 5  |
-| 3 | 3  |
+|from|to|
+|----|--|
+|1|3|
+|1|2|
+|2|4|
+|2|5|
+|3|3|
 `#g1-edges`
 
 `mdp-visjs edges=g1-edges nodes=g1-nodes caption="VisJS Graph from local Markdown table data"`

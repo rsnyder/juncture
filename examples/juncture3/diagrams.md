@@ -5,31 +5,31 @@
 ## Table data
 `:width=50%`
 
-|id |     label     |
-|---|---------------|
-| 1 | Node 1        |
-| 2 | Node 2        |
-| 3 | Node 3        |
-| 4 | Node 4        |
-| 5 | Node 5        |
+|id|label|
+|--|-----|
+|1|Node 1|
+|2|Node 2|
+|3|Node 3|
+|4|Node 4|
+|5|Node 5|
 
-|id |     label     |
+|id|label|
 
-|---|---------------|
-| 1 | Node 1        |
-| 2 | Node 2        |
-| 3 | Node 3        |
-| 4 | Node 4        |
-| 5 | Node 5        |
+|--|-----|
+|1|Node 1|
+|2|Node 2|
+|3|Node 3|
+|4|Node 4|
+|5|Node 5|
 
-|id |     label     |
-|---|---------------|
+|id|label|
+|--|-----|
 
-| 1 | Node 1        |
-| 2 | Node 2        |
-| 3 | Node 3        |
-| 4 | Node 4        |
-| 5 | Node 5        |
+|1|Node 1|
+|2|Node 2|
+|3|Node 3|
+|4|Node 4|
+|5|Node 5|
 
 |id |     label     |
 |---|---------------|

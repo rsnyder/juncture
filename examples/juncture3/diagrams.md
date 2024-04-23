@@ -12,10 +12,35 @@
 | 3 | Node 3        |
 | 4 | Node 4        |
 | 5 | Node 5        |
+
+|id |     label     |
+
+|---|---------------|
+| 1 | Node 1        |
+| 2 | Node 2        |
+| 3 | Node 3        |
+| 4 | Node 4        |
+| 5 | Node 5        |
+
+|id |     label     |
+|---|---------------|
+
+| 1 | Node 1        |
+| 2 | Node 2        |
+| 3 | Node 3        |
+| 4 | Node 4        |
+| 5 | Node 5        |
+
+|id |     label     |
+|---|---------------|
+| 1 | Node 1        |
+| 2 | Node 2        |
+| 3 | Node 3        |
+| 4 | Node 4        |
+| 5 | Node 5        |
 `#g1-nodes`
 
 |from|to |
-
 |----|---|
 | 1 | 3  |
 | 1 | 2  |

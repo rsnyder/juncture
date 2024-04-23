@@ -35,7 +35,6 @@
   function tableToObjs(tableId:string) {
     let table = document.getElementById(tableId)
     let keys = Array.from(table?.querySelectorAll('th') || []).map(th => th.textContent?.trim())
-    console.log(keys)
     return Array.from(table?.querySelectorAll('tbody > tr') || [])
       .map(row =>
         Object.fromEntries(
@@ -126,7 +125,6 @@
     if (!diagram) return
     setWidth()
     setHeight()
-    console.log(toRaw(props))
     if (props.edges) edges.value = new vis.DataSet(tableToObjs(props.edges))
     if (props.nodes) nodes.value = new vis.DataSet(tableToObjs(props.nodes))
     if (props.url) getDataFromUrl(props.url)

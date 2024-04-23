@@ -280,10 +280,10 @@
         return null
       })    
       const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}${source.value?.dir}`)
-      watch(ghBaseurl, () => console.log(`ghBaseurl=${ghBaseurl.value}`))
+      // watch(ghBaseurl, () => console.log(`ghBaseurl=${ghBaseurl.value}`))
 
       const caption = computed(() => props.caption || props.title )
-      watch(caption, () => console.log(`caption=${caption.value}`))
+      // watch(caption, () => console.log(`caption=${caption.value}`))
 
       const zoom = ref(10) 
       const priorLoc = ref<string>()
@@ -293,13 +293,13 @@
       const flyto = ref()
 
       function setHeight() {
-        console.log(`setHeight: ${props.height}`)
+        // console.log(`setHeight: ${props.height}`)
         if (contentEl.value) contentEl.value.style.height = props.height
           ? `${props.height}px`
           : `${contentEl.value.clientWidth * mapAspectRatio.value}px`
       }
       function evalProps() {
-        console.log(toRaw(props))
+        // console.log(toRaw(props))
         setHeight()
       }
 
@@ -339,7 +339,7 @@
                 item.geojson = `${ghBaseurl.value}/${geoJsonUrl}`
               }
             }
-            console.log(item.geojson)
+            // console.log(item.geojson)
             return item
           })
           .map(item => ({url:item.geojson, item}))

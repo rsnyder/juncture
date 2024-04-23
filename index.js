@@ -38,8 +38,8 @@ function parseHeadline(s) {
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
       if (key[0] === ':') { // style
         key = camelToKebab(key.slice(1))
-        if (parsed.style) parsed.style[key] = value
-        else parsed.style = {key: value}
+        if (!parsed.style) parsed.style = {}
+        parsed.style[key] = value
       } else { // kwargs
         if (parsed.kwargs) {
           if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
@@ -88,8 +88,8 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  console.log(codeEl)
-  console.log(codeEl.parentElement.parentElement)
+  // console.log(codeEl)
+  // console.log(codeEl.parentElement.parentElement)
   // console.log(codeEl.previousElementSibling)
   
   let parentTag = codeEl.parentElement?.tagName
@@ -99,8 +99,8 @@ function handleCodeEl(rootEl, codeEl) {
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
+      parentTag === 'TD' ||
       /^H\d/.test(parentTag)) {
-  
     let codeWrapper
     if (previousElTag === 'IMG' || previousElTag === 'A' || previousElTag === 'EM' || previousElTag === 'STRONG') codeWrapper = codeEl
     else if (parentTag === 'P') {
@@ -108,7 +108,7 @@ function handleCodeEl(rootEl, codeEl) {
       codeWrapper = paraText ? codeEl : codeEl.parentElement
       isInline = paraText ? true : false
     } 
-    else if (parentTag === 'LI') codeWrapper = codeEl
+    else if (parentTag === 'PRE' || parentTag === 'LI' || parentTag === 'TD') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
@@ -116,22 +116,28 @@ function handleCodeEl(rootEl, codeEl) {
     if (!codeWrapper) return
 
     let parent = parentTag === 'LI'
-        ? codeEl.previousElementSibling
-          ? codeEl.parentElement.parentElement
-          : codeEl.parentElement
-        : codeWrapper.parentElement
+      ? codeEl.previousElementSibling
+        ? codeEl.parentElement.parentElement
+        : codeEl.parentElement
+      : codeWrapper.parentElement
 
     let codeLang = parentTag === 'PRE' 
-      ? Array.from(parent.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'mdpress'
+      ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'mdpress'
       : 'mdpress'
-    console.log(codeLang)
-    if (codeLang === 'mdpress') {
+    // console.log(`codeLang=${codeLang}`)
+    
+    if (codeLang === 'mermaid') {
+      let newEl = document.createElement('mdp-mermaid')
+      newEl.textContent = codeEl.textContent
+      codeWrapper.parentElement.replaceWith(newEl)
+
+    } else if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
         else parsed.style = {display: 'inline-block'}
       }
-      // console.log(parsed)
+
       if (parsed.tag) {
         let newEl = document.createElement(parsed.tag)
         if (parsed.id) newEl.id = parsed.id
@@ -168,13 +174,21 @@ function handleCodeEl(rootEl, codeEl) {
           }
           else codeWrapper.replaceWith(newEl)
         }
-      } else if (parsed.class || parsed.style || parsed.id) {
+      } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
         let target
-        let priorEl = codeEl.previousElementSibling
-        if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
+
+        
+        // let priorEl = codeEl.previousElementSibling
+        let priorEl = codeWrapper.previousElementSibling
+        if (priorEl?.tagName === 'MDP-MERMAID') {
+          target = priorEl
+        } else if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
+        } else if (parent.tagName === 'TD') {
+          target = parent.parentElement.parentElement.parentElement // table
+          parent.parentElement.remove() // tr
         } else if (parent.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
           target = priorEl
         } else {
@@ -184,7 +198,7 @@ function handleCodeEl(rootEl, codeEl) {
         if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
         if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
         if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
-        if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) newEl.setAttribute(k, v === true ? '' : v)
+        if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) target.setAttribute(k, v === true ? '' : v)
         codeWrapper.remove()
         // console.log(target)
       }

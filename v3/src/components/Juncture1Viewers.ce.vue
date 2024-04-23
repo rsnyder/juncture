@@ -41,7 +41,7 @@
   // watch (params, () => { console.log(toRaw(params.value)) })
 
   const compare = computed(() => params.value.filter(p => p['ve-compare'] !== undefined).map(p => toRaw(p)))
-  const d3plusRing = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] !== undefined).map(p => toRaw(p)))
+  const diagrams = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] !== undefined).map(p => toRaw(p)))
   const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
   const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
@@ -74,7 +74,7 @@
 
     <sl-tab-group ref="tabs">
 
-      <sl-tab v-if="d3plusRing.length" slot="nav" panel="d3plusRing" :active="d3plusRing[0].idx === 0">
+      <sl-tab v-if="diagrams.length" slot="nav" panel="diagrams" :active="diagrams[0].idx === 0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 80C0 53.5 21.5 32 48 32h96c26.5 0 48 21.5 48 48V96H384V80c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H432c-26.5 0-48-21.5-48-48V160H192v16c0 1.7-.1 3.4-.3 5L272 288h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H272c-26.5 0-48-21.5-48-48V336c0-1.7 .1-3.4 .3-5L144 224H48c-26.5 0-48-21.5-48-48V80z"/></svg>
       </sl-tab>
       <sl-tab v-if="images.length" slot="nav" panel="image" :active="images[0].idx === 0">
@@ -164,13 +164,12 @@
           :max="plantSpecimens[0].max"
         ></mdp-plant-specimen>
       </sl-tab-panel>
-    
-      <sl-tab-panel v-if="d3plusRing.length" name="d3plusRing" :style="{height:`${panelHeight}px`}">
-        <mdp-d3plus-ring-network 
-          :center="d3plusRing[0].center"
+
+      <sl-tab-panel v-if="diagrams.length" name="diagrams" :style="{height:`${panelHeight}px`}">
+        <mdp-visjs 
           :height="panelHeight" 
-          :url="d3plusRing[0].url"
-        ></mdp-d3plus-ring-network>
+          :url="diagrams[0].url"
+        ></mdp-visjs>
       </sl-tab-panel>
 
       <sl-tab-panel name="data" style="background-color:white;">

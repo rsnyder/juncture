@@ -94,7 +94,10 @@ def html_from_markdown(md, baseurl):
     if not src.startswith('http') and not src.startswith('/'):
       img['src'] = f'{baseurl}{src}'
       
+  '''
   for code in soup.find_all('code'):
+    logger.info(code)
+    logger.info(code.parent.name)
     if code.parent.name == 'pre':
       top_div = soup.new_tag('div')
       if code.get('class'): top_div['class'] = code.get('class')
@@ -106,6 +109,7 @@ def html_from_markdown(md, baseurl):
       new_code.string = code.string
       pre.append(new_code)
       code.parent.replace_with(top_div)
+  '''
       
   for param in soup.find_all('param'):
     node = param.parent

@@ -237,6 +237,10 @@ p span.headline {
   font-weight: 500;
 }
 
+table[id] {
+  display: none;
+}
+
 /*********** resume ***********/
 
 .resume > section:first-of-type { /* header */

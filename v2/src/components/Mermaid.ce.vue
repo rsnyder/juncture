@@ -3,7 +3,7 @@
   <div ref="root" id="main">
     <div class="content">
       <div id="diagram"></div>
-    <div v-if="props.caption" id="caption-bar">
+    <div v-if="props.caption" id="caption">
       <div class="label" v-html="caption"></div>
     </div>
     </div>
@@ -96,14 +96,15 @@
     padding: 12px 0;
   }
 
-  #caption-bar  {
+  #caption  {
     display: flex;
-    align-items: center;
+    align-items: start;
     height: 32px;
     width: 100%;
     background-color: #555;
     color: white;
     padding: 0 12px;
+    border: 1px solid #ddd;
   }
 
   .entityBox:hover {

@@ -21,7 +21,6 @@ import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 import Compare from './components/Compare.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
-import D3PlusRingNetwork from './components/D3PlusRingNetwork.ce.vue'
 import Entities from './components/Entities.ce.vue'
 import EntityCard from './components/EntityCard.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
@@ -45,6 +44,7 @@ import PlantSpecimen from './components/PlantSpecimen.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
 import SpcWrapper from './components/SpcWrapper.ce.vue'
 import Video from './components/Video.ce.vue'
+import VisJS from './components/VisJS.ce.vue'
 
 
 function defineCustomElements() {
@@ -53,7 +53,6 @@ function defineCustomElements() {
 	customElements.define('mdp-compare', defineCustomElement(Compare))
 	// customElements.define('mdp-button', defineCustomElement(Button))
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
-	customElements.define('mdp-d3plus-ring-network', defineCustomElement(D3PlusRingNetwork))
 	customElements.define('mdp-entities', defineCustomElement(Entities))
 	customElements.define('mdp-entity-card', defineCustomElement(EntityCard))
 	customElements.define('mdp-entity-infobox', defineCustomElement(EntityInfobox))
@@ -77,6 +76,7 @@ function defineCustomElements() {
 	customElements.define('mdp-site-search', defineCustomElement(SiteSearch))
 	customElements.define('mdp-sfc-wrapper', defineCustomElement(SpcWrapper))
 	customElements.define('mdp-video', defineCustomElement(Video))
+	customElements.define('mdp-visjs', defineCustomElement(VisJS))
 }
 
 // @ts-ignore

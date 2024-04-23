@@ -772,6 +772,10 @@ video {
   margin-bottom: 1.5rem;
 }
 
+.me-1 {
+  margin-inline-end: 0.25rem;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -794,10 +798,6 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
-}
-
-.me-1 {
-  margin-inline-end: 0.25rem;
 }
 
 .box-border {
@@ -919,8 +919,16 @@ video {
   height: 0.25rem;
 }
 
+.h-40 {
+  height: 10rem;
+}
+
 .h-8 {
   height: 2rem;
+}
+
+.h-80 {
+  height: 20rem;
 }
 
 .h-auto {
@@ -929,14 +937,6 @@ video {
 
 .h-full {
   height: 100%;
-}
-
-.h-40 {
-  height: 10rem;
-}
-
-.h-80 {
-  height: 20rem;
 }
 
 .min-h-\[calc\(100\%-3\.5rem\)\] {
@@ -2094,6 +2094,10 @@ video {
   padding: 0.25rem;
 }
 
+.p-10 {
+  padding: 2.5rem;
+}
+
 .p-14 {
   padding: 3.5rem;
 }
@@ -2116,10 +2120,6 @@ video {
 
 .p-8 {
   padding: 2rem;
-}
-
-.p-10 {
-  padding: 2.5rem;
 }
 
 .px-4 {
@@ -2247,14 +2247,14 @@ video {
   font-variant-numeric: normal;
 }
 
-.ordinal {
-  --tw-ordinal: ordinal;
-  font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction);
-}
-
 .\!ordinal {
   --tw-ordinal: ordinal !important;
   font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction) !important;
+}
+
+.ordinal {
+  --tw-ordinal: ordinal;
+  font-variant-numeric: var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction);
 }
 
 .slashed-zero {
@@ -2714,6 +2714,10 @@ video {
 
 .\[a-zA-Z\:_\] {
   a-z-a--z: ;
+}
+
+.\[a\:a\] {
+  a: a;
 }
 
 .\[vite\:css\] {

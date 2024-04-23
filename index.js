@@ -88,18 +88,19 @@ function parseCodeEl(codeEl) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl)
+  console.log(codeEl)
   // console.log(codeEl.parentElement.parentElement)
   // console.log(codeEl.previousElementSibling)
   
   let parentTag = codeEl.parentElement?.tagName
+  console.log(parentTag)
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
 
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
-      parentTag === 'TD' ||
+      parentTag === 'TH' ||
       /^H\d/.test(parentTag)) {
     let codeWrapper
     if (previousElTag === 'IMG' || previousElTag === 'A' || previousElTag === 'EM' || previousElTag === 'STRONG') codeWrapper = codeEl
@@ -108,11 +109,11 @@ function handleCodeEl(rootEl, codeEl) {
       codeWrapper = paraText ? codeEl : codeEl.parentElement
       isInline = paraText ? true : false
     } 
-    else if (parentTag === 'PRE' || parentTag === 'LI' || parentTag === 'TD') codeWrapper = codeEl
+    else if (parentTag === 'PRE' || parentTag === 'LI' || parentTag === 'TH') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
-    // console.log(codeWrapper)
+    console.log(codeWrapper)
     if (!codeWrapper) return
 
     let parent = parentTag === 'LI'
@@ -186,9 +187,9 @@ function handleCodeEl(rootEl, codeEl) {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
-        } else if (parent.tagName === 'TD') {
+        } else if (parent.tagName === 'TH') {
           target = parent.parentElement.parentElement.parentElement // table
-          parent.parentElement.remove() // tr
+          console.log(target)
         } else if (parent.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
           target = priorEl
         } else {

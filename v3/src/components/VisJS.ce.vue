@@ -9,7 +9,7 @@
   
 <script setup lang="ts">
 
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref, toRaw, watch } from 'vue'
   import vis from 'visjs-network'
 
   const props = defineProps({
@@ -35,7 +35,8 @@
   function tableToObjs(tableId:string) {
     let table = document.getElementById(tableId)
     let keys = Array.from(table?.querySelectorAll('th') || []).map(th => th.textContent?.trim())
-    return Array.from(table?.querySelectorAll('tbody > tr') || [])
+    console.log(keys)
+    let objs = Array.from(table?.querySelectorAll('tbody > tr') || [])
       .map(row =>
         Object.fromEntries(
           Array.from(row.children)
@@ -44,6 +45,8 @@
         )
       )
       .filter(obj => Object.keys(obj).length > 0)
+    console.log(objs)
+    return objs
   }
 
   function tsvToObjs(tsvData:string) {
@@ -125,6 +128,7 @@
     if (!diagram) return
     setWidth()
     setHeight()
+    console.log(toRaw(props))
     if (props.edges) edges.value = new vis.DataSet(tableToObjs(props.edges))
     if (props.nodes) nodes.value = new vis.DataSet(tableToObjs(props.nodes))
     if (props.url) getDataFromUrl(props.url)

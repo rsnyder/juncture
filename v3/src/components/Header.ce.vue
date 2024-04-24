@@ -188,6 +188,7 @@
     let _imageInfo = imageInfo.value
     let _imageAspect = Number((_imageInfo.width/_imageInfo.height).toFixed(4))
     let width = Math.min(800, host.value.getBoundingClientRect().width.toFixed(0))
+    width = 390
     let height =  Number(width / _imageAspect).toFixed(0)
     let size = `${width},${height}`
     let url = `${serviceUrl.replace(/\/info.json$/,'')}/${options.region}/${size}/${options.rotation}/${options.quality}.${options.format}`

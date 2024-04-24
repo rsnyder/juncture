@@ -330,11 +330,9 @@
             if (geoJsonUrl.indexOf('http') === 0) {
               item.geojson = geoJsonUrl
             } else {
-              if (geoJsonUrl === '/') {
-                let [acct, repo, ...rest] = item.geojson.split('/').filter((pe:string) => pe)
-                let path = rest.join('/')
-                let ref = 'main'
-                item.geojson = `https://raw.githubusercontent.com/${acct}/${repo}/${ref}/${path}`
+              console.log(geoJsonUrl)
+              if (geoJsonUrl[0] === '/') {
+                item.geojson = `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}${geoJsonUrl}`
               } else {
                 item.geojson = `${ghBaseurl.value}/${geoJsonUrl}`
               }

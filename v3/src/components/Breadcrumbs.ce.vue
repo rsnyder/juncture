@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
 
   const root = ref<HTMLElement | null>(null)
   const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
@@ -9,6 +9,9 @@
   })
 
   const crumbs = ref()
+  watch(crumbs, (crumbs) => {
+    console.log(toRaw(crumbs))
+  })
 
   onMounted(() => {
     let path = location.pathname
@@ -25,15 +28,35 @@
 </script>
 
 <template>
-  <div class="inline-flex items-center gap-1 w-full flex-wrap leading-6 mb-6" ref="root">
-    <template v-if="crumbs?.length > 1" v-for="(crumb, idx) in crumbs" :key="crumb.path">
-      <a v-if="idx < crumbs.length - 1" :href="crumb.path" class="text-[#0645ad] hover:underline">{{ crumb.name }}</a>
-      <span v-else class="text-gray-500">{{ crumb.name }}</span>
-      <span v-if="idx < crumbs.length - 1" class="mx-2 text-gray-500"> > </span>
+  <div class="main" ref="root">
+    <template v-if="crumbs?.length" v-for="(crumb, idx) in crumbs" :key="crumb.path">
+      <a v-if="idx < crumbs.length - 1" :href="crumb.path">{{ crumb.name }}</a>
+      <span v-else>{{ crumb.name }}</span>
+      <span v-if="idx < crumbs.length - 1"> > </span>
     </template>
   </div>
 </template>
 
 <style>
   @import '../tailwind.css';
+  .main {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    flex-wrap: wrap;
+    line-height: 1.5;
+    padding: 0.5rem 0;
+  }
+  a {
+    color: #0645ad;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  span {
+    color: gray;
+    font-weight: 500;
+  }
+
 </style>

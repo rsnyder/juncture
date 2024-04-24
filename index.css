@@ -291,7 +291,8 @@ table[id] {
 
 .footnote,
 .footnotes {
-  white-space: pre-wrap;
+  font-size: 0.8em;
+  /* white-space: pre-wrap; */
   /* These are technically the same, but use both */
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -466,11 +467,20 @@ article.j1 > * {
   z-index: 2;
 }
 
-.j1 .footnote div {
+.j1 .footnote div, .j1 .footnotes div {
   white-space: unset
 }
-.j1 .footnote li > p {
-  margin: 0
+.j1 .footnote li > p, .j1 .footnotes li > p {
+  margin: 0;
+  background-color: inherit;
+  border-color: inherit;
+  box-shadow: none;
+}
+
+.j1 .content > section:first-of-type > h1,
+.j1 .content > section:first-of-type > h2,
+.j1 .content > section:first-of-type > h3 {
+  margin-top: 0;
 }
 
 @media (min-width: 800px) { /* wide screens */

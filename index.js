@@ -332,7 +332,7 @@ function structureContent() {
   })
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
-  .filter(heading => !heading.innerHTML.trim())
+  .filter(heading => !heading.innerHTML.replace('&nbsp;','').trim())
   .forEach(heading => {
     heading.remove()
   })

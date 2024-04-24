@@ -6,6 +6,8 @@
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const tabs = ref<HTMLElement | null>(null)
   
+  const mode = location.hostname === 'localhost' ? 'dev' : 'prod'
+
   const props = defineProps({
     breakpoint: { type: Number, default: 800 },
     dataId: { type: String }
@@ -97,7 +99,7 @@
       <sl-tab v-if="iframes.length" slot="nav" panel="iframes" :active="iframes[0].idx === 0">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>
       </sl-tab>
-      <sl-tab slot="nav" panel="data">
+      <sl-tab v-if="mode === 'dev'" slot="nav" panel="data">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>
       </sl-tab>
       

@@ -187,8 +187,6 @@
   function iiifUrl(serviceUrl: string, options: any) {
     let _imageInfo = imageInfo.value
     let _imageAspect = Number((_imageInfo.width/_imageInfo.height).toFixed(4))
-    console.log(host.value.getBoundingClientRect())
-    console.log(host.value.clientWidth)
     let width = Math.min(800, host.value.getBoundingClientRect().width.toFixed(0))
     let height =  Number(width / _imageAspect).toFixed(0)
     let size = `${width},${height}`
@@ -267,7 +265,7 @@ mdp-manifest-popup {
 mdp-breadcrumbs {
   grid-area: 3 / 1 / 4 / 2;
   background-color: inherit;
-  color: white;
+  color: black;
   z-index: 1;
 }
 

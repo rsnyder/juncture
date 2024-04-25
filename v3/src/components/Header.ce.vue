@@ -191,7 +191,6 @@
     let height =  Number(width / _imageAspect).toFixed(0)
     let size = `${width},${height}`
     let url = `${serviceUrl.replace(/\/info.json$/,'')}/${options.region}/${size}/${options.rotation}/${options.quality}.${options.format}`
-    console.log(url)
     return url
   }
 
@@ -264,7 +263,7 @@ mdp-manifest-popup {
 
 mdp-breadcrumbs {
   grid-area: 3 / 1 / 4 / 2;
-  background-color: inherit;
+  background-color: white;
   color: black;
   z-index: 1;
 }

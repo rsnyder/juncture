@@ -9,9 +9,7 @@
   })
 
   const crumbs = ref()
-  watch(crumbs, (crumbs) => {
-    console.log(toRaw(crumbs))
-  })
+  // watch(crumbs, (crumbs) => { console.log(toRaw(crumbs)) })
 
   onMounted(() => {
     let path = location.pathname

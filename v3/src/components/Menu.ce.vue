@@ -104,14 +104,14 @@
       let items = Array.from(host.value.querySelectorAll('li'))
         .map((li: any) => {
           const a = li.querySelector('a') as HTMLAnchorElement
-          let label = a.innerText.trim()
+          let label = a?.innerText.trim()
           let icon = (li.querySelector('svg') as SVGElement)?.outerHTML
           if (!icon) {
-            let action = a.href.split('/').filter((x:string) => x).pop()?.toLowerCase() || ''
+            let action = a?.href.split('/').filter((x:string) => x).pop()?.toLowerCase() || ''
             action = location.host === action ? 'home' : action
             if (icons[action]) icon = icons[action]
           }
-          return { label, icon, href: a.href }
+          return { label, icon, href: a?.href }
         })
         if (props.contact) items.push({ label: 'Contact Us', icon: icons.contact, href: '/contact' })
       menuItems.value = items

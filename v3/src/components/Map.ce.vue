@@ -7,7 +7,7 @@
         <div id="map" ref="mapEl">
         </div>
         <!--<div v-if="captions" id="caption" v-html="caption"></div>-->
-        <div class="caption">{{ caption || 'Caption placeholder' }}</div>
+        <div v-if="caption" class="caption">{{ caption }}</div>
       </div>
 
     </div>
@@ -798,7 +798,7 @@
             value = '"' && value[value.length-1] === '"' ? value.slice(1,-1) : value
     
             if (key === 'qid') {
-              let entity = await getEntity(token)
+              let entity = await getEntity(value)
               obj = {...entityToInfoObj(entity, token), ...obj}          
             } else if (key === 'iiif') {
               let manifest = await getManifest(token)

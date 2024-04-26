@@ -161,13 +161,23 @@ export function observeVisible(callback:any = null) {
 
 ////////// Wikidata Entity functions //////////
 
-let entityData:any = {}
-export async function getEntityData(qids: string[] = [], language: string = 'en') {
-  let values = qids.filter(qid => !entityData[qid]).map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
-  if (values.length > 0) {
+window.entityData = {}
+window.pendingEntityData = new Set()
+window.customEntityAliases = {}
+export async function getEntityData(qids: string[], language:string = 'en') {
+  language = language || 'en'
+  let cached = new Set(qids.filter(qid => window.entityData[qid]))
+  let pending = new Set(qids.filter(qid => window.pendingEntityData.has(qid)))
+  let toGet = qids
+    .filter(qid => !cached.has(qid))
+    // .filter(qid => !pending.has(qid))  
+  console.log(`getEntityData: entities=${qids.length} cached=${cached.size} pending=${pending.size} toGet=${toGet}`)
+  if (toGet.length > 0) {
+    Array.from(toGet).forEach(qid => window.pendingEntityData.add(qid))
+    let toGetUrls = toGet.map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
     let query = `
       SELECT ?item ?label ?description ?alias ?image ?logoImage ?coords ?pageBanner ?whosOnFirst ?wikipedia WHERE {
-        VALUES (?item) { ${values.join(' ')} }
+        VALUES (?item) { ${toGetUrls.join(' ')} }
         ?item rdfs:label ?label . 
         FILTER (LANG(?label) = "${language}" || LANG(?label) = "en")
         OPTIONAL { ?item schema:description ?description . FILTER (LANG(?description) = "${language}" || LANG(?description) = "en")}
@@ -189,34 +199,40 @@ export async function getEntityData(qids: string[] = [], language: string = 'en'
     })
     if (resp.ok) {
       let sparqlResp = await resp.json()
-      sparqlResp.results.bindings.forEach((rec: any) => {
+      sparqlResp.results.bindings.forEach(rec => {
         let qid = rec.item.value.split('/').pop()
-        if (!entityData[qid]) {
-          entityData[qid] = {id: qid, label: rec.label.value}
-          if (rec.description) entityData[qid].description = rec.description.value
-          if (rec.alias) entityData[qid].aliases = [rec.alias.value]
-          if (rec.coords) entityData[qid].coords = rec.coords.value.slice(6,-1).split(' ').reverse().join(',')
-          if (rec.wikipedia) entityData[qid].wikipedia = rec.wikipedia.value
-          if (rec.pageBanner) entityData[qid].pageBanner = rec.pageBanner.value
+        let _entityData = window.entityData[qid]
+        if (!_entityData) {
+          _entityData = {id: qid, label: rec.label.value}
+          if (rec.description) _entityData.description = rec.description.value
+          if (rec.alias) {
+            _entityData.aliases = [rec.alias.value]
+            if (window.customEntityAliases[qid]) _entityData.aliases = [...window.customEntityAliases[qid], ..._entityData.aliases]
+          }
+          if (rec.coords) _entityData.coords = rec.coords.value.slice(6,-1).split(' ').reverse().join(',')
+          if (rec.wikipedia) _entityData.wikipedia = rec.wikipedia.value
+          if (rec.pageBanner) _entityData.pageBanner = rec.pageBanner.value
           if (rec.image) {
-            entityData[qid].image = rec.image.value
-            entityData[qid].thumbnail = mwImage(rec.image.value, 300)
+            _entityData.image = rec.image.value
+            _entityData.thumbnail = mwImage(rec.image.value, 300)
           }
           if (rec.logoImage) {
-            entityData[qid].logoImage = rec.logoImage.value
-            if (!entityData[qid].thumbnail) entityData[qid].thumbnail = mwImage(rec.logoImage.value, 300)
+            _entityData.logoImage = rec.logoImage.value
+            if (!_entityData.thumbnail) _entityData.thumbnail = mwImage(rec.logoImage.value, 300)
           }
-          if (rec.whosOnFirst) entityData[qid].geojson = whosOnFirstUrl(rec.whosOnFirst.value)
+          if (rec.whosOnFirst) _entityData.geojson = whosOnFirstUrl(rec.whosOnFirst.value)
+          window.entityData[qid] = _entityData
         } else {
-          if (rec.alias) entityData[qid].aliases.push(rec.alias.value)
+          if (rec.alias) _entityData.aliases.push(rec.alias.value)
         }
       })
       // return entityData
-      return Object.fromEntries(qids.filter(qid => entityData[qid]).map(qid => [qid,entityData[qid]]))
+      Array.from(toGet).forEach(qid => window.pendingEntityData.delete(qid))
+      return Object.fromEntries(qids.filter(qid => window.entityData[qid]).map(qid => [qid,window.entityData[qid]]))
     }
   }
   // return entityData
-  return Object.fromEntries(qids.filter(qid => entityData[qid]).map(qid => [qid,entityData[qid]]))
+  return Object.fromEntries(qids.filter(qid => window.entityData[qid]).map(qid => [qid,window.entityData[qid]]))
 }
 
 export function mwImage(mwImg:string, width:number) {

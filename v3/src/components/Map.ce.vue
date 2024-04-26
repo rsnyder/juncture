@@ -38,7 +38,7 @@
       import 'leaflet.smoothwheelzoom'
       import { WarpedMapLayer } from '@allmaps/leaflet'
 
-      import { isQid, getEntity, getManifest, kebabToCamel, metadataAsObj, isMobile, loadManifests } from '../utils'
+      import { isQid, getEntity, getEntityData, getManifest, kebabToCamel, metadataAsObj, isMobile, loadManifests } from '../utils'
       import EventBus from './EventBus'
 
       const window = (self as any).window
@@ -401,12 +401,21 @@
 
       })
     
+      watch(entities, (entities) => { console.log(toRaw(entities)) })
+
       watch(geoJSONs, () => updateMap())
       // watch(warpedMapLayers, () => updateMap())
       // watch(map, () => updateMap())
     
       function init() {
         entities.value = props.entities ? props.entities.split(/\s+/).filter(qid => qid) : []
+        let activeParagraph = document.querySelector('p.active')
+        if (activeParagraph && activeParagraph.getAttribute('data-entities')) {
+          entities.value = [
+            ...entities.value, 
+            ...activeParagraph.getAttribute('data-entities')?.split(/\s+/).filter(qid => entities.value.indexOf(qid) < 0) || []
+          ]
+        }
         getLayerStrings()
         listenForSlotChanges()
     
@@ -425,7 +434,7 @@
           } else {
             center = latLng(props.center)
           }
-        } else if (props.entities) {
+        } else if (entities.value.length) {
           let entity = await getEntity(entities.value[0])
           center = latLng(entity.coords)
           zoom.value = 9
@@ -707,6 +716,14 @@
           .map((manifest:any) => manifestToInfoObj(manifest, manifest.id))
       }
 
+      async function getLocationEntities() {
+        let _entities = entities.value.length
+          ? Object.values(await getEntityData(entities.value)).filter((entity:any) => entity.coords).map((entity:any) => entityToInfoObj(entity))
+          : []
+        console.log(_entities)
+        return _entities
+      }
+
       async function getLayerStrings() {
         if (props.ghDir) {
           layerObjs.value = [
@@ -725,7 +742,11 @@
             _layerObjs.push(Promise.resolve({coords: props.center, zoom: props.zoom || 10}))
           }
         }
-        layerObjs.value = [...layerObjs.value, ..._layerObjs]
+        layerObjs.value = [
+          ...layerObjs.value, 
+          ..._layerObjs,
+          ...await getLocationEntities()
+        ]
       }
     
       function listenForSlotChanges() {

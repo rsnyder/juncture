@@ -40,7 +40,7 @@
   // watch (panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
 
   const params = ref<any[]>([])
-  // watch (params, () => { console.log(toRaw(params.value)) })
+  // watch (params, (params) => { if (params.length) console.log(toRaw(params)) })
 
   const compare = computed(() => params.value.filter(p => p['ve-compare'] !== undefined).map(p => toRaw(p)))
   const diagrams = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] !== undefined).map(p => toRaw(p)))
@@ -103,7 +103,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>
       </sl-tab>
       
-      <sl-tab-panel v-if="images.length && (images[0].src || images[0].manifest || images[0].url)" name="image" :style="`height:${panelHeight}px`">
+      <sl-tab-panel v-if="images.length" name="image" :style="`height:${panelHeight}px`">
         <mdp-image :height="panelHeight" :zoom-on-scroll="isWide ? '' : null">
           <ul>
             <li v-for="def, idx in images" :key="`image-${idx}`" v-text="serializeProps(def)"></li>

@@ -492,6 +492,7 @@ article.j1 > * {
 
   .j1 .content {
     padding-right: 1em;
+    margin-bottom: 80dvh;
   }
   
   .j1 p.active {

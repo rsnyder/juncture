@@ -39,7 +39,6 @@ function mwImage(mwImg, width) {
       url += '.jpg'
     }
   }
-  console.log(url)
   return url
 }
 
@@ -61,14 +60,14 @@ export async function getEntityData(qids, language) {
   let pending = new Set(qids.filter(qid => window.pendingEntityData.has(qid)))
   let toGet = qids
     .filter(qid => !cached.has(qid))
-    .filter(qid => !cached.has(qid))
-    .map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
-  console.log(`getEntityData: entities=${qids.length} cached=${cached.size} pending=${pending.size} toGet=${toGet.length}`)
+    // .filter(qid => !pending.has(qid))
+  console.log(`getEntityData: entities=${qids.length} cached=${cached.size} pending=${pending.size} toGet=${toGet}`)
   if (toGet.length > 0) {
-    Array.from(pending).forEach(qid => window.pendingEntityData.add(qid))
+    Array.from(toGet).forEach(qid => window.pendingEntityData.add(qid))
+    let toGetUrls = toGet.map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
     let query = `
       SELECT ?item ?label ?description ?alias ?image ?logoImage ?coords ?pageBanner ?whosOnFirst ?wikipedia WHERE {
-        VALUES (?item) { ${toGet.join(' ')} }
+        VALUES (?item) { ${toGetUrls.join(' ')} }
         ?item rdfs:label ?label . 
         FILTER (LANG(?label) = "${language}" || LANG(?label) = "en")
         OPTIONAL { ?item schema:description ?description . FILTER (LANG(?description) = "${language}" || LANG(?description) = "en")}
@@ -118,7 +117,7 @@ export async function getEntityData(qids, language) {
         }
       })
       // return entityData
-      Array.from(pending).forEach(qid => window.pendingEntityData.delete(qid))
+      Array.from(toGet).forEach(qid => window.pendingEntityData.delete(qid))
       return Object.fromEntries(qids.filter(qid => window.entityData[qid]).map(qid => [qid,window.entityData[qid]]))
     }
   }
@@ -753,9 +752,10 @@ function structureContent() {
     p.setAttribute('data-entities', qids.join(' '))
   })
   Array.from(article.querySelectorAll('param'))
-    .filter(param => param.getAttributeNames().find(attrName => attrName.indexOf('ve-') === 0) === undefined)
+    .filter(param => !param.getAttributeNames().find(attrName => attrName.indexOf('ve-') === 0 && attrName !== 've-entity'))
     .forEach(param => param.remove())
 
+  // console.log(`isJunctureV1=${isJunctureV1}`)
   if (isJunctureV1) {
     Array.from(document.querySelectorAll('[data-id]'))
     .forEach(seg => {
@@ -781,10 +781,17 @@ function structureContent() {
         viewers.style.top = `${offset}px`
         viewers.style.height = `calc(100dvh - ${offset+2}px)`
       }
+
       while (seg.nextSibling) {
         let sib = seg.nextSibling
         if (sib.nodeName !== 'PARAM') break
         viewers.appendChild(sib)
+      }
+
+      let parent = seg.parentElement
+      while (parent && parent.tagName !== 'ARTICLE') {
+        parent.querySelectorAll(':scope > param').forEach(param => viewers.appendChild(param.cloneNode(true)))
+        parent = parent.parentElement
       }
 
       if (!isMobile()) {
@@ -968,7 +975,7 @@ function observeVisible(setActiveParagraph = false) {
       if (setActiveParagraph) { 
         document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
         currentActiveParagraph?.classList.add('active')
-        if (currentActiveParagraph.getAttribute('data-entities')) {
+        if (currentActiveParagraph.getAttribute('data-entities') && !currentActiveParagraph.getAttribute('data-entities-tagged')) {
           let qids = currentActiveParagraph.getAttribute('data-entities')?.split(' ') || []
           if (qids.length) {
             getEntityData(qids).then(entities => { 
@@ -981,7 +988,6 @@ function observeVisible(setActiveParagraph = false) {
                   if (matches) {
                     let idx = matches.index
                     let match = matches[0]
-                    console.log(match, idx)
                     html = html.slice(0, idx) + `<mdp-entity-infobox qid="${entity.id}">${match}</mdp-entity-infobox>` + html.slice(idx + match.length)
                     currentActiveParagraph.innerHTML = html
                     break
@@ -990,6 +996,7 @@ function observeVisible(setActiveParagraph = false) {
               })
             })
           }
+          currentActiveParagraph.setAttribute('data-entities-tagged', '')
         }
 
         let currentActiveViewers = currentActiveParagraph?.nextElementSibling

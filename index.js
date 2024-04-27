@@ -61,7 +61,7 @@ export async function getEntityData(qids, language) {
   let toGet = qids
     .filter(qid => !cached.has(qid))
     // .filter(qid => !pending.has(qid))
-  console.log(`getEntityData: entities=${qids.length} cached=${cached.size} pending=${pending.size} toGet=${toGet}`)
+  // console.log(`getEntityData: entities=${qids.length} cached=${cached.size} pending=${pending.size} toGet=${toGet}`)
   if (toGet.length > 0) {
     Array.from(toGet).forEach(qid => window.pendingEntityData.add(qid))
     let toGetUrls = toGet.map(qid => `(<http://www.wikidata.org/entity/${qid}>)`)
@@ -255,7 +255,7 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang === 'mdpress') {
       let parsed = parseCodeEl(codeEl)
-      console.log(parsed)
+      // console.log(parsed)
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
         else parsed.style = {display: 'inline-block'}
@@ -771,6 +771,7 @@ function structureContent() {
       wrapper.appendChild(seg.cloneNode(true))
       let viewers = document.createElement('mdp-j1-viewers')
       // viewers.className = 'viewers'
+      viewers.setAttribute('entities', seg.getAttribute('data-entities'))
       viewers.dataset.id = id
       wrapper.appendChild(viewers)
 

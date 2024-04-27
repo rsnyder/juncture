@@ -36,7 +36,7 @@
 
 <template>
 
-<sl-dropdown ref="root" distance="12" placement="top">
+<sl-dropdown ref="root" distance="12" placement="top" hoist>
   <div slot="trigger" v-html="text"></div>
   <mdp-entity-card v-if="qid || file" :qid="qid" :file="file" :language="props.language"></mdp-entity-card>
 </sl-dropdown>

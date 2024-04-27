@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, h, onMounted, ref, toRaw, watch } from 'vue'
+  import { getEntityData } from '../utils'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
@@ -10,12 +11,17 @@
 
   const props = defineProps({
     breakpoint: { type: Number, default: 800 },
-    dataId: { type: String }
+    dataId: { type: String },
+    entities: { type: String }
+
   })
 
   const isWide = computed(() => documentWidth.value >= props.breakpoint)
 
-  watch(host, () => { getViewerData() })
+  const entities = ref<any>()
+  // watch(entities, (entities) => { if (entities) console.log(toRaw(entities)) })
+
+  watch(host, () => getViewerData() )
 
   function setPanelHeight() {
     // console.log(`setPanelHeight: documentWidth=${documentWidth.value}`)
@@ -32,6 +38,7 @@
   watch (documentWidth, () => { setPanelHeight() })
 
   onMounted(() => {
+    if (props.entities) getEntityData(props.entities.split(' ')).then(data => entities.value = data)
     setPanelHeight()
     new ResizeObserver(() => { documentWidth.value = document.body.getBoundingClientRect().width }).observe(document.body)
   })
@@ -43,7 +50,7 @@
   // watch (params, (params) => { if (params.length) console.log(toRaw(params)) })
 
   const compare = computed(() => params.value.filter(p => p['ve-compare'] !== undefined).map(p => toRaw(p)))
-  const diagrams = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] !== undefined).map(p => toRaw(p)))
+  const diagrams = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] || p['ve-vis-network'] !== undefined).map(p => toRaw(p)))
   const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
   const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
@@ -113,9 +120,11 @@
 
       <sl-tab-panel v-if="maps.length" name="map">
         <mdp-map 
+          :basemaps="maps[0].basemaps || maps[0].basemap" 
           :caption="maps[0].caption" 
           :center="maps[0].center" 
           :height="panelHeight" 
+          :prefer-geojson="maps[0]['prefer-geojson'] === '' ? '' : null"
           :title="maps[0].title" 
           :zoom="maps[0].zoom" 
         >
@@ -174,9 +183,15 @@
         ></mdp-visjs>
       </sl-tab-panel>
 
-      <sl-tab-panel name="data" style="background-color:white;">
-        <div v-if="params" v-for="param, idx in params" :key="`param-${idx}`">
-          <pre v-html="JSON.stringify(param, null, 2)"></pre>
+      <sl-tab-panel name="data" :style="{height:`${panelHeight}px`, backgroundColor:'white', overflowY: 'scroll'}">
+        <div v-if="params">
+          <h1>Params:</h1>
+          <pre v-for="param, idx in params" :key="`param-${idx}`" v-html="JSON.stringify(param, null, 2)"></pre>
+        </div>
+        <div v-if="entities">
+          <h1>Entities:</h1>          
+          <pre>{{ Object.keys(entities).join(' ') }}</pre>
+          <pre v-for="entity, qid in entities" :key="qid" v-html="JSON.stringify(entity, null, 2)"></pre>
         </div>
       </sl-tab-panel>
 
@@ -200,6 +215,10 @@
 
   sl-tab::part(base) {
     padding: 0.5em;
+  }
+
+  h1 { 
+    font-size: 1em;
   }
 
   svg { width: 20px; height: 20px; }

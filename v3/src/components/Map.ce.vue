@@ -324,7 +324,8 @@
         // if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
-          .filter(item => (item.geojson || item.url) && item.preferGeojson !== undefined)
+          //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
+          .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
           .map (item => {
             let geoJsonUrl = item.geojson || item.url
             if (geoJsonUrl.indexOf('http') === 0) {
@@ -401,7 +402,7 @@
 
       })
     
-      watch(entities, (entities) => { console.log(toRaw(entities)) })
+      // watch(entities, (entities) => { console.log(toRaw(entities)) })
 
       watch(geoJSONs, () => updateMap())
       // watch(warpedMapLayers, () => updateMap())

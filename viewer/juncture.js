@@ -14,10 +14,9 @@ function isMobile() {
 }
 
 function ghSourceFromLocation() {
-  let pathElems = location.pathname.slice(1).split('/').filter(pe => pe)
-  return location.hostname.indexOf('github.io') > 0 
-    ? pathElems.slice(pathElems[1] === 'viewer' ? 2 : 1) // GHPages
-    : pathElems.slice(pathElems[0] === 'viewer' ? 1 : 0)
+  console.log(location)
+  let parsed = new URL(location.href)
+  return parsed.searchParams.get('source') || parsed.searchParams.get('src')
 }
 
 async function getMarkdown(owner, repo, branch, path) {

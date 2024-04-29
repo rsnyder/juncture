@@ -33,13 +33,13 @@
   const caption = computed(() => props.caption )
 
   function tableToObjs(tableId:string) {
-    let table = document.getElementById(tableId)
-    let keys = Array.from(table?.querySelectorAll('th') || []).map(th => th.textContent?.trim())
+    let table = document.getElementById(tableId) || host.value.parentElement.querySelector(`#${tableId}`)
+    let keys = Array.from(table?.querySelectorAll('th') || []).map((th:any) => th.textContent?.trim())
     return Array.from(table?.querySelectorAll('tbody > tr') || [])
-      .map(row =>
+      .map((row:any) =>
         Object.fromEntries(
           Array.from(row.children)
-            .map((cell, idx) => [keys[idx], cell.textContent?.trim()])
+            .map((cell:any, idx) => [keys[idx], cell.textContent?.trim()])
             .filter(([key, value]) => key && value)
         )
       )

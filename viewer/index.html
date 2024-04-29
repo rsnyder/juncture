@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Viewer</title>
+  <link href="https://rdsnyder.github.io/juncture/index.css" rel="stylesheet">
+</head>
+  <body>
+
+  <article></article>
+
+  <script src="https://rdsnyder.github.io/juncture/v3/dist/js/index.js" type="module"></script>
+  <script type="module">
+    import { ghSourceFromLocation, getHtml, mount } from 'https://rdsnyder.github.io/juncture/juncture.js'
+    mount(document.querySelector('article'), await getHtml(ghSourceFromLocation()))
+  </script>
+
+  </body>
+</html> 

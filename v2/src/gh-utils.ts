@@ -95,7 +95,11 @@ export class GithubClient {
       let content
       let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
       if (ref) url += `?ref=${ref}`
-      let resp: any = await fetch(url, {cache: 'no-cache', headers: {Authorization:`Token ${this.authToken}`}})
+      let resp: any = await 
+        fetch(url, {cache: 'no-cache', headers: {Authorization:`Token ${this.authToken}`}})
+        .catch(err => {
+          console.error(err)
+        })
       if (resp.ok) {
         resp = await resp.json()
         content = decodeURIComponent(escape(atob(resp.content)))

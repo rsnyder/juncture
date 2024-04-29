@@ -16,6 +16,7 @@ import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 
+import Article from './components/Article.ce.vue'
 import Audio from './components/Audio.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
@@ -42,12 +43,13 @@ import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import PlantSpecimen from './components/PlantSpecimen.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
-import SpcWrapper from './components/SpcWrapper.ce.vue'
+// import SpcWrapper from './components/SpcWrapper.ce.vue'
 import Video from './components/Video.ce.vue'
 import VisJS from './components/VisJS.ce.vue'
 
 
 function defineCustomElements() {
+	customElements.define('mdp-article', defineCustomElement(Article))
 	customElements.define('mdp-audio', defineCustomElement(Audio))
 	customElements.define('mdp-breadcrumbs', defineCustomElement(Breadcrumbs))
 	customElements.define('mdp-compare', defineCustomElement(Compare))
@@ -74,7 +76,7 @@ function defineCustomElements() {
 	customElements.define('mdp-modal', defineCustomElement(Modal))
 	customElements.define('mdp-plant-specimen', defineCustomElement(PlantSpecimen))
 	customElements.define('mdp-site-search', defineCustomElement(SiteSearch))
-	customElements.define('mdp-sfc-wrapper', defineCustomElement(SpcWrapper))
+	// customElements.define('mdp-sfc-wrapper', defineCustomElement(SpcWrapper))
 	customElements.define('mdp-video', defineCustomElement(Video))
 	customElements.define('mdp-visjs', defineCustomElement(VisJS))
 }

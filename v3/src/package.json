@@ -24,6 +24,7 @@
     "leaflet.control.opacity": "^1.6.0",
     "leaflet.smoothwheelzoom": "github:rsnyder/Leaflet.SmoothWheelZoom",
     "marked": "^7.0.4",
+    "marked-footnote": "^1.2.2",
     "mermaid": "^10.9.0",
     "openseadragon": "2.4.2",
     "preline": "^1.9.0",

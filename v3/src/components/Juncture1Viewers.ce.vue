@@ -120,6 +120,7 @@
 
       <sl-tab-panel v-if="maps.length" name="map">
         <mdp-map 
+          :entities="props.entities"
           :basemaps="maps[0].basemaps || maps[0].basemap" 
           :caption="maps[0].caption" 
           :center="maps[0].center" 

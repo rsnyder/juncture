@@ -220,7 +220,8 @@
   
   const clientIds:any = {
     'iiif.mdpress.io': '9baccef56771878fd304',
-    'www.mdpress.io': '12548925f073dccf16d4'
+    'www.mdpress.io': '12548925f073dccf16d4',
+    'editor.juncture-digital.org': '1e594e8a8189d18b73f5'
   }
 
   async function setupGithubAuth() {
@@ -262,6 +263,7 @@
       let href = clientIds[location.hostname] !== undefined
         ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=mdpress&redirect_uri=${redirectTo}`
         : null
+      console.log('ghLogin', href)
       if (href) window.location.href = href
     }
   }

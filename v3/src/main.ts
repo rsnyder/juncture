@@ -21,6 +21,7 @@ import Audio from './components/Audio.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
 import Compare from './components/Compare.ce.vue'
+import ContentSelector from './components/ContentSelector.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
 import Entities from './components/Entities.ce.vue'
 import EntityCard from './components/EntityCard.ce.vue'
@@ -53,6 +54,7 @@ function defineCustomElements() {
 	customElements.define('mdp-audio', defineCustomElement(Audio))
 	customElements.define('mdp-breadcrumbs', defineCustomElement(Breadcrumbs))
 	customElements.define('mdp-compare', defineCustomElement(Compare))
+	customElements.define('mdp-content-selector', defineCustomElement(ContentSelector))
 	// customElements.define('mdp-button', defineCustomElement(Button))
 	// customElements.define('mdp-dropdown', defineCustomElement(Dropdown))
 	customElements.define('mdp-entities', defineCustomElement(Entities))

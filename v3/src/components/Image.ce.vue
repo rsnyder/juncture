@@ -98,7 +98,7 @@
           body: JSON.stringify(
             Object.fromEntries(
               Object.entries(def)
-              .filter(([k,v]) => ['attribution', 'caption', 'description', 'label', 'license', 'summary', 'title', 'url'].includes(k))
+              .filter(([k,v]) => ['attribution', 'caption', 'description', 'fit', 'label', 'license', 'summary', 'title', 'url'].includes(k))
               .map(([k,v]) => {
                 if (k === 'url' && (v as string).indexOf('http') < 0) v = `${ghBaseurl.value}/${v}`
                 return [k, v]

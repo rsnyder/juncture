@@ -53,6 +53,7 @@
   const diagrams = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] || p['ve-vis-network'] !== undefined).map(p => toRaw(p)))
   const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
   const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
+  watch (images, (images) => { if (images.length) console.log(toRaw(images)) })
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
   const mapLayers = computed(() => params.value.filter(p => p['ve-map-layer'] !== undefined || p['ve-map-marker'] !== undefined).map(p => toRaw(p)))
   const plantSpecimens = computed(() => params.value.filter(p => p['ve-plant-specimen'] !== undefined).map(p => toRaw(p)))
@@ -111,7 +112,12 @@
       </sl-tab>
       
       <sl-tab-panel v-if="images.length" name="image" :style="`height:${panelHeight}px`">
-        <mdp-image :height="panelHeight" :zoom-on-scroll="isWide ? '' : null">
+        <mdp-image 
+          :caption="images[0]?.caption" 
+          :fit="images[0]?.fit" 
+          :height="panelHeight" 
+          :zoom-on-scroll="isWide ? '' : null"
+          >
           <ul>
             <li v-for="def, idx in images" :key="`image-${idx}`" v-text="serializeProps(def)"></li>
           </ul>

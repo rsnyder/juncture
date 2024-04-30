@@ -20,7 +20,7 @@
 
       <div class="search-and-menu">
         <mdp-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></mdp-site-search>
-        <mdp-menu v-if="navEl !== undefined" :auth="auth" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></mdp-menu>
+        <mdp-menu v-if="navEl !== undefined || auth" :auth="auth" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></mdp-menu>
       </div>
 
     </div>

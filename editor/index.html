@@ -36,7 +36,6 @@
       })
 
       document.getElementById('contentSelector')?.addEventListener('contentPathChanged', async (evt) => {
-        console.log('contentPathChanged', evt.detail)
         let [path, ...args] = evt.detail[0].split(':')[1].split('?')
         let [owner, repo, ...pathElems] = path.split('/')
         args = Object.fromEntries(args.map(arg => arg.split('=')))

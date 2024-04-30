@@ -14,7 +14,7 @@ function isMobile() {
 }
 
 function ghSourceFromLocation() {
-  console.log(location)
+  // console.log(location)
   let parsed = new URL(location.href)
   return parsed.searchParams.get('source') || parsed.searchParams.get('src')
 }
@@ -46,7 +46,7 @@ function computeDataId(el) {
 }
 
 function parseHeadline(s) {
-  const booleans = {
+  const booleanArgs = {
     'mdp-audio': ['autoplay', 'muted', 'no-caption', 'sync'],
     'mdp-entities': ['cards'],
     'mdp-gallery': ['caption'],
@@ -56,7 +56,31 @@ function parseHeadline(s) {
     'mdp-knightlab-timeline': ['has-bookmark'],
     'mdp-menu': ['pdf-download-enabled'],
     'mdp-plant-specimen': ['full', 'left', 'right', 'sticky'],
-    'mdp-video': ['autoplay', 'muted', 'no-caption', 'sync']
+    'mdp-video': ['autoplay', 'muted', 'no-caption', 'sync'],
+    've-entities': ['full', 'left', 'right', 'sticky'],
+    've-footer': ['sticky'],
+    've-header': ['sticky'],
+    've-iframe': ['allow', 'allowfullscreen', 'full', 'left', 'right', 'sticky'],
+    've-image': ['cards', 'compare', 'curtain', 'full', 'grid', 'left', 'right', 'sticky', 'sync', 'zoom-on-scroll'],
+    've-map': ['cards', 'full', 'left', 'marker', 'prefer-geojson', 'popup-on-hover', 'right', 'sticky', 'zoom-on-scroll', 'zoom-on-click'],
+    've-media': ['autoplay', 'cards', 'compare', 'full', 'grid', 'left', 'muted', 'no-caption', 'no-info-icon', 'right', 'small', 'static', 'sticky'],
+    've-media-selector': ['full', 'left', 'right', 'sticky'],
+    've-mermaid': ['full', 'left', 'right', 'sticky'],
+    've-plant-specimen': ['full', 'left', 'right', 'sticky'],
+    've-video': ['full', 'left', 'right', 'sticky']
+  }
+  const positionalArgs = {
+    've-card': ['label', 'image', 'href', 'description'],
+    've-header': ['label', 'background', 'subtitle', 'options', 'position'],
+    've-iframe': ['src'],
+    've-image': ['src', 'options', 'seq', 'fit'],
+    've-map': ['center', 'zoom', 'overlay'],
+    've-media': ['src'],
+    've-meta': ['title', 'description'],
+    've-spacer': ['height'],
+    've-plant-specimen': ['qid', 'max'],
+    've-style': ['src'],
+    've-video': ['src', 'caption']
   }
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
@@ -64,11 +88,12 @@ function parseHeadline(s) {
     if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
     else tokens.push(token)
   })
+  // console.log(tokens)
   let parsed = {}
   let tokenIdx = 0
   while (tokenIdx < tokens.length) {
-    let token = tokens[tokenIdx]
-    if (token.indexOf('=') > 0) {
+    let token = tokens[tokenIdx].replace(/<em>/g, '_').replace(/<\/em>/g, '_')
+    if (token.indexOf('=') > 0 && /^[\w-]+=/.test(token)) {
       let idx = token.indexOf('=')
       let key = token.slice(0, idx)
       let value = token.slice(idx+1)
@@ -78,11 +103,9 @@ function parseHeadline(s) {
         if (!parsed.style) parsed.style = {}
         parsed.style[key] = value
       } else { // kwargs
-        if (parsed.kwargs) {
-          if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
-          else parsed.kwargs[key] = value
-        }
-        else parsed.kwargs = {[key]: value}
+        if (!parsed.kwargs) parsed.kwargs = {}
+        if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
+        else parsed.kwargs[key] = value
       }
     }
     else if (token[0] === '.') {
@@ -93,22 +116,21 @@ function parseHeadline(s) {
       else parsed[key] = value
     }
     else if (token[0] === '"') {
-      let value = token.slice(1,-1)
       if (!parsed.args) parsed.args = []
-      parsed.args.push(value)
+      parsed.args.push(token.slice(1,-1))
     }
     else if (token[0] === '#') parsed['id'] = token.slice(1)
-    else if (/^Q\d+$/.test(token)) { // entity identifier
+    else if (/^Q\d+$/.test(token) && !parsed.tag) { // entity identifier
       if (!parsed.entities) parsed.entities = []
       parsed.entities.push(token)
-    } 
+    }
     else if (/^\w+-[-\w]*\w+$/.test(token) && !parsed.tag) parsed['tag'] = token
     else if (token === 'script' || token === 'link') parsed['tag'] = token
     else {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
       else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
       else {
-        if (booleans[parsed.tag] && booleans[parsed.tag].includes(token)) {
+        if (booleanArgs[parsed.tag] && booleanArgs[parsed.tag].includes(token)) {
           if (!parsed.booleans) parsed.booleans = []
           parsed.booleans.push(token)
         } else {
@@ -119,17 +141,34 @@ function parseHeadline(s) {
     }
     tokenIdx++
   }
+  if (parsed.tag && positionalArgs[parsed.tag] && parsed.args) {
+    if (!parsed.kwargs) parsed.kwargs = {}
+    parsed.args.forEach((value, idx) => {
+      let key = positionalArgs[parsed.tag][idx]
+      value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
+      if (!parsed.kwargs) parsed.kwargs = {}
+      if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
+      else parsed.kwargs[key] = value    
+    })
+    delete parsed.args
+  }
+  if (parsed.tag) parsed.tag = parsed.tag.replace(/^ve-/,'mdp-')
   return parsed
 }
 
 function parseCodeEl(codeEl) {
-  let codeElems = codeEl.textContent?.replace(/\s+\|\s+/g,'\n').split('\n').map(l => l.trim()).filter(x => x) || []
+  let codeElems = codeEl.textContent?.replace(/\s+\|\s+/g,'\n')
+    .split('\n')
+    .map(l => l.trim())
+    .map(l => l.replace(/<em>/g, '_').replace(/<\/em>/g, '_'))
+    .filter(x => x) || []
   let parsed = parseHeadline(codeElems?.[0]) || {}
   if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   return parsed
 }
 
 function handleCodeEl(rootEl, codeEl) {
+  // console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -210,10 +249,10 @@ function handleCodeEl(rootEl, codeEl) {
             }
           }
           else codeWrapper.replaceWith(newEl)
+          console.log(newEl)
         }
       } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
         let target
-
         
         // let priorEl = codeEl.previousElementSibling
         let priorEl = codeWrapper.previousElementSibling
@@ -243,16 +282,19 @@ function handleCodeEl(rootEl, codeEl) {
 }
 
 function elFromHtml(html) {
+  return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
+  /*
   let template = document.createElement('template')
   template.innerHTML = html
   return template.content
+  */
 }
 
 let isJunctureV1 = false
 
 function structureContent(html) {
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
-  // console.log('structureContent.input', elFromHtml(rootEl.outerHTML))
+  console.log('structureContent.input', elFromHtml(rootEl.outerHTML))
 
   let restructured = document.createElement('main')
   
@@ -284,7 +326,10 @@ function structureContent(html) {
   .filter(p => /^\.\w+-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim() || ''))
   .forEach(p => {
     let codeEl = document.createElement('code')
-    let replacementText = p.innerHTML.trim().slice(1).replace(/\n\s*-\s+/g, '\n')
+    let replacementText = p.innerHTML.trim().slice(1)
+      .replace(/\n\s*-\s+/g, '\n')
+      .replace(/<a href="/g, '')
+      .replace(/">[^<]*<\/a>/g, '')
     codeEl.textContent = replacementText
     p.textContent = ''
     p.appendChild(codeEl)
@@ -685,7 +730,7 @@ function observeVisible(rootEl, setActiveParagraph) {
   let topMargin = Array.from(rootEl.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
+  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {

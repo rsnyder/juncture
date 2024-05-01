@@ -18,38 +18,72 @@
     </style>
   </head>
   <body>
+    
     <mdp-header title="Editor" auth="github"></mdp-header>
     <mdp-content-selector v-if="contentPath !== null" id="contentSelector" compact :content-path="contentPath" mode="essays" sticky></mdp-content-selector>
     <textarea id="md-text"></textarea>
     
     <script src="https://rdsnyder.github.io/juncture/v3/dist/js/index.js" type="module"></script>
-    <!-- <script src="http://localhost:5173/main.ts" type="module"></script> -->
     <script type="module">
-      import { getMarkdown, ghSourceFromLocation, markdownToHtml, mount, observeVisible, structureContent } from 'https://rdsnyder.github.io/juncture/juncture.js'
-      // import { getMarkdown, ghSourceFromLocation, markdownToHtml, mount, observeVisible, structureContent } from '/juncture.js'
+      import { getMarkdown } from 'https://rdsnyder.github.io/juncture/juncture.js'
 
       let element = document.getElementById('md-text')
       const easymde = new EasyMDE({
         element,
         previewRender: togglePreview,
-        spellChecker: false
+        spellChecker: false,
+        toolbar: [
+        ...[
+          ...['undo', 'redo', '|','bold', 'italic', 'heading', 'quote'],
+          ...['unordered-list', 'ordered-list', 'link']
+        ], 
+        ...[
+          {
+            class: 'mark',
+            action: () => {this.markText()},
+            className: 'fa fa-code',
+            title: 'Mark Text ',
+            attributes: {id: 'mark'}
+          },           
+          '|', 
+          'preview',
+          {
+          class: 'save',
+            action: () => {this.saveFile()},
+            className: 'fa fa-download',
+            title: 'Save file',
+            attributes: {id: 'save'}
+          }, {
+          class: 'copy',
+            action: () => {this.copyText()},
+            className: 'fa fa-copy',
+            title: 'Copy text',
+            attributes: {id: 'copy'}
+          }, { 
+            class: 'Share',
+            action: () => {this.share()},
+            className: 'fa fa-share',
+            title: 'Share',
+            attributes: {id: 'share'}
+          }
+        ]
+      ]
       })
 
       document.getElementById('contentSelector')?.addEventListener('contentPathChanged', async (evt) => {
         let [path, ...args] = evt.detail[0].split(':')[1].split('?')
         let [owner, repo, ...pathElems] = path.split('/')
+        if (!pathElems.length) return
         args = Object.fromEntries(args.map(arg => arg.split('=')))
         let branch = args.branch || 'main'
         let ghSource = `${owner}/${repo}/${branch}/${pathElems.join('/')}`
-        console.log(ghSource)
-        let md = await getMarkdown(ghSource)
-        easymde.value(md)
+        easymde.value(await getMarkdown(ghSource))
       })
 
       function togglePreview(md, preview) {
-        setTimeout(() => observeVisible(preview, true), 100)
-        return structureContent(markdownToHtml(md))
+        return `<mdp-article><pre>${md}</pre></mdp-article>`
       }
+    
     </script>
   </body>
 </html>

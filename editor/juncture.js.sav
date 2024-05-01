@@ -45,43 +45,153 @@ function computeDataId(el) {
   return dataId.reverse().join('.')
 }
 
+const components = {
+  'mdp-audio': {
+    booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
+    class: new Set(),
+    positional: ['src', 'caption'],
+    ignore: new Set()
+  },
+  'mdp-entities': {
+    booleans: new Set(['cards']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-gallery': {
+    booleans: new Set(['caption']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-header': {
+    booleans: new Set(['breadcrumbs', 'pdf-download-enabled']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-iframe': {
+    booleans: new Set(['allow-full-screen', 'allow-transparency', 'full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-image': {
+    booleans: new Set(['no-caption', 'zoom-on-scroll']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-knightlab-timeline': {
+    booleans: new Set(['has-bookmark']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-menu': {
+    booleans: new Set(['pdf-download-enabled']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-plant-specimen': {
+    booleans: new Set(['full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  'mdp-video': {
+    booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  've-card': {
+    booleans: new Set([]),
+    class: new Set(),
+    positional: ['label', 'image', 'href', 'description'],
+    ignore: new Set()
+  },
+  've-header': {
+    booleans: new Set([]),
+    class: new Set(),
+    positional: ['label', 'background', 'subtitle', 'options', 'position'],
+    ignore: new Set()
+  },
+  've-entities': {
+    booleans: new Set(['full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  've-footer': {
+    booleans: new Set(['sticky']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  've-iframe': {
+    booleans: new Set(['allow', 'allowfullscreen', 'full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: ['src'],
+    ignore: new Set()
+  },
+  've-image': {
+    booleans: new Set(['cards', 'compare', 'curtain', 'full', 'grid', 'left', 'right', 'sticky', 'sync', 'zoom-on-scroll']),
+    class: new Set(),
+    positional: ['src', 'options', 'seq', 'fit'],
+    ignore: new Set()
+  },
+  've-map': {
+    booleans: new Set(['cards', 'full', 'left', 'marker', 'prefer-geojson', 'popup-on-hover', 'right', 'sticky', 'zoom-on-scroll', 'zoom-on-click']),
+    class: new Set(),
+    positional: ['center', 'zoom', 'overlay'],
+    ignore: new Set()
+  },
+  've-media': {
+    booleans: new Set(['autoplay', 'cards', 'compare', 'full', 'grid', 'left', 'muted', 'no-caption', 'no-info-icon', 'right', 'small', 'static', 'sticky']),
+    class: new Set(),
+    positional: ['src'],
+    ignore: new Set()
+  },
+  've-mermaid': {
+    booleans: new Set(['full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  've-meta': {
+    booleans: new Set([]),
+    class: new Set(),
+    positional: ['title', 'description'],
+    ignore: new Set()
+  },
+  've-plant-specimen': {
+    booleans: new Set(['full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: ['qid', 'max'],
+    ignore: new Set()
+  },
+  've-spacer': {
+    booleans: new Set([]),
+    class: new Set(),
+    positional: [],
+    ignore: new Set()
+  },
+  've-style': {
+    booleans: new Set([]),
+    class: new Set(),
+    positional: ['src'],
+    ignore: new Set()
+  },
+  've-video': {
+    booleans: new Set(['full', 'left', 'right', 'sticky']),
+    class: new Set(),
+    positional: ['src', 'caption'],
+    ignore: new Set()
+  }
+}
 function parseHeadline(s) {
-  const booleanArgs = {
-    'mdp-audio': ['autoplay', 'muted', 'no-caption', 'sync'],
-    'mdp-entities': ['cards'],
-    'mdp-gallery': ['caption'],
-    'mdp-header': ['breadcrumbs', 'pdf-download-enabled'],
-    'mdp-iframe': ['allow-full-screen', 'allow-transparency', 'full', 'left', 'right', 'sticky'],
-    'mdp-image': ['no-caption', 'zoom-on-scroll'],
-    'mdp-knightlab-timeline': ['has-bookmark'],
-    'mdp-menu': ['pdf-download-enabled'],
-    'mdp-plant-specimen': ['full', 'left', 'right', 'sticky'],
-    'mdp-video': ['autoplay', 'muted', 'no-caption', 'sync'],
-    've-entities': ['full', 'left', 'right', 'sticky'],
-    've-footer': ['sticky'],
-    've-header': ['sticky'],
-    've-iframe': ['allow', 'allowfullscreen', 'full', 'left', 'right', 'sticky'],
-    've-image': ['cards', 'compare', 'curtain', 'full', 'grid', 'left', 'right', 'sticky', 'sync', 'zoom-on-scroll'],
-    've-map': ['cards', 'full', 'left', 'marker', 'prefer-geojson', 'popup-on-hover', 'right', 'sticky', 'zoom-on-scroll', 'zoom-on-click'],
-    've-media': ['autoplay', 'cards', 'compare', 'full', 'grid', 'left', 'muted', 'no-caption', 'no-info-icon', 'right', 'small', 'static', 'sticky'],
-    've-media-selector': ['full', 'left', 'right', 'sticky'],
-    've-mermaid': ['full', 'left', 'right', 'sticky'],
-    've-plant-specimen': ['full', 'left', 'right', 'sticky'],
-    've-video': ['full', 'left', 'right', 'sticky']
-  }
-  const positionalArgs = {
-    've-card': ['label', 'image', 'href', 'description'],
-    've-header': ['label', 'background', 'subtitle', 'options', 'position'],
-    've-iframe': ['src'],
-    've-image': ['src', 'options', 'seq', 'fit'],
-    've-map': ['center', 'zoom', 'overlay'],
-    've-media': ['src'],
-    've-meta': ['title', 'description'],
-    've-spacer': ['height'],
-    've-plant-specimen': ['qid', 'max'],
-    've-style': ['src'],
-    've-video': ['src', 'caption']
-  }
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
   s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
@@ -130,7 +240,7 @@ function parseHeadline(s) {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
       else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
       else {
-        if (booleanArgs[parsed.tag] && booleanArgs[parsed.tag].includes(token)) {
+        if (components[parsed.tag] && components[parsed.tag].booleans.has(token)) {
           if (!parsed.booleans) parsed.booleans = []
           parsed.booleans.push(token)
         } else {
@@ -141,10 +251,10 @@ function parseHeadline(s) {
     }
     tokenIdx++
   }
-  if (parsed.tag && positionalArgs[parsed.tag] && parsed.args) {
+  if (parsed.tag && components[parsed.tag]?.positional && parsed.args) {
     if (!parsed.kwargs) parsed.kwargs = {}
     parsed.args.forEach((value, idx) => {
-      let key = positionalArgs[parsed.tag][idx]
+      let key = components[parsed.tag].positional[idx]
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
       if (!parsed.kwargs) parsed.kwargs = {}
       if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`

@@ -14,6 +14,7 @@ logger.setLevel(logging.INFO)
 import argparse, json, os, re
 
 BASEDIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+PORT = os.environ.get('PORT', 8080)
 LOCAL_WC = os.environ.get('LOCAL_WC', 'false').lower() == 'true'
 LOCAL_WC_JUNCTURE = os.environ.get('LOCAL_WC_JUNCTURE', 'false').lower() == 'true'
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
@@ -171,7 +172,8 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = content.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/src/main.ts')
+      content = re.sub(r'https:\/\/.+\/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
+      content = re.sub(r'https:\/\/.+\/juncture/(juncture\.js|index\.css)', f'http://localhost:{PORT}/\\1', content)
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:
       local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']
@@ -204,6 +206,7 @@ if __name__ == '__main__':
 
   args = vars(parser.parse_args())
   
+  os.environ['PORT'] = str(args['port'])
   os.environ['LOCAL_WC'] = str(args['localwc'])
   os.environ['LOCAL_WC_JUNCTURE'] = str(args['localwc_juncture'])
   os.environ['LOCAL_WC_PORT'] = str(args['wcport'])

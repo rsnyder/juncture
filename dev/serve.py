@@ -72,7 +72,7 @@ html_template = re.sub(r'https:\/\/.+\/(mdpress|juncture)\/', '/', html_template
 # html_template = html_template.replace('https://www.mdpress.io', '')
 # html_template = html_template.replace('https://mdpress.io', '')
 
-if LOCAL_WC: html_template = html_template.replace('/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
+if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
 if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
@@ -142,7 +142,7 @@ async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
 
-  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'images', 'juncture.js', 'v1', 'v2', 'v3', 'css']:
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
 
   elif ext:
@@ -172,7 +172,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = re.sub(r'https:\/\/.+\/v3/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
+      content = re.sub(r'https:\/\/.+\/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
       content = re.sub(r'https:\/\/.+\/juncture/(juncture\.js|index\.css)', f'http://localhost:{PORT}/\\1', content)
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:

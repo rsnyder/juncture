@@ -1,9 +1,12 @@
-function isNumeric(arg) { return !isNaN(arg) }
-function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
-function camelToKebab(input) { return input.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}
+import { isJunctureV1 } from './v1/index.js'
+import { parse } from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 /* md5 function from https://stackoverflow.com/questions/14733374/how-to-generate-an-md5-file-hash-in-javascript */
 function md5cycle(f,h){var i=f[0],n=f[1],r=f[2],g=f[3];i=ff(i,n,r,g,h[0],7,-680876936),g=ff(g,i,n,r,h[1],12,-389564586),r=ff(r,g,i,n,h[2],17,606105819),n=ff(n,r,g,i,h[3],22,-1044525330),i=ff(i,n,r,g,h[4],7,-176418897),g=ff(g,i,n,r,h[5],12,1200080426),r=ff(r,g,i,n,h[6],17,-1473231341),n=ff(n,r,g,i,h[7],22,-45705983),i=ff(i,n,r,g,h[8],7,1770035416),g=ff(g,i,n,r,h[9],12,-1958414417),r=ff(r,g,i,n,h[10],17,-42063),n=ff(n,r,g,i,h[11],22,-1990404162),i=ff(i,n,r,g,h[12],7,1804603682),g=ff(g,i,n,r,h[13],12,-40341101),r=ff(r,g,i,n,h[14],17,-1502002290),i=gg(i,n=ff(n,r,g,i,h[15],22,1236535329),r,g,h[1],5,-165796510),g=gg(g,i,n,r,h[6],9,-1069501632),r=gg(r,g,i,n,h[11],14,643717713),n=gg(n,r,g,i,h[0],20,-373897302),i=gg(i,n,r,g,h[5],5,-701558691),g=gg(g,i,n,r,h[10],9,38016083),r=gg(r,g,i,n,h[15],14,-660478335),n=gg(n,r,g,i,h[4],20,-405537848),i=gg(i,n,r,g,h[9],5,568446438),g=gg(g,i,n,r,h[14],9,-1019803690),r=gg(r,g,i,n,h[3],14,-187363961),n=gg(n,r,g,i,h[8],20,1163531501),i=gg(i,n,r,g,h[13],5,-1444681467),g=gg(g,i,n,r,h[2],9,-51403784),r=gg(r,g,i,n,h[7],14,1735328473),i=hh(i,n=gg(n,r,g,i,h[12],20,-1926607734),r,g,h[5],4,-378558),g=hh(g,i,n,r,h[8],11,-2022574463),r=hh(r,g,i,n,h[11],16,1839030562),n=hh(n,r,g,i,h[14],23,-35309556),i=hh(i,n,r,g,h[1],4,-1530992060),g=hh(g,i,n,r,h[4],11,1272893353),r=hh(r,g,i,n,h[7],16,-155497632),n=hh(n,r,g,i,h[10],23,-1094730640),i=hh(i,n,r,g,h[13],4,681279174),g=hh(g,i,n,r,h[0],11,-358537222),r=hh(r,g,i,n,h[3],16,-722521979),n=hh(n,r,g,i,h[6],23,76029189),i=hh(i,n,r,g,h[9],4,-640364487),g=hh(g,i,n,r,h[12],11,-421815835),r=hh(r,g,i,n,h[15],16,530742520),i=ii(i,n=hh(n,r,g,i,h[2],23,-995338651),r,g,h[0],6,-198630844),g=ii(g,i,n,r,h[7],10,1126891415),r=ii(r,g,i,n,h[14],15,-1416354905),n=ii(n,r,g,i,h[5],21,-57434055),i=ii(i,n,r,g,h[12],6,1700485571),g=ii(g,i,n,r,h[3],10,-1894986606),r=ii(r,g,i,n,h[10],15,-1051523),n=ii(n,r,g,i,h[1],21,-2054922799),i=ii(i,n,r,g,h[8],6,1873313359),g=ii(g,i,n,r,h[15],10,-30611744),r=ii(r,g,i,n,h[6],15,-1560198380),n=ii(n,r,g,i,h[13],21,1309151649),i=ii(i,n,r,g,h[4],6,-145523070),g=ii(g,i,n,r,h[11],10,-1120210379),r=ii(r,g,i,n,h[2],15,718787259),n=ii(n,r,g,i,h[9],21,-343485551),f[0]=add32(i,f[0]),f[1]=add32(n,f[1]),f[2]=add32(r,f[2]),f[3]=add32(g,f[3])}function cmn(f,h,i,n,r,g){return h=add32(add32(h,f),add32(n,g)),add32(h<<r|h>>>32-r,i)}function ff(f,h,i,n,r,g,t){return cmn(h&i|~h&n,f,h,r,g,t)}function gg(f,h,i,n,r,g,t){return cmn(h&n|i&~n,f,h,r,g,t)}function hh(f,h,i,n,r,g,t){return cmn(h^i^n,f,h,r,g,t)}function ii(f,h,i,n,r,g,t){return cmn(i^(h|~n),f,h,r,g,t)}function md51(f){var txt="";var h,i=f.length,n=[1732584193,-271733879,-1732584194,271733878];for(h=64;h<=f.length;h+=64)md5cycle(n,md5blk(f.substring(h-64,h)));f=f.substring(h-64);var r=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];for(h=0;h<f.length;h++)r[h>>2]|=f.charCodeAt(h)<<(h%4<<3);if(r[h>>2]|=128<<(h%4<<3),h>55)for(md5cycle(n,r),h=0;h<16;h++)r[h]=0;return r[14]=8*i,md5cycle(n,r),n}function md5blk(f){var h,i=[];for(h=0;h<64;h+=4)i[h>>2]=f.charCodeAt(h)+(f.charCodeAt(h+1)<<8)+(f.charCodeAt(h+2)<<16)+(f.charCodeAt(h+3)<<24);return i}var hex_chr="0123456789abcdef".split("");function rhex(f){for(var h="",i=0;i<4;i++)h+=hex_chr[f>>8*i+4&15]+hex_chr[f>>8*i&15];return h}function hex(f){for(var h=0;h<f.length;h++)f[h]=rhex(f[h]);return f.join("")}function md5(f){return hex(md51(f))}function add32(f,h){return f+h&4294967295}
+
+function isNumeric(arg) { return !isNaN(arg) }
+function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
+function camelToKebab(input) { return input.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()}
 
 function isMobile() {
   let _isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
@@ -326,10 +329,10 @@ function handleCodeEl(rootEl, codeEl) {
   }
 }
 
-function structureContent(html) {
-  let rootEl = html ? new DOMParser().parseFromString( html, 'text/html').firstChild.children[1] : document.querySelector('main')
-  console.log(rootEl)
-  console.log('structureContent.input', new DOMParser().parseFromString( rootEl.outerHTML, 'text/html').firstChild.children[1].firstChild)
+function structureContent() {
+
+  let main = document.querySelector('main')
+  console.log('structureContent.input', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   let restructured = document.createElement('main')
   
@@ -343,8 +346,8 @@ function structureContent(html) {
   let cardCtr = 0
 
   // Converts empty headings (changed to paragraphs by markdown converter) to headings with the correct level
-  if (rootEl)
-    Array.from(rootEl?.querySelectorAll('p'))
+  if (main)
+    Array.from(main?.querySelectorAll('p'))
     .filter(p => /^[#*]{1,6}$/.test(p.childNodes.item(0)?.nodeValue?.trim() || ''))
     .forEach(p => {
       let ptext = p.childNodes.item(0).nodeValue?.trim()
@@ -359,7 +362,7 @@ function structureContent(html) {
     })
 
   // For compatibility with Juncture V2
-  Array.from(rootEl?.querySelectorAll('p'))
+  Array.from(main?.querySelectorAll('p'))
   .filter(p => /^\.\w+-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim()))
   .forEach(p => {
     let codeEl = document.createElement('code')
@@ -369,7 +372,7 @@ function structureContent(html) {
     p.appendChild(codeEl)
   })
 
-  Array.from(rootEl?.querySelectorAll('p, li'))
+  Array.from(main?.querySelectorAll('p, li'))
   .filter(p => /==.+=={.+}/.test(p.textContent.trim()))
   .forEach(el => {
     // console.log(el.innerHTML)
@@ -391,7 +394,7 @@ function structureContent(html) {
   })
 
   // For compatibility with Juncture V1
-  Array.from(rootEl?.querySelectorAll('param'))
+  Array.from(main?.querySelectorAll('param'))
   .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length === 0)
   .forEach(param => {
     let priorEl = param.previousElementSibling
@@ -405,7 +408,7 @@ function structureContent(html) {
     }
   })
 
-  Array.from(rootEl?.children || []).forEach(el => {
+  Array.from(main?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
       let sectionLevel = parseInt(heading.tagName.slice(1))
@@ -491,12 +494,12 @@ function structureContent(html) {
     attrs.remove()
   })
 
-  // console.log('structureContent', new DOMParser().parseFromString( rootEl.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   Array.from(restructured?.querySelectorAll('code'))
   .forEach(codeEl => handleCodeEl(restructured, codeEl))
 
-  // console.log('structureContent', new DOMParser().parseFromString( rootEl.outerHTML, 'text/html').firstChild.children[1].firstChild)
+  // console.log('structureContent', new DOMParser().parseFromString( main.outerHTML, 'text/html').firstChild.children[1].firstChild)
 
   restructured.querySelectorAll('section').forEach(section => {
     
@@ -724,6 +727,8 @@ function structureContent(html) {
     article.appendChild(footer)
   }
 
+  main?.replaceWith(article)
+
   article.querySelectorAll('section p').forEach(p => {
     let qids = Array.from(p.querySelectorAll('param[eid]')).map(param => {
       let qid = param.getAttribute('eid')
@@ -750,11 +755,10 @@ function structureContent(html) {
     .filter(param => !param.getAttributeNames().find(attrName => attrName.indexOf('ve-') === 0 && attrName !== 've-entity'))
     .forEach(param => param.remove())
 
-  console.log(`isJunctureV1=${isJunctureV1}`)
+  // console.log(`isJunctureV1=${isJunctureV1}`)
   if (isJunctureV1) {
-    Array.from(article.querySelectorAll('[data-id]'))
+    Array.from(document.querySelectorAll('[data-id]'))
     .forEach(seg => {
-      console.log(seg)
       if (seg.tagName === 'SECTION') return
       let id = seg.getAttribute('data-id') || ''
       let wrapper = document.createElement('div')
@@ -799,11 +803,83 @@ function structureContent(html) {
       seg.replaceWith(wrapper)
     })
   }
-  return article.innerHTML
   
 }
 
+function setMeta() {
+  let meta
+  let header
+  Array.from(document.getElementsByTagName('*')).forEach(el => {
+    if (!/^\w+-\w+/.test(el.tagName)) return
+    if (el.tagName.split('-')[1] === 'META') meta = el
+    else if (el.tagName.split('-')[1] === 'HEADER') header = el
+  })
+  if (!meta) meta = document.querySelector('param[ve-config]')
+
+  let firstHeading = document.querySelector('h1, h2, h3')?.innerText.trim()
+  let firstParagraph = document.querySelector('p')?.innerText.trim()
+  
+  let jldEl = document.querySelector('script[type="application/ld+json"]')
+  let seo = jldEl ? JSON.parse(jldEl.innerText) : {'@context':'https://schema.org', '@type':'WebSite', description:'', headline:'', name:'', url:''}
+  seo.url = location.href
+
+  let title = meta?.getAttribute('title')
+    ? meta.getAttribute('title')
+    : window.config?.title
+      ? window.config.title
+      : header?.getAttribute('label')
+        ? header.getAttribute('label')
+        : firstHeading || ''
+
+  let description =  meta?.getAttribute('description')
+    ? meta.getAttribute('description')
+    : window.config?.description
+      ? window.config.description
+      : firstParagraph || ''
+
+  let robots = meta?.getAttribute('robots')
+    ? meta?.getAttribute('robots')
+    : window.config?.robots
+      ? window.config.robots
+      : '' 
+
+  if (title) {
+    document.title = title
+    seo.name = title
+    seo.headline = title
+    document.querySelector('meta[name="og:title"]')?.setAttribute('content', title)
+    document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', title)
+    document.querySelector('meta[property="twitter:title"]')?.setAttribute('content', title)
+  }
+  if (description) {
+    document.querySelector('meta[name="description"]')?.setAttribute('content', description)
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', description)
+    seo.description = description
+  }
+  if (robots) {
+    let robotsMeta = document.createElement('meta')
+    robotsMeta.setAttribute('name', 'robots')
+    robotsMeta.setAttribute('content', robots)
+    document.head.appendChild(robotsMeta)
+  }
+
+  if (meta && meta.getAttribute('ve-config') === null) meta.remove()
+  if (jldEl) jldEl.innerText = JSON.stringify(seo)
+
+  window.config = {...window.config, ...{meta: {title, description, robots, seo}}}
+}
+
 function setStickyOffsets(root) {
+
+  const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
+    const { top, left, bottom, right } = el.getBoundingClientRect()
+    const { innerHeight, innerWidth } = window
+    return partiallyVisible
+      ? ((top > 0 && top < innerHeight) ||
+          (bottom > 0 && bottom < innerHeight)) &&
+          ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth))
+      : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth
+  }
 
   function topIsVisible(el) {
     let bcr = el.getBoundingClientRect()
@@ -822,6 +898,11 @@ function setStickyOffsets(root) {
     })
   
   // console.log('setStickyOffsets', stickyElems)
+  // stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) )
+  // stickyElems.forEach(stickyEl => console.log(stickyEl) )
+
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl.getBoundingClientRect()) ))
+  // nextTick(() => stickyElems.forEach(stickyEl => console.log(stickyEl) ))
 
   if (stickyElems.length === 1) {
     // if (!stickyElems[0].style.top) stickyElems[0].style.top = '0px'
@@ -864,7 +945,7 @@ function observeVisible(setActiveParagraph = false) {
   let topMargin = Array.from(document.querySelectorAll('MDP-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
+  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
@@ -890,7 +971,7 @@ function observeVisible(setActiveParagraph = false) {
     }
       
     if (currentActiveParagraph !== priorActiveParagraph) {
-      console.log('activeParagraph', currentActiveParagraph)
+      // console.log('activeParagraph', currentActiveParagraph)
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 
         document.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
@@ -920,7 +1001,6 @@ function observeVisible(setActiveParagraph = false) {
         }
 
         let currentActiveViewers = currentActiveParagraph?.nextElementSibling
-        console.log(currentActiveViewers)
         if (currentActiveViewers) {
           let viewers = document.querySelector('.viewers')
           if (viewers) viewers.innerHTML = currentActiveViewers?.outerHTML
@@ -935,6 +1015,27 @@ function observeVisible(setActiveParagraph = false) {
   document.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
 }
 
+function loadDependency(dependency, callback) {
+  let e = document.createElement(dependency.tag)
+  Object.entries(dependency).forEach(([k, v]) => { if (k !== 'tag') e.setAttribute(k, v) })
+  e.addEventListener('load', callback)
+  if (dependency.tag === 'script') document.body.appendChild(e)
+  else document.head.appendChild(e)
+}
+
+function loadDependencies(dependencies, callback, i) {
+  i = i || 0
+  if (dependencies.length === 0) {
+    if (callback) callback()
+    else return
+  } else {
+    loadDependency(dependencies[i], () => {
+      if (i < dependencies.length-1) loadDependencies(dependencies, callback, i+1) 
+      else if (callback) callback()
+    })
+  }
+}
+
 function readMoreSetup() {
   const ps = document.querySelectorAll('.read-more p')
   const observer = new ResizeObserver(entries => {
@@ -945,4 +1046,28 @@ function readMoreSetup() {
   ps.forEach(p => observer.observe(p))
 }
 
-export { structureContent, observeVisible, readMoreSetup }
+function init() {
+  // console.log('init', new DOMParser().parseFromString(document.querySelector('main').outerHTML, 'text/html').firstChild.children[1].firstChild)
+  window.config = {...parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {}), ...{isJunctureV1}}
+  structureContent()
+  setMeta()
+  console.log(window.config)
+  
+  if (isJunctureV1) {
+    // createJunctureV1App()
+    
+    // Juncture1Setup()
+    observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
+
+  } else {
+    setTimeout(() => {
+      observeVisible(document.querySelector('mdp-video[sync]') ? false : true)
+      readMoreSetup()
+    }, 0)
+  }
+  readMoreSetup()
+
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init() }) // Loading hasn't finished yet, wait for it
+else init()

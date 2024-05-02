@@ -53,7 +53,7 @@
   const diagrams = computed(() => params.value.filter(p => p['ve-d3plus-ring-network'] || p['ve-vis-network'] !== undefined).map(p => toRaw(p)))
   const iframes = computed(() => params.value.filter(p => p['ve-iframe'] !== undefined).map(p => toRaw(p)))
   const images = computed(() => params.value.filter(p => p['ve-image'] !== undefined).map(p => toRaw(p)))
-  watch (images, (images) => { if (images.length) console.log(toRaw(images)) })
+  // watch (images, (images) => { if (images.length) console.log(toRaw(images)) })
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
   const mapLayers = computed(() => params.value.filter(p => p['ve-map-layer'] !== undefined || p['ve-map-marker'] !== undefined).map(p => toRaw(p)))
   const plantSpecimens = computed(() => params.value.filter(p => p['ve-plant-specimen'] !== undefined).map(p => toRaw(p)))

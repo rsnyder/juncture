@@ -671,12 +671,24 @@ video {
   inset-inline-end: 0.25rem;
 }
 
+.end-2 {
+  inset-inline-end: 0.5rem;
+}
+
+.end-7 {
+  inset-inline-end: 1.75rem;
+}
+
 .right-\[10px\] {
   right: 10px;
 }
 
 .start-0 {
   inset-inline-start: 0px;
+}
+
+.start-1 {
+  inset-inline-start: 0.25rem;
 }
 
 .top-0 {
@@ -743,6 +755,10 @@ video {
   margin: 0.25rem;
 }
 
+.m-10 {
+  margin: 2.5rem;
+}
+
 .m-3 {
   margin: 0.75rem;
 }
@@ -773,6 +789,10 @@ video {
 
 .mt-8 {
   margin-top: 2rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
 }
 
 .box-border {
@@ -912,6 +932,10 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.h-64 {
+  height: 16rem;
 }
 
 .min-h-\[calc\(100\%-3\.5rem\)\] {
@@ -2660,6 +2684,10 @@ video {
 
 .\[--trigger\:click\] {
   --trigger: click;
+}
+
+.\[a-zA-Z-\:\#\] {
+  a-z-a--z-: #;
 }
 
 .\[a-zA-Z0-9\:\\\\-\\\\\._\$\] {

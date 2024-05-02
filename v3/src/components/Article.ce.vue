@@ -8,7 +8,7 @@
 
   import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
-  import { elFromHtml, getMarkdown, structureContent, markdownToHtml, observeVisible } from '../../../juncture.js'
+  import { elFromHtml, getMarkdown, structureContent, markdownToHtml, observeVisible } from '../../../index.js'
 
   const props = defineProps({
     owner: { type: String },

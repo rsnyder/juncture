@@ -56,6 +56,7 @@
   // watch (images, (images) => { if (images.length) console.log(toRaw(images)) })
   const maps = computed(() => params.value.filter(p => p['ve-map'] !== undefined).map(p => toRaw(p)))
   const mapLayers = computed(() => params.value.filter(p => p['ve-map-layer'] !== undefined || p['ve-map-marker'] !== undefined).map(p => toRaw(p)))
+  // watch (mapLayers, (mapLayers) => { if (mapLayers.length) console.log(toRaw(mapLayers)) })
   const plantSpecimens = computed(() => params.value.filter(p => p['ve-plant-specimen'] !== undefined).map(p => toRaw(p)))
   const timelinejs = computed(() => params.value.filter(p => p['ve-knightlab-timeline'] !== undefined).map(p => toRaw(p)))
   const videos = computed(() => params.value.filter(p => p['ve-video'] !== undefined).map(p => toRaw(p)))

@@ -331,7 +331,7 @@
             if (geoJsonUrl.indexOf('http') === 0) {
               item.geojson = geoJsonUrl
             } else {
-              console.log(geoJsonUrl)
+              // console.log(geoJsonUrl)
               if (geoJsonUrl[0] === '/') {
                 item.geojson = `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}${geoJsonUrl}`
               } else {
@@ -391,13 +391,14 @@
         geoJSONs.value = geojsonsByLayer
         
         warpedMapLayers.value = _layerObjs
-          .filter(ls => ls.allmaps)
+          .filter(ls => ls.allmaps !== undefined)
           .map(ls => ({
             name: ls.layer || 'Image layer',
             type: 'allmaps',
+            id: ls['allmaps-id'] || ls.allmaps,
             disabled: ls.disabled,
             opacity: ls.opacity || 100,
-            layer: new WarpedMapLayer(`https://annotations.allmaps.org/maps/${ls.allmaps}`)
+            layer: new WarpedMapLayer(`https://annotations.allmaps.org/maps/${ls['allmaps-id'] || ls.allmaps}`)
         }))
 
       })
@@ -501,6 +502,7 @@
           }
           // if (layer.feature?.properties.qid) {}
         })
+        updateMap()
         latLngZoom.value = `${Number((center.lat).toFixed(5))},${Number((center.lng).toFixed(5))} ${zoom.value}`
         priorLoc.value = `${Number((center.lat).toFixed(5))},${Number((center.lng).toFixed(5))},${zoom.value}`
       }
@@ -721,7 +723,7 @@
         let _entities = entities.value.length
           ? Object.values(await getEntityData(entities.value)).filter((entity:any) => entity.coords).map((entity:any) => entityToInfoObj(entity))
           : []
-        console.log(_entities)
+        // console.log(_entities)
         return _entities
       }
 

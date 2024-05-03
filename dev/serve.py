@@ -16,9 +16,7 @@ import argparse, json, os, re
 BASEDIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 PORT = os.environ.get('PORT', 8080)
 LOCAL_WC = os.environ.get('LOCAL_WC', 'false').lower() == 'true'
-LOCAL_WC_JUNCTURE = os.environ.get('LOCAL_WC_JUNCTURE', 'false').lower() == 'true'
 LOCAL_WC_PORT = os.environ.get('LOCAL_WC_PORT', '5173')
-LOCAL_WC_PORT_JUNCTURE = os.environ.get('LOCAL_WC_PORT_JUNCTURE', '5174')
 CONTENT_ROOT = os.environ.get('CONTENT_ROOT', BASEDIR)
 GH_OWNER = os.environ.get('GH_OWNER', '')
 GH_REPOSITORY = os.environ.get('GH_REPOSITORY', '')
@@ -68,12 +66,10 @@ favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASED
 
 template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CONTENT_ROOT}/_layouts/default.html') else f'{BASEDIR}/_layouts/default.html'
 html_template = open(template_path, 'r').read()
-html_template = re.sub(r'https:\/\/.+\/(mdpress|juncture)\/', '/', html_template)
-# html_template = html_template.replace('https://www.mdpress.io', '')
-# html_template = html_template.replace('https://mdpress.io', '')
 
-if LOCAL_WC: html_template = html_template.replace('/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts')
-if LOCAL_WC_JUNCTURE: html_template = html_template.replace('/v2/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT_JUNCTURE}/src/main.ts')
+if LOCAL_WC: 
+  html_template = re.sub(r'https:\/\/.+\/wc/dist/js/index\.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', html_template)
+  html_template = re.sub(r'https:\/\/.+\/(index\.(css|js))', f'http://localhost:{PORT}/\\1', html_template)
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
 html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPOSITORY)
@@ -173,7 +169,7 @@ async def serve(path: Optional[str] = None):
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
       content = re.sub(r'https:\/\/.+\/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
-      content = re.sub(r'https:\/\/.+\/juncture/(juncture\.js|index\.css)', f'http://localhost:{PORT}/\\1', content)
+      content = re.sub(r'https:\/\/.+\/(index\.css|js)', f'http://localhost:{PORT}/\\1', content)
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:
       local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']
@@ -195,9 +191,7 @@ if __name__ == '__main__':
   parser.add_argument('--reload', type=bool, default=True, help='Reload on change')
   parser.add_argument('--port', type=int, default=8080, help='HTTP port')
   parser.add_argument('--localwc', default=False, action='store_true', help='Use local web components')
-  parser.add_argument('--localwc-juncture', default=False, action='store_true', help='Use local Juncture web components')
   parser.add_argument('--wcport', type=int, default=5173, help='Port used by local WC server')
-  parser.add_argument('--wcport-juncture', type=int, default=5174, help='Port used by local Juncture WC server')
   parser.add_argument('--content', default=BASEDIR, help='Content root directory')
   parser.add_argument('--owner', default='', help='Github owner')
   parser.add_argument('--repo', default='', help='Github repository')
@@ -208,14 +202,12 @@ if __name__ == '__main__':
   
   os.environ['PORT'] = str(args['port'])
   os.environ['LOCAL_WC'] = str(args['localwc'])
-  os.environ['LOCAL_WC_JUNCTURE'] = str(args['localwc_juncture'])
   os.environ['LOCAL_WC_PORT'] = str(args['wcport'])
-  os.environ['LOCAL_WC_PORT_JUNCTURE'] = str(args['wcport_juncture'])
   os.environ['CONTENT_ROOT'] = os.path.abspath(str(args['content']))
   os.environ['GH_OWNER'] = str(args['owner'])
   os.environ['GH_REPOSITORY'] = str(args['repo'])
   os.environ['GH_BRANCH'] = str(args['branch'])
 
-  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_JUNCTURE={os.environ["LOCAL_WC_JUNCTURE"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]} LOCAL_WC_PORT_JUNCTURE={os.environ["LOCAL_WC_PORT_JUNCTURE"]}')
+  logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={os.environ["CONTENT_ROOT"]} LOCAL_WC={os.environ["LOCAL_WC"]} LOCAL_WC_PORT={os.environ["LOCAL_WC_PORT"]}')
 
   uvicorn.run('serve:app', port=args['port'], log_level='info', reload=args['reload'])

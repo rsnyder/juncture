@@ -771,16 +771,10 @@ function structureContent(html) {
         viewers.style.height = `calc(100dvh - ${offset+2}px)`
       }
 
-      while (seg.nextSibling) {
-        let sib = seg.nextSibling
-        if (sib.nodeName !== 'PARAM') break
+      let sib = seg.nextSibling
+      while (sib && sib.tagName === 'PARAM') {
         viewers.appendChild(sib)
-      }
-
-      let parent = seg.parentElement
-      while (parent && parent.tagName !== 'ARTICLE') {
-        parent.querySelectorAll(':scope > param').forEach(param => viewers.appendChild(param.cloneNode(true)))
-        parent = parent.parentElement
+        sib = seg.nextSibling
       }
 
       if (!isMobile()) {
@@ -790,6 +784,17 @@ function structureContent(html) {
   
       seg.replaceWith(wrapper)
     })
+
+    Array.from(article.querySelectorAll('.segment'))
+    .forEach(seg => {
+      let viewers = seg.children[1]
+      let parent = seg.parentElement
+      while (parent && parent.tagName !== 'ARTICLE') {
+        parent.querySelectorAll(':scope > param').forEach(param => viewers.appendChild(param.cloneNode(true)))
+        parent = parent.parentElement
+      }
+    })
+
   }
   return article.outerHTML
 }

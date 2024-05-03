@@ -28,21 +28,31 @@
   // const baseUrl = computed(() => (window as any).config?.baseUrl)
   const source = computed(() => (window as any).config?.source)
 
-  onMounted(() => { getEntity() })
+  onMounted(() => {
+    getEntity() 
+  })
 
   async function getEntity() {
-    
-    if (qid.value) {
-      entity.value = await getEntityFromWikidata(qid.value)
-    } else {
-      let _baseUrl = source.value?.owner
+  
+  if (file.value) {
+    let _baseUrl = source.value?.owner
         ? `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}/`
         : '/'
-      let [mdEntity, yamlEntity] = await Promise.all([fetch(`${_baseUrl}${file.value}.md`), fetch(`${_baseUrl}${file.value}.yaml`)])
-      let _entity:any = yamlEntity.ok ? yamlToEntity(await yamlEntity.text()) : {}
-      if (mdEntity.ok) _entity = { ..._entity, ...mdToEntity(await mdEntity.text()) }
+      let mdEntity, yamlEntity
+      let extension = file.value.split('.').pop()
+      if (extension === 'md') {
+        mdEntity = await fetch(`${_baseUrl}${file.value}`)
+      } else if (extension === 'yaml') {
+        yamlEntity = await fetch(`${_baseUrl}${file.value}`)
+      } else {
+        [mdEntity, yamlEntity] = await Promise.all([fetch(`${_baseUrl}${file.value}.md`), fetch(`${_baseUrl}${file.value}.yaml`)])
+      }
+      let _entity:any = yamlEntity?.ok ? yamlToEntity(await yamlEntity.text()) : {}
+      if (mdEntity?.ok) _entity = { ..._entity, ...mdToEntity(await mdEntity.text()) }
       if (_entity.id) _entity = {...(await getEntityFromWikidata(_entity.id)), ..._entity }
       entity.value = _entity
+    } else if (qid.value) {
+      entity.value = await getEntityFromWikidata(qid.value)
     }
   }
 
@@ -76,7 +86,7 @@
   <img v-if="entity?.thumbnail"
     slot="image"
     :src="entity?.thumbnail"
-    :alt="label"
+    :alt="entity?.label"
   />
   <div class="content">
     <h2 v-if="entity?.label" v-html="entity.label"></h2>
@@ -84,7 +94,7 @@
   </div>
 
   <div slot="footer">
-    <a v-if="qid && entity?.wikipedia"  :href="entity.wikipedia" target="_blank">Wikipedia</a>
+    <a v-if="!file && qid && entity?.wikipedia"  :href="entity.wikipedia" target="_blank">Wikipedia</a>
   </div>
 
 </sl-card>

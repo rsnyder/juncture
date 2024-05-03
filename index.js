@@ -644,6 +644,8 @@ function structureContent(html) {
     }
   });
 
+
+  console.log('createEntityInfoboxes from link')
   Array.from(restructured.querySelectorAll('a'))
   .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
   .forEach(anchorElem => {
@@ -722,7 +724,10 @@ function structureContent(html) {
     let qids = Array.from(p.querySelectorAll('param[eid]')).map(param => {
       let qid = param.getAttribute('eid')
       let aliases = param.getAttribute('aliases')
-      if (aliases) window.customEntityAliases[qid || ''] = aliases.split('|').map(a => a.trim())
+      let file = param.getAttribute('file') || param.getAttribute('article')
+      if (aliases || file) {
+       if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
+      }
       return qid
     })
     let parent = p.parentElement
@@ -732,7 +737,10 @@ function structureContent(html) {
         ...Array.from(parent.querySelectorAll(':scope > param[eid]')).map(param => {
           let qid = param.getAttribute('eid')
           let aliases = param.getAttribute('aliases')
-          if (aliases) window.customEntityAliases[qid || ''] = aliases.split('|').map(a => a.trim())
+          let file = param.getAttribute('file') || param.getAttribute('article')
+          if (aliases || file) {
+            if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
+           }
           return qid
         })
       ]
@@ -889,7 +897,7 @@ function observeVisible(rootEl, setActiveParagraph) {
                   if (matches) {
                     let idx = matches.index
                     let match = matches[0]
-                    html = html.slice(0, idx) + `<mdp-entity-infobox qid="${entity.id}">${match}</mdp-entity-infobox>` + html.slice(idx + match.length)
+                    html = html.slice(0, idx) + `<mdp-entity-infobox qid="${entity.id}" file="${window.customEntityData[entity.id]?.file || ''}">${match}</mdp-entity-infobox>` + html.slice(idx + match.length)
                     currentActiveParagraph.innerHTML = html
                     break
                   }
@@ -945,7 +953,7 @@ function whosOnFirstUrl(wof) {
 
 window.entityData = {}
 window.pendingEntityData = new Set()
-window.customEntityAliases = {}
+window.customEntityData = {}
 async function getEntityData(qids, language) {
   language = language || 'en'
   let cached = new Set(qids.filter(qid => window.entityData[qid]))
@@ -989,7 +997,7 @@ async function getEntityData(qids, language) {
           if (rec.description) _entityData.description = rec.description.value
           if (rec.alias) {
             _entityData.aliases = [rec.alias.value]
-            if (window.customEntityAliases[qid]) _entityData.aliases = [...window.customEntityAliases[qid], ..._entityData.aliases]
+            if (window.customEntityData[qid]) _entityData.aliases = [...window.customEntityData[qid].aliases, ..._entityData.aliases]
           }
           if (rec.coords) _entityData.coords = rec.coords.value.slice(6,-1).split(' ').reverse().join(',')
           if (rec.wikipedia) _entityData.wikipedia = rec.wikipedia.value

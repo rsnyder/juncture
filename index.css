@@ -21,25 +21,22 @@ article {
   animation: fadeInAnimation ease .3s;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
-}
-
-.page-content {
   width: min(1200px, 100% - 4rem);
   margin-inline: auto;
   background-color: #fff;
 }
 
-.page-content > * + * {
+article > * + * {
   margin-top: 1em;
 }
 
-.page-content h1,
-.page-content h2 {
+article h1,
+article h2 {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.page-content li > p {
+article li > p {
   margin: 0;
 }
 
@@ -47,7 +44,7 @@ article {
 
 @media only screen and (max-width: 768px) {
   
-  .page-content {
+  article {
     font-size: 1em;
     width: calc(100% - 2em);
   }
@@ -285,7 +282,7 @@ table[id] {
   
   .keep-together { break-inside: avoid; }
 
-  .page-content {
+  article {
     font-size: 1rem;
     padding-bottom: 4em !important; 
   }
@@ -398,6 +395,7 @@ table[id] {
 
 article.j1 {
   height: 100%;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr auto;

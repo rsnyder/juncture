@@ -394,14 +394,6 @@ function handleCodeEl(rootEl, codeEl) {
 }
 
 function elFromHtml(html) {
-  console.log(new DOMParser().parseFromString(html, 'text/html').children)
-  console.log(new DOMParser().parseFromString(html, 'text/html').firstChild)
-  console.log(new DOMParser().parseFromString(html, 'text/html').querySelector('body'))
-
-  let template = document.createElement('template')
-  template.innerHTML = html
-  console.log(template)
-
   return new DOMParser().parseFromString(html, 'text/html').querySelector('body')
 }
 

@@ -395,12 +395,13 @@ function handleCodeEl(rootEl, codeEl) {
 
 function elFromHtml(html) {
   console.log(new DOMParser().parseFromString(html, 'text/html').children)
-  return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
-  /*
+  console.log(new DOMParser().parseFromString(html, 'text/html').firstChild.children)
+
   let template = document.createElement('template')
   template.innerHTML = html
-  return template.content
-  */
+  console.log(template.content)
+
+  return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
 }
 
 let isJunctureV1 = false

@@ -394,7 +394,7 @@ function handleCodeEl(rootEl, codeEl) {
 }
 
 function elFromHtml(html) {
-  console.log(html)
+  console.log(new DOMParser().parseFromString(html, 'text/html'))
   return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
   /*
   let template = document.createElement('template')
@@ -807,7 +807,6 @@ function structureContent(html) {
     })
 
   }
-  console.log('structureContent.output', elFromHtml(article.outerHTML))
   return article.outerHTML
 }
 
@@ -1106,7 +1105,6 @@ function mount(root) {
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   setMeta()
   root = root || document.body.firstChild
-  console.log(root.cloneNode(true))
   let article = elFromHtml(structureContent(root.innerHTML))
   root.replaceWith(article)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)

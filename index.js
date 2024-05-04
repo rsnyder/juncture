@@ -400,7 +400,7 @@ function elFromHtml(html) {
 
   let template = document.createElement('template')
   template.innerHTML = html
-  console.log(template.content)
+  console.log(template)
 
   return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
 }

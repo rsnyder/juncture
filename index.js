@@ -311,8 +311,10 @@ function handleCodeEl(rootEl, codeEl) {
         : codeEl.parentElement
       : codeWrapper.parentElement
 
-    // let codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
-    let codeLang = Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
+    console.log(codeWrapper, codeEl, parentTag)
+    let codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
+    //let codeLang = Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
+    console.log(codeLang, codeEl)
     
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
@@ -648,7 +650,6 @@ function structureContent(html) {
   });
 
 
-  console.log('createEntityInfoboxes from link')
   Array.from(restructured.querySelectorAll('a'))
   .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
   .forEach(anchorElem => {

@@ -110,7 +110,7 @@
             <span v-html="coords"></span>
           </div>
           <div class="location" style="width:200px;">
-            <mdp-map v-if="coords" :center="coords" zoom="6" marker></mdp-map>
+            <ve-map v-if="coords" :center="coords" zoom="6" marker></ve-map>
           </div>
         </sl-dropdown>
         <div v-if="annoid" class="annoid" v-text="annoid"></div>

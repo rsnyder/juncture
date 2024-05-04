@@ -30,7 +30,7 @@
       <div class="hs-tooltip-content z-30 hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible hidden opacity-0 transition-opacity absolute invisible max-w-xs bg-white border border-gray-100 text-left rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700" role="tooltip">
         <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7]">
           <div class="p-4 md:p-5">
-            <mdp-manifest v-if="manifest" :manifest="manifest"></mdp-manifest>
+            <ve-manifest v-if="manifest" :manifest="manifest"></ve-manifest>
           </div>
         </div>
       </div>

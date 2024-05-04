@@ -1,4 +1,4 @@
-`mdp-breadcrumbs .sticky`
+`ve-breadcrumbs .sticky`
 
 # Examples
 

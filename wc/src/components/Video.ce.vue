@@ -146,7 +146,7 @@
     function checkSibs(el:any) {
       let sib = el.previousSibling
       while (sib) {
-        if (sib.nodeName === 'MDP-VIDEO') return sib === host.value ? sib : null
+        if (sib.nodeName === 'VE-VIDEO') return sib === host.value ? sib : null
         sib = sib.previousSibling
       }
     }
@@ -154,7 +154,7 @@
     checkSibs(el)
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
-      let videoEl = el.querySelector(':scope mdp-video')
+      let videoEl = el.querySelector(':scope ve-video')
       if (videoEl) return videoEl === host.value ? videoEl : null
     }
   }

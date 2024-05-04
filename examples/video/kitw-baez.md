@@ -1,4 +1,4 @@
-`mdp-header background=wc:Martin_Luther_King,_Jr._Day_(3306311257).jpg breadcrumbs`
+`ve-header background=wc:Martin_Luther_King,_Jr._Day_(3306311257).jpg breadcrumbs`
 
 # King in the Wilderness - Joan Baez interview
 
@@ -11,7 +11,7 @@ Documentarians are only often able to use only a small percentage of the intervi
 
 ###
 
-`mdp-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`
+`ve-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`
 
 ####
 `#transcript .showactive`
@@ -430,4 +430,4 @@ Q190507 Q1062741 Q208160 Q76611
 
 ###
 
-`mdp-entities .sticky`
+`ve-entities .sticky`

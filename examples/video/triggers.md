@@ -19,4 +19,4 @@ Lorem ipsum dolor sit amet, consectetur [adipiscing elit](play/120/130), sed do 
 
 ###
 
-`mdp-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`
+`ve-video src=https://www.youtube.com/watch?v=W4LT8-dEhJg sync .sticky`

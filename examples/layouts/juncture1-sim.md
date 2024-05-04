@@ -1,4 +1,4 @@
-`mdp-breadcrumbs .sticky`
+`ve-breadcrumbs .sticky`
 
 `.showactive`
 
@@ -22,5 +22,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ##
 `.sticky`
 
-`mdp-map `
+`ve-map `
 

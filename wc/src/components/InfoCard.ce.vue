@@ -10,7 +10,7 @@
   
   <!--
   <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
-    <mdp-image v-if="showDialog" no-caption :src="src" fit="cover"></mdp-image>
+    <ve-image v-if="showDialog" no-caption :src="src" fit="cover"></ve-image>
     <sl-button slot="footer" variant="primary" @click="showDialog = false">Close</sl-button>
   </sl-dialog>
   -->

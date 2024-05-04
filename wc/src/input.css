@@ -7,7 +7,7 @@ html {
     font-family: sans-serif;
 }
 
-mdp-header ul, 
-mdp-menu ul { 
+ve-header ul, 
+ve-menu ul { 
     display: none;
 }

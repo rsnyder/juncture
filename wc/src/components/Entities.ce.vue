@@ -68,9 +68,9 @@
   <div v-html="secondsToHms(time)"></div>
   <div class="entities">
     <!-- <p v-for="entity in Object.values(entities)" :key="entity.id" v-html="entity.label"></p> -->
-    <mdp-entity-card v-if="cards" v-for="(entity, qid, idx) in entities" :key="`entity-card-${idx}`" :qid="qid"></mdp-entity-card>
+    <ve-entity-card v-if="cards" v-for="(entity, qid, idx) in entities" :key="`entity-card-${idx}`" :qid="qid"></ve-entity-card>
     <!--<sl-button v-for="entity in Object.values(entities)" :key="entity.id" pill v-html="entity.label"></sl-button>-->
-    <mdp-entity-infobox v-else v-for="(entity, qid, idx) in entities" :key="`entity-infobox-${idx}`" :qid="qid" :text="entity.label">{{ entities[qid].label }} ({{ qid }})</mdp-entity-infobox>
+    <ve-entity-infobox v-else v-for="(entity, qid, idx) in entities" :key="`entity-infobox-${idx}`" :qid="qid" :text="entity.label">{{ entities[qid].label }} ({{ qid }})</ve-entity-infobox>
   </div>
 </template>
 
@@ -80,7 +80,7 @@
     flex-wrap: wrap;
     gap: 0.5em;
   }
-  mdp-entity-infobox {
+  ve-entity-infobox {
     border: 1px solid #ccc;
     border-radius: 12px;
     padding: 6px;

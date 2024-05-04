@@ -19,14 +19,14 @@
       </div>
 
       <div class="search-and-menu">
-        <mdp-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></mdp-site-search>
-        <mdp-menu v-if="navEl !== undefined || auth" :auth="auth" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></mdp-menu>
+        <ve-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></ve-site-search>
+        <ve-menu v-if="navEl !== undefined || auth" :auth="auth" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></ve-menu>
       </div>
 
     </div>
 
-    <mdp-breadcrumbs v-if="breadcrumbs"></mdp-breadcrumbs>
-    <mdp-manifest-popup v-if="manifest" :manifest="manifest"></mdp-manifest-popup>
+    <ve-breadcrumbs v-if="breadcrumbs"></ve-breadcrumbs>
+    <ve-manifest-popup v-if="manifest" :manifest="manifest"></ve-manifest-popup>
   </div>
 
 </template>
@@ -242,7 +242,7 @@
   padding: 0 20px;
 }
 
-mdp-manifest-popup {
+ve-manifest-popup {
   visibility: hidden;
   position: absolute;
   top: 1em;
@@ -250,12 +250,12 @@ mdp-manifest-popup {
   z-index: 10;
 }
 
-.header:hover mdp-manifest-popup {
+.header:hover ve-manifest-popup {
   visibility: visible;
   transition: all .5s ease-in;
 }
 
-mdp-breadcrumbs {
+ve-breadcrumbs {
   grid-area: 3 / 1 / 4 / 2;
   background-color: white;
   color: black;
@@ -335,7 +335,7 @@ mdp-breadcrumbs {
     max-width: 40px;
   }
 
-  mdp-breadcrumbs {
+  ve-breadcrumbs {
     padding-left: 0.5rem;
   }
 

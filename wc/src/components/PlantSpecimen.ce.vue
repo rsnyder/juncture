@@ -16,11 +16,11 @@
       </ul>
     </ve-media>
     -->
-    <mdp-image :height="height" :caption="caption">
+    <ve-image :height="height" :caption="caption">
       <ul>
         <li v-for="url, idx in manifestUrls" :key="`specimen-${idx}`">src={{ url }}</li>
       </ul>
-    </mdp-image>
+    </ve-image>
   </div>
 
 </template>

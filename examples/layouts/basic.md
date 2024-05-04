@@ -1,6 +1,6 @@
 `.showactive`
 
-`mdp-header subtitle="Basic Layout" pdf-download-enabled=true`
+`ve-header subtitle="Basic Layout" pdf-download-enabled=true`
 
 # Basic Layout
 

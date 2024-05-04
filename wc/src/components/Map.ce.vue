@@ -13,9 +13,9 @@
     </div>
 
     <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
-      <mdp-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></mdp-image>
+      <ve-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></ve-image>
       <div slot="footer" class="footer">
-        <mdp-caption :src="selectedImage"></mdp-caption>
+        <ve-caption :src="selectedImage"></ve-caption>
         <div class="push">
           <sl-button variant="primary" @click="selectedImage = null">Close</sl-button>
         </div>
@@ -549,12 +549,12 @@
               let entityData = await getEntity(feature.properties.qid)
               feature.properties.entityData = entityData
               let serializedEntityData = JSON.stringify(entityData).replace(/"/g, '&quot;')
-              let html = `<mdp-info-card data="${serializedEntityData}"></mdp-info-card>`
+              let html = `<ve-info-card data="${serializedEntityData}"></ve-info-card>`
               layer.bindPopup(html)
             } else {
               // console.log(toRaw(feature.properties))
               let stringifiedFeatureData = JSON.stringify(feature.properties).replace(/"/g, '&quot;')
-              let html = `<mdp-info-card data="${stringifiedFeatureData}"></mdp-info-card>`
+              let html = `<ve-info-card data="${stringifiedFeatureData}"></ve-info-card>`
               layer.bindPopup(html)
             }
     

@@ -1,4 +1,4 @@
-`mdp-breadcrumbs .sticky`
+`ve-breadcrumbs .sticky`
 
 # Tabs Layout
 
@@ -7,11 +7,11 @@
 
 ### Image
 
-`mdp-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
+`ve-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
 
 ### Map
 
-`mdp-map`
+`ve-map`
 
 ### Description
 
@@ -24,15 +24,15 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ### Markdown
 
 ```markdown
-`mdp-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
+`ve-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
 ```
 
 ### HTML
 
 ```html
-<mdp-image src="wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg"></mdp-image>
+<ve-image src="wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg"></ve-image>
 ```
 
 ### Rendered
 
-`mdp-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`
+`ve-image src=wc:Arc_de_triomphe_du_carrousel_in_Paris_France.jpg`

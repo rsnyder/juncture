@@ -2,7 +2,7 @@
     p.sticky { border: 1px solid blue;}
 </style>
 
-`mdp-breadcrumbs .sticky`
+`ve-breadcrumbs .sticky`
 
 # 2 Column Layout
 `.mcol .showactive`

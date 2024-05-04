@@ -132,7 +132,7 @@
     function checkSibs(el:any) {
       let sib = el.previousSibling
       while (sib) {
-        if (sib.nodeName === 'MDP-AUDIO') return sib === host.value ? sib : null
+        if (sib.nodeName === 'VE-AUDIO') return sib === host.value ? sib : null
         sib = sib.previousSibling
       }
     }
@@ -140,7 +140,7 @@
     checkSibs(el)
     while (el.parentElement && el.tagName !== 'BODY') {
       el = el.parentElement
-      let videoEl = el.querySelector(':scope mdp-audio')
+      let videoEl = el.querySelector(':scope ve-audio')
       if (videoEl) return videoEl === host.value ? videoEl : null
     }
   }

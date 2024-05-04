@@ -56,7 +56,7 @@ function computeStickyOffsets(root:HTMLElement) {
     return bcr.top >= 0 && bcr.top <= window.innerHeight
   }
   let stickyElems = [
-    ...(Array.from(root.querySelectorAll('mdp-header[sticky], mdp-header[sticky], mdp-breadcrumbs[sticky]') as NodeListOf<HTMLElement>) as HTMLElement[]),
+    ...(Array.from(root.querySelectorAll('ve-header[sticky], ve-header[sticky], ve-breadcrumbs[sticky]') as NodeListOf<HTMLElement>) as HTMLElement[]),
     ...(Array.from(root.querySelectorAll('.sticky') as NodeListOf<HTMLElement>) as HTMLElement[])
   ]
   .filter(stickyEl => {

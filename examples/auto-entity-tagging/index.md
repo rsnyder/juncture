@@ -1,4 +1,4 @@
-`mdp-breadcrumbs`
+`ve-breadcrumbs`
 
 # Entity auto tagging
 

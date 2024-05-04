@@ -47,152 +47,156 @@ function computeDataId(el) {
 }
 
 const components = {
-  'mdp-audio': {
-    booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
-    class: new Set(),
-    positional: ['src', 'caption'],
-    ignore: new Set()
+  juncture2: {
+    've-audio': {
+      booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
+      class: new Set(),
+      positional: ['src', 'caption'],
+      ignore: new Set()
+    },
+    've-entities': {
+      booleans: new Set(['cards']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-gallery': {
+      booleans: new Set(['caption']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-header': {
+      booleans: new Set(['breadcrumbs', 'pdf-download-enabled']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-iframe': {
+      booleans: new Set(['allow-full-screen', 'allow-transparency', 'full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-image': {
+      booleans: new Set(['no-caption', 'zoom-on-scroll']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-knightlab-timeline': {
+      booleans: new Set(['has-bookmark']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-menu': {
+      booleans: new Set(['pdf-download-enabled']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-plant-specimen': {
+      booleans: new Set(['full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-video': {
+      booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
   },
-  'mdp-entities': {
-    booleans: new Set(['cards']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-gallery': {
-    booleans: new Set(['caption']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-header': {
-    booleans: new Set(['breadcrumbs', 'pdf-download-enabled']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-iframe': {
-    booleans: new Set(['allow-full-screen', 'allow-transparency', 'full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-image': {
-    booleans: new Set(['no-caption', 'zoom-on-scroll']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-knightlab-timeline': {
-    booleans: new Set(['has-bookmark']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-menu': {
-    booleans: new Set(['pdf-download-enabled']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-plant-specimen': {
-    booleans: new Set(['full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  'mdp-video': {
-    booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  've-card': {
-    booleans: new Set([]),
-    class: new Set(),
-    positional: ['label', 'image', 'href', 'description'],
-    ignore: new Set()
-  },
-  've-header': {
-    booleans: new Set([]),
-    class: new Set(),
-    positional: ['label', 'background', 'subtitle', 'options', 'position'],
-    ignore: new Set()
-  },
-  've-entities': {
-    booleans: new Set(['full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  've-footer': {
-    booleans: new Set(['sticky']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  've-iframe': {
-    booleans: new Set(['allow', 'allowfullscreen', 'full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: ['src'],
-    ignore: new Set()
-  },
-  've-image': {
-    booleans: new Set(['cards', 'compare', 'curtain', 'full', 'grid', 'left', 'right', 'sticky', 'sync', 'zoom-on-scroll']),
-    class: new Set(),
-    positional: ['src', 'options', 'seq', 'fit'],
-    ignore: new Set()
-  },
-  've-map': {
-    booleans: new Set(['cards', 'full', 'left', 'marker', 'prefer-geojson', 'popup-on-hover', 'right', 'sticky', 'zoom-on-scroll', 'zoom-on-click']),
-    class: new Set(),
-    positional: ['center', 'zoom', 'overlay'],
-    ignore: new Set()
-  },
-  've-media': {
-    booleans: new Set(['autoplay', 'cards', 'compare', 'full', 'grid', 'left', 'muted', 'no-caption', 'no-info-icon', 'right', 'small', 'static', 'sticky']),
-    class: new Set(),
-    positional: ['src'],
-    ignore: new Set()
-  },
-  've-mermaid': {
-    booleans: new Set(['full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  've-meta': {
-    booleans: new Set([]),
-    class: new Set(),
-    positional: ['title', 'description'],
-    ignore: new Set()
-  },
-  've-plant-specimen': {
-    booleans: new Set(['full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: ['qid', 'max'],
-    ignore: new Set()
-  },
-  've-spacer': {
-    booleans: new Set([]),
-    class: new Set(),
-    positional: [],
-    ignore: new Set()
-  },
-  've-style': {
-    booleans: new Set([]),
-    class: new Set(),
-    positional: ['src'],
-    ignore: new Set()
-  },
-  've-video': {
-    booleans: new Set(['full', 'left', 'right', 'sticky']),
-    class: new Set(),
-    positional: ['src', 'caption'],
-    ignore: new Set()
+  juncture3: {
+    've-card': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: ['label', 'image', 'href', 'description'],
+      ignore: new Set()
+    },
+    've-header': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: ['label', 'background', 'subtitle', 'options', 'position'],
+      ignore: new Set()
+    },
+    've-entities': {
+      booleans: new Set(['full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-footer': {
+      booleans: new Set(['sticky']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-iframe': {
+      booleans: new Set(['allow', 'allowfullscreen', 'full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: ['src'],
+      ignore: new Set()
+    },
+    've-image': {
+      booleans: new Set(['cards', 'compare', 'curtain', 'full', 'grid', 'left', 'right', 'sticky', 'sync', 'zoom-on-scroll']),
+      class: new Set(),
+      positional: ['src', 'options', 'seq', 'fit'],
+      ignore: new Set()
+    },
+    've-map': {
+      booleans: new Set(['cards', 'full', 'left', 'marker', 'prefer-geojson', 'popup-on-hover', 'right', 'sticky', 'zoom-on-scroll', 'zoom-on-click']),
+      class: new Set(),
+      positional: ['center', 'zoom', 'overlay'],
+      ignore: new Set()
+    },
+    've-media': {
+      booleans: new Set(['autoplay', 'cards', 'compare', 'full', 'grid', 'left', 'muted', 'no-caption', 'no-info-icon', 'right', 'small', 'static', 'sticky']),
+      class: new Set(),
+      positional: ['src'],
+      ignore: new Set()
+    },
+    've-mermaid': {
+      booleans: new Set(['full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-meta': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: ['title', 'description'],
+      ignore: new Set()
+    },
+    've-plant-specimen': {
+      booleans: new Set(['full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: ['qid', 'max'],
+      ignore: new Set()
+    },
+    've-spacer': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
+    've-style': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: ['src'],
+      ignore: new Set()
+    },
+    've-video': {
+      booleans: new Set(['full', 'left', 'right', 'sticky']),
+      class: new Set(),
+      positional: ['src', 'caption'],
+      ignore: new Set()
+    }
   }
 }
-function parseHeadline(s) {
+function parseHeadline(s, codeLang) {
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
   s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
@@ -241,7 +245,7 @@ function parseHeadline(s) {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
       else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
       else {
-        if (components[parsed.tag] && components[parsed.tag].booleans.has(token)) {
+        if (components[codeLang]?.[parsed.tag] && components[codeLang]?.[parsed.tag].booleans.has(token)) {
           if (!parsed.booleans) parsed.booleans = []
           parsed.booleans.push(token)
         } else {
@@ -252,10 +256,10 @@ function parseHeadline(s) {
     }
     tokenIdx++
   }
-  if (parsed.tag && components[parsed.tag]?.positional && parsed.args) {
+  if (parsed.tag && components[codeLang]?.[parsed.tag]?.positional && parsed.args) {
     if (!parsed.kwargs) parsed.kwargs = {}
     parsed.args.forEach((value, idx) => {
-      let key = components[parsed.tag].positional[idx]
+      let key = components[codeLang][parsed.tag].positional[idx]
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
       if (!parsed.kwargs) parsed.kwargs = {}
       if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
@@ -263,17 +267,16 @@ function parseHeadline(s) {
     })
     delete parsed.args
   }
-  if (parsed.tag) parsed.tag = parsed.tag.replace(/^ve-/,'mdp-')
   return parsed
 }
 
-function parseCodeEl(codeEl) {
+function parseCodeEl(codeEl, codeLang) {
   let codeElems = codeEl.textContent?.replace(/\s+\|\s+/g,'\n')
     .split('\n')
     .map(l => l.trim())
     .map(l => l.replace(/<em>/g, '_').replace(/<\/em>/g, '_'))
     .filter(x => x) || []
-  let parsed = parseHeadline(codeElems?.[0]) || {}
+  let parsed = parseHeadline(codeElems?.[0], codeLang) || {}
   if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   return parsed
 }
@@ -308,17 +311,16 @@ function handleCodeEl(rootEl, codeEl) {
         : codeEl.parentElement
       : codeWrapper.parentElement
 
-    let codeLang = parentTag === 'PRE' 
-      ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'mdpress'
-      : 'mdpress'
+    // let codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
+    let codeLang = Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
     
     if (codeLang === 'mermaid') {
-      let newEl = document.createElement('mdp-mermaid')
+      let newEl = document.createElement('ve-mermaid')
       newEl.textContent = codeEl.textContent
       codeWrapper?.parentElement?.replaceWith(newEl)
 
-    } else if (codeLang === 'mdpress') {
-      let parsed = parseCodeEl(codeEl)
+    } else if (codeLang.indexOf('juncture') === 0) {
+      let parsed = parseCodeEl(codeEl, codeLang)
       // console.log(parsed)
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
@@ -366,7 +368,7 @@ function handleCodeEl(rootEl, codeEl) {
         
         // let priorEl = codeEl.previousElementSibling
         let priorEl = codeWrapper.previousElementSibling
-        if (priorEl?.tagName === 'MDP-MERMAID') {
+        if (priorEl?.tagName === 'VE--MERMAID') {
           target = priorEl
         } else if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
           target = document.createElement('span')
@@ -433,9 +435,10 @@ function structureContent(html) {
 
   // For compatibility with Juncture V2
   Array.from(rootEl?.querySelectorAll('p'))
-  .filter(p => /^\.\w+-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim() || ''))
+  .filter(p => /^\.ve-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim() || ''))
   .forEach(p => {
     let codeEl = document.createElement('code')
+    codeEl.setAttribute('class', 'language-juncture2')
     let replacementText = p.innerHTML.trim().slice(1)
       .replace(/\n\s*-\s+/g, '\n')
       .replace(/<a href="/g, '')
@@ -491,7 +494,7 @@ function structureContent(html) {
           .filter(child => !/^H\d/.test(child.tagName))
           .filter(child => !/PARAM/.test(child.tagName))
           .filter(child => !/STYLE/.test(child.tagName))
-          .filter(child => !/^MDP-/.test(child.tagName))
+          .filter(child => !/^VE--/.test(child.tagName))
           .forEach((child, idx) => { 
             let segId = `${currentSection.getAttribute('data-id') || 0}.${idx+1}`
             child.setAttribute('data-id', segId)
@@ -655,7 +658,7 @@ function structureContent(html) {
     let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
     let isEntityPath = path.find(pe => pe[0] === '~')
     if (qid || isEntityPath) {
-      let mdpEntityInfobox = document.createElement('mdp-entity-infobox')
+      let mdpEntityInfobox = document.createElement('ve-entity-infobox')
       mdpEntityInfobox.innerHTML = anchorElem.innerHTML
       if (qid) mdpEntityInfobox.setAttribute('qid', qid)
       else {
@@ -675,7 +678,7 @@ function structureContent(html) {
 
   if (isJunctureV1) { // Juncture 1 style essay
     article.classList.add('j1')
-    header = document.createElement('mdp-header')
+    header = document.createElement('ve-header')
     header.className = 'sticky'
     article.appendChild(header)
 
@@ -701,12 +704,12 @@ function structureContent(html) {
     mainWrapper.appendChild(viewers)
     article.appendChild(mainWrapper)
   } else {
-    header = restructured.querySelector('mdp-header')
+    header = restructured.querySelector('ve-header')
     if (header) article.appendChild(header)
     article.appendChild(restructured)
   }
 
-  let footer = restructured.querySelector('mdp-footer, ve-footer')
+  let footer = restructured.querySelector('ve-footer, ve-footer')
   if (footer) {
     Array.from(footer.querySelectorAll('li'))
     .filter(li => /^\s*{.*}$/.test(li.textContent?.trim() || ''))
@@ -765,7 +768,7 @@ function structureContent(html) {
       seg.removeAttribute('data-id')
       seg.className = ''
       wrapper.appendChild(seg.cloneNode(true))
-      let viewers = document.createElement('mdp-j1-viewers')
+      let viewers = document.createElement('ve-j1-viewers')
       // viewers.className = 'viewers'
       viewers.setAttribute('entities', seg.getAttribute('data-entities') || '')
       viewers.dataset.id = id
@@ -811,7 +814,7 @@ function setStickyOffsets(root) {
 
   function topIsVisible(el) {
     let bcr = el.getBoundingClientRect()
-    return el.tagName === 'MDP-HEADER' || el.tagName === 'MDP-BREADCRUMBS' || (bcr.top >= 0 && bcr.top <= window.innerHeight)
+    return el.tagName === 'VE-HEADER' || el.tagName === 'VE-BREADCRUMBS' || (bcr.top >= 0 && bcr.top <= window.innerHeight)
   }
 
   let stickyElems = Array.from(root.querySelectorAll('.sticky'))
@@ -850,7 +853,7 @@ let currentActiveParagraph
 
 function observeVisible(rootEl, setActiveParagraph) {
   setActiveParagraph = setActiveParagraph || false
-  let topMargin = Array.from(rootEl.querySelectorAll('MDP-HEADER'))
+  let topMargin = Array.from(rootEl.querySelectorAll('VE-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
   // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
@@ -897,7 +900,7 @@ function observeVisible(rootEl, setActiveParagraph) {
                   if (matches) {
                     let idx = matches.index
                     let match = matches[0]
-                    html = html.slice(0, idx) + `<mdp-entity-infobox qid="${entity.id}" file="${window.customEntityData[entity.id]?.file || ''}">${match}</mdp-entity-infobox>` + html.slice(idx + match.length)
+                    html = html.slice(0, idx) + `<ve-entity-infobox qid="${entity.id}" file="${window.customEntityData[entity.id]?.file || ''}">${match}</ve-entity-infobox>` + html.slice(idx + match.length)
                     currentActiveParagraph.innerHTML = html
                     break
                   }
@@ -1104,7 +1107,7 @@ function mount(root) {
   root = root || document.body.firstChild
   let article = elFromHtml(structureContent(root.innerHTML))
   root.replaceWith(article)
-  observeVisible(article, article.querySelector('mdp-video[sync]') ? false : true)
+  observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()
   return article
 }

@@ -19,8 +19,8 @@
   </head>
   <body>
 
-    <mdp-header title="Editor" auth="github"></mdp-header>
-    <mdp-content-selector v-if="contentPath !== null" id="contentSelector" compact :content-path="contentPath" mode="essays" sticky></mdp-content-selector>
+    <ve-header title="Editor" auth="github"></ve-header>
+    <ve-content-selector v-if="contentPath !== null" id="contentSelector" compact :content-path="contentPath" mode="essays" sticky></ve-content-selector>
     <textarea id="md-text"></textarea>
     
     <script src="https://rdsnyder.github.io/juncture/wc/dist/js/index.js" type="module"></script>
@@ -81,7 +81,7 @@
       })
 
       function togglePreview(md, preview) {
-        return `<mdp-article><pre>${md}</pre></mdp-article>`
+        return `<ve-article><pre>${md}</pre></ve-article>`
       }
     
     </script>

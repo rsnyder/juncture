@@ -1,4 +1,4 @@
-`mdp-meta title="Import Test"`
+`ve-meta title="Import Test"`
 
 `script https://unpkg.com/@nfreear/my-map@1 type=module`
 

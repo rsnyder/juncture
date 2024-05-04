@@ -113,7 +113,7 @@
       </sl-tab>
       
       <sl-tab-panel v-if="images.length" name="image" :style="`height:${panelHeight}px`">
-        <mdp-image 
+        <ve-image 
           :caption="images[0]?.caption" 
           :fit="images[0]?.fit" 
           :height="panelHeight" 
@@ -122,11 +122,11 @@
           <ul>
             <li v-for="def, idx in images" :key="`image-${idx}`" v-text="serializeProps(def)"></li>
           </ul>
-        </mdp-image>
+        </ve-image>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="maps.length" name="map">
-        <mdp-map 
+        <ve-map 
           :entities="props.entities"
           :basemaps="maps[0].basemaps || maps[0].basemap" 
           :caption="maps[0].caption" 
@@ -139,27 +139,27 @@
           <ul>
             <li v-for="def, idx in mapLayers" :key="`map-layer-${idx}`" v-text="serializeProps(def)"></li>
           </ul>
-        </mdp-map>
+        </ve-map>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="compare.length" name="compare">
-        <mdp-compare :height="panelHeight">
+        <ve-compare :height="panelHeight">
           <ul>
             <li v-for="def, idx in compare" :key="`compare-${idx}`" v-text="serializeProps(def)"></li>
           </ul>
-        </mdp-compare>
+        </ve-compare>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="timelinejs.length" name="timelinejs" :style="{height:`${panelHeight}px`}">
-        <mdp-knightlab-timeline :source="timelinejs[0].source" :height="panelHeight"></mdp-knightlab-timeline>
+        <ve-knightlab-timeline :source="timelinejs[0].source" :height="panelHeight"></ve-knightlab-timeline>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="videos.length" name="videos" :style="{height:`${panelHeight}px`}">
-        <mdp-video :src="`https://www.youtube.com/watch?v=${videos[0].id || videos[0].vid}`" :height="panelHeight"></mdp-video>
+        <ve-video :src="`https://www.youtube.com/watch?v=${videos[0].id || videos[0].vid}`" :height="panelHeight"></ve-video>
       </sl-tab-panel>
       
       <sl-tab-panel v-if="iframes.length" name="iframes" :style="{height:`${panelHeight || 500}px`}">
-        <mdp-iframe 
+        <ve-iframe 
         :allow="iframes[0].allow" 
         :allowfullscreen="iframes[0].allowfullscreen" 
         :allowtransparency="iframes[0].allowtransparency" 
@@ -169,11 +169,11 @@
         :name="iframes[0].name" 
         :referrerpolicy="iframes[0].referrerpolicy"
         :src="iframes[0].src" 
-      ></mdp-iframe>
+      ></ve-iframe>
       </sl-tab-panel>
       
       <sl-tab-panel v-if="plantSpecimens.length" name="plantSpecimens" :style="{height:`${panelHeight}px`}">
-        <mdp-plant-specimen :height="panelHeight"
+        <ve-plant-specimen :height="panelHeight"
           :eid="plantSpecimens[0].eid"
           :qid="plantSpecimens[0].qid"
           :jpid="plantSpecimens[0].jpid"
@@ -181,14 +181,14 @@
           :taxonName="plantSpecimens[0].taxonName"
           :caption="plantSpecimens[0].caption"
           :max="plantSpecimens[0].max"
-        ></mdp-plant-specimen>
+        ></ve-plant-specimen>
       </sl-tab-panel>
 
       <sl-tab-panel v-if="diagrams.length" name="diagrams" :style="{height:`${panelHeight}px`}">
-        <mdp-visjs 
+        <ve-visjs 
           :height="panelHeight" 
           :url="diagrams[0].url"
-        ></mdp-visjs>
+        ></ve-visjs>
       </sl-tab-panel>
 
       <sl-tab-panel name="data" :style="{height:`${panelHeight}px`, backgroundColor:'white', overflowY: 'scroll'}">

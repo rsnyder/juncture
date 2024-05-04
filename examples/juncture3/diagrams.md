@@ -1,4 +1,4 @@
-`mdp-breadcrumbs`
+`ve-breadcrumbs`
 
 # VisJS examples
 
@@ -22,12 +22,12 @@
 |3|3|
 `#g1-edges`
 
-`mdp-visjs edges=g1-edges nodes=g1-nodes caption="VisJS Graph from local Markdown table data"`
+`ve-visjs edges=g1-edges nodes=g1-nodes caption="VisJS Graph from local Markdown table data"`
 
 ## Data from URL
 `:width=50%`
 
-`mdp-visjs url=https://raw.githubusercontent.com/plant-humanities/essays/main/ayahuasca/Networks.tsv caption="VisJS Graph from remote TSV file"`
+`ve-visjs url=https://raw.githubusercontent.com/plant-humanities/essays/main/ayahuasca/Networks.tsv caption="VisJS Graph from remote TSV file"`
 
 
 # Mermaid example

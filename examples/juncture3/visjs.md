@@ -19,4 +19,4 @@
 | 3 | 3  |
 `#edges`
 
-`mdp-visjs edges=edges nodes=nodes caption="VisJS Graph"`
+`ve-visjs edges=edges nodes=nodes caption="VisJS Graph"`

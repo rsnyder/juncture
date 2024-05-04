@@ -406,7 +406,7 @@ let isJunctureV1 = false
 
 function structureContent(html) {
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
-  // console.log('structureContent.input', elFromHtml(rootEl.outerHTML))
+  console.log('structureContent.input', elFromHtml(rootEl.outerHTML))
 
   let restructured = document.createElement('main')
   
@@ -806,6 +806,7 @@ function structureContent(html) {
     })
 
   }
+  console.log('structureContent.output', elFromHtml(article.outerHTML))
   return article.outerHTML
 }
 

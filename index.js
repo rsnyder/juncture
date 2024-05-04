@@ -394,7 +394,7 @@ function handleCodeEl(rootEl, codeEl) {
 }
 
 function elFromHtml(html) {
-  console.log(new DOMParser().parseFromString(html, 'text/html'))
+  console.log(new DOMParser().parseFromString(html, 'text/html').firstChild)
   return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
   /*
   let template = document.createElement('template')

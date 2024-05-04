@@ -402,7 +402,7 @@ function elFromHtml(html) {
   template.innerHTML = html
   console.log(template)
 
-  return new DOMParser().parseFromString(html, 'text/html').firstChild.children[1]
+  return new DOMParser().parseFromString(html, 'text/html').querySelector('body')
 }
 
 let isJunctureV1 = false

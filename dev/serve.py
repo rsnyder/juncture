@@ -37,7 +37,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 origins = ['*']
 
-app = FastAPI(title='mdpress', root_path='/')
+app = FastAPI(title='juncture', root_path='/')
 
 app.add_middleware(
     CORSMiddleware,

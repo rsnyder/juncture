@@ -261,9 +261,8 @@
     } else {
       let redirectTo = `${window.location.href}`
       let href = clientIds[location.hostname] !== undefined
-        ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=mdpress&redirect_uri=${redirectTo}`
+        ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${redirectTo}`
         : null
-      console.log('ghLogin', href)
       if (href) window.location.href = href
     }
   }

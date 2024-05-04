@@ -1,2 +1,2 @@
-# mdpress
-mdpress web components
+# juncture
+juncture web components

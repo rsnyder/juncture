@@ -84,6 +84,6 @@ function defineCustomElements() {
 }
 
 // @ts-ignore
-console.log(`mdpress: version=${process.env.version}`)
+console.log(`juncture: version=${process.env.version}`)
 
 defineCustomElements()

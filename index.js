@@ -1104,6 +1104,7 @@ function mount(root) {
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   setMeta()
   root = root || document.body.firstChild
+  console.log(root.cloneNode(true))
   let article = elFromHtml(structureContent(root.innerHTML))
   root.replaceWith(article)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)

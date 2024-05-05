@@ -1,3 +1,5 @@
+<a href="https://v3.juncture-digital.org"><img src="https://v3.juncture-digital.org/images/ve-button.png"></a>
+
 `.showactive`
 
 `ve-header subtitle="Basic Layout" pdf-download-enabled=true`

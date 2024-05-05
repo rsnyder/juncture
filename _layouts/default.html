@@ -48,13 +48,15 @@
   if (document.referrer) {
     let referrer = new URL(document.referrer)
     console.log(referrer)
-    let [acct, repo, ignore, branch, ...path] = referrer.pathname.split('/')
-    getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
+    let [acct, repo, ignore, branch, ...path] = referrer.pathname.split('/').filter(pe => pe)
+    let ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
+    console.log(`ghSource: ${ghSource}`)
+    getMarkdown(ghSource).then(markdown => {
       let html = markdownToHtml(markdown)
       mount(document.body.firstChild, html)
     })
   } else {
     mount()
+    console.log(window.config)
   }
-  console.log(window.config)
 </script>

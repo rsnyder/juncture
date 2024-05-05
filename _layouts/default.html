@@ -47,9 +47,9 @@
   import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/index.js'
   console.log(location)
   if (document.referrer || window.location.search.includes('source')) {
-    let referrer = new URL(document.referrer)
-    console.log(referrer)
-    let [acct, repo, ignore, branch, ...path] = referrer.pathname.split('/').filter(pe => pe)
+    let url = new URL(document.referrer || location.href)
+    console.log(url)
+    let [acct, repo, branch, ...path] = (url.searchParams.get('source') || url.pathname).split('/').filter(pe => pe && pe !== 'blob')
     let ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
     console.log(`ghSource: ${ghSource}`)
     getMarkdown(ghSource).then(markdown => {

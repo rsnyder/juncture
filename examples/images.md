@@ -1,6 +1,6 @@
 <a href="https://v3.juncture-digital.org"><img src="https://v3.juncture-digital.org/images/ve-button.png"></a>
 
-[[!](https://v3.juncture-digital.org/images/ve-button.png)](https://v3.juncture-digital.org)
+[![](//v3.juncture-digital.org/images/ve-button.png)](//v3.juncture-digital.org)
 
 `ve-meta title="Title from Meta"`
 

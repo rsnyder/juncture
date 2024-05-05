@@ -22,17 +22,14 @@ function ghSourceFromLocation() {
 
 async function getMarkdown(ghSource) {
   let extension = ghSource.slice(-3)
-  console.log(`getMarkdown: ghSource=${ghSource} extension=${extension}`)
   if (extension === '.md') {
     return await fetch(`https://raw.githubusercontent.com/${ghSource}`).then(response => response.text())
   } else {
-    let resp = await Promise.all([
+    return await Promise.all([
       fetch(`https://raw.githubusercontent.com/${ghSource}.md`),
       fetch(`https://raw.githubusercontent.com/${ghSource}/README.md`),
-      fetch(`https://raw.githubusercontent.com/${ghSource}/index.md`),
-    ])
-    console.log(resp)
-    return resp.find(r => r.ok).text()
+      fetch(`https://raw.githubusercontent.com/${ghSource}/index.md`)
+    ]).find(r => r.ok)?.text()
   }
 }
 

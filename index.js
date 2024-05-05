@@ -1135,6 +1135,7 @@ function mount(root, html) {
     <li><a href="/about">About</a></li>
   </ul>`
   article.appendChild(footer)
+  console.log(article)
   root.replaceWith(article)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()

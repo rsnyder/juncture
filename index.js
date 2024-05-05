@@ -1124,19 +1124,24 @@ function readMoreSetup() {
   ps.forEach(p => observer.observe(p))
 }
 
+function addFooter(el) {
+  let footer = document.createElement('ve-footer')
+  footer.innerHTML = `<ul>
+    <li><a href="/about">About</a></li>
+  </ul>`
+  el.appendChild(footer)
+  console.log(el)
+}
+
 function mount(root, html) {  
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   setMeta()
   root = root || document.body.firstChild
   html = html || root.innerHTML
-  let article = elFromHtml(structureContent(html))
-  let footer = document.createElement('ve-footer')
-  footer.innerHTML = `<ul>
-    <li><a href="/about">About</a></li>
-  </ul>`
-  article.appendChild(footer)
-  console.log(article)
-  root.replaceWith(article)
+  let articleWrapper = elFromHtml(structureContent(html))
+  let article = articleWrapper.firstChild
+  addFooter(article)
+  root.replaceWith(articleWrapper)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()
   return article

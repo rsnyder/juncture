@@ -1130,7 +1130,6 @@ function addFooter(el) {
     <li><a href="/about">About</a></li>
   </ul>`
   el.appendChild(footer)
-  console.log(el)
 }
 
 function mount(root, html) {  
@@ -1140,7 +1139,7 @@ function mount(root, html) {
   html = html || root.innerHTML
   let articleWrapper = elFromHtml(structureContent(html))
   let article = articleWrapper.firstChild
-  addFooter(article)
+  // addFooter(article)
   root.replaceWith(articleWrapper)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()

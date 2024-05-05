@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+<head></head>
 <body>
-    404
-    <script>
-        console.log(location)
-        console.log(document.referrer)
-        let redirectUrl = `${location.origin}/?source=${location.pathname.slice(1)}`
-        console.log(`redirecting to ${redirectUrl}`)
-        location.href = redirectUrl
-    </script>
+  <script>
+    location.href = `${location.origin}/?source=${location.pathname.slice(1)}`
+  </script>
 </body>
 </html>

@@ -21,10 +21,19 @@ function ghSourceFromLocation() {
 }
 
 async function getMarkdown(ghSource) {
-  let [owner, repo, branch, ...path] = ghSource.split('/')
-  return await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path.join('/')}`)
-    .then(response => response.text())
-    .catch(error => { console.error('Error getting markdown from Github:', error) })
+  let extension = ghSource.slice(-3)
+  console.log(`getMarkdown: ghSource=${ghSource} extension=${extension}`)
+  if (extension === '.md') {
+    return await fetch(`https://raw.githubusercontent.com/${ghSource}`).then(response => response.text())
+  } else {
+    let resp = await Promise.all([
+      fetch(`https://raw.githubusercontent.com/${ghSource}.md`),
+      fetch(`https://raw.githubusercontent.com/${ghSource}/README.md`),
+      fetch(`https://raw.githubusercontent.com/${ghSource}/index.md`),
+    ])
+    console.log(resp)
+    return resp.find(r => r.ok).text()
+  }
 }
 
 async function getGhFile(acct, repo, path, branch) {

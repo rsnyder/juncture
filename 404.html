@@ -4,8 +4,13 @@
 <body>
   <script>
     console.log(location)
-    console.log(document.referrer)
-    // location.href = `${location.origin}/?source=${location.pathname.slice(1)}`
+    let referrer = document.referrer && new URL(document.referrer)
+    console.log(referrer)
+    
+    let source = location.pathname.slice(1)
+    if (referrer) source = `${referrer.searchParams.get('source') || ''}${source}`
+    console.log(`source=${source}`)
+    // location.href = `/?source=${source}`
   </script>
 </body>
 </html>

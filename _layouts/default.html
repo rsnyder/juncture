@@ -47,7 +47,7 @@
   import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/index.js'
   if (document.referrer) {
     let [acct, repo, branch, ...path] = new URL(document.referrer).pathname.split('/').filter(pe => pe && pe !== 'blob')
-    location.href = `/?source=${acct}/${repo}/${branch}/${path.join('/')}`
+    location.search = `source=${acct}/${repo}/${branch}/${path.join('/')}`
   } else if (window.location.search.includes('source')) {
     let [acct, repo, branch, ...path] = (new URL(location.href).searchParams.get('source') || url.pathname).split('/').filter(pe => pe)
     getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown =>

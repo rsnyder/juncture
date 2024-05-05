@@ -27,6 +27,27 @@ async function getMarkdown(ghSource) {
     .catch(error => { console.error('Error getting markdown from Github:', error) })
 }
 
+async function getGhFile(acct, repo, path, branch) {
+  console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path='${path}`)
+  let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
+  let resp = await fetch(url, {cache: 'no-cache'})
+  if (resp.status === 200) {
+    resp = await resp.json()
+    return decodeURIComponent(escape(atob(resp.content)))
+  } else if (resp.status === 403 || resp.status === 401) { // access problem, possibly api rate limit exceeded
+    url = `https://raw.githubusercontent.com/${acct}/${repo}/${branch}/${path}`
+    resp = await fetch(url)
+    if (resp.ok) {
+      return await resp.text()
+    } else {
+      return null
+    }
+  } else {
+    return null
+  }
+}
+// return Promise.resolve({content, sha: resp.sha})
+
 function markdownToHtml(markdown) {
   return marked.use(window.markedFootnote()).parse(markdown)
 }
@@ -1094,11 +1115,12 @@ function readMoreSetup() {
   ps.forEach(p => observer.observe(p))
 }
 
-function mount(root) {  
+function mount(root, html) {  
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   setMeta()
   root = root || document.body.firstChild
-  let article = elFromHtml(structureContent(root.innerHTML))
+  html = html || root.innerHTML
+  let article = elFromHtml(structureContent(html))
   root.replaceWith(article)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()

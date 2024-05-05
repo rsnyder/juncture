@@ -44,8 +44,14 @@
 
 <script src="{{ site.baseurl }}/wc/dist/js/index.js" type="module"></script>
 <script type="module">
-  console.log(document.referrer)
-  import { mount } from '{{ site.baseurl }}/index.js'
-  mount()
+  import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/index.js'
+  if (document.referrer) {
+    let referrer = new URL(document.referrer)
+    let [acct, repo, ignore, branch, ...path] = referrer.pathname.split('/')
+    let html = markdownToHtml(getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`))
+    mount(document.body.firstChild, html)
+  } else {
+    mount()
+  }
   console.log(window.config)
 </script>

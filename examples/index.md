@@ -2,6 +2,8 @@
 
 # Examples
 
+- [Basic](basic)
+
 - [Markdown](markdown)
 - [Layouts](layouts)
 - [Images](images)

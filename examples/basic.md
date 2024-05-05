@@ -1,4 +1,5 @@
-<a href="https://v3.juncture-digital.org"><img src="https://v3.juncture-digital.org/images/ve-button.png"></a>
+[![](https://v3.juncture-digital.org/images/view.svg)](https://editor.juncture-digital.org)
+[![](https://v3.juncture-digital.org/images/preview.svg)](https://v3.juncture-digital.org)
 
 `.showactive`
 

@@ -29,7 +29,7 @@ async function getMarkdown(ghSource) {
       fetch(`https://raw.githubusercontent.com/${ghSource}.md`),
       fetch(`https://raw.githubusercontent.com/${ghSource}/README.md`),
       fetch(`https://raw.githubusercontent.com/${ghSource}/index.md`)
-    ]).find(r => r.ok)?.text()
+    ]).then(resp => resp.find(r => r.ok)?.text())
   }
 }
 

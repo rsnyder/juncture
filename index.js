@@ -1130,6 +1130,11 @@ function mount(root, html) {
   root = root || document.body.firstChild
   html = html || root.innerHTML
   let article = elFromHtml(structureContent(html))
+  let footer = document.createElement('ve-footer')
+  footer.innerHTML = `<ul>
+    <li><a href="/about">About</a></li>
+  </ul>`
+  article.appendChild(footer)
   root.replaceWith(article)
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()

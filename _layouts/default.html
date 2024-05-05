@@ -52,7 +52,6 @@
       mount(document.body.firstChild, markdownToHtml(markdown))
     )
   } else if (document.referrer) {
-    console.log(document.referrer)
     let [acct, repo, branch, ...path] = new URL(document.referrer).pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
     let source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
     window.location.search = `source=${source}`

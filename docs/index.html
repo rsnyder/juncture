@@ -12,12 +12,15 @@
   <div id="app"></div>
   <script>
     window.$docsify = {
-      relativePath: false,
       loadNavbar: true,
       loadSidebar: true,
       // routerMode: 'history', // default: 'hash',
       basePath:
         'https://docs.juncture-digital.org/',
+      alias: {
+        '/.*/_navbar.md': '/_navbar.md',
+        '/.*/_sidebar.md': '/_sidebar.md'
+      }
     };
   </script>
   <!-- Docsify v4 -->

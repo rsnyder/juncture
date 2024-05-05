@@ -44,6 +44,7 @@
 
 <script src="{{ site.baseurl }}/wc/dist/js/index.js" type="module"></script>
 <script type="module">
+  console.log(document.referrer)
   import { mount } from '{{ site.baseurl }}/index.js'
   mount()
   console.log(window.config)

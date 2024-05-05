@@ -550,6 +550,10 @@ function structureContent(html) {
     }
   })
 
+  Array.from(restructured.querySelectorAll('a > img'))
+  .filter(img => img.src.indexOf('ve-button') > -1)
+  .forEach(viewAsButton => viewAsButton?.parentElement?.parentElement?.remove())
+
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
   .filter(heading => !heading.innerHTML.replace('&nbsp;','').trim())
   .forEach(heading => {
@@ -704,8 +708,6 @@ function structureContent(html) {
     // veConfig.replaceWith(header)
     if (veConfig) veConfig.remove()
 
-    let viewAsButton = Array.from(restructured.querySelectorAll('a > img')).find(img => img.src.indexOf('ve-button') > -1)
-    if (viewAsButton) viewAsButton?.parentElement?.parentElement?.remove()
 
     let mainWrapper = document.createElement('main')
     mainWrapper.className = 'page-content markdown-body'

@@ -52,8 +52,9 @@
       mount(document.body.firstChild, markdownToHtml(markdown))
     )
   } else if (document.referrer) {
+    console.log(document.referrer)
     let [acct, repo, branch, ...path] = new URL(document.referrer).pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-    window.location.search = `source=${acct}/${repo}/${branch}/${path.join('/') || 'README.md'}`
+    // window.location.search = `source=${acct}/${repo}/${branch}/${path.join('/')}`
   } else {
     mount()
     console.log(window.config)

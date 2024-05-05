@@ -557,7 +557,8 @@ function structureContent(html) {
   })
 
   Array.from(restructured.querySelectorAll('a > img'))
-  .filter(img => img.src.indexOf('ve-button') > -1)
+  .filter(img => img.src.indexOf('juncture-digital.org/images/') > -1)
+  .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('preview.svg') > -1 || img.src.indexOf('edit.svg') > -1)
   .forEach(viewAsButton => viewAsButton?.parentElement?.parentElement?.remove())
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))

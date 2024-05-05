@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editor</title>
+    <title>Juncture Editor</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
@@ -20,12 +20,11 @@
   <body>
 
     <ve-header title="Editor" auth="github"></ve-header>
-    <ve-content-selector v-if="contentPath !== null" id="contentSelector" compact :content-path="contentPath" mode="essays" sticky></ve-content-selector>
     <textarea id="md-text"></textarea>
     
     <script src="https://v3.juncture-digital.org/wc/dist/js/index.js" type="module"></script>
     <script type="module">
-      import { getMarkdown } from 'https://rdsnyder.github.io/juncture/juncture.js'
+      import { getMarkdown } from 'https://v3.juncture-digital.org/index.js'
 
       if (window.location.search.includes('source')) {
         let [acct, repo, branch, ...path] = new URL(location.href).searchParams.get('source').split('/').filter(pe => pe)

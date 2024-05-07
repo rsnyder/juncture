@@ -221,7 +221,7 @@
   const clientIds:any = {
     'iiif.mdpress.io': '9baccef56771878fd304',
     'www.mdpress.io': '12548925f073dccf16d4',
-    'editor.juncture-digital.org': '1e594e8a8189d18b73f5'
+    'v3.juncture-digital.org': 'Ov23li6BZxay7BGbQwHe'
   }
 
   async function setupGithubAuth() {

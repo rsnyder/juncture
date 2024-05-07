@@ -2,12 +2,15 @@ import { defineCustomElement } from 'vue'
 import ('preline')
 
 import '@shoelace-style/shoelace/dist/components/badge/badge.js'
+import '@shoelace-style/shoelace/dist/components/breadcrumb/breadcrumb.js'
+import '@shoelace-style/shoelace/dist/components/breadcrumb-item/breadcrumb-item.js'
 import '@shoelace-style/shoelace/dist/components/button/button.js'
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
 import '@shoelace-style/shoelace/dist/components/icon/icon.js'
 import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js'
 import '@shoelace-style/shoelace/dist/components/image-comparer/image-comparer.js'
+import '@shoelace-style/shoelace/dist/components/input/input.js'
 import '@shoelace-style/shoelace/dist/components/menu/menu.js'
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js'
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js'
@@ -28,6 +31,7 @@ import EntityCard from './components/EntityCard.ce.vue'
 import EntityInfobox from './components/EntityInfobox.ce.vue'
 import Footer from './components/Footer.ce.vue'
 import Gallery from './components/Gallery.ce.vue'
+import GhFileSelector from './components/GhFileSelector.ce.vue'
 import Header from './components/Header.ce.vue'
 import IFrame from './components/IFrame.ce.vue'
 import Image from './components/Image.ce.vue'
@@ -62,6 +66,7 @@ function defineCustomElements() {
 	customElements.define('ve-entity-infobox', defineCustomElement(EntityInfobox))
 	customElements.define('ve-footer', defineCustomElement(Footer))
 	customElements.define('ve-gallery', defineCustomElement(Gallery))
+	customElements.define('ve-gh-file-selector', defineCustomElement(GhFileSelector))
 	customElements.define('ve-header', defineCustomElement(Header))
 	customElements.define('ve-iframe', defineCustomElement(IFrame))
 	customElements.define('ve-image', defineCustomElement(Image))

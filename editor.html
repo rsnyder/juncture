@@ -7,9 +7,9 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
-    <link href="https://v3.juncture-digital.org/index.css" rel="stylesheet">
     <style>
       body { font-family: Roboto, sans-serif; }
+      textarea { opacity: 0; }
       .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 80px); }
       .EasyMDEContainer .CodeMirror-code { font-size: 1.2em; }
       article.j1 { height: unset; }
@@ -20,19 +20,42 @@
   <body>
 
     <ve-header title="Editor" auth="github"></ve-header>
+    <ve-gh-file-selector id="gh-selector" :gh-source="ghSource"></ve-gh-file-selector>
     <textarea id="md-text"></textarea>
     
     <script src="https://v3.juncture-digital.org/wc/dist/js/index.js" type="module"></script>
     <script type="module">
       import { getMarkdown } from 'https://v3.juncture-digital.org/index.js'
 
-      if (window.location.search.includes('source')) {
-        let [acct, repo, branch, ...path] = new URL(location.href).searchParams.get('source').split('/').filter(pe => pe)
-        let ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
+      const sourceArg = new URL(location.href).searchParams.get('source')
+      const referrer = document.referrer && new URL(document.referrer)
+      
+      if (!sourceArg && referrer) {
+        // redirect to editor with source query if referrer is a markdown file
+        let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+        window.location.href = `${window.location.origin}/editor?source=${`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`}`
+      } 
 
-        let element = document.getElementById('md-text')
+      let ghSource
+      if (sourceArg) {
+        let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
+        ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
+        document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
+      }
+
+      init()
+
+      function init() {
+
+        document.getElementById('gh-selector').addEventListener('file-selected', e => {
+          let ghSource = e.detail[0]
+          window.history.replaceState({}, null, `/editor?source=${ghSource}`)
+          getMarkdown(ghSource).then(markdown => easymde.value(markdown))
+          styleJunctureElements()
+        })
+
         const easymde = new EasyMDE({
-          element,
+          element: document.getElementById('md-text'),
           previewRender: togglePreview,
           spellChecker: false,
           toolbar: [
@@ -40,14 +63,7 @@
               ...['undo', 'redo', '|','bold', 'italic', 'heading', 'quote'],
               ...['unordered-list', 'ordered-list', 'link']
             ], 
-            ...[
-              {
-                class: 'mark',
-                action: () => {this.markText()},
-                className: 'fa fa-code',
-                title: 'Mark Text ',
-                attributes: {id: 'mark'}
-              },           
+            ...[           
               '|', 
               'preview',
               {
@@ -72,17 +88,17 @@
             ]
           ]
         })
-
-        getMarkdown(ghSource).then(markdown => easymde.value(markdown))
-
-      } else if (document.referrer) {
-        let [acct, repo, branch, ...path] = new URL(document.referrer).pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-        let source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
-        window.location.href = `${window.location.origin}/edit?source=${source}`
-      } 
+      }
 
       function togglePreview(md, preview) {
         return `<ve-article><pre>${md}</pre></ve-article>`
+      }
+
+      function styleJunctureElements() {
+        setTimeout(() =>
+          document.querySelector('.EasyMDEContainer').querySelectorAll('span.cm-formatting-code + span.cm-comment').forEach((el, i) => {
+            el.style.color = 'red'
+        }), 100)
       }
     
     </script>

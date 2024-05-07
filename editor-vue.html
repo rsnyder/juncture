@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Juncture Editor</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
+  <script type="importmap">{"imports": {"vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"}}</script>
+  <style>
+    [v-cloak] {display: none}
+    body { font-family: Roboto, sans-serif; }
+    .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 80px); }
+    .EasyMDEContainer .CodeMirror-code { font-size: 1.2em; }
+    article.j1 { height: unset; }
+    @media (min-width: 800px) { .j1 .viewers { height: calc(100dvh - 192px); } }
+    .CodeMirror-line .cm-header { font-size: 1.4em; }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <ve-header title="Editor" auth="github"></ve-header>
+  <div :style="{
+    fontFamily: 'Roboto,sans-serif',
+    height: `calc(100vh - ${inIframe ? 60 : 140}px)`,
+    overflowY: 'hidden',
+    position: 'relative'
+  }">
+    <textarea v-cloak id="textarea">Loading...</textarea>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script type="module">
+
+import { computed, createApp, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+
+if (!window.location.search.includes('source') && document.referrer) {
+  // redirect to editor with source query if referrer is a markdown file
+  let [acct, repo, branch, ...path] = new URL(document.referrer).pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+  window.location.href = `${window.location.origin}/edit?source=${`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`}`
+}
+
+createApp({setup() {
+
+  const textarea = ref()
+  const input = ref(null)
+
+  watch(textarea, (textarea) => {
+    console.log('textarea:', textarea)
+  })
+
+  const root = ref()
+
+  const sourceArg = ref(new URL(location.href).searchParams.get('source'))
+  const easymde = ref()
+  watch(easymde, (easymde) => {
+   console.log('easymde:', toRaw(easymde))
+  })
+    
+  const ghSource = computed(() => {
+    if (!sourceArg.value) return
+    let [owner, repo, branch, ...path] = sourceArg.value.split('/').filter(pe => pe)
+    return { owner, repo, branch, path: path.join('/') }
+  })
+  watch(ghSource, () => {
+    console.log(`ghSource=${ghSource.value}`)
+    // getMarkdown() 
+  })
+
+  const markdown = ref()
+  watch(markdown, (markdown) => {
+    console.log('markdown', markdown.length)
+    console.log(markdown)
+    if (markdown) easymde.value.value('# Hello, world!') // markdown)
+    // easymde.value.value(markdown)
+  })
+
+  onMounted(() => {
+    let element = document.getElementById('textarea')
+
+    console.log('element:', element)
+    easymde.value = new EasyMDE({
+      // element,
+      // previewRender: togglePreview,
+      spellChecker: false,
+      toolbar: [
+        ...[
+          ...['undo', 'redo', '|','bold', 'italic', 'heading', 'quote'],
+          ...['unordered-list', 'ordered-list', 'link']
+        ], 
+        ...[           
+          '|', 
+          'preview',
+          {
+          class: 'save',
+            action: () => {saveFile()},
+            className: 'fa fa-download',
+            title: 'Save file',
+            attributes: {id: 'save'}
+          }, {
+          class: 'copy',
+            action: () => {copyText()},
+            className: 'fa fa-copy',
+            title: 'Copy text',
+            attributes: {id: 'copy'}
+          }, { 
+            class: 'Share',
+            action: () => {share()},
+            className: 'fa fa-share',
+            title: 'Share',
+            attributes: {id: 'share'}
+          }
+        ]
+      ]
+    })
+
+    nextTick(() => {
+      if (ghSource.value) getMarkdown()
+    })
+
+    // 
+  })
+
+  function getMarkdown() {
+    fetch(`https://raw.githubusercontent.com/${ghSource.value.owner}/${ghSource.value.repo}/${ghSource.value.branch}/${ghSource.value.path}`)
+      .then(response => response.text())
+      .then(md => { markdown.value = md })
+      .catch(error => { console.error('Error getting markdown from Github:', error) })
+  }
+
+  function togglePreview(md, preview) {
+    return `<ve-article><pre>${md}</pre></ve-article>`
+  }
+
+  function saveFile() {
+    console.log('saveFile')
+  }
+
+  function copyText() {
+    console.log('copyText')
+  }
+
+  function share() {
+    console.log('share')
+  }
+
+return { ghSource, markdown, textarea }
+}}).mount('#app')
+
+</script>
+
+</body>
+</html>

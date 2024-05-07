@@ -139,16 +139,19 @@ async def serve(path: Optional[str] = None):
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
 
   if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
+    logger.info('here')
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
 
   elif ext:
     local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}'
     if not os.path.exists(local_file_path):
       return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
-  else: 
-    local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}/index.html'
-    if os.path.exists(local_file_path):
-      ext = 'html'
+  else:
+    for suffix in ('.html', '/index.html'):
+      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}{suffix}'
+      if os.path.exists(local_file_path):
+        ext = 'html'
+        break
     else:
       for mdIndex in ['index.md', 'README.md']:
         if os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'):

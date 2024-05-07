@@ -5,7 +5,7 @@
   <script>
     console.log(location)
     let referrer = document.referrer && new URL(document.referrer)
-    console.log(referrer)
+    console.log('referrer', referrer)
     
     let source = location.pathname.slice(1)
     if (referrer) source = `${referrer.searchParams.get('source') || ''}${source}`

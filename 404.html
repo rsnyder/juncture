@@ -3,14 +3,10 @@
 <head></head>
 <body>
   <script>
-    console.log(location)
-    let referrer = document.referrer && new URL(document.referrer)
-    console.log('referrer', referrer)
-    
+    let referrer = document.referrer && new URL(document.referrer)    
     let source = location.pathname.slice(1)
     if (referrer) source = `${referrer.searchParams.get('source') || ''}${source}`
-    console.log(`source=${source}`)
-    // location.href = `/?source=${source}`
+    location.href = `/?source=${source}`
   </script>
 </body>
 </html>

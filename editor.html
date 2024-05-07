@@ -15,6 +15,7 @@
       article.j1 { height: unset; }
       @media (min-width: 800px) { .j1 .viewers { height: calc(100dvh - 192px); } }
       .CodeMirror-line .cm-header { font-size: 1.4em; }
+      button.disabled { display:none; }
     </style>
   </head>
   <body>
@@ -43,15 +44,22 @@
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       }
 
+      let repoIsWritable = false
+
       init()
 
       function init() {
 
-        document.getElementById('gh-selector').addEventListener('file-selected', e => {
+        let ghSelector = document.getElementById('gh-selector')
+        ghSelector.addEventListener('file-selected', e => {
           let ghSource = e.detail[0]
           window.history.replaceState({}, null, `/editor?source=${ghSource}`)
           getMarkdown(ghSource).then(markdown => easymde.value(markdown))
           styleJunctureElements()
+        })
+        ghSelector.addEventListener('repo-is-writable', e => {
+          repoIsWritable = e.detail[0]
+          setSaveButtonState()
         })
 
         const easymde = new EasyMDE({
@@ -88,6 +96,16 @@
             ]
           ]
         })
+
+        setSaveButtonState()
+      }
+
+      function setSaveButtonState() {
+        let saveButton = document.getElementById('save')
+        if (saveButton) {
+          if (repoIsWritable) saveButton.removeAttribute('disabled')
+          else  saveButton.setAttribute('disabled', '')
+        }
       }
 
       function togglePreview(md, preview) {

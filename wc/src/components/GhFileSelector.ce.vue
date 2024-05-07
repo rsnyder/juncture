@@ -52,7 +52,7 @@
   import { onMounted, ref, toRaw, watch } from 'vue'
   import { GithubClient } from '../gh-utils'
 
-  const emit = defineEmits(['fileSelected'])
+  const emit = defineEmits(['fileSelected', 'repoIsWritable'])
 
   const props = defineProps({
     ghSource: { type: String }
@@ -113,8 +113,9 @@
     acct.value = _acct.login
   }
   function inputHandler(evt:KeyboardEvent) {
-    let typedInput = (acctInput.value as HTMLInputElement).value
-    if (acctMenu.value) acctMenu.value.style.display = typedInput.trim().length ? 'none' : 'block'
+    let typedInput = (acctInput.value as HTMLInputElement).value.trim()
+    // console.log(`typedInput=${typedInput.length}`)
+    if (acctMenu.value) acctMenu.value.style.display = typedInput.length ? 'none' : 'block'
     if (evt.key === 'Enter') acct.value = typedInput
   }
 
@@ -137,6 +138,11 @@
     requested.value = null
     repo.value = _repo.name
   }
+  watch(userCanUpdateRepo, (userCanUpdateRepo) => {
+    // console.log(`userCanUpdateRepo=${userCanUpdateRepo}`)
+    emit('repoIsWritable', userCanUpdateRepo)
+
+  })
 
   // Branch
   const branches = ref<any[]>([])
@@ -220,7 +226,7 @@
     requested.value = {acct: _acct, repo: _repo, branch: _branch, path: _path}
   }
   watch(requested, (requested) => {
-    if (requested) console.log('requested', toRaw(requested))
+    // if (requested) console.log('requested', toRaw(requested))
     if (requested?.acct && githubClient.value && !acct.value) acct.value = requested.acct
   })
 

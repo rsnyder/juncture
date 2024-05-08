@@ -159,6 +159,9 @@ p audio {
   vertical-align: middle;
 }
 
+.showactive {
+  padding-bottom: 80dvh;
+}
 .showactive .active {
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
@@ -394,7 +397,7 @@ table[id] {
 */
 
 article.j1 {
-  height: 100%;
+  /* height: 100%; */
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
@@ -425,7 +428,7 @@ article.j1 > * {
   background-color: #f8f8f8 !important;
   font-size: 1.3em !important;
   line-height: 1.6 !important;
-  padding: 0.5em;
+  /* padding: 0.5em; */
 }
 
 .j1 .content {
@@ -487,7 +490,7 @@ article.j1 > * {
   
   .j1 main {
     grid-template-columns: 1fr 1fr;
-    padding: 1em;
+    padding-left: 1em;
   }
 
   .j1 .content {
@@ -516,7 +519,6 @@ article.j1 > * {
   .j1 .viewers {
     grid-area: viewers;
     display: block;
-    border: 1px solid green;
     height: calc(100dvh - 100px);
     margin-top: 0;
   }

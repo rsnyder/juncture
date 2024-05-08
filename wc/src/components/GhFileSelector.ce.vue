@@ -61,20 +61,22 @@
 
 <script setup lang="ts">
 
-  import { onMounted, ref, toRaw, watch } from 'vue'
+  import { defineExpose, onMounted, ref, toRaw, watch } from 'vue'
   import { GithubClient } from '../gh-utils'
 
+  defineExpose({ GithubClient })
+  
   const emit = defineEmits(['fileSelected', 'repoIsWritable'])
 
   const props = defineProps({
     ghSource: { type: String }
   })
-  watch(props, () => init())
-  onMounted(() => init())
+  watch(props, () => init() )
+  onMounted(() => init() )
 
   function init() {
-    parseGhSource() 
     getAuthToken()
+    parseGhSource() 
   }
 
   const acctInput = ref<HTMLElement | null>(null)
@@ -96,6 +98,7 @@
 
   watch(githubClient, async (githubClient) => {
     // console.log('githubClient', isLoggedIn.value, toRaw(requested.value))
+    /*
     if (isLoggedIn.value) {
       getAccounts()
       username.value = await githubClient.user().then((userData:any) => userData.login)
@@ -105,12 +108,14 @@
     } else if (requested.value?.acct) {
       acct.value = requested.value.acct
     }
+    */
   })
 
   // Account
   const accts = ref<any[]>([])
   const acct = ref('')
   watch(accts, (accts) => {
+    if (!accts.length) return
     // console.log('accts', toRaw(accts))
     let selected = accts.find(acct => acct.login === requested.value?.acct)
     acct.value = selected?.login || requested.value?.acct || accts[0].login
@@ -126,7 +131,7 @@
   }
   function inputHandler(evt:KeyboardEvent) {
     let typedInput = (acctInput.value as HTMLInputElement).value.trim()
-    console.log(`typedInput=${typedInput.length}`)
+    // console.log(`typedInput=${typedInput.length}`)
     if (acctMenu.value) acctMenu.value.style.display = typedInput.length ? 'none' : 'block'
     if (evt.key === 'Enter') acct.value = typedInput
   }
@@ -139,6 +144,7 @@
     getRepositories()
   })
   watch(repos, (repos) => {
+    if (!repos.length) return
     // console.log('repos', toRaw(repos))
     let selected = repos.find(repo => repo.name === requested.value?.repo) || repos[0]
     repo.value = selected.name
@@ -160,6 +166,7 @@
   const branches = ref<any[]>([])
   const branch = ref('')
   watch(repo, (repo) => {
+    if (!repo) return
     // console.log(`repo=${repo}`)
     if (isLoggedIn.value) {
       githubClient.value.user()
@@ -174,7 +181,8 @@
   }
 
   let defaultBranch: string
-  watch(branches, async () => {
+  watch(branches, async (branches) => {
+    if (!branches.length) return
     // console.log('branches', toRaw(branches))
     if (!defaultBranch && acct.value && repo.value) defaultBranch = await githubClient.value.defaultBranch(acct.value, repo.value)
     branch.value = defaultBranch || branches[0]?.name
@@ -193,19 +201,21 @@
   // Path
   const path = ref<any[]>([])
   watch(path, () => {
+    if (!path.value.length) return
     // console.log('path', toRaw(path.value))
     let lastIdx = path.value.length-1
     let lastPathElement = path.value[lastIdx]
     // console.log(toRaw(lastPathElement))
-    if (lastPathElement.selected.type === 'dir') {
+    if (lastPathElement?.selected?.type === 'dir') {
       getDirList(path.value.map((p:any) => p.selected.name).join('/')).then((dirList) => {
         // console.log('dirList', toRaw(dirList))
         let selected = selectFromDirlist(dirList, lastIdx+1)
         path.value = [...path.value, {dirList, selected}]
       })
     } else {
+      // console.log(acct.value, repo.value, branch.value, toRaw(path.value))
       let ghSource = `${acct.value}/${repo.value}/${branch.value}/${path.value.map((p:any) => p.selected.name).join('/')}`
-      // console.log(`ghSource=${ghSource}`)
+      console.log(`ghSource=${ghSource}`)
       emit('fileSelected', ghSource)
     }
   })
@@ -233,16 +243,36 @@
     return [...dirs, ...files]
   }
 
-  function parseGhSource() {
+  function reset() {
+    accts.value = []
+    repos.value = []
+    branches.value = []
+    path.value = []
+    acct.value = ''
+    repo.value = ''
+    branch.value = ''
+  }
+
+  async function parseGhSource() {
     if (!props.ghSource) return
+    reset()
     // console.log(`ghSource=${props.ghSource}`);
     let [_acct, _repo, _branch, ..._path] = (props.ghSource || '').split('/').filter(pe => pe)
-    // console.log(`ghSource=${props.ghSource} acct=${_acct}, repo=${_repo}, branch=${_branch}, path=${_path}`)
     requested.value = {acct: _acct, repo: _repo, branch: _branch, path: _path}
+    if (isLoggedIn.value) {
+      getAccounts()
+      username.value = await githubClient.value.user().then((userData:any) => userData.login)
+      if (acct.value && repo.value && username.value) {
+        githubClient.value.isCollaborator(acct.value, repo.value, username.value).then((isCollaborator:boolean) => userCanUpdateRepo.value = isCollaborator)
+      }
+    } else if (requested.value?.acct) {
+      acct.value = requested.value.acct
+    }
+
   }
   watch(requested, (requested) => {
     // if (requested) console.log('requested', toRaw(requested))
-    if (requested?.acct && githubClient.value && !acct.value) acct.value = requested.acct
+    // if (requested?.acct && githubClient.value && !acct.value) acct.value = requested.acct
   })
 
   async function getUnscopedToken() {

@@ -41,10 +41,11 @@
     if (props.entities) getEntityData(props.entities.split(' ')).then(data => entities.value = data)
     setPanelHeight()
     new ResizeObserver(() => { documentWidth.value = document.body.getBoundingClientRect().width }).observe(document.body)
+    new ResizeObserver(() => { setPanelHeight() }).observe(host.value.parentElement)
   })
 
   const panelHeight = ref()
-  // watch (panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
+  watch (panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
 
   const params = ref<any[]>([])
   // watch (params, (params) => { if (params.length) console.log(toRaw(params)) })
@@ -208,6 +209,12 @@
 </template>
 
 <style>
+
+  :host {
+    display: block;
+    height: 100%;
+    border: 1px solid red;
+  }
 
   #main {
     background-color: black;

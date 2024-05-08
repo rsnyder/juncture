@@ -68,8 +68,8 @@ template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CON
 html_template = open(template_path, 'r').read()
 
 if LOCAL_WC: 
-  html_template = re.sub(r'https:\/\/.+\/wc/dist/js/index\.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', html_template)
-  html_template = re.sub(r'https:\/\/.+\/(index\.(css|js))', f'http://localhost:{PORT}/\\1', html_template)
+  html_template = re.sub(r'["\'].*/wc/dist/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', html_template)
+  html_template = re.sub(r'["\'].*/(index\.(css|js))["\']', f'"http://localhost:{PORT}/\\1"', html_template)
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
 html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPOSITORY)

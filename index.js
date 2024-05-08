@@ -74,7 +74,7 @@ function computeDataId(el) {
 }
 
 const components = {
-  juncture2: {
+  juncture3: {
     've-audio': {
       booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
       class: new Set(),
@@ -136,7 +136,7 @@ const components = {
       ignore: new Set()
     },
   },
-  juncture3: {
+  juncture2: {
     've-card': {
       booleans: new Set([]),
       class: new Set(),
@@ -559,7 +559,6 @@ function structureContent(html) {
   Array.from(restructured.querySelectorAll('a > img'))
   .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('preview.svg') > -1 || img.src.indexOf('edit.svg') > -1)
   .forEach(viewAsButton => {
-    console.log(viewAsButton.src)
     viewAsButton?.parentElement?.parentElement?.remove()
   })
 
@@ -799,23 +798,10 @@ function structureContent(html) {
       viewers.dataset.id = id
       wrapper.appendChild(viewers)
 
-      function setViewersPosition() {
-        let top = header.getBoundingClientRect().top
-        let height = header.getBoundingClientRect().height
-        let offset = top + height
-        viewers.style.top = `${offset}px`
-        viewers.style.height = `calc(100dvh - ${offset+2}px)`
-      }
-
       let sib = seg.nextSibling
       while (sib && sib.tagName === 'PARAM') {
         viewers.appendChild(sib)
         sib = seg.nextSibling
-      }
-
-      if (!isMobile()) {
-        document.addEventListener('scroll', () => setViewersPosition())
-        setTimeout(() => setViewersPosition(), 0)
       }
   
       seg.replaceWith(wrapper)
@@ -1126,12 +1112,16 @@ function readMoreSetup() {
   ps.forEach(p => observer.observe(p))
 }
 
-function addFooter(el) {
-  let footer = document.createElement('ve-footer')
-  footer.innerHTML = `<ul>
-    <li><a href="/about">About</a></li>
-  </ul>`
-  el.appendChild(footer)
+
+function setViewersPosition() {
+  let header = document.querySelector('ve-header')
+  let viewers = document.querySelector('.viewers')
+  let top = header.getBoundingClientRect().top
+  let height = header.getBoundingClientRect().height
+  let offset = top + height
+  viewers.style.top = `${offset}px`
+  viewers.style.height = `calc(100dvh - ${offset+2}px)`
+  console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
 }
 
 function mount(root, html) {  
@@ -1141,8 +1131,14 @@ function mount(root, html) {
   html = html || root.innerHTML
   let articleWrapper = elFromHtml(structureContent(html))
   let article = articleWrapper.firstChild
-  // addFooter(article)
   root.replaceWith(articleWrapper)
+
+  if (isJunctureV1 && !isMobile()) {
+    document.addEventListener('scroll', () => setViewersPosition())
+    setTimeout(() => setViewersPosition(), 0)
+  }
+
+  console.log(article.querySelector('ve-video[sync]'))
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()
   return article

@@ -225,7 +225,6 @@
   }
 
   async function setupGithubAuth() {
-    console.log('GithubClient.setupGithubAuth', location, document.referrer)
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
@@ -258,7 +257,7 @@
         let token = await resp.text()
         let _user = await getGhUserInfo(token)
         user.value = _user
-        userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, token)
+        userCanUpdateRepo.value = await isCollaborator(config.value?.github?.owner_name, config.value?.github?.repository_name, user.value.username, token)
         location.reload()
       }
     } else {

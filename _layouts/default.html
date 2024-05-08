@@ -53,8 +53,8 @@
     )
   } else if (document.referrer) {
     let referrer = new URL(document.referrer)
+    console.log('referrer', referrer)
     if (referrer.host === 'github.com') {
-      console.log('referrer', referrer)
       let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
       let source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
       window.location.search = `source=${source}`

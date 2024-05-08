@@ -229,9 +229,11 @@
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
-    let code = (new URL(window.location.href)).searchParams.get('code')
+    let searchParams = new URL(window.location.href).searchParams
+    let code = searchParams.get('code')
+    let source = searchParams.get('source')
     if (code) {
-      let href = `${location.pathname}${location.hash}`
+      let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
       window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
       let resp = await fetch(url)

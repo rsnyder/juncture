@@ -225,6 +225,7 @@
   }
 
   async function setupGithubAuth() {
+    console.log('GithubClient.setupGithubAuth', location)
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null

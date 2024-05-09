@@ -695,6 +695,18 @@ function structureContent(html) {
     }
   })
 
+  Array.from(restructured.querySelectorAll('span'))
+  .filter(span => Array.from(span.attributes).find(attr => /(zoomto|flyto)$/.test(attr.name)))
+  .forEach(span => {
+    let attr = Array.from(span.attributes).find(attr => /(zoomto|flyto)$/.test(attr.name))
+    let [trigger, target, action] = attr.name.split('-').slice(1)
+    let value = attr.value
+    let link = document.createElement('a')
+    link.innerHTML = span.innerHTML
+    link.setAttribute('href', `${action}/${trigger}/${value}`)
+    span.replaceWith(link)
+  })
+
   let article = document.createElement('article')
   article.className = ''
   let header
@@ -1121,7 +1133,7 @@ function setViewersPosition() {
   let offset = top + height
   viewers.style.top = `${offset}px`
   viewers.style.height = `calc(100dvh - ${offset+2}px)`
-  console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
+  // console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
 }
 
 function mount(root, html) {  
@@ -1138,7 +1150,7 @@ function mount(root, html) {
     setTimeout(() => setViewersPosition(), 0)
   }
 
-  console.log(article.querySelector('ve-video[sync]'))
+  // console.log(article.querySelector('ve-video[sync]'))
   observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
   readMoreSetup()
   return article

@@ -45,7 +45,7 @@
   })
 
   const panelHeight = ref()
-  watch (panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
+  // watch (panelHeight, (panelHeight) => { console.log(`panelHeight=${panelHeight}`) })
 
   const params = ref<any[]>([])
   // watch (params, (params) => { if (params.length) console.log(toRaw(params)) })

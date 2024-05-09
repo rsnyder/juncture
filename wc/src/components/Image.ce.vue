@@ -219,7 +219,6 @@
 
   onMounted(() => {
     evalProps()
-    addInteractionHandlers()
   })
 
   // find an item in a IIIF manifest
@@ -287,6 +286,7 @@
     osd.value.addHandler('viewport-change', () => watchCoords())
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     configureImageViewerBehavior()
+    addInteractionHandlers()
 
     setTimeout(() => setViewportCoords(), 500)
     if (tileSources.value.length) osd.value?.open(tileSources.value)
@@ -332,27 +332,45 @@
   }
 
   function addInteractionHandlers() {
-    let el = host.value.parentElement
-    while (el?.parentElement && el.tagName !== 'MAIN') {
-      (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
+
+    if (host.value.parentElement.tagName === 'SL-TAB-PANEL') { // embedded in a Juncture1 viewers component
+      (Array.from(document.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
         let link = new URL(anchorElem.href)
-        let path = link.pathname.split('/').filter((p:string) => p)
+        let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
         let zoomIdx = path.indexOf('zoom')
-        if (zoomIdx >= 0 && path.length > zoomIdx+1) {
-          let imageEl = findImageEl(anchorElem)
-          if (imageEl) {
-            let region = path[zoomIdx+1]
+        if (zoomIdx >= 0) {
+          let region = path[path.length-1]
+          let trigger = path.length > zoomIdx + 1 ? path[zoomIdx+1] : 'click'
+          anchorElem.classList.add('zoom')
+          anchorElem.href = 'javascript:;'
+          anchorElem.setAttribute('data-region', region)
+          anchorElem.addEventListener(trigger, (evt:Event) => {
+            let region = (evt.target as HTMLElement).getAttribute('data-region')
+            if (region) zoomto(region) 
+          })
+        }
+      })
+    } else {
+      let el = host.value.parentElement
+      while (el?.parentElement && el.tagName !== 'MAIN') {
+        (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
+          let link = new URL(anchorElem.href)
+          let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
+          let zoomIdx = path.indexOf('zoom')
+          if (zoomIdx >= 0) {
+            let region = path[path.length-1]
+            let trigger = path.length > zoomIdx + 1 ? path[zoomIdx+1] : 'click'
             anchorElem.classList.add('zoom')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-region', region)
-            anchorElem.addEventListener('click', (evt:Event) => {
+            anchorElem.addEventListener(trigger, (evt:Event) => {
               let region = (evt.target as HTMLElement).getAttribute('data-region')
               if (region) zoomto(region) 
             })
           }
-        }
-      })
-      el = el.parentElement;
+        })
+        el = el.parentElement;
+      }
     }
   }
 

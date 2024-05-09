@@ -325,6 +325,7 @@
     
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
+          .filter(item => item['ve-map-marker'] === undefined)
           .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
           .map (item => {
             let geoJsonUrl = item.geojson || item.url
@@ -342,15 +343,28 @@
             return item
           })
           .map(item => ({url:item.geojson, item}))
+        
         let responses = await Promise.all(geojsonUrls.map(item => fetch(item.url)))
-        let _geoJSONs = await Promise.all(responses.map((resp:any) => resp.json()))
-    
+        let _geoJSONs = await Promise.all(
+          responses.map(async (resp:any, idx) => {
+            try {
+              return JSON.parse(await resp.text())
+            } catch (e) {
+              console.log('Error parsing JSON', geojsonUrls[idx].url)
+              console.log(e)
+              return null
+            }
+          })
+        )
+        // console.log(_geoJSONs)
+
         let geojsonsByLayer: any = {}
         for (let i = 0; i < geojsonUrls.length; i++) {
           if (geojsonUrls[i].item.id && /^Q[0-9]+$/.test(geojsonUrls[i].item.id)) {
             geojsonUrls[i].item.qid = geojsonUrls[i].item.id
             delete geojsonUrls[i].item.id
           }
+          if (_geoJSONs[i] === null) continue
           if (_geoJSONs[i].type === 'FeatureCollection') {
             _geoJSONs[i].features.forEach((feature:any) => feature.properties = {...feature.properties, ...geojsonUrls[i].item})
           } else {
@@ -520,17 +534,54 @@
         return L.geoJSON(data, {
           pointToLayer: (feature, _latlng) => {
             const _props = feature.properties
-            let iconOptions:any = {...markerIconTemplate}
-            if (feature.properties.icon) iconOptions.iconUrl = feature.properties.icon
-            if (feature.properties.shadowUrl)  iconOptions.shadowUrl = feature.properties.shadowUrl
-            if (feature.properties.iconRetinaUrl)  iconOptions.iconRetinaUrl = feature.properties.iconRetinaUrl
-    
-            if (_props['markerType'] === 'circle') {
-              return L.circleMarker(_latlng, { radius: _props.radius || 4 })
+            // console.log(toRaw(_props))
+            
+            let marker
+
+            if (_props['ve-map-marker'] !== undefined && _props.url) { // image marker
+              let [width, height] = _props.size
+                ? _props.size.split(',').map((item:any) => Number(item))
+                : [100, 100]
+              let style = `width:${width}px;height:${height}px;`
+              if (_props.circle) style += `border-radius:50%;border:4px solid ${_props.color || '#555555'};`
+              let img = `<img src="${_props.url}" style="${style}"/>`
+              marker = new L.Marker(_latlng, {
+                icon: L.divIcon({
+                  html: img,
+                  className: 'image-icon', // Specify a class name we can refer to in CSS.
+                  iconSize: [52, 52] // Set a markers width and height.
+                }) 
+              })
             } else {
-              // return makeMarker(latLng, _props)
-              return L.marker(_latlng, { icon: new L.Icon(iconOptions) })
+              let iconOptions:any = {...markerIconTemplate}
+              if (feature.properties.icon) iconOptions.iconUrl = feature.properties.icon
+              if (feature.properties.shadowUrl) iconOptions.shadowUrl = feature.properties.shadowUrl
+              if (feature.properties.iconRetinaUrl) iconOptions.iconRetinaUrl = feature.properties.iconRetinaUrl
+              if (feature.properties.size) iconOptions.iconSize = _props.size.split(',').map((item:any) => Number(item))
+            
+              if (_props['markerType'] === 'circle' || _props['marker-symbol'] === 'circle') {
+                let radius = _props.radius
+                  ? Number(_props.radius)
+                  : _props['marker-size']
+                    ? _props['marker-size'] === 'small'
+                      ? 8
+                      : _props['marker-size'] === 'medium'
+                        ? 16
+                        : 32
+                    : 4
+                let color = _props['marker-color'] || '#2C84CB'
+                let fillColor = _props['fill'] || color
+                let weight = Number(_props['stroke-width']) || 0
+                let stroke = weight > 0 ? true : false
+                let options = { radius, fillColor, stroke, color, weight }
+                // console.log('markerOptions', options)
+                marker = L.circleMarker(_latlng, options)
+              } else {
+                // return makeMarker(latLng, _props)
+                marker = L.marker(_latlng, { icon: new L.Icon(iconOptions)})
+              }
             }
+            return marker
           },
           onEachFeature: async (feature, layer) => {
             let fg: L.GeoJSON = layer as L.GeoJSON

@@ -792,6 +792,11 @@ function structureContent(html) {
     .forEach(param => param.remove())
 
   if (isJunctureV1) {
+  
+    function serializeProps(props) {
+      return Object.entries(props).map(([key, value]) => `${key}="${value}"`).join(' ')
+    }
+
     Array.from(article.querySelectorAll('[data-id]'))
     .forEach(seg => {
       if (seg.tagName === 'SECTION') return
@@ -804,19 +809,123 @@ function structureContent(html) {
       seg.removeAttribute('data-id')
       seg.className = ''
       wrapper.appendChild(seg.cloneNode(true))
-      let viewers = document.createElement('ve-j1-viewers')
-      // viewers.className = 'viewers'
-      viewers.setAttribute('entities', seg.getAttribute('data-entities') || '')
-      viewers.dataset.id = id
-      wrapper.appendChild(viewers)
+      let viewersDiv = document.createElement('div')
 
+      viewersDiv.setAttribute('data-id', id)
+      viewersDiv.className = 'viewers'
+      viewersDiv.style = 'visibility: hidden; position:fixed; right:0; height: calc(-100px + 100dvh); width:50%;'
+
+      let params = []
       let sib = seg.nextSibling
       while (sib && sib.tagName === 'PARAM') {
-        viewers.appendChild(sib)
-        sib = seg.nextSibling
+        params.push(sib)
+        sib = sib.nextSibling
       }
-  
+      params.forEach(p => viewersDiv.appendChild(p))
+      wrapper.appendChild(viewersDiv)
+
       seg.replaceWith(wrapper)
+    })
+
+    Array.from(article.querySelectorAll('[data-id]'))
+    .forEach(seg => {
+      if (seg.tagName === 'SECTION') return
+      let id = seg.getAttribute('data-id') || ''
+      let viewersDiv = seg.querySelector('.viewers')
+      if (!viewersDiv) return
+      const params = Array.from(viewersDiv.querySelectorAll(':scope > param'))
+        .map((param, idx) => {
+          let obj = { ...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} }
+          return obj
+        })
+      let idx = params.length
+      let parent = viewersDiv.parentElement
+      while (parent && parent.tagName !== 'ARTICLE') {
+        // let parentParams = Array.from(parent.querySelectorAll(':scope > param'))
+        // console.log(parent, parentParams.length)
+        Array.from(parent.querySelectorAll(':scope > param')).forEach(param => {
+          params.push({...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} })
+          idx++
+        })
+        parent = parent.parentElement
+      }
+
+      const veTags = {}
+      params.forEach(p => {
+        let tag = Object.keys(p).find(k => k.indexOf('ve-') === 0 && !p[k])
+        if (!veTags[tag]) veTags[tag] = []
+        // delete p[tag]
+        veTags[tag].push(p)
+      })
+
+      function propsList(tagProps) {
+        let ul = document.createElement('ul')
+        tagProps.forEach(tp => {
+          let li = document.createElement('li')
+          li.innerHTML = serializeProps(tp)
+          ul.appendChild(li)
+        })
+        return ul
+      }
+
+      function setElProps(el, props, nameMap) {
+        Object.entries(props)
+          .filter(([key, value]) => nameMap[key] !== undefined)
+          .forEach(([key, value]) => el.setAttribute(nameMap[key] || key, value === 'false' ? '' : value === 'true' ? null : value))
+      }
+
+      function makeViewerEl(tagName, slotName, tagProps) {
+        // if (slotName !== 'data') console.log(`makeViewerEL ${slotName} ${Object.keys(tagProps[0] || {})}`)
+        let viewerEl = document.createElement(tagName)
+        viewerEl.setAttribute('slot', slotName)
+        if (slotName === 've-compare') {
+          setElProps(viewerEl, tagProps[0], {caption:''})
+          viewerEl.appendChild(propsList(tagProps))
+        } else if (slotName === 've-iframe') {
+          setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
+        } else if (slotName === 've-image') {
+          setElProps(viewerEl, tagProps[0], {data:'', 'zoom-on-scroll':''})
+          viewerEl.appendChild(propsList(tagProps))
+        } else if (slotName === 've-knightlab-timeline') {
+          setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
+        } else if (slotName === 've-map') {
+          setElProps(viewerEl, tagProps[0], {caption:'', center:'', data:'', entities:'', 'gesture-handling':'', 'gh-dir':'', marker:'', overlay:'', 'prefer-geojson':'', 'scroll-wheel-zoom':'', title:'', zoom:'', 'zoom-on-click':''})
+          viewerEl.appendChild(propsList(tagProps.slice(1)))
+        } else if (slotName === 've-plant-specimen') {
+          setElProps(viewerEl, tagProps[0], {caption:'', eid:'', jpid:'', max:'', qid:'', 'taxon-name':'', wdid:''})
+        } else if (slotName === 've-video') {
+          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', end:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
+        } else if (slotName === 'data') {
+          viewerEl.appendChild(propsList(tagProps))
+        } else {
+          console.log(`makeViewer: slotName ${slotName} not recognized, props=${Object.keys(tagProps[0] || {})}`)
+        }
+        return viewerEl
+      }
+
+      let j1Viewers = document.createElement('ve-j1-viewers-slots')
+      j1Viewers.setAttribute('entities', seg.getAttribute('data-entities') || '')
+      j1Viewers.dataset.id = id
+      viewersDiv.appendChild(j1Viewers)
+      j1Viewers.setAttribute('viewers', [
+        ...Object.keys(veTags).filter(tag => tag !== 've-map-marker' && tag !== 've-map-layer'),
+        ...['data']
+      ].join(' '))
+
+      Object.entries(veTags).forEach(([tag, tagProps]) => {
+        if (tag === 've-map-marker' || tag === 've-map-layer') return
+        if (tag === 've-map') {
+          j1Viewers.appendChild(makeViewerEl('ve-map', tag,
+            [...tagProps,
+             ...Object.values(veTags['ve-map-marker'] || {}), ...Object.values(veTags['ve-map-layer'] || {})
+            ].sort((a,b) => a.idx - b.idx)
+          ))
+        } else {
+          j1Viewers.appendChild(makeViewerEl(tag, tag, tagProps))
+        }
+      })
+      j1Viewers.appendChild(makeViewerEl('div', 'data', params))
+
     })
 
     Array.from(article.querySelectorAll('.segment'))
@@ -874,12 +983,12 @@ function setStickyOffsets(root) {
 let priorActiveParagraph
 let currentActiveParagraph
 
-function observeVisible(rootEl, setActiveParagraph) {
+function observeVisible(rootEl, setActiveParagraph, offset=0) {
   setActiveParagraph = setActiveParagraph || false
-  let topMargin = Array.from(rootEl.querySelectorAll('VE-HEADER'))
+  let topMargin = offset + Array.from(rootEl.querySelectorAll('VE-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin}`)
+  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin} isJunctureV1=${isJunctureV1} useSlotBasedViewers=${useSlotBasedViewers}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
@@ -906,6 +1015,22 @@ function observeVisible(rootEl, setActiveParagraph) {
       
     if (currentActiveParagraph !== priorActiveParagraph) {
       // console.log('activeParagraph', currentActiveParagraph)
+
+      if (isJunctureV1) {
+
+        /*
+        let currentActiveViewers = currentActiveParagraph?.nextElementSibling
+        if (currentActiveViewers) {
+          let viewers = rootEl.querySelector('.viewers')
+          if (viewers) viewers.innerHTML = currentActiveViewers?.outerHTML
+        }
+        */
+        let prior = priorActiveParagraph?.nextElementSibling
+        let current = currentActiveParagraph?.nextElementSibling
+        if (prior) prior.style.display = 'none'
+        if (current) current.style = `display: block; position:fixed; top: ${topMargin}px; right:0; height: calc(-100px + 100dvh); width:50%;;`    
+      }
+      
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 
         rootEl.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
@@ -934,11 +1059,6 @@ function observeVisible(rootEl, setActiveParagraph) {
           currentActiveParagraph.setAttribute('data-entities-tagged', '')
         }
 
-        let currentActiveViewers = currentActiveParagraph?.nextElementSibling
-        if (currentActiveViewers) {
-          let viewers = rootEl.querySelector('.viewers')
-          if (viewers) viewers.innerHTML = currentActiveViewers?.outerHTML
-        }
       }
       setStickyOffsets(rootEl)
     }
@@ -1147,7 +1267,7 @@ function mount(root, html) {
 
   if (isJunctureV1 && !isMobile()) {
     document.addEventListener('scroll', () => setViewersPosition())
-    setTimeout(() => setViewersPosition(), 0)
+    setTimeout(() => setViewersPosition(), 100)
   }
 
   // console.log(article.querySelector('ve-video[sync]'))

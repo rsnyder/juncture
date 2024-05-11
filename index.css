@@ -428,7 +428,6 @@ article.j1 > * {
   background-color: #f8f8f8 !important;
   font-size: 1.3em !important;
   line-height: 1.6 !important;
-  /* padding: 0.5em; */
 }
 
 .j1 .content {
@@ -437,7 +436,7 @@ article.j1 > * {
 
 .j1 .viewers {
   grid-area: viewers;
-  display: none;
+  /* display: none; */
 }
 
 .j1 footer {
@@ -523,4 +522,11 @@ article.j1 > * {
     margin-top: 0;
   }
 
+}
+
+/* Testing */
+
+.j1 main {
+  display: block;
+  width: 50%
 }

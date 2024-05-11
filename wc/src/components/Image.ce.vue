@@ -31,10 +31,10 @@
 
   import { Annotator } from '../annotator'
 
-  const root = ref<HTMLElement | null>(null)
+  const root = ref<HTMLElement>()
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
 
-  const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
+ const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
   watch(shadowRoot, (shadowRoot) => { shadowRoot.children[1].classList.remove('sticky') })
   
   const props = defineProps({
@@ -47,6 +47,7 @@
     region: { type: String },
     seq: { type: Number, default: 1},
     src: { type: String },
+    slot: { type: String },
     width: { type: Number },
     zoomOnScroll: { type: Boolean, default: false },
 
@@ -79,6 +80,17 @@
   const annotator = ref<any>()
 
   // watch(host, (host) => { if (host) init() })
+
+  function ancestors() {
+    let ancestors: any[] = []
+    let el = host.value
+    // while (el && el.className.indexOf('content') < 0) {
+    while (el) {
+      ancestors.push(el)
+      el = el.parentElement;
+    }
+    return ancestors
+  }
 
   const osdWidth = ref<number>(0)
   watch(osdWidth, () => {
@@ -193,7 +205,7 @@
   })
 
   const width = ref<number>(0)
-  watch(width, (width) => { 
+  watch(width, (width) => {
     root.value?.setAttribute('style', `width: ${props.width}px; margin: auto;`)
     osdWidth.value = width
    })
@@ -218,6 +230,14 @@
   }
 
   onMounted(() => {
+    // const rootNode = root.value?.getRootNode?.({composed: false})
+    // const host = (rootNode as ShadowRoot).host as HTMLElement
+    // console.log('host', host)
+    // console.log('parent', host.parentElement)
+
+    // console.log('onMounted', ancestors())
+    // addInteractionHandlers()
+
     evalProps()
   })
 
@@ -286,6 +306,7 @@
     osd.value.addHandler('viewport-change', () => watchCoords())
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     configureImageViewerBehavior()
+    // console.log('initOpenSeadragon', ancestors())
     addInteractionHandlers()
 
     setTimeout(() => setViewportCoords(), 500)
@@ -333,6 +354,7 @@
 
   function addInteractionHandlers() {
 
+    /*
     if (host.value.parentElement.tagName === 'SL-TAB-PANEL') { // embedded in a Juncture1 viewers component
       (Array.from(document.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
         let link = new URL(anchorElem.href)
@@ -350,9 +372,10 @@
           })
         }
       })
-    } else {
+    } else {*/
+      // console.log('addInteractionHandlers', ancestors())
       let el = host.value.parentElement
-      while (el?.parentElement && el.tagName !== 'MAIN') {
+      while (el?.parentElement && el?.parentElement.className.indexOf('content') < 0) {
         (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
           let link = new URL(anchorElem.href)
           let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
@@ -360,10 +383,12 @@
           if (zoomIdx >= 0) {
             let region = path[path.length-1]
             let trigger = path.length > zoomIdx + 1 ? path[zoomIdx+1] : 'click'
+            // console.log(`zoomto: region=${region} trigger=${trigger}`)
             anchorElem.classList.add('zoom')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-region', region)
             anchorElem.addEventListener(trigger, (evt:Event) => {
+              // console.log(evt.target)
               let region = (evt.target as HTMLElement).getAttribute('data-region')
               if (region) zoomto(region) 
             })
@@ -371,7 +396,7 @@
         })
         el = el.parentElement;
       }
-    }
+    //}
   }
 
   function findImageEl(el:any) {
@@ -404,8 +429,14 @@
           osd.value?.viewport.goHome()
           zoomedToRegion = ''
         } else {
+          // console.log(`zoomTo: region=${region}`)
           zoomedToRegion = region
-          osd.value?.viewport.fitBounds(parseRegionString(region, osd.value), false)
+          if (osd.value) {
+            let rect = parseRegionString(region, osd.value)
+            // console.log(host.value)
+            // console.log(rect)
+            osd.value.viewport.fitBounds(rect, false)
+          }
         }
       }
     }

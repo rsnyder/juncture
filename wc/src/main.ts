@@ -38,6 +38,7 @@ import Image from './components/Image.ce.vue'
 import Caption from './components/Caption.ce.vue'
 import InfoCard from './components/InfoCard.ce.vue'
 import Juncture1Viewers from './components/Juncture1Viewers.ce.vue'
+import Juncture1ViewersSlots from './components/Juncture1ViewersSlots.ce.vue'
 import KnightlabTimeline from './components/KnightlabTimeline.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
@@ -48,6 +49,7 @@ import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import PlantSpecimen from './components/PlantSpecimen.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
+// import SlotTest from './components/SlotTest.ce.vue'
 // import SpcWrapper from './components/SpcWrapper.ce.vue'
 import Video from './components/Video.ce.vue'
 import VisJS from './components/VisJS.ce.vue'
@@ -73,6 +75,7 @@ function defineCustomElements() {
 	customElements.define('ve-caption', defineCustomElement(Caption))
 	customElements.define('ve-info-card', defineCustomElement(InfoCard))
 	customElements.define('ve-j1-viewers', defineCustomElement(Juncture1Viewers))
+	customElements.define('ve-j1-viewers-slots', defineCustomElement(Juncture1ViewersSlots))
 	customElements.define('ve-knightlab-timeline', defineCustomElement(KnightlabTimeline))
 	customElements.define('ve-manifest', defineCustomElement(Manifest))
 	customElements.define('ve-manifest-popup', defineCustomElement(ManifestPopup))
@@ -83,6 +86,7 @@ function defineCustomElements() {
 	customElements.define('ve-modal', defineCustomElement(Modal))
 	customElements.define('ve-plant-specimen', defineCustomElement(PlantSpecimen))
 	customElements.define('ve-site-search', defineCustomElement(SiteSearch))
+	// customElements.define('ve-slot-test', defineCustomElement(SlotTest))
 	// customElements.define('ve-sfc-wrapper', defineCustomElement(SpcWrapper))
 	customElements.define('ve-video', defineCustomElement(Video))
 	customElements.define('ve-visjs', defineCustomElement(VisJS))

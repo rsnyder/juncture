@@ -46,7 +46,7 @@
     right: { type: Boolean },
     sticky: { type: Boolean  },
     width: { type: String },
-    height: { type: String }
+    height: { type: Number }
   })
 
   const root = ref<HTMLElement | null>(null)
@@ -223,11 +223,14 @@
       headers: { Accept: 'text/plain', 'Content-type': 'application/x-www-form-urlencoded' }
     })
     let rdf = await resp.text()
+    // @ts-ignore
     let jld = await jsonld.fromRDF(rdf, { format: 'application/n-quads' })
+    // @ts-ignore
     return jsonld.frame(jld, {'@context': context, '@type': 'Specimen'})
   }
 
   function metadata(specimen:any) {
+    if (!specimen.images) return {}
     let bestImgUrl = specimen.images.find((img:any) => img.imgSize === 'best').id
     let rftId = bestImgUrl.match(/rft_id=([^&]*)/)[1]
     let data:any = {url: `${iiifService}/gp-proxy${rftId}`}

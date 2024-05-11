@@ -28,12 +28,14 @@
     caption: { type: String },
     class: { type: String },
     end: { type: Number },
+    id: { type: String },
     muted: { type: Boolean, default: true },
     noCaption: { type: Boolean },
     poster: { type: String },
     src: { type: String },
     start: { type: Number },
-    sync: { type: Boolean, default: false}
+    sync: { type: Boolean, default: false},
+    vid: { type: String }
   })
 
   const root = ref<HTMLElement | null>(null)
@@ -44,7 +46,7 @@
     mediaPlayer = html5Player
     monitor()
   })
-  const isYouTube = computed(() => props.src?.includes('youtube.com'))
+  const isYouTube = computed(() => props.src?.includes('youtube.com') || props.id || props.vid)
   const isVimeo = computed(() => props.src?.includes('vimeo.com'))
   const isHTML5 = computed(() => !isYouTube.value && !isVimeo.value)
   watch(isHTML5, async () => {
@@ -161,9 +163,8 @@
 
   async function initYoutubePlayer() {
     let playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-    if (props.src && playerEl) {
-      let parsed = new URL(props.src)
-      let videoId = parsed.searchParams.get('v') || ''
+    let videoId = props.id || props.vid || props.src && new URL(props.src).searchParams.get('v')
+    if (videoId && playerEl) {
       let metadata = await youtubeMetadata(videoId)
   
       if (host.value) new ResizeObserver(() => { 

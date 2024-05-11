@@ -87,6 +87,7 @@
         popupOnHover: { type: Boolean },
         preferGeojson: { type: Boolean },
         scrollWheelZoom: { type: Boolean, default: false },
+        slot: { type: String },
         title: { type: String },
         zoom: { type: Number, default: 2 },
         zoomOnClick: { type: Boolean }
@@ -325,10 +326,11 @@
     
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
-          .filter(item => item['ve-map-marker'] === undefined)
-          .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
+          .filter(item => item['ve-map-marker'] === undefined )
+          // .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
+          .filter(item => item.geojson || item.url)
           .map (item => {
-            let geoJsonUrl = item.geojson || item.url
+            let geoJsonUrl = item.url || item.geojson
             if (geoJsonUrl.indexOf('http') === 0) {
               item.geojson = geoJsonUrl
             } else {
@@ -412,6 +414,7 @@
             id: ls['allmaps-id'] || ls.allmaps,
             disabled: ls.disabled,
             opacity: ls.opacity || 100,
+            // @ts-ignore
             layer: new WarpedMapLayer(`https://annotations.allmaps.org/maps/${ls['allmaps-id'] || ls.allmaps}`)
         }))
 

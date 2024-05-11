@@ -53,6 +53,7 @@
     window.jekyll.source = { owner: acct, repository: repo, branch: branch, dir: path.join('/') }
     getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
       mount(document.body.firstChild, markdownToHtml(markdown))
+      console.log(window.config)
     })
   } else if (referrer?.host === 'github.com') {
     let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')

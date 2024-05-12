@@ -20,14 +20,15 @@
   const host = computed(() => (tabs.value?.getRootNode() as any)?.host)
 
   watch(host, (host) => {
+    // console.log(document.body.clientWidth)
     // console.log('host', host?.clientHeight, host?.parentElement)
     if (host) new ResizeObserver(() => {
       // console.log('host', host?.clientHeight);
       (Array.from(host.children as HTMLElement[])).forEach((child: HTMLElement) => {
-        child.setAttribute('height',`${host.clientHeight - 64}`)
-        // console.log(child)
+        if (document.body.clientWidth > 800) child.setAttribute('height',`${host.clientHeight - 64}`)
+        //console.log(child)
       })
-    }).observe(host)
+    }).observe(host.parentElement as HTMLElement)
   })
 
   const props = defineProps({

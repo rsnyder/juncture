@@ -432,6 +432,7 @@ article.j1 > * {
 
 .j1 .content {
   grid-area: content;
+  margin: 0.5em;
 }
 
 .j1 .viewers {
@@ -526,7 +527,28 @@ article.j1 > * {
 
 /* Testing */
 
-.j1 main {
-  display: block;
-  width: 50%
+@media (min-width: 800px) { /* wide screens */
+
+  .j1 .viewers {
+    visibility: hidden;
+    position: fixed; 
+    top: 100px;
+    right: 1em; 
+    height: calc(-100px + 100dvh); 
+    width: calc(50% - 1em);
+  }
+  .j1 .viewers.active {
+    display: block;
+    visibility: visible;
+  }
+
+  .j1 main {
+    display: block;
+    width: 50%
+  }
+
+  .j1 .content {
+    margin: 0;
+  }
+
 }

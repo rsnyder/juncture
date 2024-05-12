@@ -9,10 +9,7 @@ function camelToKebab(input) { return input.replace(/([a-z])([A-Z])/g, '$1-$2').
 function isNumeric(arg) { return !isNaN(arg) }
 function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
 
-function isMobile() {
-  let _isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
-  return _isMobile
-}
+const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 function ghSourceFromLocation() {
   // console.log(location)
@@ -759,6 +756,14 @@ function structureContent(html) {
     article.appendChild(footer)
   }
 
+  article.querySelectorAll('span[eid]').forEach(span => {
+    let qid = span.getAttribute('eid')
+    let entityInfobox = document.createElement('ve-entity-infobox')
+    entityInfobox.innerHTML = span.innerHTML
+    entityInfobox.setAttribute('qid', qid)
+    span.replaceWith(entityInfobox)
+  })
+
   article.querySelectorAll('section p').forEach(p => {
     let qids = Array.from(p.querySelectorAll('param[eid]')).map(param => {
       let qid = param.getAttribute('eid')
@@ -813,7 +818,6 @@ function structureContent(html) {
 
       viewersDiv.setAttribute('data-id', id)
       viewersDiv.className = 'viewers'
-      viewersDiv.style = 'visibility: hidden; position:fixed; right:0; height: calc(-100px + 100dvh); width:50%;'
 
       let params = []
       let sib = seg.nextSibling
@@ -1027,8 +1031,8 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
         */
         let prior = priorActiveParagraph?.nextElementSibling
         let current = currentActiveParagraph?.nextElementSibling
-        if (prior) prior.style.display = 'none'
-        if (current) current.style = `display: block; position:fixed; top: ${topMargin}px; right:0; height: calc(-100px + 100dvh); width:50%;;`    
+        if (prior) prior.classList.remove('active')
+        if (current) current.classList.add('active')
       }
       
       priorActiveParagraph = currentActiveParagraph
@@ -1265,7 +1269,7 @@ function mount(root, html) {
   let article = articleWrapper.firstChild
   root.replaceWith(articleWrapper)
 
-  if (isJunctureV1 && !isMobile()) {
+  if (isJunctureV1 && !isMobile) {
     document.addEventListener('scroll', () => setViewersPosition())
     setTimeout(() => setViewersPosition(), 100)
   }

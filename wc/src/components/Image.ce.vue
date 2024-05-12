@@ -34,7 +34,7 @@
   const root = ref<HTMLElement>()
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
 
- const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
+  const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
   watch(shadowRoot, (shadowRoot) => { shadowRoot.children[1].classList.remove('sticky') })
   
   const props = defineProps({

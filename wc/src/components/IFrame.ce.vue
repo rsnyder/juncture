@@ -1,7 +1,7 @@
 <template>
 
   <div ref="main" class="main">
-    <iframe v-if="height && width"
+    <iframe
       :allow="allow" 
       :allowfullscreen="allowfullscreen" 
       :allowtransparency="allowtransparency" 
@@ -23,7 +23,7 @@
   
 <script setup lang="ts">
 
-  import { computed, ref, toRaw, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
   
   const props = defineProps({
     allow: { type: String },
@@ -48,29 +48,25 @@
     right: { type: Boolean },
     sticky: { type: Boolean  }
   })
-  watch(props, () => { setHeight() })
+  watch(props, () => setDimensions() )
 
   const main = ref<HTMLElement | null>(null)
   const host = computed(() => (main.value?.getRootNode() as any)?.host)
   const captionEl = ref<HTMLElement | null>(null)
-  watch (captionEl, () => setHeight() )
+  watch (captionEl, () => setDimensions() )
 
-  const referrerpolicy = ref<any>(props.referrerpolicy)
   const width = ref(0)
   const height = ref(0)
 
-  const containerHeight = ref(0)
-  watch(containerHeight, () => setHeight() )
-
-  function setHeight() {
-    // console.log(`setHeight: props=${props.height} main=${main.value?.clientHeight} container=${containerHeight.value} caption=${captionEl.value?.clientHeight || 0}`)
-    height.value = (props.height <= containerHeight.value ? props.height : containerHeight.value) - (captionEl.value?.clientHeight || 0)
-    width.value = props.width || main.value?.clientWidth || 0
+  function setDimensions() {
+    // console.log(`setDimensions: props=${props.width}x${props.height} container=${host.value.parentElement.clientWidth}x${host.value.parentElement.clientHeight}`)
+    height.value = (props.height <= host.value.parentElement.clientHeight ? props.height : host.value.parentElement.clientHeight) - (captionEl.value?.clientHeight || 0)
+    width.value = props.width || host.value.parentElement.clientWidth || 0
   }
 
   watch(host, (host) => {
-    if (host.parentElement.clientHeight) containerHeight.value = host.parentElement.clientHeight
-    else new ResizeObserver(() => containerHeight.value = host.parentElement.clientHeight).observe(host.parentElement)
+    new ResizeObserver(() => setDimensions()).observe(host.parentElement)
+    setDimensions()
   })
 
 </script>

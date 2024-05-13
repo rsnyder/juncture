@@ -828,6 +828,8 @@ function structureContent(html) {
         if (!tag) {
           tag = 've-entity'
           p[tag] = ''
+        } else if (tag === 've-d3plus-ring-network') {
+          tag = 've-visjs'
         }
         if (!veTags[tag]) veTags[tag] = []
         veTags[tag].push(p)
@@ -836,9 +838,9 @@ function structureContent(html) {
       let entities = []
       Object.values(veTags['ve-entity'] || []).forEach(veEntity => {
         let qid = veEntity.eid || veEntity.qid
-        let aliases = veEntity.aliases
+        let aliases = veEntity.aliases?.split('|').filter(a => a) || []
         let file = veEntity.file ||veEntity.article
-        if (aliases || file) {
+        if (aliases.length || file) {
           if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
          }
         entities.push(qid)
@@ -884,6 +886,8 @@ function structureContent(html) {
           setElProps(viewerEl, tagProps[0], {caption:'', eid:'', jpid:'', max:'', qid:'', 'taxon-name':'', wdid:''})
         } else if (slotName === 've-video') {
           setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', end:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
+        } else if (slotName === 've-visjs') {
+          setElProps(viewerEl, tagProps[0], {caption:'', edges:'', nodes:'', title:'caption', url:''})
         } else if (slotName === 'data') {
           viewerEl.appendChild(propsList(tagProps))
         } else {
@@ -1025,6 +1029,7 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
       if (setActiveParagraph) { 
         rootEl.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
         currentActiveParagraph?.classList.add('active')
+        // auto entity tagging
         if (currentActiveParagraph?.getAttribute('data-entities') && !currentActiveParagraph?.getAttribute('data-entities-tagged')) {
           let qids = currentActiveParagraph.getAttribute('data-entities')?.split(' ') || []
           if (qids.length) {
@@ -1233,7 +1238,6 @@ function readMoreSetup() {
   })
   ps.forEach(p => observer.observe(p))
 }
-
 
 function setViewersPosition() {
   let header = document.querySelector('ve-header')

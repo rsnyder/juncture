@@ -536,10 +536,12 @@ article.j1 > * {
     right: 1em; 
     height: calc(-100px + 100dvh); 
     width: calc(50% - 1em);
+    z-index: unset;
   }
   .j1 .viewers.active {
     display: block;
     visibility: visible;
+    z-index: 10;
   }
 
   .j1 main {

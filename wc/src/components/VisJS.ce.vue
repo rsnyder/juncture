@@ -147,12 +147,14 @@
 
   .diagram {
     display: block;
+    flex: 1;
   }
 
   .caption {
     text-align: start;
     padding: 6px 12px;
-    font-size: 1.2em;
+    font-size: 1em;
+    line-height: 1.1;
     border: 1px solid #ddd;
   }
 

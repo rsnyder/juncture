@@ -3,10 +3,9 @@
   <sl-tab-group ref="tabs">
     <sl-tab v-for="viewer, idx in viewers" :key="`nav-${idx}`" slot="nav" :panel="viewer" :active="idx === 0">
       <svg v-html="icons[viewer]"></svg>
-      <!-- <template>{{ icons[viewer] }}</template> -->
     </sl-tab>
     <sl-tab-panel v-for="viewer, idx in viewers" :key="`panel-${idx}`" :name="viewer">
-      <slot :name="viewer"></slot>
+      <slot v-if="viewer !== 'data' || mode === 'dev'" :name="viewer"></slot>
     </sl-tab-panel>
   </sl-tab-group>
 
@@ -19,14 +18,12 @@
   const tabs = ref<HTMLElement | null>(null)
   const host = computed(() => (tabs.value?.getRootNode() as any)?.host)
 
+  const mode = location.hostname === 'localhost' ? 'dev' : 'prod'
+
   watch(host, (host) => {
-    // console.log(document.body.clientWidth)
-    // console.log('host', host?.clientHeight, host?.parentElement)
     if (host) new ResizeObserver(() => {
-      // console.log('host', host?.clientHeight);
       (Array.from(host.children as HTMLElement[])).forEach((child: HTMLElement) => {
         if (document.body.clientWidth > 800) child.setAttribute('height',`${host.clientHeight - 64}`)
-        //console.log(child)
       })
     }).observe(host.parentElement as HTMLElement)
   })

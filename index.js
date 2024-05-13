@@ -764,38 +764,6 @@ function structureContent(html) {
     span.replaceWith(entityInfobox)
   })
 
-  article.querySelectorAll('section p').forEach(p => {
-    let qids = Array.from(p.querySelectorAll('param[eid]')).map(param => {
-      let qid = param.getAttribute('eid')
-      let aliases = param.getAttribute('aliases')
-      let file = param.getAttribute('file') || param.getAttribute('article')
-      if (aliases || file) {
-       if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
-      }
-      return qid
-    })
-    let parent = p.parentElement
-    while (parent && parent.tagName !== 'ARTICLE') {
-      qids = [
-        ...qids,
-        ...Array.from(parent.querySelectorAll(':scope > param[eid]')).map(param => {
-          let qid = param.getAttribute('eid')
-          let aliases = param.getAttribute('aliases')
-          let file = param.getAttribute('file') || param.getAttribute('article')
-          if (aliases || file) {
-            if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
-           }
-          return qid
-        })
-      ]
-      parent = parent.parentElement
-    }
-    p.setAttribute('data-entities', qids.join(' '))
-  })
-  Array.from(article.querySelectorAll('param'))
-    .filter(param => !param.getAttributeNames().find(attrName => attrName.indexOf('ve-') === 0 && attrName !== 've-entity'))
-    .forEach(param => param.remove())
-
   if (isJunctureV1) {
   
     function serializeProps(props) {
@@ -810,6 +778,7 @@ function structureContent(html) {
       wrapper.setAttribute('data-id', id)
       wrapper.id = id
       wrapper.className = seg.className
+      wrapper.setAttribute('data-entities', seg.getAttribute('data-entities'))
       seg.removeAttribute('id')
       seg.removeAttribute('data-id')
       seg.className = ''
@@ -837,16 +806,13 @@ function structureContent(html) {
       let id = seg.getAttribute('data-id') || ''
       let viewersDiv = seg.querySelector('.viewers')
       if (!viewersDiv) return
+      
       const params = Array.from(viewersDiv.querySelectorAll(':scope > param'))
-        .map((param, idx) => {
-          let obj = { ...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} }
-          return obj
-        })
+        .map((param, idx) => ({ ...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} }))
+      
       let idx = params.length
       let parent = viewersDiv.parentElement
       while (parent && parent.tagName !== 'ARTICLE') {
-        // let parentParams = Array.from(parent.querySelectorAll(':scope > param'))
-        // console.log(parent, parentParams.length)
         Array.from(parent.querySelectorAll(':scope > param')).forEach(param => {
           params.push({...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} })
           idx++
@@ -857,10 +823,25 @@ function structureContent(html) {
       const veTags = {}
       params.forEach(p => {
         let tag = Object.keys(p).find(k => k.indexOf('ve-') === 0 && !p[k])
+        if (!tag) {
+          tag = 've-entity'
+          p[tag] = ''
+        }
         if (!veTags[tag]) veTags[tag] = []
-        // delete p[tag]
         veTags[tag].push(p)
       })
+
+      let entities = []
+      Object.values(veTags['ve-entity'] || []).forEach(veEntity => {
+        let qid = veEntity.eid || veEntity.qid
+        let aliases = veEntity.aliases
+        let file = veEntity.file ||veEntity.article
+        if (aliases || file) {
+          if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
+         }
+        entities.push(qid)
+      })
+      delete veTags['ve-entity']
 
       function propsList(tagProps) {
         let ul = document.createElement('ul')
@@ -908,7 +889,6 @@ function structureContent(html) {
       }
 
       let j1Viewers = document.createElement('ve-j1-viewers-slots')
-      j1Viewers.setAttribute('entities', seg.getAttribute('data-entities') || '')
       j1Viewers.dataset.id = id
       viewersDiv.appendChild(j1Viewers)
       j1Viewers.setAttribute('viewers', [
@@ -918,6 +898,7 @@ function structureContent(html) {
 
       Object.entries(veTags).forEach(([tag, tagProps]) => {
         if (tag === 've-map-marker' || tag === 've-map-layer') return
+        tagProps[0].entities = entities
         if (tag === 've-map') {
           j1Viewers.appendChild(makeViewerEl('ve-map', tag,
             [...tagProps,

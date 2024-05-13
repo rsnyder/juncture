@@ -26,7 +26,7 @@
     <ve-gh-file-selector id="gh-selector" gh-source=""></ve-gh-file-selector>
     <textarea id="md-text"></textarea>
     
-    <sl-dialog label="Warning" class="unsaved-changes-dialog">
+    <sl-dialog label="Warning" class="unsaved-changes-dialog" style="display:none;">
       You have unsaved changes. Select <b>Cancel</b> to continue editing or <b>Proceed</b> to load the selected file and lose your changes.
       <div slot="footer">
         <sl-button variant="primary" class="cancel">Cancel</sl-button>
@@ -58,6 +58,7 @@
 
       let repoIsWritable = false
       let dialog = document.querySelector('.unsaved-changes-dialog')
+      dialog.style.display = 'block'
       const cancelButton = dialog.querySelector('.cancel')
       cancelButton.addEventListener('click', () => cancelFileLoad())
       const proceedButton = dialog.querySelector('.proceed')

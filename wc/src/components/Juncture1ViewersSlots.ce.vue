@@ -5,7 +5,7 @@
       <svg v-html="icons[viewer]"></svg>
     </sl-tab>
     <sl-tab-panel v-for="viewer, idx in viewers" :key="`panel-${idx}`" :name="viewer">
-      <slot v-if="viewer !== 'data' || mode === 'dev'" :name="viewer"></slot>
+      <slot :name="viewer"></slot>
     </sl-tab-panel>
   </sl-tab-group>
 
@@ -17,8 +17,6 @@
 
   const tabs = ref<HTMLElement | null>(null)
   const host = computed(() => (tabs.value?.getRootNode() as any)?.host)
-
-  const mode = location.hostname === 'localhost' ? 'dev' : 'prod'
 
   watch(host, (host) => {
     if (host) new ResizeObserver(() => {

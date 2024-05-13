@@ -2,6 +2,7 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
+console.log(location)
 const mode = location.hostname === 'localhost' ? 'dev' : 'prod'
 
 /* md5 function from https://stackoverflow.com/questions/14733374/how-to-generate-an-md5-file-hash-in-javascript */

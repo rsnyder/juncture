@@ -20,7 +20,9 @@ function ghSourceFromLocation() {
 }
 
 async function getMarkdown(ghSource) {
+  let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   let extension = ghSource.slice(-3)
+  console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
   if (extension === '.md') {
     return await fetch(`https://raw.githubusercontent.com/${ghSource}`).then(response => response.text())
   } else {
@@ -32,8 +34,24 @@ async function getMarkdown(ghSource) {
   }
 }
 
-async function getGhFile(acct, repo, path, branch) {
-  console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path='${path}`)
+async function getMarkdown1(ghSource) {
+  let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+  path = path.join('/')
+  let extension = ghSource.slice(-3)
+  console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
+  if (extension === '.md') {
+    return getGhFile(owner, repo, branch, path)
+  } else {
+    return await Promise.all([
+      getGhFile(owner, repo, branch, `${path}.md`),
+      getGhFile(owner, repo, branch, `${path}/README.md`),
+      getGhFile(owner, repo, branch, `${path}/index.md`)
+    ]).then(resp => { console.log(resp); return resp.find(r => r) })
+  }
+}
+
+async function getGhFile(acct, repo, branch, path) {
+  // console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path=${path}`)
   let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
   let resp = await fetch(url, {cache: 'no-cache'})
   if (resp.status === 200) {
@@ -875,7 +893,7 @@ function structureContent(html) {
         } else if (slotName === 've-iframe') {
           setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
         } else if (slotName === 've-image') {
-          setElProps(viewerEl, tagProps[0], {data:'', 'zoom-on-scroll':''})
+          setElProps(viewerEl, tagProps[0], {data:'', 'fit':'', 'zoom-on-scroll':''})
           viewerEl.appendChild(propsList(tagProps))
         } else if (slotName === 've-knightlab-timeline') {
           setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
@@ -1030,7 +1048,8 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
         rootEl.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
         currentActiveParagraph?.classList.add('active')
         // auto entity tagging
-        if (currentActiveParagraph?.getAttribute('data-entities') && !currentActiveParagraph?.getAttribute('data-entities-tagged')) {
+        let isTagged = currentActiveParagraph?.getAttribute('data-entities-tagged') === ''
+        if (currentActiveParagraph?.getAttribute('data-entities') && !isTagged) {
           let qids = currentActiveParagraph.getAttribute('data-entities')?.split(' ') || []
           if (qids.length) {
             getEntityData(qids).then(entities => { 

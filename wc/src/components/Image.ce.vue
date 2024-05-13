@@ -383,12 +383,12 @@
           if (zoomIdx >= 0) {
             let region = path[path.length-1]
             let trigger = path.length > zoomIdx + 1 ? path[zoomIdx+1] : 'click'
-            // console.log(`zoomto: region=${region} trigger=${trigger}`)
+            console.log(`zoomto: region=${region} trigger=${trigger}`)
             anchorElem.classList.add('zoom')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-region', region)
             anchorElem.addEventListener(trigger, (evt:Event) => {
-              // console.log(evt.target)
+              console.log(evt.target)
               let region = (evt.target as HTMLElement).getAttribute('data-region')
               if (region) zoomto(region) 
             })

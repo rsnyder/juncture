@@ -327,7 +327,7 @@
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
           .filter(item => item['ve-map-marker'] === undefined )
-          // .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
+          .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
           .filter(item => item.geojson || item.url)
           .map (item => {
             let geoJsonUrl = item.url || item.geojson
@@ -346,7 +346,9 @@
           })
           .map(item => ({url:item.geojson, item}))
         
-        let responses = await Promise.all(geojsonUrls.map(item => fetch(item.url)))
+        let responses = await Promise.all(
+          geojsonUrls.map(item => fetch(item.url).catch(e => { console.log('Error fetching', item.url); console.log(e) }) )
+        )
         let _geoJSONs = await Promise.all(
           responses.map(async (resp:any, idx) => {
             try {

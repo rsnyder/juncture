@@ -22,12 +22,10 @@
   const host = computed(() => (article.value?.getRootNode() as any)?.host)
   
   watch(host, (host) => {
-    console.log('host', host)
     host.parentElement.addEventListener('scroll', () => setViewersPosition())
   })
 
   watch(article, (article) => {
-    console.log('article', article)
     setTimeout(() => setViewersPosition(), 100)
   })
 

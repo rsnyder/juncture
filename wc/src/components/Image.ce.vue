@@ -73,7 +73,7 @@
     }
     return null
   })
-  const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}/${source.value?.dir}`)
+  const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}/${source.value?.dir.replace(/\/(README|index)\.md$/,'')}`)
 
   const osdEl = ref<HTMLElement | null>(null)
 

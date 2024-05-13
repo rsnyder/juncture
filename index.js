@@ -780,7 +780,6 @@ function structureContent(html) {
       wrapper.setAttribute('data-id', id)
       wrapper.id = id
       wrapper.className = seg.className
-      wrapper.setAttribute('data-entities', seg.getAttribute('data-entities'))
       seg.removeAttribute('id')
       seg.removeAttribute('data-id')
       seg.className = ''
@@ -806,6 +805,7 @@ function structureContent(html) {
     .forEach(seg => {
       if (seg.tagName === 'SECTION') return
       let id = seg.getAttribute('data-id') || ''
+      let para = seg.querySelector('p')
       let viewersDiv = seg.querySelector('.viewers')
       if (!viewersDiv) return
       
@@ -844,6 +844,8 @@ function structureContent(html) {
         entities.push(qid)
       })
       delete veTags['ve-entity']
+
+      para.setAttribute('data-entities', entities.join(' '))
 
       function propsList(tagProps) {
         let ul = document.createElement('ul')
@@ -900,7 +902,7 @@ function structureContent(html) {
 
       Object.entries(veTags).forEach(([tag, tagProps]) => {
         if (tag === 've-map-marker' || tag === 've-map-layer') return
-        tagProps[0].entities = entities
+        tagProps[0].entities = entities.join(' ')
         if (tag === 've-map') {
           j1Viewers.appendChild(makeViewerEl('ve-map', tag,
             [...tagProps,

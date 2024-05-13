@@ -39,14 +39,14 @@
 
 function setViewersPosition() {
   let header = article.value?.querySelector('ve-header') as HTMLElement
-  let viewers = article.value?.querySelector('.viewers') as HTMLElement
+  let viewers = article.value?.querySelector('.viewers.active') as HTMLElement
   if (header && viewers) {
     let top = header.getBoundingClientRect().top
     let height = header.getBoundingClientRect().height
     let offset = top + height
     viewers.style.top = `${offset}px`
     viewers.style.height = `calc(100dvh - ${offset+32}px)`
-    console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
+    // console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
   }
 }
 

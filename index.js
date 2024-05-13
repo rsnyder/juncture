@@ -954,6 +954,7 @@ function setStickyOffsets(root) {
   }
 
   let stickyElems = Array.from(root.querySelectorAll('.sticky'))
+    .filter(stickyEl => stickyEl.tagName !== 'VE-HEADER' && stickyEl.tagName !== 'VE-BREADCRUMBS')
     .filter(stickyEl => topIsVisible(stickyEl))
     .sort((a,b) => {
         let aTop = a.getBoundingClientRect().top

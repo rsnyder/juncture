@@ -3,7 +3,7 @@
 # Examples
 
 - [Basic](basic)
- a
+
 - [Markdown](markdown)
 - [Layouts](layouts)
 - [Images](images)

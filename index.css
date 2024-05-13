@@ -540,7 +540,7 @@ article.j1 > * {
   .j1 .viewers.active {
     display: block;
     visibility: visible;
-    z-index: 10;
+    z-index: 5;
   }
 
   .j1 main {

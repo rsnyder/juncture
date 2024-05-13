@@ -13,7 +13,7 @@
   
 <script setup lang="ts">
 
-  import { computed, ref, watch } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
 
   const tabs = ref<HTMLElement | null>(null)
   const host = computed(() => (tabs.value?.getRootNode() as any)?.host)
@@ -43,6 +43,20 @@
     've-visjs': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 80C0 53.5 21.5 32 48 32h96c26.5 0 48 21.5 48 48V96H384V80c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H432c-26.5 0-48-21.5-48-48V160H192v16c0 1.7-.1 3.4-.3 5L272 288h96c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H272c-26.5 0-48-21.5-48-48V336c0-1.7 .1-3.4 .3-5L144 224H48c-26.5 0-48-21.5-48-48V80z"/></svg>',
     'data': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 0v64h64V96H64zm384 0H192v64H448V96zM64 224v64h64V224H64zm384 0H192v64H448V224zM64 352v64h64V352H64zm384 0H192v64H448V352z"/></svg>'
   }
+
+  onMounted(() => {
+    new MutationObserver((mutationsList:any) => {
+      for (let mutation of mutationsList) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          let isActive:boolean = mutation.target.classList.contains('active')
+          ;(Array.from(host.value.children as HTMLElement[])).forEach((child: HTMLElement) => {
+            if (isActive) child.setAttribute('active', '')
+            else child.removeAttribute('active')
+          })
+        }
+      }
+    }).observe(host.value.parentElement as HTMLElement, { attributes: true })
+  })
 
 </script>
 

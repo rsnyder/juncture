@@ -1030,21 +1030,13 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
     if (currentActiveParagraph !== priorActiveParagraph) {
       // console.log('activeParagraph', currentActiveParagraph)
 
+      let priorViewers, currentViewers
       if (isJunctureV1) {
-
-        /*
-        let currentActiveViewers = currentActiveParagraph?.nextElementSibling
-        if (currentActiveViewers) {
-          let viewers = rootEl.querySelector('.viewers')
-          if (viewers) viewers.innerHTML = currentActiveViewers?.outerHTML
-        }
-        */
-        let prior = priorActiveParagraph?.nextElementSibling
-        let current = currentActiveParagraph?.nextElementSibling
-        if (prior) prior.classList.remove('active')
-        if (current) current.classList.add('active')
+        priorViewers = priorActiveParagraph?.nextElementSibling
+        currentViewers = currentActiveParagraph?.nextElementSibling
+        if (priorViewers) priorViewers.classList.remove('active')
       }
-      
+
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 
         rootEl.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
@@ -1070,12 +1062,27 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
                   }
                 }
               })
+              if (currentViewers) currentViewers.classList.add('active')
             })
+          } else {
+            if (currentViewers) currentViewers.classList.add('active')
           }
           currentActiveParagraph.setAttribute('data-entities-tagged', '')
+        } else {
+          if (currentViewers) currentViewers.classList.add('active')
         }
 
       }
+
+      /*
+      if (isJunctureV1) {
+        let priorViewers = priorActiveParagraph?.nextElementSibling
+        let currentViewers = currentActiveParagraph?.nextElementSibling
+        if (priorViewers) priorViewers.classList.remove('active')
+        if (currentViewers) currentViewers.classList.add('active')
+      }
+      */
+
       setStickyOffsets(rootEl)
     }
 

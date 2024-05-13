@@ -38,6 +38,7 @@
   watch(shadowRoot, (shadowRoot) => { shadowRoot.children[1].classList.remove('sticky') })
   
   const props = defineProps({
+    active: { type: Boolean, default: false },
     base: { type: String },
     caption: { type: String },
     data: { type: String },
@@ -224,7 +225,13 @@
 
   const coords = ref<string>()
 
+  const interactionsHandlersInitialized = ref<boolean>(false)
+
   function evalProps() {
+    if (props.active && !interactionsHandlersInitialized.value) {
+      addInteractionHandlers()
+      interactionsHandlersInitialized.value = true
+    }
     width.value = props.width || 0
     height.value = props.height || 0
   }
@@ -307,7 +314,7 @@
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     configureImageViewerBehavior()
     // console.log('initOpenSeadragon', ancestors())
-    addInteractionHandlers()
+    // addInteractionHandlers()
 
     setTimeout(() => setViewportCoords(), 500)
     if (tileSources.value.length) osd.value?.open(tileSources.value)
@@ -388,8 +395,8 @@
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-region', region)
             anchorElem.addEventListener(trigger, (evt:Event) => {
-              console.log(evt.target)
-              let region = (evt.target as HTMLElement).getAttribute('data-region')
+              let target = evt.target as HTMLElement
+              let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
               if (region) zoomto(region) 
             })
           }

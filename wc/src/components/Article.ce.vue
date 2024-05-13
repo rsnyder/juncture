@@ -26,7 +26,7 @@
   })
 
   watch(article, (article) => {
-    setTimeout(() => setViewersPosition(), 100)
+    setTimeout(() => setViewersPosition(), 200)
   })
 
   const markdown = ref()

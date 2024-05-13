@@ -19,6 +19,7 @@ function ghSourceFromLocation() {
   return parsed.searchParams.get('source') || parsed.searchParams.get('src')
 }
 
+/*
 async function getMarkdown(ghSource) {
   let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   let extension = ghSource.slice(-3)
@@ -33,8 +34,9 @@ async function getMarkdown(ghSource) {
     ]).then(resp => resp.find(r => r.ok)?.text())
   }
 }
+*/
 
-async function getMarkdown1(ghSource) {
+async function getMarkdown(ghSource) {
   let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   path = path.join('/')
   let extension = ghSource.slice(-3)

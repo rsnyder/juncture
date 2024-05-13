@@ -165,9 +165,11 @@
 
   watch(imageInfo, async (val: any, priorVal: any) => {
     if (val !== priorVal) {
+      setTimeout(async() => {
       imgUrl.value = val.service
         ? iiifUrl(val.service[0].id || val.service[0]['@id'], imageOptions.value)
         : await imageDataUrl(imageInfo.value.id, imageOptions.value.region, {width: host.value.clientWidth, height: props.height})
+      }, 100)
     }
   })
 

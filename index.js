@@ -576,7 +576,7 @@ function structureContent(html) {
   })
 
   Array.from(restructured.querySelectorAll('a > img'))
-  .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('preview.svg') > -1 || img.src.indexOf('edit.svg') > -1)
+  .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
   .forEach(viewAsButton => {
     viewAsButton?.parentElement?.parentElement?.remove()
   })
@@ -754,7 +754,7 @@ function structureContent(html) {
     content.className = 'content'
     content.innerHTML = restructured.innerHTML
     let viewers = document.createElement('div')
-    viewers.className = 'viewers sticky'
+    viewers.className = 'viewers'
     mainWrapper.appendChild(content)
     mainWrapper.appendChild(viewers)
     article.appendChild(mainWrapper)
@@ -956,14 +956,13 @@ function structureContent(html) {
 }
 
 function setStickyOffsets(root) {
-
   function topIsVisible(el) {
     let bcr = el.getBoundingClientRect()
     return el.tagName === 'VE-HEADER' || el.tagName === 'VE-BREADCRUMBS' || (bcr.top >= 0 && bcr.top <= window.innerHeight)
   }
 
   let stickyElems = Array.from(root.querySelectorAll('.sticky'))
-    .filter(stickyEl => stickyEl.tagName !== 'VE-HEADER' && stickyEl.tagName !== 'VE-BREADCRUMBS')
+    // .filter(stickyEl => {stickyEl.tagName !== 'VE-HEADER' && stickyEl.tagName !== 'VE-BREADCRUMBS')
     .filter(stickyEl => topIsVisible(stickyEl))
     .sort((a,b) => {
         let aTop = a.getBoundingClientRect().top

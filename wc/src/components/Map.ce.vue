@@ -71,6 +71,7 @@
       }
     
       const props = defineProps({
+        active: { type: Boolean, default: false },
         base: { type: String },
         basemaps: { type: String, default: 'OpenStreetMap' },
         center: { type: String, default: '32.32347,-80.97122' },

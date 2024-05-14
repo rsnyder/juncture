@@ -328,7 +328,7 @@
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
           .filter(item => item['ve-map-marker'] === undefined )
-          .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
+          // .filter(item => (item.geojson || item.url) && (item.preferGeojson || props.preferGeojson))
           .filter(item => item.geojson || item.url)
           .map (item => {
             let geoJsonUrl = item.url || item.geojson

@@ -867,7 +867,7 @@ function structureContent(html) {
       })
       delete veTags['ve-entity']
 
-      para.setAttribute('data-entities', entities.join(' '))
+      para?.setAttribute('data-entities', entities.join(' '))
 
       function propsList(tagProps) {
         let ul = document.createElement('ul')

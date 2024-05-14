@@ -12,6 +12,7 @@
 			width: 50%;
 	}
 	.j1 .segment .viewers {
+			visibility: visible;
 			position: unset;
 	}
 </style>

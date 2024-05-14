@@ -137,7 +137,7 @@ ve-footer.sticky {
   bottom: 0;
 }
 
-@media only screen and (min-width: 768px) {
+@media (min-width: 768px) {
 
   .left {
     float: left;
@@ -296,6 +296,10 @@ table[id] {
   article {
     font-size: 1rem;
     padding-bottom: 4em !important; 
+  }
+
+  .j1 .viewers {
+    float: right;
   }
 
 }

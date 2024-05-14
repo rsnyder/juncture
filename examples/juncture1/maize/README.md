@@ -1,5 +1,14 @@
 [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
+<style>
+	.viewers { 
+		border: 2px solid red;
+		float: right;
+		width: 50%;
+	}
+	
+</style>
+
 <param ve-config
 	title="Maize: Sacred Plant, Global Commodity"
        source-image="https://github.com/JSTOR-Labs/plant-humanities/blob/main/maize/banner_Baumann_Hopi_Corn_Indianapolis_Museum_of_Art_In_Copyright_Bridgeman_Images.jpg?raw=true"

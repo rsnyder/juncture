@@ -298,9 +298,6 @@ table[id] {
     padding-bottom: 4em !important; 
   }
 
-  ve-image {
-    width: 200px;
-  }
 }
 
 .markdown-body .footnotes,

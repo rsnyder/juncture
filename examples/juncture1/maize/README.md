@@ -4,10 +4,10 @@
 	.j1 main {
 			width: 100%;
 	}
-	.j1 .segment > * {
+	.j1 .segment > p,
+	.j1 .segment .viewers {
 			width: 50%;
 	}
-
 </style>
 
 <param ve-config

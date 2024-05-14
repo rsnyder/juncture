@@ -157,7 +157,9 @@
       let source = (window as any).config?.source || {}
       let fname = source.path
         ? source.path.split('/').filter(pe => pe).filter(pe => pe !== 'README.md' && pe !== 'index.md').pop().replace('.md', '')
-        : 'document'
+        : location.pathname !== '/'
+          ? location.pathname.split('/').filter(pe => pe).filter(pe => pe !== 'README.md' && pe !== 'index.md').pop()?.replace('.md', '') || 'document'
+          : 'document'
       modalText.value = 'Downloading PDF...'
       let pdf = await resp.blob()
       const aElement = document.createElement('a')

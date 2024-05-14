@@ -1,11 +1,13 @@
 [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
 <style>
-	.viewers { 
-		border: 2px solid red;
-		float: right;
-		width: 50%;
+	.j1 main {
+			width: 100%;
 	}
+	.j1 .segment > * {
+			width: 50%;
+	}
+
 </style>
 
 <param ve-config

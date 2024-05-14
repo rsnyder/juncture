@@ -297,6 +297,10 @@ table[id] {
     font-size: 1rem;
     padding-bottom: 4em !important; 
   }
+
+  ve-image {
+    width: 200px;
+  }
 }
 
 .markdown-body .footnotes,

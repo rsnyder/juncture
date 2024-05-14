@@ -1,5 +1,22 @@
 [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
+<style>
+	  .left {
+			float: left;
+			padding-right: 1em;
+  }
+
+  .right {
+			float: right;
+			padding-left: 1em;
+  }
+
+  .left, .right {
+			width: 50%;
+			margin-bottom: 1em;
+  }
+</style>
+
 `ve-header subtitle="Basic Layout" pdf-download-enabled=true`
 
 # PDF Test

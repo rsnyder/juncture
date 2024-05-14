@@ -64,7 +64,7 @@
   watch(host, () => { 
     getMenuItems() 
   })
-
+  
   const overlayRef = ref<HTMLElement | null>(null)
   const overlayEl = computed(() => overlayRef?.value as HTMLElement)
   const overlay = computed(() =>  new HSOverlay(overlayEl.value) )
@@ -154,10 +154,14 @@
     isOpen.value = !isOpen.value
     let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${location.href}`)
     if (resp.ok) {
+      let source = (window as any).config?.source || {}
+      let fname = source.path
+        ? source.path.split('/').filter(pe => pe).filter(pe => pe !== 'README.md' && pe !== 'index.md').pop().replace('.md', '')
+        : 'document'
       modalText.value = 'Downloading PDF...'
       let pdf = await resp.blob()
       const aElement = document.createElement('a')
-      aElement.setAttribute('download', 'resume.pdf')
+      aElement.setAttribute('download', `${fname}.pdf`)
       const href = URL.createObjectURL(pdf)
       aElement.href = href
       aElement.setAttribute('target', '_blank')

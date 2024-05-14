@@ -40,6 +40,10 @@ article li > p {
   margin: 0;
 }
 
+article .markdown-body {
+  font-size: 1.3em;
+}
+
 /*********** mobile ***********/
 
 @media only screen and (max-width: 768px) {
@@ -191,6 +195,10 @@ ve-entity-infobox {
   color: #444;
 }
 
+a.zoom {
+  background-color: lightcyan;
+}
+
 a.flyto:hover, mark.flyto:hover,
 a.play:hover, mark.play:hover,
 a.qid:hover, mark.qid:hover,
@@ -291,6 +299,7 @@ table[id] {
   }
 }
 
+.markdown-body .footnotes,
 .footnote,
 .footnotes {
   font-size: 0.8em;

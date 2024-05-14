@@ -244,6 +244,7 @@
 
     // console.log('onMounted', ancestors())
     // addInteractionHandlers()
+    // addInteractionHandlers()
 
     evalProps()
   })
@@ -314,7 +315,7 @@
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     configureImageViewerBehavior()
     // console.log('initOpenSeadragon', ancestors())
-    // addInteractionHandlers()
+    addInteractionHandlers()
 
     setTimeout(() => setViewportCoords(), 500)
     if (tileSources.value.length) osd.value?.open(tileSources.value)
@@ -389,7 +390,7 @@
           let zoomIdx = path.indexOf('zoom')
           if (zoomIdx >= 0) {
             let region = path[path.length-1]
-            let trigger = path.length > zoomIdx + 1 ? path[zoomIdx+1] : 'click'
+            let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
             console.log(`zoomto: region=${region} trigger=${trigger}`)
             anchorElem.classList.add('zoom')
             anchorElem.href = 'javascript:;'

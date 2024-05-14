@@ -6,7 +6,6 @@
 		float: right;
 		width: 50%;
 	}
-	
 </style>
 
 <param ve-config

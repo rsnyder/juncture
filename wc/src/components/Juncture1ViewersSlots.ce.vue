@@ -4,7 +4,7 @@
     <sl-tab v-for="viewer, idx in viewers" :key="`nav-${idx}`" slot="nav" :panel="viewer" :active="idx === 0">
       <svg v-html="icons[viewer]"></svg>
     </sl-tab>
-    <sl-tab-panel v-for="viewer, idx in viewers" :key="`panel-${idx}`" :name="viewer">
+    <sl-tab-panel v-for="viewer, idx in viewers" :key="`panel-${idx}`" :name="viewer" active>
       <slot :name="viewer"></slot>
     </sl-tab-panel>
   </sl-tab-group>

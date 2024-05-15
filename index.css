@@ -302,6 +302,19 @@ table[id] {
     float: right;
   }
 
+  ve-compare,
+  ve-iframe,
+  ve-image,
+  ve-knightlab-timeline
+  ve-map,
+  ve-plant-specimen
+  ve-video,
+  ve-visjs {
+    page-break-before: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+    page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+    page-break-inside: avoid; /* or 'auto' */
+  }
+
 }
 
 .markdown-body .footnotes,

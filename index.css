@@ -315,6 +315,12 @@ table[id] {
     page-break-inside: avoid; /* or 'auto' */
   }
 
+  ve-menu,
+  .caption sl-dropdown,
+  a[data-footnote-backref] {
+    display: none;
+  }
+
 }
 
 .markdown-body .footnotes,

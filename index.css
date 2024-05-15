@@ -315,7 +315,6 @@ table[id] {
     page-break-inside: avoid; /* or 'auto' */
   }
 
-  ve-header,
   ve-menu,
   .caption sl-dropdown,
   a[data-footnote-backref] {

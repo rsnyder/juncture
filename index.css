@@ -42,6 +42,7 @@ article li > p {
 
 article .markdown-body {
   font-size: 1.3em;
+  line-height: 1.6;
 }
 
 /*********** mobile ***********/
@@ -193,10 +194,6 @@ ve-entity-infobox {
   background: unset;
   border-bottom: 1px solid #ccc;
   color: #444;
-}
-
-a.zoom {
-  background-color: lightcyan;
 }
 
 a.flyto:hover, mark.flyto:hover,

@@ -127,9 +127,9 @@
     padding: 0.5em;
   }
   .label {
-    font-size: 1em;
+    font-size: 0.9em;
     font-weight: 450;
-    line-height: 1.2;
+    line-height: 1.1;
   }
   .summary {
     font-size: 1em;

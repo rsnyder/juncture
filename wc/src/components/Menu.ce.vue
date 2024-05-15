@@ -152,15 +152,13 @@
     // console.log(`Generating PDF for ${location.href}`)
     modalText.value = 'Generating PDF...'
     isOpen.value = !isOpen.value
+    let source = (window as any).config?.source
     let loc = new URL(location.href)
-    let sourceArg = loc.searchParams.get('source')
-    let url = `https://v3.juncture-digital.org${loc.pathname}` + (sourceArg ? `?source=${sourceArg}` : '')
-    console.log('url', url)
+    let url = loc.hostname == 'localhost' ? `https://v3.juncture-digital.org?source=${source.owner}/${source.repository}/${source.branch}/${source.path}` : loc.href
+    console.log('generatePDF for url:', url)
     let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${encodeURIComponent(url)}`)
     if (resp.ok) {
-      let sourcePath = (window as any).config?.source?.path || new URL(location.href).searchParams.get('source') || location.pathname
-      let fname = sourcePath.split('/').filter(pe => pe).filter(pe => pe !== 'README.md' && pe !== 'index.md')?.pop().replace('.md', '') || 'document'
-      console.log('fname', fname)
+      let fname = source.path.split('/').filter(pe => pe).filter(pe => pe !== 'README.md' && pe !== 'index.md')?.pop().replace('.md', '') || 'document'
       modalText.value = 'Downloading PDF...'
       let pdf = await resp.blob()
       const aElement = document.createElement('a')

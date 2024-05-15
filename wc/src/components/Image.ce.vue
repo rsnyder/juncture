@@ -46,6 +46,7 @@
     height: { type: Number },
     noCaption: { type: Boolean, default: false },
     region: { type: String },
+    rotate: { type: Number },
     seq: { type: Number, default: 1},
     src: { type: String },
     slot: { type: String },
@@ -102,7 +103,7 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    // (toRaw(imageDefs))
+    // console.log (toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
@@ -118,14 +119,14 @@
               })
             )) 
         }).then(resp => resp.json())
-    )).then((responses) => responses.flat() )
+    )).then((responses) => responses.flat().filter((r:any) => r))
   })
 
   const manifests = ref<any[]>([])
 
   const tileSources = computed(() => {
     return manifests.value.map((manifest, idx) => {
-      let itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, imageDefs.value[idx].seq || 1).body
+      let itemInfo = findItem({type:'Annotation', motivation:'painting'}, manifest, imageDefs.value[idx].seq || 1)?.body
       return itemInfo.service
         ? `${(itemInfo.service[0].id || itemInfo.service[0]['@id'])}/info.json` as unknown as TileSource
         : { url: itemInfo.id, type: 'image', buildPyramid: true } as unknown as TileSource
@@ -178,7 +179,7 @@
     }
 
     function getImageDefs () {
-      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'seq', 'src', 'summary', 'title', 'url'])
+      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'rotate', 'seq', 'src', 'summary', 'title', 'url'])
       let imageDefFromProps = (props.src || props.url) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
       Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
@@ -258,7 +259,7 @@
   // recursive helper for finding items in a IIIF manifest
   function _findItems(toMatch: object, current: any, found: object[] = []) {
     found = found || []
-    if (current.items) {
+    if (current?.items) {
       for (let i = 0; i < current.items.length; i++ ) {
         let item = current.items[i]
         let isMatch = !Object.entries(toMatch).find(([attr, val]) => item[attr] && item[attr] !== val)
@@ -313,6 +314,10 @@
     osd.value = OpenSeadragon(osdOptions)
     osd.value.addHandler('viewport-change', () => watchCoords())
     osd.value.addHandler('page', (e) => { selected.value = e.page })
+    osd.value.world.addHandler('add-item', (e) => {
+      console.log(toRaw(imageDefs.value[selected.value]), e.item)
+      // if (this.currentItem && this.currentItem.rotate) e.item.setRotation(parseInt(this.currentItem.rotate), true)
+    })
     configureImageViewerBehavior()
     // console.log('initOpenSeadragon', ancestors())
     addInteractionHandlers()
@@ -361,7 +366,7 @@
   }
 
   function addInteractionHandlers() {
-
+    console.log('addInteractionHandlers')
     /*
     if (host.value.parentElement.tagName === 'SL-TAB-PANEL') { // embedded in a Juncture1 viewers component
       (Array.from(document.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
@@ -385,21 +390,30 @@
       let el = host.value.parentElement
       while (el?.parentElement && el?.parentElement.className.indexOf('content') < 0) {
         (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
-          let link = new URL(anchorElem.href)
-          let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
-          let zoomIdx = path.indexOf('zoom')
-          if (zoomIdx >= 0) {
-            let region = path[path.length-1]
-            let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
-            console.log(`zoomto: region=${region} trigger=${trigger}`)
-            anchorElem.classList.add('zoom')
-            anchorElem.href = 'javascript:;'
-            anchorElem.setAttribute('data-region', region)
-            anchorElem.addEventListener(trigger, (evt:Event) => {
+          if (anchorElem.href === 'javascript:;') { // previously processed, reconnect event listener
+            anchorElem.addEventListener(anchorElem.getAttribute('data-trigger') || 'click', (evt:Event) => {
               let target = evt.target as HTMLElement
               let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
               if (region) zoomto(region) 
             })
+          } else {
+            let link = new URL(anchorElem.href)
+            let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
+            let zoomIdx = path.indexOf('zoom')
+            if (zoomIdx >= 0) {
+              let region = path[path.length-1]
+              let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
+              console.log(`zoomto: region=${region} trigger=${trigger}`)
+              anchorElem.classList.add('zoom')
+              anchorElem.href = 'javascript:;'
+              anchorElem.setAttribute('data-region', region)
+              anchorElem.setAttribute('data-trigger', trigger)
+              anchorElem.addEventListener(trigger, (evt:Event) => {
+                let target = evt.target as HTMLElement
+                let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
+                if (region) zoomto(region) 
+              })
+            }
           }
         })
         el = el.parentElement;

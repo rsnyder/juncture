@@ -900,12 +900,12 @@ function structureContent(html) {
         } else if (slotName === 've-knightlab-timeline') {
           setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
         } else if (slotName === 've-map') {
-          setElProps(viewerEl, tagProps[0], {caption:'', center:'', data:'', entities:'', 'gesture-handling':'', 'gh-dir':'', marker:'', overlay:'', 'prefer-geojson':'', 'scroll-wheel-zoom':'', title:'', zoom:'', 'zoom-on-click':''})
+          setElProps(viewerEl, tagProps[0], {basemap:'basemaps', caption:'', center:'', data:'', entities:'', 'gesture-handling':'', 'gh-dir':'', marker:'', overlay:'', 'prefer-geojson':'', 'scroll-wheel-zoom':'', title:'', zoom:'', 'zoom-on-click':''})
           viewerEl.appendChild(propsList(tagProps.slice(1)))
         } else if (slotName === 've-plant-specimen') {
           setElProps(viewerEl, tagProps[0], {caption:'', eid:'', jpid:'', max:'', qid:'', 'taxon-name':'', wdid:''})
         } else if (slotName === 've-video') {
-          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', end:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
+          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', end:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
         } else if (slotName === 've-visjs') {
           setElProps(viewerEl, tagProps[0], {caption:'', edges:'', nodes:'', title:'caption', url:''})
         } else if (slotName === 'data') {

@@ -374,16 +374,18 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
           manifestUrl += '?refresh'
           // console.log(manifestUrl)
         }
-        return fetch(manifestUrl)
+        return fetch(manifestUrl).catch((e) => { console.error(e) })
       })
     let responses = await Promise.all(requests)
-    let manifests = await Promise.all(responses.map((resp:any) => resp.json()))
+    let manifests = await Promise.all(responses.map((resp:any) => resp?.json()))
     requests = manifests
+      .filter(manifest => manifest && manifest['@context'])
       .filter(manifest => !Array.isArray(manifest['@context']) && parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
       .map(manifest => fetch(`https://${iiifServer}/prezi2to3/`, {
         method: 'POST', 
         body: JSON.stringify(manifest)
       }))
+
     if (requests.length > 0) {
       responses = await Promise.all(requests)
       let convertedManifests = await Promise.all(responses.map((resp:any) => resp.json()))

@@ -178,10 +178,12 @@ async def serve(path: Optional[str] = None):
       local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']
       md_name = local_file_path[-1]
       md_dir = '/' if len(local_file_path) == 1 else f'/{"/".join(local_file_path[:-1])}/'
-    logger.debug(f'md_dir={md_dir} md_name={md_name}')
+      md_path = '/'.join(local_file_path)
+      logger.debug(f'md_dir={md_dir} md_name={md_name} md_path={md_path}')
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
     content = content.replace('{{ page.dir }}', md_dir)
     content = content.replace('{{ page.name }}', md_name)
+    content = content.replace('{{ page.path }}', md_path)
 
   media_type = media_types[ext] if ext in media_types else 'text/html'
 

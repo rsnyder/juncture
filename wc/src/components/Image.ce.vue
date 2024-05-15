@@ -315,8 +315,8 @@
     osd.value.addHandler('viewport-change', () => watchCoords())
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     osd.value.world.addHandler('add-item', (e) => {
-      console.log(toRaw(imageDefs.value[selected.value]), e.item)
-      // if (this.currentItem && this.currentItem.rotate) e.item.setRotation(parseInt(this.currentItem.rotate), true)
+      let currentItem = imageDefs.value[selected.value]
+      if (currentItem?.rotate) e.item.setRotation(parseInt(currentItem.rotate), true)
     })
     configureImageViewerBehavior()
     // console.log('initOpenSeadragon', ancestors())

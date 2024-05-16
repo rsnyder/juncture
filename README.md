@@ -1,4 +1,4 @@
-`ve-header title="Juncture" auth=github`
+# Juncture
 
 - [Documentation](docs)
 - [Examples](examples)

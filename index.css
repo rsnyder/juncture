@@ -43,6 +43,7 @@ article li > p {
 article .markdown-body {
   font-size: 1.3em;
   line-height: 1.6;
+  margin-top: 1em;
 }
 
 /*********** mobile ***********/

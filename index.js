@@ -254,7 +254,7 @@ function parseHeadline(s, codeLang) {
   let tokenIdx = 0
   while (tokenIdx < tokens.length) {
     let token = tokens[tokenIdx].replace(/<em>/g, '_').replace(/<\/em>/g, '_')
-    if (token.indexOf('=') > 0 && /^[\w-]+=/.test(token)) {
+    if (token.indexOf('=') > 0 && /^[\w-:]+=/.test(token)) {
       let idx = token.indexOf('=')
       let key = token.slice(0, idx)
       let value = token.slice(idx+1)

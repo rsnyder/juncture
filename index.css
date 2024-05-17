@@ -534,7 +534,8 @@ article.j1 > * {
   .pagebreak { break-before: always; }
   
   .keep-together,
-  .section2 { 
+  .section2,
+  .section3 { 
     break-inside: avoid; 
   }
 

@@ -282,60 +282,7 @@ table[id] {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-/*********** printing ***********/
 
-@media print {
-  ve-footer { display: none; }
-
-  .pagebreak { break-before: always; }
-  
-  .keep-together { break-inside: avoid; }
-
-  article {
-    font-size: 1rem;
-    padding-bottom: 4em !important; 
-  }
-
-  .j1 .viewers {
-    float: right;
-  }
-
-  ve-compare,
-  ve-iframe,
-  ve-image,
-  ve-knightlab-timeline
-  ve-map,
-  ve-plant-specimen
-  ve-video,
-  ve-visjs {
-    page-break-before: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
-    page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
-    page-break-inside: avoid; /* or 'auto' */
-  }
-
-}
-
-.markdown-body .footnotes,
-.footnote,
-.footnotes {
-  font-size: 0.8em;
-  /* white-space: pre-wrap; */
-  /* These are technically the same, but use both */
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-
-  -ms-word-break: break-all;
-  /* This is the dangerous one in WebKit, as it breaks things wherever */
-  word-break: break-all;
-  /* Instead use this non-standard one: */
-  word-break: break-word;
-
-  /* Adds a hyphen where the word breaks, if supported (No Blink) */
-  -ms-hyphens: auto;
-  -moz-hyphens: auto;
-  -webkit-hyphens: auto;
-  hyphens: auto;
-}
 
 /*********** Juncture 1 ***********/
 
@@ -578,4 +525,71 @@ article.j1 > * {
 
   }
 
+  .j1 .segment {
+    flex-direction: row;
+    margin-bottom: 2em;
+  }
+ .j1 .segment > * {
+    flex: 1;
+  }
+
+}
+
+/*********** printing ***********/
+
+@media print {
+  ve-footer { display: none; }
+
+  .pagebreak { break-before: always; }
+  
+  .keep-together { break-inside: avoid; }
+
+  article {
+    font-size: 1rem;
+    padding-bottom: 4em !important; 
+  }
+
+  .j1 .segment {
+    flex-direction: row;
+    margin-bottom: 2em;
+  }
+  .j1 .segment > * {
+    flex: 1;
+  }
+
+  ve-compare,
+  ve-iframe,
+  ve-image,
+  ve-knightlab-timeline
+  ve-map,
+  ve-plant-specimen
+  ve-video,
+  ve-visjs {
+    page-break-before: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+    page-break-after: auto; /* 'always,' 'avoid,' 'left,' 'inherit,' or 'right' */
+    page-break-inside: avoid; /* or 'auto' */
+  }
+
+}
+
+.markdown-body .footnotes,
+.footnote,
+.footnotes {
+  font-size: 0.8em;
+  /* white-space: pre-wrap; */
+  /* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
 }

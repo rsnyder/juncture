@@ -156,7 +156,8 @@
     let loc = new URL(location.href)
     let url = loc.hostname == 'localhost' ? `https://v3.juncture-digital.org?source=${source.owner}/${source.repository}/${source.branch}/${source.path}` : loc.href
     console.log('generatePDF for url:', url)
-    let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${encodeURIComponent(url)}`)
+    let landscape = document.querySelector('article.j1') ? true : false
+    let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${encodeURIComponent(url)}${landscape ? '&landscape=true' : ''}`)
     if (resp.ok) {
       let fname = source.path.split('/').filter(pe => pe).filter(pe => pe !== 'README.md' && pe !== 'index.md')?.pop().replace('.md', '') || 'document'
       modalText.value = 'Downloading PDF...'

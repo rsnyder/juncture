@@ -525,14 +525,6 @@ article.j1 > * {
 
   }
 
-  .j1 .segment {
-    flex-direction: row;
-    margin-bottom: 2em;
-  }
- .j1 .segment > * {
-    flex: 1;
-  }
-
 }
 
 /*********** printing ***********/
@@ -549,6 +541,7 @@ article.j1 > * {
     padding-bottom: 4em !important; 
   }
 
+  /* 
   .j1 .segment {
     flex-direction: row;
     margin-bottom: 2em;
@@ -556,6 +549,7 @@ article.j1 > * {
   .j1 .segment > * {
     flex: 1;
   }
+  */
 
   div.viewers,
   ve-compare,

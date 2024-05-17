@@ -557,6 +557,7 @@ article.j1 > * {
     flex: 1;
   }
 
+  div.viewers,
   ve-compare,
   ve-iframe,
   ve-image,

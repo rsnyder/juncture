@@ -540,12 +540,29 @@ article.j1 > * {
     padding-bottom: 4em !important; 
   }
 
+  .j1 main {
+    width: 100%;
+  }
+
+  .j1 .viewers {
+    visibility: visible;
+    position: unset; 
+  }
+
   .j1 .segment {
     flex-direction: row;
     margin-bottom: 2em;
+    margin-bottom: 2em;
   }
+
   .j1 .segment > * {
     flex: 1;
+  }
+
+  .j1 p.active {
+    background-color: inherit;
+    box-shadow: unset;
+    border: 1px solid #f8f8f8;
   }
 
   .segment,

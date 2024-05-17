@@ -533,7 +533,10 @@ article.j1 > * {
 
   .pagebreak { break-before: always; }
   
-  .keep-together { break-inside: avoid; }
+  .keep-together,
+  .segment2 { 
+    break-inside: avoid; 
+  }
 
   article {
     font-size: 1rem;

@@ -85,7 +85,7 @@
 
       function loadMarkdown() {
         dialog.hide()
-        window.history.replaceState({}, null, `/editor?source=${ghSource}`)
+        window.history.replaceState({}, null, `/wb?source=${ghSource}`)
         getMarkdown(ghSource).then(markdown => {
           localStorage.setItem('smde_ghsource', ghSource)
           localStorage.setItem('smde_juncture_saved_hash', markdown.trim().hashCode())

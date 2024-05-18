@@ -86,6 +86,7 @@
       }
 
       function loadMarkdown() {
+        console.log('loading markdown', ghSource)
         dialog.hide()
         window.history.replaceState({}, null, `/wb?source=${ghSource}`)
         /*
@@ -116,6 +117,7 @@
         
         ghSelector.addEventListener('file-selected', e => {
           let evt = e.detail[0]
+          console.log(evt)
           document.getElementById('gh-selector').setAttribute('gh-source', '')
           ghSource = evt.path
           if (ghSource === localStorage.getItem('smde_ghsource')) {

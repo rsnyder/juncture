@@ -155,7 +155,6 @@
     addDialog?.querySelector('.cancel')?.addEventListener('click', () => addDialog.hide())
     addDialog?.querySelector('.confirm')?.addEventListener('click', () => {
       addDialog?.hide()
-      addItem()
     })
   })
 

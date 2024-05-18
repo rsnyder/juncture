@@ -23,10 +23,12 @@
   </head>
   <body>
 
-    <ve-header title="Juncture Workbench" auth="github">
+    <ve-header title="Juncture Workbench" auth="github" color="#444">
+      <!--
       <ul>
         <li><a href="https://search.juncture-digital.org">Resource Tool</a></li>
       </ul>
+      -->
     </ve-header>
     <ve-gh-file-selector id="gh-selector" gh-source=""></ve-gh-file-selector>
     <textarea id="md-text"></textarea>
@@ -41,7 +43,7 @@
 
     <script src="https://v3.juncture-digital.org/wc/dist/js/index.js" type="module"></script>
     <script type="module">
-      import { getMarkdown } from 'https://v3.juncture-digital.org/index.js'
+      import { getGhFile, getMarkdown } from 'https://v3.juncture-digital.org/index.js'
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
@@ -85,12 +87,23 @@
 
       function loadMarkdown() {
         dialog.hide()
-        window.history.replaceState({}, null, `/editor?source=${ghSource}`)
+        window.history.replaceState({}, null, `/wb?source=${ghSource}`)
+        /*
         getMarkdown(ghSource).then(markdown => {
           localStorage.setItem('smde_ghsource', ghSource)
           localStorage.setItem('smde_juncture_saved_hash', markdown.trim().hashCode())
           easyMDE.value(markdown)
           styleJunctureElements()
+        })
+        */
+        let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+        getGhFile(acct, repo, branch, path.join('/')).then(resp => {
+          if (resp.status === 200) {
+            localStorage.setItem('smde_juncture_content', resp.content)
+            localStorage.setItem('smde_juncture_saved_hash', resp.content.trim().hashCode())
+            easyMDE.value(resp.content)
+            styleJunctureElements()
+          }
         })
 
       }
@@ -102,14 +115,15 @@
         let ghSelector = document.getElementById('gh-selector')
         
         ghSelector.addEventListener('file-selected', e => {
+          let evt = e.detail[0]
           document.getElementById('gh-selector').setAttribute('gh-source', '')
-          ghSource = e.detail[0]
+          ghSource = evt.path
           if (ghSource === localStorage.getItem('smde_ghsource')) {
             let markdown = localStorage.getItem('smde_juncture_content')
             easyMDE.value(markdown)
             styleJunctureElements()
           } else {
-            if (markdownIsUpdated) dialog.show()
+            if (markdownIsUpdated && evt.trigger !== 'delete') dialog.show()
             else loadMarkdown()
           }
         })

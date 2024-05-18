@@ -118,27 +118,31 @@ export class GithubClient {
     }
 
     _shas:any = {}
-    async putFile(acct:string, repo:string, path:string, content:any, ref:string, isBinaryString=false, sha:string=''): Promise<any> {
+    async putFile(acct:string, repo:string, path:string, content:any, ref:string, isBinaryString=false, sha:string='', overwrite=false): Promise<any> {
       let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
       let shaKey = `${acct}/${repo}/${ref}/${path}`
       sha = sha || this._shas[shaKey] || await this.getSha(acct, repo, path, ref)
-      // console.log(`putFile: acct=${acct} repo=${repo} path=${path} ref=${ref} sha=${sha} isBinaryString=${isBinaryString}`)
+      console.log(`putFile: acct=${acct} repo=${repo} path=${path} ref=${ref} sha=${sha} isBinaryString=${isBinaryString}`)
       // let payload:any = { message: 'API commit', content: btoa(unescape(encodeURIComponent(content))) }
-      let payload:any = { 
-        message: 'API commit', 
-        content: isBinaryString ? btoa(content) : this.b64EncodeUnicode(content) 
-      }
-      if (ref) payload.branch = ref
-      if (sha) payload.sha = sha
-      let resp:any = await fetch(url, { method: 'PUT', body: JSON.stringify(payload), headers: {Authorization: `Token ${this.authToken}`} })
-      if (resp.ok) {
-        let body = await resp.json()
-        sha = body.content.sha
-        this._shas[shaKey] = sha
+      let exists = !!sha
+      console.log(`putFile: exists=${exists}`)
+      if (!exists || overwrite) {
+        let payload:any = { 
+          message: 'API commit', 
+          content: isBinaryString ? btoa(content) : this.b64EncodeUnicode(content) 
+        }
+        if (ref) payload.branch = ref
+        if (sha) payload.sha = sha
+        let resp:any = await fetch(url, { method: 'PUT', body: JSON.stringify(payload), headers: {Authorization: `Token ${this.authToken}`} })
+        if (resp.ok) {
+          let body = await resp.json()
+          sha = body.content.sha
+          this._shas[shaKey] = sha
+        }
+        return {status:resp.status, statusText:resp.statusText, sha}
       } else {
-        // console.log(resp)
+        return {status:409, statusText:'File exists', sha}
       }
-      return {status:resp.status, statusText:resp.statusText, sha}
     }
   
     async deleteFile(acct:string, repo:string, path:string, ref:string, sha:string=''): Promise<any> {
@@ -148,6 +152,8 @@ export class GithubClient {
       let payload = { message: 'API commit', sha }
       let resp = await fetch(url, { method: 'DELETE', body: JSON.stringify(payload), headers: {Authorization: `Token ${this.authToken}`} })
       resp = await resp.json()
+      console.log(resp)
+      return {status:resp.status, statusText:resp.statusText}
     }
   
     async defaultBranch(acct:string, repo:string) {

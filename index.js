@@ -40,15 +40,19 @@ async function getMarkdown(ghSource) {
   let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   path = path.join('/')
   let extension = ghSource.slice(-3)
-  console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
+  // console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
   if (extension === '.md') {
-    return getGhFile(owner, repo, branch, path)
+    let resp = await getGhFile(owner, repo, branch, path)
+    return resp.content
   } else {
     return await Promise.all([
       getGhFile(owner, repo, branch, `${path}.md`),
       getGhFile(owner, repo, branch, `${path}/README.md`),
       getGhFile(owner, repo, branch, `${path}/index.md`)
-    ]).then(resp => { console.log(resp); return resp.find(r => r) })
+    ]).then(resp => { 
+      let found = resp.find(r => r?.status === 200)
+      return found?.content || ''
+    })
   }
 }
 
@@ -56,19 +60,21 @@ async function getGhFile(acct, repo, branch, path) {
   // console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path=${path}`)
   let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
   let resp = await fetch(url, {cache: 'no-cache'})
-  if (resp.status === 200) {
-    resp = await resp.json()
-    return decodeURIComponent(escape(atob(resp.content)))
+  if (resp.ok) {
+    let payload = await resp.json()
+    let content = decodeURIComponent(escape(atob(payload.content)))
+    return {status: resp.status, content}
   } else if (resp.status === 403 || resp.status === 401) { // access problem, possibly api rate limit exceeded
     url = `https://raw.githubusercontent.com/${acct}/${repo}/${branch}/${path}`
     resp = await fetch(url)
     if (resp.ok) {
-      return await resp.text()
+      let content = await resp.text()
+      return {status: resp.status, content}
     } else {
-      return null
+      return {status: resp.status, content: null}
     }
   } else {
-    return null
+    return {status: resp.status, content: null}
   }
 }
 // return Promise.resolve({content, sha: resp.sha})
@@ -357,8 +363,9 @@ function handleCodeEl(rootEl, codeEl) {
         : codeEl.parentElement
       : codeWrapper.parentElement
 
-    let codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
-    //let codeLang = Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
+    let codeLang = parentTag === 'PRE'
+      ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
+      : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
     
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
@@ -1297,4 +1304,4 @@ function mount(root, html) {
   return article
 }
 
-export { elFromHtml, getMarkdown, getHtml, ghSourceFromLocation, markdownToHtml, mount, observeVisible, readMoreSetup, setMeta, structureContent, yaml }
+export { elFromHtml, getMarkdown, getGhFile, getHtml, ghSourceFromLocation, markdownToHtml, mount, observeVisible, readMoreSetup, setMeta, structureContent, yaml }

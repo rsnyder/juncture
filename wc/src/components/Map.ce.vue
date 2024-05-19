@@ -1,6 +1,7 @@
 <template>
 
     <div ref="root" :style="{width: '100%', height: '100%'}">
+      
       <div class="content" ref="contentEl">
         <div id="lat-lng-zoom" v-html="latLngZoom" @click="copyTextToClipboard(`${latLngZoom}`)"></div>
         
@@ -10,17 +11,18 @@
         <div v-if="caption" class="caption">{{ caption }}</div>
       </div>
 
-    </div>
-
-    <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
-      <ve-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></ve-image>
-      <div slot="footer" class="footer">
-        <ve-caption :src="selectedImage"></ve-caption>
-        <div class="push">
-          <sl-button variant="primary" @click="selectedImage = null">Close</sl-button>
+      <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
+        <ve-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></ve-image>
+        <div slot="footer" class="footer">
+          <ve-caption :src="selectedImage"></ve-caption>
+          <div class="push">
+            <sl-button variant="primary" @click="selectedImage = null">Close</sl-button>
+          </div>
         </div>
-      </div>
-    </sl-dialog>
+      </sl-dialog>
+  
+  </div>
+
 
 </template>
       
@@ -784,14 +786,26 @@
       }
 
       async function getLayerStrings() {
+        if (!host.value) return
         if (props.ghDir) {
           layerObjs.value = [
             ...layerObjs.value, 
             ...await getLocationImagesForGhPath(props.ghDir)
           ]
         } 
-        let dataEl = (props.data ? document.getElementById(props.data) : host.value) as HTMLElement
-        let _layerObjs = Array.from(dataEl.querySelectorAll('li'))
+
+        let dataEl: HTMLElement | null = null
+        if (props.data) {
+          let el = host.value.parentElement
+          while (!dataEl && el) {
+            dataEl = el.querySelector(`#${props.data}`)
+            el = el.parentElement
+          }
+        } else {
+          dataEl = host.value
+        }
+
+        let _layerObjs = Array.from(dataEl?.querySelectorAll('li') || [])
           .map((item:any) => toObj(item.firstChild?.textContent))
         if (props.marker && props.center) {
           if (isQid(props.center)) {
@@ -809,15 +823,14 @@
       }
     
       function listenForSlotChanges() {
-        const callback = (mutationsList:any) => {
+        if (!host.value) return
+        new MutationObserver((mutationsList:any) => {
           for (let mutation of mutationsList) {
             if (mutation.type === 'childList' && Array.from(mutation.target.classList).indexOf('hydrated') >= 0) {
               getLayerStrings ()       
             }
           }
-        }
-        const observer = new MutationObserver(callback);
-        observer.observe(host.value, { childList: true, subtree: true, characterData: true })
+        }).observe(host.value, { childList: true, subtree: true, characterData: true })
       }
     
       function isCoords(str:string) {
@@ -971,8 +984,28 @@
         return {id, zoom, layer}
       }
     
+      function getCurrentLoc() {
+        let point = map.value?.getCenter() || new L.LatLng(0, 0)
+        let zoom =  map.value?.getZoom() || 10
+        return `${Number((point.lat).toFixed(5))},${Number((point.lng).toFixed(5))},${zoom}`
+      }
+
+      function getInitialLoc() {
+        let point = props.center ? latLng(props.center) : new L.LatLng(0, 0)
+        let zoom =  props.zoom || 10
+        return `${Number((point.lat).toFixed(5))},${Number((point.lng).toFixed(5))},${zoom}`
+      }
+
+      function flytoLoc(loc:string) {
+        let [lat, lng, zoom] = loc.split(',').map(val => parseFloat(val))
+        let center = new L.LatLng(lat, lng)
+        zoom = zoom || 10
+        map.value?.flyTo(center, zoom)
+      }
+
       function addInteractionHandlers() {
-        let scope = host.value.parentElement
+        // console.log('addInteractionHandlers')
+        let scope = host.value?.parentElement
         let added = new Set()
         while (scope?.parentElement && scope.tagName !== 'MAIN') {
           scope = scope.parentElement;
@@ -985,9 +1018,9 @@
           })
         }
         
-        let el = host.value.parentElement
+        /*
+        let el = host.value?.parentElement
         while (el?.parentElement && el.tagName !== 'BODY') el = el.parentElement;
-      
         if (el) {
           (Array.from(el.querySelectorAll('mark')) as HTMLElement[]).forEach(mark => {
             let match = Array.from(mark.attributes).find(attr => attr.name === 'flyto')
@@ -1014,7 +1047,45 @@
           })
         }
       }
+      */
+
+        let el = host.value?.parentElement
+        console.log(el)
+        while (el?.parentElement && el?.parentElement.className.indexOf('content') < 0) {
+          (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
+            let link = new URL(anchorElem.href)
+            let path = link.pathname.split('/').filter((p:string) => p)
+            let flytoIdx = path.indexOf('flyto')
+            if (flytoIdx >= 0) {
+              let location = path[path.length-1]
+              let trigger = path.length > flytoIdx + 2 ? path[flytoIdx+1] : 'click'
+              console.log(`flyto: location=${location} trigger=${trigger}`)
+              anchorElem.classList.add('flyto')
+              anchorElem.href = 'javascript:;'
+              anchorElem.setAttribute('data-location', location)
+              anchorElem.setAttribute('data-trigger', trigger)
+              anchorElem.addEventListener(trigger, (evt:Event) => {
+                let target = evt.target as HTMLElement
+                let _flytoLoc = target.getAttribute('data-location') || target?.parentElement?.getAttribute('data-location')
+                let _currentLoc = getCurrentLoc()
+                let _initialLoc = getInitialLoc()
+                if (_flytoLoc === _currentLoc) {
+                  console.log('flyto initial')
+                  flytoLoc(_initialLoc)
+                } else if (_flytoLoc) {
+                  console.log('flyto new')
+                  flytoLoc(_flytoLoc)
+                }
+              })
+            }
+
+          })
+          el = el.parentElement;
+        }
+      }
     
+      let _priorLoc = ''
+
       function addMutationObserver(el: HTMLElement) {
         let prevClassState = el.classList.contains('active')
         let observer = new MutationObserver((mutations) => {
@@ -1054,7 +1125,9 @@
       }
     
       async function flytoLocation(arg: string, force=false) {
+        console.log(`flytoLocation: arg=${arg} force=${force}`)
         flyto.value = parseFlytoArg(arg)
+        console.log(toRaw(flyto.value))
         if (flyto.value.layer) {
           if (flyto.value.id === zoomed.value && !force) {
             flyto.value.layer.closePopup()

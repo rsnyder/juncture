@@ -339,6 +339,7 @@ function handleCodeEl(rootEl, codeEl) {
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
 
+
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
@@ -351,22 +352,21 @@ function handleCodeEl(rootEl, codeEl) {
       codeWrapper = paraText ? codeEl : codeEl.parentElement
       isInline = paraText ? true : false
     } 
-    else if (parentTag === 'PRE' || parentTag === 'LI' || parentTag === 'TD') codeWrapper = codeEl
+    else if (parentTag === 'PRE' ) codeWrapper = codeEl.parentElement
+    else if (parentTag === 'LI' || parentTag === 'TD') codeWrapper = codeEl
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
     if (!codeWrapper) return
-
+    
     let parent = parentTag === 'LI'
-      ? codeEl.previousElementSibling
-        ? codeEl.parentElement?.parentElement
-        : codeEl.parentElement
+      ? codeEl.parentElement?.parentElement
       : codeWrapper.parentElement
 
     let codeLang = parentTag === 'PRE'
       ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
       : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
-    
+        
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
       newEl.textContent = codeEl.textContent

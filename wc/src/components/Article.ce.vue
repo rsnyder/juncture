@@ -62,4 +62,8 @@ function setViewersPosition() {
     display: block;
     height: 100%;
   }
+
+  ul[data-id] {
+    display: none;
+  }
 </style>

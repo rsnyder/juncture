@@ -354,7 +354,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  console.log(codeEl)
+  // console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -393,7 +393,7 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
-      console.log(parsed)
+      // console.log(parsed)
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
@@ -417,28 +417,31 @@ function handleCodeEl(rootEl, codeEl) {
             ul.appendChild(li)
           }
         }
+        
+        /*
         if (codeEl.nextElementSibling?.tagName === 'CODE') {
-          let toRemove = []
-          let ul = document.createElement('ul')
-          newEl.appendChild(ul)
+          let toAppend = []
           let nextSib = codeEl.nextElementSibling
           while (nextSib?.tagName === 'CODE') {
-            let li = document.createElement('li')
-            li.innerHTML = nextSib.textContent
-            ul.appendChild(li)
-            toRemove.push(nextSib)
+            let nextParsed = parseCodeEl(nextSib)
+            console.log(nextParsed)
+            if (!nextParsed.tag || nextParsed.tag === parsed.tag) {
+              toAppend.push(nextSib)
+            }
             nextSib = nextSib.nextElementSibling
           }
-          toRemove.forEach(el => el.remove())
-          // console.log(newEl)
+          if (toAppend.length > 0) {
+            let ul = document.createElement('ul')
+            newEl.appendChild(ul)
+            toAppend.forEach(el => {
+              let li = document.createElement('li')
+              li.innerHTML = el.textContent
+              ul.appendChild(li)
+            })
+            toAppend.forEach(el => el.remove())
+          }
         }
-        let nextSib = codeEl.nextElementSibling
-        if (nextSib && nextSib.tagName === 'CODE')
-        while (nextSib && nextSib.tagName === 'CODE') {
-          let nextParsed = parseCodeEl(nextSib)
-          // console.log('nextSib', nextParsed)
-          nextSib = nextSib.nextElementSibling
-        }
+        */
 
         if (parsed.tag === 'script') {
           document.body.appendChild(newEl)

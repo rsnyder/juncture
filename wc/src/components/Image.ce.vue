@@ -168,11 +168,9 @@
         if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
         else tokens.push(token)
       })
-      console.log('tokens', tokens)
       let parsed:any = {}
       let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotate', 'seq' ]
       tokens.filter(t => t !== 'image').forEach((token, idx) => {
-        console.log(token)
         if (token.indexOf('=') > 0) {
           let i = token.indexOf('=')
           let key = token.slice(0, i)
@@ -183,7 +181,6 @@
           parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
         }
       })
-      console.log('parsed', parsed)
       return parsed
     }
 

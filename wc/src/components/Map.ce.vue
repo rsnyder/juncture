@@ -1000,16 +1000,13 @@
         
         scope = host.value?.parentElement
         while (scope?.parentElement) {
-          console.log(scope);
           (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
             let link = new URL(anchorElem.href)
             let path = link.pathname.split('/').filter((p:string) => p)
-            console.log(path)
             let flytoIdx = path.indexOf('flyto')
             if (flytoIdx >= 0) {
               let location = path[path.length-1]
               let trigger = path.length > flytoIdx + 2 ? path[flytoIdx+1] : 'click'
-              console.log(`flyto: location=${location} trigger=${trigger}`)
               let split = location.split(',')
               if (isQid(split[0])) {
                 let coords = await coordsFromQid(split[0])
@@ -1020,11 +1017,9 @@
               anchorElem.href = 'javascript:;'
               anchorElem.setAttribute('data-location', location)
               anchorElem.addEventListener(trigger, (evt:Event) => {
-                console.log('flyto click')
                 let target = evt.target as HTMLElement
                 let _flytoLoc = target.getAttribute('data-location') || target?.parentElement?.getAttribute('data-location')
                 let _currentLoc = getCurrentLoc()
-                console.log(_currentLoc, _flytoLoc)
                 if (_flytoLoc === _currentLoc) flytoInitialLoc()
                 else if (_flytoLoc) flytoLoc(_flytoLoc)
               })
@@ -1063,7 +1058,6 @@
       }
     
       async function flytoLocation(arg: string, force=false) {
-        console.log(`flytoLocation: arg=${arg} force=${force}`)
         flyto.value = parseFlytoArg(arg)
         if (flyto.value.layer) {
           if (flyto.value.id === zoomed.value && !force) {
@@ -1113,7 +1107,6 @@
         let center: L.LatLng
         let zoom = 10
         let split = loc.split(',')
-        console.log(split)
         if (isQid(split[0])) {
           let entity = await getEntity(split[0])
           center = latLng(entity.coords)

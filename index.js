@@ -13,6 +13,12 @@ function hasTimestamp(s) { return /\d{1,2}:\d{1,2}/.test(s) }
 
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
+function deleteAllComments(rootElem) {
+  var iterator = document.createNodeIterator(rootElem, NodeFilter.SHOW_COMMENT, () => { return NodeFilter.FILTER_ACCEPT}, false);
+  var curNode
+  while (curNode = iterator.nextNode()) { curNode.remove() }
+}
+
 function ghSourceFromLocation() {
   // console.log(location)
   let parsed = new URL(location.href)
@@ -261,7 +267,6 @@ Object.values(components).forEach(langComponents => {
     tagMap[tag.slice(3)] = tag
   })
 })
-console.log(tagMap)
 
 function parseHeadline(s, codeLang) {
   let tokens = []
@@ -388,7 +393,7 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
-      console.log(parsed)
+      // console.log(parsed)
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
@@ -425,13 +430,13 @@ function handleCodeEl(rootEl, codeEl) {
             nextSib = nextSib.nextElementSibling
           }
           toRemove.forEach(el => el.remove())
-          console.log(newEl)
+          // console.log(newEl)
         }
         let nextSib = codeEl.nextElementSibling
         if (nextSib && nextSib.tagName === 'CODE')
         while (nextSib && nextSib.tagName === 'CODE') {
           let nextParsed = parseCodeEl(nextSib)
-          console.log('nextSib', nextParsed)
+          // console.log('nextSib', nextParsed)
           nextSib = nextSib.nextElementSibling
         }
 
@@ -453,7 +458,7 @@ function handleCodeEl(rootEl, codeEl) {
             }
           }
           else {
-            console.log(codeWrapper)
+            // console.log(codeWrapper)
             codeWrapper.replaceWith(newEl)
           }
         }
@@ -476,7 +481,7 @@ function handleCodeEl(rootEl, codeEl) {
         } else {
           target = parent
         }
-        console.log(codeWrapper, priorEl, parent, target)
+        // console.log(codeWrapper, priorEl, parent, target)
         if (parsed.id) target.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
         if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
@@ -497,6 +502,8 @@ let isJunctureV1 = false
 function structureContent(html) {
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
   // console.log(elFromHtml(html))
+
+  deleteAllComments(rootEl)
 
   let restructured = document.createElement('main')
   
@@ -845,6 +852,12 @@ function structureContent(html) {
     Array.from(article.querySelectorAll('[data-id]'))
     .forEach(seg => {
       if (seg.tagName === 'SECTION') return
+
+      if (!seg.innerHTML.trim()) { // remove empty segments
+        seg.remove()
+        return
+      }
+
       let id = seg.getAttribute('data-id') || ''
       let wrapper = document.createElement('div')
       wrapper.setAttribute('data-id', id)
@@ -1090,7 +1103,9 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
       if (setActiveParagraph) { 
         rootEl.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
         currentActiveParagraph?.classList.add('active')
+        
         // auto entity tagging
+        /*
         let isTagged = currentActiveParagraph?.getAttribute('data-entities-tagged') === ''
         if (currentActiveParagraph?.getAttribute('data-entities') && !isTagged) {
           let qids = currentActiveParagraph.getAttribute('data-entities')?.split(' ') || []
@@ -1120,7 +1135,9 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
         } else {
           if (currentViewers) currentViewers.classList.add('active')
         }
+        */
 
+        if (currentViewers) currentViewers.classList.add('active')
       }
 
       /*

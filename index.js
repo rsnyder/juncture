@@ -354,7 +354,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl)
+  console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -376,6 +376,7 @@ function handleCodeEl(rootEl, codeEl) {
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
+    console.log(codeWrapper, parentTag, previousElTag, isInline)
     if (!codeWrapper) return
     
     let parent = parentTag === 'LI'

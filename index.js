@@ -376,7 +376,6 @@ function handleCodeEl(rootEl, codeEl) {
     else if (/^H\d/.test(parentTag)) codeWrapper = codeEl
     else codeWrapper = codeEl.parentElement?.parentElement?.parentElement
   
-    console.log(codeWrapper, parentTag, previousElTag, isInline)
     if (!codeWrapper) return
     
     let parent = parentTag === 'LI'
@@ -394,7 +393,7 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
-      // console.log(parsed)
+      console.log(parsed)
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'

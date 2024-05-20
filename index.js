@@ -360,7 +360,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  console.log(codeEl, codeEl.parentElement)
+  // console.log(codeEl, codeEl.parentElement)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -388,14 +388,14 @@ function handleCodeEl(rootEl, codeEl) {
       ? codeEl.parentElement?.parentElement
       : codeWrapper.parentElement
 
+    /*
     let codeLang = parentTag === 'PRE'
       ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
       : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
-    
-    console.log(`parentTag=${parentTag} codeLang=${codeLang}`)
-    
-    codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
-    console.log(`codeLang=${codeLang}`)
+    */
+
+    let codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
+    // console.log(`parentTag=${parentTag} codeLang=${codeLang}`)
 
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
@@ -404,7 +404,7 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
-      console.log(parsed)
+      // console.log(parsed)
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'

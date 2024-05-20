@@ -354,7 +354,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl)
+  console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -386,6 +386,8 @@ function handleCodeEl(rootEl, codeEl) {
       ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
       : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
         
+    console.log(`codeLang=${codeLang}`)
+    
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
       newEl.textContent = codeEl.textContent

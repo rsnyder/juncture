@@ -532,7 +532,7 @@ function structureContent(html) {
 
   // For compatibility with Juncture V2
   Array.from(rootEl?.querySelectorAll('p'))
-  .filter(p => /^\.ve-\w+\S/.test(p.childNodes.item(0).nodeValue?.trim() || ''))
+  .filter(p => /^\.ve-\w+\S/.test(p.childNodes.item(0)?.nodeValue?.trim() || ''))
   .forEach(p => {
     let codeEl = document.createElement('code')
     codeEl.setAttribute('class', 'language-juncture2')

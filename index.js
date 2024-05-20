@@ -160,6 +160,12 @@ const components = {
       positional: [],
       ignore: new Set()
     },
+    've-meta': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
     've-plant-specimen': {
       booleans: new Set(['full', 'left', 'right', 'sticky']),
       class: new Set(),
@@ -354,7 +360,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  console.log(codeEl)
+  console.log(codeEl, codeEl.parentElement)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -385,9 +391,12 @@ function handleCodeEl(rootEl, codeEl) {
     let codeLang = parentTag === 'PRE'
       ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
       : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
-        
-    console.log(`codeLang=${codeLang}`)
     
+    console.log(`parentTag=${parentTag} codeLang=${codeLang}`)
+    
+    codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
+    console.log(`codeLang=${codeLang}`)
+
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
       newEl.textContent = codeEl.textContent

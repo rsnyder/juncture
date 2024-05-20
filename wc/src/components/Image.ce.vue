@@ -162,19 +162,28 @@
 
   function init() {
     function parseImageDefStr(s:String): Object {
-      let tokens: String[] = []
+      let tokens: string[] = []
       s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
       s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
         if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
         else tokens.push(token)
       })
+      console.log('tokens', tokens)
       let parsed:any = {}
-      tokens.forEach(token => {
-        let idx = token.indexOf('=')
-        let key = token.slice(0, idx)
-        let value = token.slice(idx+1)
-        parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+      let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotate', 'seq' ]
+      tokens.filter(t => t !== 'image').forEach((token, idx) => {
+        console.log(token)
+        if (token.indexOf('=') > 0) {
+          let i = token.indexOf('=')
+          let key = token.slice(0, i)
+          let value = token.slice(i+1)
+          parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+
+        } else {
+          parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
+        }
       })
+      console.log('parsed', parsed)
       return parsed
     }
 
@@ -350,43 +359,12 @@
           return true
         }}
       ]})
-
-      /*
-      new OpenSeadragonViewerInputHook({ viewer: viewer.value, hooks: [
-        {tracker: 'viewer', handler: 'clickHandler', hookHandler: (event:any) => {
-          if (!viewer.value?.isFullPage() && !event.originalEvent.ctrlKey) {
-            event.preventDefaultAction = true
-            event.stopHandlers = true
-          }
-          return true
-        }}
-      ]})
-      */
     }
   }
 
   function addInteractionHandlers() {
-    console.log('addInteractionHandlers')
-    /*
-    if (host.value.parentElement.tagName === 'SL-TAB-PANEL') { // embedded in a Juncture1 viewers component
-      (Array.from(document.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
-        let link = new URL(anchorElem.href)
-        let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
-        let zoomIdx = path.indexOf('zoom')
-        if (zoomIdx >= 0) {
-          let region = path[path.length-1]
-          let trigger = path.length > zoomIdx + 1 ? path[zoomIdx+1] : 'click'
-          anchorElem.classList.add('zoom')
-          anchorElem.href = 'javascript:;'
-          anchorElem.setAttribute('data-region', region)
-          anchorElem.addEventListener(trigger, (evt:Event) => {
-            let region = (evt.target as HTMLElement).getAttribute('data-region')
-            if (region) zoomto(region) 
-          })
-        }
-      })
-    } else {*/
-      // console.log('addInteractionHandlers', ancestors())
+    // console.log('addInteractionHandlers')
+
       let el = host.value.parentElement
       while (el?.parentElement && el?.parentElement.className.indexOf('content') < 0) {
         (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
@@ -398,7 +376,7 @@
             })
           } else {
             let link = new URL(anchorElem.href)
-            let path = link.pathname.split('/').filter((p:string) => p).map(p => p === 'zoomto' ? 'zoom' : p)
+            let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
             let zoomIdx = path.indexOf('zoom')
             if (zoomIdx >= 0) {
               let region = path[path.length-1]
@@ -407,7 +385,6 @@
               anchorElem.classList.add('zoom')
               anchorElem.href = 'javascript:;'
               anchorElem.setAttribute('data-region', region)
-              anchorElem.setAttribute('data-trigger', trigger)
               anchorElem.addEventListener(trigger, (evt:Event) => {
                 let target = evt.target as HTMLElement
                 let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
@@ -516,6 +493,7 @@ function copyTextToClipboard(text: string) {
   }
 
   .osd {
+    position: relative;
     width: 100%;
     background-color: black;
     /* border: 1px solid #ddd; */
@@ -524,7 +502,7 @@ function copyTextToClipboard(text: string) {
   .coords {
     opacity: 0;
     position: absolute;
-    bottom: 72px;
+    bottom: 0;
     right: 0;
     background-color: white;
     border: 1px solid #ccc;

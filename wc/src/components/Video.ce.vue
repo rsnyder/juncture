@@ -7,6 +7,8 @@
     <video v-if="manifest" ref="html5Player" id="html5-player" controls playsinline :muted="props.muted" :autoplay="props.autoplay" :poster="props.poster">
       <source :src="src" :type="mime"/>
     </video>
+
+    <div v-if="caption" class="caption">{{ caption }}</div>
   
   </div>
 
@@ -121,7 +123,7 @@
     while (el?.parentElement && el.tagName !== 'MAIN') {
       (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
         let link = new URL(anchorElem.href)
-        let path = link.pathname.split('/').filter((p:string) => p)
+        let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'playat' ? 'play' : p)
         let platAtIdx = path.indexOf('play')
         if (platAtIdx >= 0 && path.length > platAtIdx+1) {
           let imageEl = findComponentEl(anchorElem)

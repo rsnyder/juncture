@@ -19,6 +19,7 @@
       .CodeMirror-line .cm-header { font-size: 1.4em; }
       button.disabled { display:none; }
       ve-header ul {display: none}
+      /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
     </style>
   </head>
   <body>
@@ -103,7 +104,7 @@
             localStorage.setItem('smde_ghsource', ghSource)
             localStorage.setItem('smde_juncture_saved_hash', resp.content.trim().hashCode())
             easyMDE.value(resp.content)
-            styleJunctureElements()
+            // styleJunctureElements()
           }
         })
 
@@ -123,7 +124,7 @@
           if (ghSource === localStorage.getItem('smde_ghsource')) {
             let markdown = localStorage.getItem('smde_juncture_content')
             easyMDE.value(markdown)
-            styleJunctureElements()
+            // styleJunctureElements()
           } else {
             if (markdownIsUpdated && evt.trigger !== 'delete') dialog.show()
             else loadMarkdown()
@@ -204,6 +205,7 @@
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
           window.history.replaceState({}, null, `/wb?source=${ghSource}&mode=${mode}`)
           setSaveButtonState()
+          // styleJunctureElements()
         }, 100)
         return `<ve-article><pre>${md}</pre></ve-article>`
       }
@@ -217,9 +219,16 @@
 
       function styleJunctureElements() {
         setTimeout(() =>
-          document.querySelector('.EasyMDEContainer').querySelectorAll('span.cm-formatting-code + span.cm-comment').forEach((el, i) => {
+          //document.querySelector('.EasyMDEContainer').querySelectorAll('span.cm-formatting-code + span.cm-comment').forEach((el, i) => {
+          //  el.style.color = 'red'
+          //}
+          Array.from(document.querySelector('.EasyMDEContainer').querySelectorAll('.CodeMirror-line .cm-url'))
+          .filter(el => el.className === 'cm-string cm-url')
+          .filter(el => el.innerText.split('/')[0] === 'flyto')
+          .forEach((el, i) => {
             el.style.color = 'red'
-        }), 100)
+          }
+        ), 100)
       }
 
       String.prototype.hashCode = function() {
@@ -248,6 +257,7 @@
         debounce = window.setTimeout(() => {
           markdownIsUpdated = contentIsUpdated()
           setSaveButtonState()
+          // styleJunctureElements()
         }, 100)
       }
     

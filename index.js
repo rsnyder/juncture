@@ -121,7 +121,7 @@ const components = {
     've-header': {
       booleans: new Set(['breadcrumbs', 'pdf-download-enabled']),
       class: new Set(),
-      positional: [],
+      positional: ['title', 'background', 'subtitle', 'options', 'position'],
       ignore: new Set()
     },
     've-iframe': {
@@ -133,13 +133,19 @@ const components = {
     've-image': {
       booleans: new Set(['no-caption', 'zoom-on-scroll']),
       class: new Set(),
-      positional: [],
+      positional: ['src', 'caption'],
       ignore: new Set()
     },
     've-knightlab-timeline': {
       booleans: new Set(['has-bookmark']),
       class: new Set(),
       positional: [],
+      ignore: new Set()
+    },
+    've-map': {
+      booleans: new Set(['cards', 'full', 'left', 'marker', 'prefer-geojson', 'popup-on-hover', 'zoom-on-scroll', 'zoom-on-click']),
+      class: new Set(),
+      positional: ['center', 'caption'],
       ignore: new Set()
     },
     've-menu': {
@@ -157,7 +163,7 @@ const components = {
     've-video': {
       booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
       class: new Set(),
-      positional: [],
+      positional: ['vid', 'caption'],
       ignore: new Set()
     },
   },
@@ -248,6 +254,15 @@ const components = {
     }
   }
 }
+let tagMap = {}
+Object.values(components).forEach(langComponents => {
+  Object.keys(langComponents).forEach(tag => {
+    tagMap[tag] = tag
+    tagMap[tag.slice(3)] = tag
+  })
+})
+console.log(tagMap)
+
 function parseHeadline(s, codeLang) {
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
@@ -291,7 +306,7 @@ function parseHeadline(s, codeLang) {
       if (!parsed.entities) parsed.entities = []
       parsed.entities.push(token)
     }
-    else if (/^\w+-[-\w]*\w+$/.test(token) && !parsed.tag) parsed['tag'] = token
+    else if (tokenIdx === 0 && !parsed.tag && tagMap[token]) parsed['tag'] = tagMap[token]
     else if (token === 'script' || token === 'link') parsed['tag'] = token
     else {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
@@ -339,7 +354,6 @@ function handleCodeEl(rootEl, codeEl) {
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
 
-
   if (parentTag === 'P' || 
       parentTag === 'PRE' ||
       parentTag === 'LI' ||
@@ -374,7 +388,8 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
-      // console.log(parsed)
+      console.log(parsed)
+
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
         else parsed.style = {display: 'inline-block'}
@@ -397,6 +412,29 @@ function handleCodeEl(rootEl, codeEl) {
             ul.appendChild(li)
           }
         }
+        if (codeEl.nextElementSibling?.tagName === 'CODE') {
+          let toRemove = []
+          let ul = document.createElement('ul')
+          newEl.appendChild(ul)
+          let nextSib = codeEl.nextElementSibling
+          while (nextSib?.tagName === 'CODE') {
+            let li = document.createElement('li')
+            li.innerHTML = nextSib.textContent
+            ul.appendChild(li)
+            toRemove.push(nextSib)
+            nextSib = nextSib.nextElementSibling
+          }
+          toRemove.forEach(el => el.remove())
+          console.log(newEl)
+        }
+        let nextSib = codeEl.nextElementSibling
+        if (nextSib && nextSib.tagName === 'CODE')
+        while (nextSib && nextSib.tagName === 'CODE') {
+          let nextParsed = parseCodeEl(nextSib)
+          console.log('nextSib', nextParsed)
+          nextSib = nextSib.nextElementSibling
+        }
+
         if (parsed.tag === 'script') {
           document.body.appendChild(newEl)
           codeWrapper.remove()
@@ -414,7 +452,10 @@ function handleCodeEl(rootEl, codeEl) {
               codeWrapper.replaceWith(newEl)
             }
           }
-          else codeWrapper.replaceWith(newEl)
+          else {
+            console.log(codeWrapper)
+            codeWrapper.replaceWith(newEl)
+          }
         }
       } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
         let target
@@ -435,6 +476,7 @@ function handleCodeEl(rootEl, codeEl) {
         } else {
           target = parent
         }
+        console.log(codeWrapper, priorEl, parent, target)
         if (parsed.id) target.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
         if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
@@ -454,6 +496,7 @@ let isJunctureV1 = false
 
 function structureContent(html) {
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
+  // console.log(elFromHtml(html))
 
   let restructured = document.createElement('main')
   

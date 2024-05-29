@@ -20,3 +20,4 @@
 - [PDF Generation](pdf-test)
 
 - [Docs](docs)
+- [Code tags](code)

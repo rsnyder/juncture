@@ -4,6 +4,10 @@
 
 ## Markdown
 
+```markdown
+Markdown
+```
+
 ```
 ### Common sunflower
 

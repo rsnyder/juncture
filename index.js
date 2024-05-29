@@ -530,7 +530,7 @@ let isJunctureV1 = false
 
 function structureContent(html) {
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
-  // console.log(elFromHtml(html))
+  console.log(elFromHtml(html))
 
   deleteAllComments(rootEl)
 

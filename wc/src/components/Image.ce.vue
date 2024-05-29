@@ -360,10 +360,10 @@
   }
 
   function addInteractionHandlers() {
-    // console.log('addInteractionHandlers')
+    console.log('addInteractionHandlers')
 
       let el = host.value.parentElement
-      while (el?.parentElement && el?.parentElement.className.indexOf('content') < 0) {
+      while (el?.className.indexOf('content') < 0) {
         (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
           if (anchorElem.href === 'javascript:;') { // previously processed, reconnect event listener
             anchorElem.addEventListener(anchorElem.getAttribute('data-trigger') || 'click', (evt:Event) => {
@@ -378,7 +378,7 @@
             if (zoomIdx >= 0) {
               let region = path[path.length-1]
               let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
-              console.log(`zoomto: region=${region} trigger=${trigger}`)
+              // console.log(`zoomto: region=${region} trigger=${trigger}`)
               anchorElem.classList.add('zoom')
               anchorElem.href = 'javascript:;'
               anchorElem.setAttribute('data-region', region)

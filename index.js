@@ -112,6 +112,12 @@ const components = {
       positional: ['src', 'caption'],
       ignore: new Set()
     },
+    've-breadcrumbs': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
     've-entities': {
       booleans: new Set(['cards']),
       class: new Set(),
@@ -176,6 +182,12 @@ const components = {
       booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
       class: new Set(),
       positional: ['vid', 'caption'],
+      ignore: new Set()
+    },
+    've-visjs': {
+      booleans: new Set(),
+      class: new Set(),
+      positional: [],
       ignore: new Set()
     },
   },
@@ -394,13 +406,16 @@ function handleCodeEl(rootEl, codeEl) {
       : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
     */
 
-    let codeLang = parentTag === 'PRE' ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' : 'juncture3'
+    console.log(codeEl, codeWrapper)
+    let codeLang = parentTag === 'PRE' 
+      ? Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' 
+      : 'juncture3'
     // console.log(`parentTag=${parentTag} codeLang=${codeLang}`)
 
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
       newEl.textContent = codeEl.textContent
-      codeWrapper?.parentElement?.replaceWith(newEl)
+      codeWrapper?.replaceWith(newEl)
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
@@ -743,7 +758,11 @@ function structureContent(html) {
       .forEach((tabSection, idx) => {
         let tabPanel = document.createElement('sl-tab-panel')
         tabPanel.setAttribute('name', `tab${idx+1}`)
-        tabPanel.innerHTML = tabSection.innerHTML || ''
+        console.log(tabSection)
+        let tabContent = Array.from(tabSection.children).slice(1).map(el => el.outerHTML).join(' ')
+        // tabPanel.innerHTML = tabSection.querySelector('').innerHTML || ''
+        console.log(tabContent)
+        tabPanel.innerHTML = tabContent
         tabGroup.appendChild(tabPanel)
       })
       section.replaceWith(tabGroup)

@@ -46,6 +46,10 @@ article .markdown-body {
   margin-top: 1em;
 }
 
+article .markdown-body pre code {
+  white-space: pre-wrap;
+}
+
 /*********** mobile ***********/
 
 @media only screen and (max-width: 768px) {

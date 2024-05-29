@@ -1,0 +1,30 @@
+
+# Example
+`.tabs`
+
+## Markdown
+
+```
+### Common sunflower
+
+`image wc:Sunflower_sky_backdrop.jpg .right`
+
+The **common sunflower** (***Helianthus annuus***) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil. 
+
+The Helianthus annuus has a variety of purposes e.g. food for livestock, bird food, and planted in domestic gardens for aesthetics. The Helianthus annuus is known for its multiple flower heads, whereas the domestic sunflower often possesses a single large flower head atop an unbranched stem.
+```
+
+## HTML
+
+HTML Will go here
+
+## Result
+
+### Common sunflower
+
+`image wc:Sunflower_sky_backdrop.jpg .right`
+
+The **common sunflower** (***Helianthus annuus***) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil. 
+
+The Helianthus annuus has a variety of purposes e.g. food for livestock, bird food, and planted in domestic gardens for aesthetics. The Helianthus annuus is known for its multiple flower heads, whereas the domestic sunflower often possesses a single large flower head atop an unbranched stem.
+

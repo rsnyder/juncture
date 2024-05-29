@@ -9,7 +9,7 @@
   
 <script setup lang="ts">
 
-  import { computed, ref, toRaw, watch } from 'vue'
+  import { computed, nextTick, ref, toRaw, watch } from 'vue'
   import vis from 'visjs-network'
 
   const props = defineProps({
@@ -87,7 +87,7 @@
   const nodes = ref<any>()
   const edges = ref<any>()
   const data = computed(() => ({nodes: nodes.value, edges: edges.value}))
-  watch(data, (data) => new vis.Network(diagramEl.value, data, {}))  
+  watch(data, (data) => nextTick(() => new vis.Network(diagramEl.value, data, {})))  
 
   function setWidth() {
     if (!props.width) new ResizeObserver(() => host.value.style.width = `${host.value.parentNode.clientWidth}px`).observe(host.value.parentNode)
@@ -121,14 +121,15 @@
       })
   }
 
-  watch(diagramEl, (diagram) => {
-    if (!diagram) return
+  watch(diagramEl, (diagramEl) => {
+    if (!diagramEl) return
     setWidth()
     setHeight()
     if (props.edges) edges.value = new vis.DataSet(tableToObjs(props.edges))
     if (props.nodes) nodes.value = new vis.DataSet(tableToObjs(props.nodes))
     if (props.url) getDataFromUrl(props.url)
   })
+
 
 </script>
 

@@ -18,3 +18,5 @@
 - [Auto entity tagging](auto-entity-tagging)
 
 - [PDF Generation](pdf-test)
+
+- [Docs](docs)

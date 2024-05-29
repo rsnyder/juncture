@@ -406,11 +406,11 @@ function handleCodeEl(rootEl, codeEl) {
       : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
     */
 
-    console.log(codeEl, codeWrapper)
+    // console.log(codeEl, codeWrapper)
     let codeLang = parentTag === 'PRE' 
       ? Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' 
       : 'juncture3'
-    // console.log(`parentTag=${parentTag} codeLang=${codeLang}`)
+    console.log(`codeLang=${codeLang}`)
 
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
@@ -419,7 +419,7 @@ function handleCodeEl(rootEl, codeEl) {
 
     } else if (codeLang.indexOf('juncture') === 0) {
       let parsed = parseCodeEl(codeEl, codeLang)
-      // console.log(parsed)
+      console.log(parsed)
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
@@ -758,10 +758,10 @@ function structureContent(html) {
       .forEach((tabSection, idx) => {
         let tabPanel = document.createElement('sl-tab-panel')
         tabPanel.setAttribute('name', `tab${idx+1}`)
-        console.log(tabSection)
+        // console.log(tabSection)
         let tabContent = Array.from(tabSection.children).slice(1).map(el => el.outerHTML).join(' ')
         // tabPanel.innerHTML = tabSection.querySelector('').innerHTML || ''
-        console.log(tabContent)
+        // console.log(tabContent)
         tabPanel.innerHTML = tabContent
         tabGroup.appendChild(tabPanel)
       })

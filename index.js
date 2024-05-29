@@ -768,7 +768,14 @@ function structureContent(html) {
   Array.from(restructured.querySelectorAll('a'))
   .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
   .forEach(anchorElem => {
-    let link = new URL(anchorElem.href)
+    let link
+    try {
+      link = new URL(anchorElem.href)
+    } catch (e) {
+      console.log(e)
+      console.log(anchorElem.href)
+      return
+    }
     let path = link.pathname.split('/').filter(p => p)
     if (path.length === 0) return
     let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null

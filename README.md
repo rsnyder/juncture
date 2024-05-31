@@ -1,3 +1,5 @@
+[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+
 # Juncture
 
 Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](https://www.markdownguide.org/) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.
@@ -16,13 +18,13 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 - [markdowntutorial.com](https://www.markdowntutorial.com)
 - [Markdown tutorial](https://www.youtube.com/watch?v=6A5EpqqDOdk)
 
-## How to Use GitHub to Create and Manage Markdown Files
+### How to Use GitHub to Create and Manage Markdown Files
 
-### 1. Create a GitHub Account
+#### 1. Create a GitHub Account
 
 - Go to [github.com](https://github.com) and sign up for a free account.
 
-### 2. Create a New Repository
+#### 2. Create a New Repository
 
 A repository is like a folder for your project.
 
@@ -30,13 +32,13 @@ A repository is like a folder for your project.
 - Click the "+" icon in the top right corner and select "New repository."
 - Give your repository a name (like a folder name) and click "Create repository."
 
-### 3. Create a Markdown File
+#### 3. Create a Markdown File
 
 - Go to your new repository.
 - Click the "Add file" button and select "Create new file."
 - Name your file. Make sure to include the `.md` extension (e.g., `README.md`).
 
-### 4. Write in Markdown
+#### 4. Write in Markdown
 
 In the text editor that appears, write your content. Here are some basics:
 
@@ -98,13 +100,13 @@ In the text editor that appears, write your content. Here are some basics:
 	![Common sunflower](	https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
 	```
 
-### 5. Save Your File
+#### 5. Save Your File
 
 - Scroll down to the "Commit new file" section.
 - Add a short message describing your file (e.g., "Added a new Markdown file").
 - Click "Commit new file."
 
-### 6. Edit a Markdown File
+#### 6. Edit a Markdown File
 
 - Open the Markdown file you want to edit in your repository.
 - Click the pencil icon (✏️) in the top right of the file view.
@@ -113,9 +115,9 @@ In the text editor that appears, write your content. Here are some basics:
 - Add a message describing your changes.
 - Click "Commit changes."
 
-## Creating your first Juncture essay
+### Creating your first Juncture essay
 
-1. Using the guide above, create a Markdown file in your Github account.  Create a Github repository named `essays`, and in this repository create a file named `sunflower.md`.
+1. Using the guide above, create a Markdown file in your Github account.  Create a Github repository named `essays`, and in this repository create a new file named `sunflower.md`.
 
 2. At the top of this file add the following text.  This text will create a button enabling the rendered Juncture essay to be easily previewed.
 	```markdown
@@ -136,4 +138,4 @@ In the text editor that appears, write your content. Here are some basics:
 	
 4. Commit (save) the file
 
-5. Press the button found at the top of the essay to see the Juncture rendered essay.  
+5. Press the button found at the top of the essay to see the Juncture rendered essay.  At this point we are not using any Juncture extensions.  The 

@@ -360,7 +360,7 @@
   }
 
   function addInteractionHandlers() {
-    console.log('addInteractionHandlers')
+    // console.log('addInteractionHandlers')
 
       let el = host.value.parentElement
       while (el?.className.indexOf('content') < 0) {

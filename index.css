@@ -250,7 +250,7 @@ p span.headline {
 }
 
 table[id] {
-  display: none;
+  /* display: none; */
 }
 
 /*********** resume ***********/

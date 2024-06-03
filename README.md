@@ -25,19 +25,19 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 	- In the `essays` repository create a new file named `sunflower.md`.
 
 2. At the top of this file add the following text.  This text will create a button enabling the rendered Juncture essay to be easily previewed (from the Chrome browser).  It is recommended that this button link be added to the beginning of the Markdown file for each Juncture essay.
-	```markdown
+	```
 	[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 	```
 	
 3. Add the Markdown text for your Juncture essay.  Add this text below the button text previously inserted, separated by a blank line, for example.
  
-	```markdown
-	# Common Sunflower
-	
-	The **common sunflower** (*Helianthus annuus*) is a species of large annual forb of the daisy family Asteraceae. The [common sunflower](https://en.wikipedia.org/wiki/Common_sunflower) is harvested for its edible oily seeds which are used in the production of cooking oil.
-	
-	![Common sunflower](	https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
-	```
+```markdown
+# Common Sunflower
+
+The **common sunflower** (*Helianthus annuus*) is a species of large annual forb of the daisy family Asteraceae. The [common sunflower](https://en.wikipedia.org/wiki/Common_sunflower) is harvested for its edible oily seeds which are used in the production of cooking oil.
+
+![Common sunflower](	https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
+```
 	
 4. Commit (save) the file
 

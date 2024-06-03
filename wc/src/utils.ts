@@ -202,7 +202,7 @@ export async function getEntityData(qids: string[], language:string = 'en') {
     })
     if (resp.ok) {
       let sparqlResp = await resp.json()
-      sparqlResp.results.bindings.forEach(rec => {
+      sparqlResp.results.bindings.forEach( async rec => {
         let qid = rec.item.value.split('/').pop()
         let _entityData = window.entityData[qid]
         if (!_entityData) {
@@ -225,6 +225,7 @@ export async function getEntityData(qids: string[], language:string = 'en') {
           }
           if (rec.whosOnFirst) _entityData.geojson = whosOnFirstUrl(rec.whosOnFirst.value)
           window.entityData[qid] = _entityData
+
         } else {
           if (rec.alias) _entityData.aliases.push(rec.alias.value)
         }

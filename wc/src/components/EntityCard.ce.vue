@@ -23,10 +23,14 @@
   watch(file, () => { getEntity() })
 
   const entity = ref<any>()
-  // watch (entity, () => { console.log(toRaw(entity.value)) })
+  watch (entity, (entity) => { 
+    if (!entity.summaryText) getSummaryText()
+  })
 
   // const baseUrl = computed(() => (window as any).config?.baseUrl)
   const source = computed(() => (window as any).config?.source)
+
+  const summaryText = ref()
 
   onMounted(() => {
     getEntity() 
@@ -53,6 +57,18 @@
       entity.value = _entity
     } else if (qid.value) {
       entity.value = await getEntityFromWikidata(qid.value)
+    }
+  }
+
+  function getSummaryText() {
+    if (entity.value.wikipedia) {
+      let page: number = entity.value.wikipedia.replace(/\/w\//, '/wiki').split('/wiki/').pop()
+      fetch(`https://${props.language}.wikipedia.org/api/rest_v1/page/summary/${page}`)
+      .then(resp => resp.json())
+      .then(data => {
+        summaryText.value = data['extract_html'] || data['extract']
+        if (qid.value) (window as any).entityData[qid.value].summaryText = data['extract_html'] || data['extract']
+      })
     }
   }
 
@@ -91,6 +107,7 @@
   <div class="content">
     <h2 v-if="entity?.label" v-html="entity.label"></h2>
     <p v-if="entity?.description" class="description" v-html="entity.description"></p>
+    <p v-if="summaryText" class="description" v-html="summaryText"></p>
   </div>
 
   <div slot="footer">
@@ -108,7 +125,7 @@
     flex-direction: column;
     min-width: 200px;
     max-width: 300px;
-    max-height: 600px;
+    max-height: 800px;
     background-color: white;
     margin: 1em;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;

@@ -103,6 +103,7 @@
       </div>
       <div class="details">
         <div class="label" v-html="caption || label"></div>
+        <div class="summary" v-html="summary"></div>
         <div v-if="attribution" class="attribution" v-html="attribution"></div>
         <div v-if="photoDetails" class="photo-details">{{ photoDetails }}</div>
         <sl-dropdown v-if="coords" ref="details" distance="12" skidding="-30" placement="top">

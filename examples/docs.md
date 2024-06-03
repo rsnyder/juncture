@@ -5,10 +5,6 @@
 ## Markdown
 
 ```markdown
-Markdown
-```
-
-```
 ### Common sunflower
 
 `image wc:Sunflower_sky_backdrop.jpg .right`

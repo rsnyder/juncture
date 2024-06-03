@@ -225,7 +225,7 @@
   watch(repos, (repos) => {
     if (!repos.length) return
     // console.log('repos', toRaw(repos))
-    let selected = repos.find(repo => repo.name === requested.value?.repo) || repos[0]
+    let selected = repos.find(repo => repo.name === requested.value?.repo) || repos.find(repo => repo.name === 'essays') || repos[0]
     repo.value = selected.name
   })
   function getRepositories() {

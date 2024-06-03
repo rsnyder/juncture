@@ -63,7 +63,9 @@ function setViewersPosition() {
     height: 100%;
   }
 
+  /*
   ul[data-id] {
     display: none;
   }
+  */
 </style>

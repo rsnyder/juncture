@@ -83,6 +83,8 @@ sit amet, consectetuer adipiscing elit.
   > This is a blockquote
   > inside a list item.
 
+This example includes an `embedded code block`
+
 Here is an example of a pre code block
 
     tell application "Foo"

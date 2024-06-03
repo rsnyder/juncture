@@ -287,6 +287,7 @@ Object.values(components).forEach(langComponents => {
 })
 
 function parseHeadline(s, codeLang) {
+  codeLang = codeLang || 'juncture3'
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
   s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
@@ -324,7 +325,7 @@ function parseHeadline(s, codeLang) {
       if (!parsed.args) parsed.args = []
       parsed.args.push(token.slice(1,-1))
     }
-    else if (token[0] === '#') parsed['id'] = token.slice(1)
+    else if (/#\w+/.test(token)) parsed['id'] = token.slice(1)
     else if (/^Q\d+$/.test(token) && !parsed.tag) { // entity identifier
       if (!parsed.entities) parsed.entities = []
       parsed.entities.push(token)
@@ -368,6 +369,7 @@ function parseCodeEl(codeEl, codeLang) {
     .filter(x => x) || []
   let parsed = parseHeadline(codeElems?.[0], codeLang) || {}
   if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
+  parsed.lang = codeLang || ((parsed.tag || parsed.class || parsed.style || parsed.id) ? 'juncture3' : 'plain')
   return parsed
 }
 
@@ -400,17 +402,17 @@ function handleCodeEl(rootEl, codeEl) {
       ? codeEl.parentElement?.parentElement
       : codeWrapper.parentElement
 
-    /*
-    let codeLang = parentTag === 'PRE'
-      ? Array.from(codeWrapper.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
-      : Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3'
-    */
-
-    // console.log(codeEl, codeWrapper)
     let codeLang = parentTag === 'PRE' 
-      ? Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop() || 'juncture3' 
-      : 'juncture3'
-    console.log(`codeLang=${codeLang}`)
+      ? Array.from(codeEl.classList).find(cls => cls.indexOf('language') === 0)?.split('-').pop()
+      : null
+
+    let parsed
+    
+    if (!codeLang) {
+      parsed = parseCodeEl(codeEl)
+      // console.log(parsed)
+      codeLang = parsed.lang
+    }
 
     if (codeLang === 'mermaid') {
       let newEl = document.createElement('ve-mermaid')
@@ -418,8 +420,6 @@ function handleCodeEl(rootEl, codeEl) {
       codeWrapper?.replaceWith(newEl)
 
     } else if (codeLang.indexOf('juncture') === 0) {
-      let parsed = parseCodeEl(codeEl, codeLang)
-      console.log(parsed)
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'
@@ -529,8 +529,15 @@ function elFromHtml(html) {
 let isJunctureV1 = false
 
 function structureContent(html) {
-  let rootEl = html ? elFromHtml(html) : document.querySelector('main')
-  console.log(elFromHtml(html))
+  let rootEl
+  if (html) {
+    let doc = new DOMParser().parseFromString(html, 'text/html')
+    let styleSheet = doc.head.querySelector('style')
+    if (styleSheet) document.head.appendChild(styleSheet)
+    rootEl = doc.body
+  } else {
+    rootEl = document.querySelector('main')
+  }
 
   deleteAllComments(rootEl)
 
@@ -642,11 +649,13 @@ function structureContent(html) {
 
       let headings = []
       for (let lvl = 1; lvl < sectionLevel; lvl++) {
-        headings = [...headings, ...restructured.querySelectorAll(`H${lvl}`)]
+        headings = [...headings, ...Array.from(restructured.querySelectorAll(`H${lvl}`)).filter(h => h.parentElement.tagName === 'SECTION')]
       }
       //let headings = [...restructured.querySelectorAll(`H${sectionLevel-1}`)]
 
-      let parent = sectionLevel === 1 || headings.length === 0 ? restructured : headings.pop()?.parentElement
+      let parent = (sectionLevel === 1 || headings.length === 0) 
+        ? restructured 
+        : headings.pop()?.parentElement
       parent?.appendChild(currentSection)
       currentSection.setAttribute('data-id', computeDataId(currentSection))
 
@@ -657,9 +666,12 @@ function structureContent(html) {
         el.id = segId
         el.classList.add('segment')
       }
-      if (el !== sectionParam) currentSection.innerHTML += el.outerHTML
+      if (el !== sectionParam) {
+        currentSection.innerHTML += el.outerHTML
+      }
     }
   })
+
 
   Array.from(restructured.querySelectorAll('a > img'))
   .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
@@ -985,7 +997,9 @@ function structureContent(html) {
       function setElProps(el, props, nameMap) {
         Object.entries(props)
           .filter(([key, value]) => nameMap[key] !== undefined)
-          .forEach(([key, value]) => el.setAttribute(nameMap[key] || key, value === 'false' ? '' : value === 'true' ? null : value))
+          .forEach(([key, value]) => {
+            el.setAttribute(nameMap[key] || key, value === 'false' ? '' : value === 'true' ? null : value)
+          })
       }
 
       function makeViewerEl(tagName, slotName, tagProps) {
@@ -998,7 +1012,7 @@ function structureContent(html) {
         } else if (slotName === 've-iframe') {
           setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
         } else if (slotName === 've-image') {
-          setElProps(viewerEl, tagProps[0], {data:'', 'fit':'', 'zoom-on-scroll':''})
+          setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'fit':'', src:'', 'zoom-on-scroll':''})
           viewerEl.appendChild(propsList(tagProps))
         } else if (slotName === 've-knightlab-timeline') {
           setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
@@ -1387,11 +1401,11 @@ function setViewersPosition() {
 function mount(root, html) {  
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   setMeta()
-  root = root || document.body.firstChild
+  root = root || document.body.querySelector('main')
   html = html || root.innerHTML
   let articleWrapper = elFromHtml(structureContent(html))
   let article = articleWrapper.firstChild
-  root.replaceWith(articleWrapper)
+  root.replaceWith(article)
 
   if (isJunctureV1 && !isMobile) {
     document.addEventListener('scroll', () => setViewersPosition())

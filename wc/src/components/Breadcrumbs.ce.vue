@@ -36,7 +36,6 @@
 </template>
 
 <style>
-  @import '../tailwind.css';
   .main {
     display: flex;
     align-items: center;
@@ -45,6 +44,7 @@
     flex-wrap: wrap;
     line-height: 1.5;
     padding: 0.5rem 0;
+    background-color: inherit;
   }
   a {
     color: #0645ad;

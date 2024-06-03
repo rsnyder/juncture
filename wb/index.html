@@ -9,9 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <style>
-      body { font-family: Roboto, sans-serif; }
+      body { font-family: Roboto, sans-serif; margin: 0 0.5em;}
       textarea { opacity: 0; }
-      .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 240px); }
+      .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 245px); }
       .EasyMDEContainer .CodeMirror-code { font-size: 1.2em; }
       .editor-preview { padding:0; }
       article.j1 { height: unset; }
@@ -24,7 +24,7 @@
   </head>
   <body>
 
-    <ve-header title="Juncture Workbench" auth="github" color="#444">
+    <ve-header title="Juncture Workbench" auth="github" color="#444" background="wc:Box_of_type.jpg" height="100" position="center">
       <!--
       <ul>
         <li><a href="https://search.juncture-digital.org">Resource Tool</a></li>
@@ -57,7 +57,8 @@
       if (!sourceArg && referrer) {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-        window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch || 'main'}/${path.join('/')}&mode=view`}`
+        if (acct && repo && branch && path.length > 0)
+          window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch || 'main'}/${path.join('/')}&mode=view`}`
       } 
 
       let ghSource
@@ -90,14 +91,7 @@
         console.log('loading markdown', ghSource)
         dialog.hide()
         window.history.replaceState({}, null, `/wb?source=${ghSource}`)
-        /*
-        getMarkdown(ghSource).then(markdown => {
-          localStorage.setItem('smde_ghsource', ghSource)
-          localStorage.setItem('smde_juncture_saved_hash', markdown.trim().hashCode())
-          easyMDE.value(markdown)
-          styleJunctureElements()
-        })
-        */
+
         let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
         getGhFile(acct, repo, branch, path.join('/')).then(resp => {
           if (resp.status === 200) {

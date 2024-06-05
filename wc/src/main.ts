@@ -1,6 +1,7 @@
 import { defineCustomElement } from 'vue'
 import ('preline')
 
+import '@shoelace-style/shoelace/dist/components/animated-image/animated-image.js'
 import '@shoelace-style/shoelace/dist/components/badge/badge.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb/breadcrumb.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb-item/breadcrumb-item.js'
@@ -19,6 +20,7 @@ import '@shoelace-style/shoelace/dist/components/tab-panel/tab-panel.js'
 import '@shoelace-style/shoelace/dist/components/tab/tab.js'
 import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 
+import AnimatedImage from './components/AnimatedImage.ce.vue'
 import Article from './components/Article.ce.vue'
 import Audio from './components/Audio.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
@@ -56,6 +58,7 @@ import VisJS from './components/VisJS.ce.vue'
 
 
 function defineCustomElements() {
+	customElements.define('ve-animated-image', defineCustomElement(AnimatedImage))
 	customElements.define('ve-article', defineCustomElement(Article))
 	customElements.define('ve-audio', defineCustomElement(Audio))
 	customElements.define('ve-breadcrumbs', defineCustomElement(Breadcrumbs))

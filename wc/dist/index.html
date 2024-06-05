@@ -7,14 +7,21 @@
     <title>Juncture</title>
     <link href="http://localhost:8080/index.css" rel="stylesheet">
     <style>
+      ve-compare ul { display: none; }
     </style>
     <script type="module" crossorigin src="/mdpress/mdpress/dist/js/index.js"></script>
   </head>
   <body>
 
-    <ve-slot-test>
-      <ve-image src="gh:rsnyder/media/Woodpecker.jpg"></ve-image>
-    </ve-slot-test>
+    <div style="width:50%;height:500px;margin:auto;">
+      <ve-compare>
+        <ul>
+          <li>url=https://raw.githubusercontent.com/plant-humanities/media/main/poppy/Sala_image.jpg label="Opium Extraction" description="Image from Sala's Opiologia" license="CC BY-SA 4.0"</li>
+          <li>url=https://raw.githubusercontent.com/plant-humanities/media/main/poppy/Wedel_image1.jpg label="Opium Extraction" description="Image from Wedel’s Opiologia" license="CC BY-SA 4.0"</li>
+        </ul>
+      </ve-compare>
+    </div>
+
     
 
   </body>

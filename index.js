@@ -106,6 +106,12 @@ function computeDataId(el) {
 
 const components = {
   juncture3: {
+    've-animated-image': {
+      booleans: new Set(),
+      class: new Set(),
+      positional: ['src', 'caption'],
+      ignore: new Set()
+    },
     've-audio': {
       booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
       class: new Set(),
@@ -116,6 +122,12 @@ const components = {
       booleans: new Set([]),
       class: new Set(),
       positional: [],
+      ignore: new Set()
+    },
+    've-compare': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: ['src'],
       ignore: new Set()
     },
     've-entities': {

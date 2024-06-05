@@ -3,7 +3,7 @@
   <div class="header" ref="root">
     <div class="background" ref="background"></div>
 
-    <div class="navbar" ref="navbar">
+    <div class="navbar" ref="navbar" :style="{ color }">
       
       <div v-if="logo" class="logo">
         <a :href="`${config.baseurl}/`">
@@ -20,7 +20,11 @@
 
       <div class="search-and-menu">
         <ve-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></ve-site-search>
-        <ve-menu v-if="navEl !== undefined || auth" :auth="auth" :contact="contact" :pdf-download-enabled="pdfDownloadEnabled ? '' : null" v-html="navEl"></ve-menu>
+        <ve-menu v-if="navEl !== undefined || auth" 
+          :auth="auth" 
+          :contact="contact" 
+          :pdf-download-enabled="pdfDownloadEnabled ? '' : null" 
+          v-html="navEl"></ve-menu>
       </div>
 
     </div>
@@ -55,15 +59,17 @@
     return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl}/${logo[0] === '/' ? logo.slice(1) : logo}`)
   })
   const iconFilter = computed(() => props.iconFilter === undefined ? config.value.defaults?.header?.iconFilter : props.iconFilter)
-  const color = computed(() => props.color || (backgroundImage.value ? 'black' : '#ddd'))
+  const backgroundColor = computed(() => props.backgroundColor || config.value.defaults?.header?.backgroundColor || (backgroundImage.value ? 'black' : '#ddd'))
+  const color = computed(() => props.color || config.value.defaults?.header?.color || '#fff')
   const contact = computed(() => props.contact || config.value.defaults?.header?.contact )
   const breadcrumbs = computed(() => props.breadcrumbs || config.value.defaults?.header?.breadcrumbs )
   const pdfDownloadEnabled = computed(() => props.pdfDownloadEnabled || config.value.defaults?.header?.pdfDownloadEnabled )
+  const auth = computed(() => props.auth || config.value.defaults?.header?.auth )
 
   // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
   watch(navbar, (navbar) => {
-    if (navbar) navbar.style.backgroundColor = toRGBA(color.value, props.alpha || (backgroundImage.value ? 0.5 : 1.0))
+    if (navbar) navbar.style.backgroundColor = toRGBA(backgroundColor.value, props.alpha || (backgroundImage.value ? 0.5 : 1.0))
   })
 
   const isSticky = ref<boolean>(false)
@@ -76,6 +82,7 @@
     alpha: { type: Number },
     auth: { type: String },
     background: { type: String },
+    backgroundColor: { type: String },
     breadcrumbs: { type: Boolean, default: false },
     color: { type: String },
     contact: { type: String },
@@ -194,6 +201,7 @@
   
   //convert hex to rgb
   function toRGBA(color:string, alpha:number = 1.0) {
+    console.log('toRGBA', color, alpha)
     let hex = color[0] === '#' ? color : colors[color.toLowerCase()]
     if (hex.length === 4) {
       let r = hex.slice(1,2)

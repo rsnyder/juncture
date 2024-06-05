@@ -3,7 +3,7 @@
   <div ref="root" class="compare" style="width:100%;">
 
     <div ref="wrapper" class="wrapper">
-      <sl-image-comparer ref="compare">
+      <sl-image-comparer ref="compare" position="50">
         <img v-for="src, idx in scaledImages" :key="`img-${idx}`" :slot="idx === 0 ? 'before' : 'after'" :src="src" :alt="label(manifests[idx])" />
       </sl-image-comparer>
       <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
@@ -37,7 +37,7 @@
     if (compare) new ResizeObserver(() => {
       // console.log(`props.height=${props.height} width=${compare?.clientWidth} height=${compare?.clientHeight}`)
       if (!width.value) width.value = compare?.clientWidth
-      if (!height.value) height.value = compare?.clientHeight
+      if (!height.value) height.value = compare?.clientHeight || width.value
     }).observe(compare)
     init() 
   })
@@ -119,6 +119,8 @@
   // watch (width, (width) => { console.log(`width=${width}`) })
   const height = ref<number>(0)
   // watch (height, (height) => { console.log(`height=${height}`) })
+  // watch (width, () => {if (width.value && height.value) console.log(`size: ${width.value}x${height.value}`) })
+  // watch (height, () => {if (width.value && height.value) console.log(`size: ${width.value}x${height.value}`) })
 
   function _value(langObj: any, language='en') {
     return typeof langObj === 'object'
@@ -213,8 +215,14 @@ function scaleImages() {
       const outputY = (y || 0) + Math.abs(Math.round((outputHeight - inputHeight) * 0.5))
 
       let region = `${outputX},${outputY},${outputWidth},${outputHeight}`
+      let widthRatio = targetWidth / outputWidth
 
-      let imgUrl = `${tileSource}/${region}/${targetWidth},${targetHeight}/${img.mirror ? '!' : ''}${img.rotation || 0}/${img.quality || 'default'}.${img.format || 'jpg'}`
+      let size = widthRatio > 1
+        ? `^pct:${Math.round(widthRatio * 100)}`
+        : `${targetWidth},${targetHeight}`
+
+      // console.log(`${targetWidth}x${targetHeight} ${widthRatio} ${region} ${size}`)
+      let imgUrl = `${tileSource}/${region}/${size}/${img.mirror ? '!' : ''}${img.rotation || 0}/${img.quality || 'default'}.${img.format || 'jpg'}`
 
       // console.log(imgUrl)
       return imgUrl

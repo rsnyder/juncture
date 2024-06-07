@@ -6,7 +6,7 @@ The **common sunflower** (*Helianthus annuus*) is a species of large annual forb
 
 The Helianthus annuus has a variety of purposes e.g. food for livestock, bird food, and planted in domestic gardens for aesthetics. The Helianthus annuus is known for its multiple flower heads, whereas the domestic sunflower often possesses a single large flower head atop an unbranched stem.
 
-![Common sunflower](  https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
+![Common sunflower](https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
 
 ## Etymology
 

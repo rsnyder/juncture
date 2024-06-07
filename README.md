@@ -29,7 +29,7 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 ### Creating your first Juncture essay
 
-[Example](/wb?source=rsnyder/juncture/main/examples/code.md)
+[Example](/wb?source=rsnyder/juncture/main/docs/sunflower/basic)
 
 1. Create a Markdown file in your Github account.  Refer to this [simple guide to GitHub and Markdown](docs/github) for assistance, if needed.
 	- Create a Github repository named `essays` if it doesn't already exist.

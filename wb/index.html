@@ -18,7 +18,7 @@
       @media (min-width: 800px) { .j1 .viewers { height: calc(100dvh - 192px); } }
       .CodeMirror-line .cm-header { font-size: 1.4em; }
       button.disabled { display:none; }
-      ve-header ul {display: none}
+      ve-header ul { display: none; }
       /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
     </style>
   </head>
@@ -153,7 +153,9 @@
             ], 
             ...[           
               '|', 
-              'preview',
+              'preview', 
+              // 'side-by-side',
+              '|',
               {
               class: 'save',
                 action: () => {saveFile()},

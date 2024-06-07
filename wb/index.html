@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
     <style>
-      body { font-family: Roboto, sans-serif; margin: 0 0.5em;}
+      body { font-family: Roboto, sans-serif; max-width:1200px; margin: auto; padding: 0 20px; }
       textarea { opacity: 0; }
       .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 245px); }
       .EasyMDEContainer .CodeMirror-code { font-size: 1.2em; }
@@ -24,12 +24,17 @@
   </head>
   <body>
 
-    <ve-header title="Juncture Workbench" auth="github" color="#444" background="wc:Box_of_type.jpg" height="100" position="center">
-      <!--
+    <ve-header 
+      title="Juncture: <span style='font-size:80%;'>Workbench</span>"
+      auth="github" 
+      logo="/images/logo.svg" icon-filter="white"
+      background="wc:Box_of_type.jpg" position="center" no-manifest-popover
+      height="100" 
+      >
       <ul>
-        <li><a href="https://search.juncture-digital.org">Resource Tool</a></li>
+        <li><a href="/">Juncture Home</a></li>
+        <!-- <li><a href="https://search.juncture-digital.org">Resource Tool</a></li> -->
       </ul>
-      -->
     </ve-header>
     <ve-gh-file-selector id="gh-selector" gh-source=""></ve-gh-file-selector>
     <textarea id="md-text"></textarea>
@@ -65,6 +70,7 @@
       if (sourceArg) {
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
+        // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource')
@@ -107,6 +113,8 @@
       init()
 
       function init() {
+
+        console.log('init', )
 
         let ghSelector = document.getElementById('gh-selector')
         

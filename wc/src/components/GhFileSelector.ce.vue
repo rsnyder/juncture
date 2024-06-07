@@ -18,7 +18,7 @@
         </sl-dropdown>
       </sl-breadcrumb-item>
 
-      <sl-breadcrumb-item>
+      <sl-breadcrumb-item v-if="repo">
         <sl-dropdown v-if="repos.length">
           <sl-button slot="trigger" size="medium">
             {{ repo }}
@@ -30,7 +30,7 @@
         </sl-dropdown>
       </sl-breadcrumb-item>
 
-      <sl-breadcrumb-item>
+      <sl-breadcrumb-item v-if="branch">
         <sl-dropdown v-if="branches.length">
           <sl-button v-if="branch" slot="trigger" size="medium">
             {{ branch }}
@@ -62,7 +62,7 @@
               <svg v-else slot="prefix" width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M320 464c8.8 0 16-7.2 16-16V160H256c-17.7 0-32-14.3-32-32V48H64c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320zM0 64C0 28.7 28.7 0 64 0H229.5c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64z"/></svg>
               {{ _item.name }}
             </sl-menu-item>
-            <sl-menu-item @click="showAddFileDialog(pidx)">
+            <sl-menu-item v-if="userCanUpdateRepo" @click="showAddFileDialog(pidx)">
               <!-- plus icon -->
               <svg  slot="prefix" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
               <span>Add Item</span>
@@ -71,7 +71,7 @@
         </sl-dropdown>
       </sl-breadcrumb-item>
 
-      <sl-dropdown>
+      <sl-dropdown v-if="userCanUpdateRepo">
         <svg width="24" height="24" slot="trigger" fill="#999" style="cursor:pointer; padding:0 0 0 8px; margin-top:-12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
         <sl-menu>
           <sl-menu-item @click="deleteDialog?.show()">
@@ -170,9 +170,10 @@
   const requested = ref<any>()
   
   watch(authToken, () => {
-    // console.log(`authToken=${authToken.value}`)
+    console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
     isLoggedIn.value = window.localStorage.getItem('gh-auth-token') !== null
     githubClient.value = new GithubClient(authToken.value || '')
+    if (acct.value) getRepositories()
   })
 
   watch(githubClient, async (githubClient) => {
@@ -229,7 +230,7 @@
     repo.value = selected.name
   })
   function getRepositories() {
-    githubClient.value.repos(acct.value).then((_repos:any[]) => repos.value = _repos)
+    githubClient.value?.repos(acct.value).then((_repos:any[]) => repos.value = _repos)
   }
   function repoSelected(_repo:any) {
     requested.value = null
@@ -451,11 +452,12 @@
 :host {
   display: block;
   width: 100%;
-  border: 1px solid #444;
-  padding: 6px;
+  border: 1px solid #ced4da;
+  /* padding: 6px; */
   position: relative;
   z-index: 1;
   background-color: white;
+  box-sizing: border-box;
 }
 
 .main {

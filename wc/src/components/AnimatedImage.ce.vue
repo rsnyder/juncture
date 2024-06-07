@@ -4,7 +4,7 @@
     <sl-animated-image
       :src="src"
       :alt="caption"
-      :style="{width, height}"
+      :style="{width: `${width}px`, height: `${height}px`}"
     ></sl-animated-image>
     <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
   </div>
@@ -23,19 +23,36 @@
   })
 
   const main = ref<HTMLElement | null>(null)
-  const host = computed(() => (main.value?.getRootNode() as any)?.host)
   const captionEl = ref<HTMLElement | null>(null)
 
-  const width = computed(() => props.width || (host.value?.parentElement.clientWidth || 0) + 'px' )
-  // const height = computed(() => props.height || (host.value?.parentElement.clientHeight || 0) + 'px')
-  const height = computed(() => props.height || '100%')
+  const width = ref(0)
+  const height = ref(0)
 
-  watch((width), (width) => { console.log(`width=${width}`) })  
-  watch((height), (height) => { console.log(`height=${height}`) })
-  
   onMounted(() => {
-    console.log('onMounted', toRaw(props))
+    if (props.width) width.value = Number(props.width)
+    if (props.height) height.value = Number(props.height)
+    if (!props.width && !props.height) width.value = main.value?.clientWidth || 0
+    console.log('width', width.value)
+    if (!props.width || !props.height) {
+      getImageSize(props.src).then((size) => {
+        if (width.value) height.value = Math.round(width.value / size.aspect_ratio)
+        else width.value = size.width
+        if (height.value) width.value = Math.round(height.value * size.aspect_ratio)
+        else height.value = size.height
+      })
+    }
   })
+
+  async function getImageSize(src:any): Promise<{ width: number, height: number, aspect_ratio: number }> {
+    return new Promise((resolve, reject) => {
+      let img = new Image()
+      img.onload = () => {
+        resolve({width:img.width, height:img.height, aspect_ratio:Number((img.width/img.height).toFixed(4))})
+      }
+      img.onerror = () => reject()
+      img.src = src
+    })
+  }
 
 </script>
 

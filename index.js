@@ -143,7 +143,7 @@ const components = {
       ignore: new Set()
     },
     've-header': {
-      booleans: new Set(['breadcrumbs', 'pdf-download-enabled']),
+      booleans: new Set(['breadcrumbs', 'no-manifest-popover', 'pdf-download-enabled']),
       class: new Set(),
       positional: ['title', 'background', 'subtitle', 'options', 'position'],
       ignore: new Set()
@@ -386,7 +386,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl) {
-  // console.log(codeEl, codeEl.parentElement)
+  // console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -450,8 +450,9 @@ function handleCodeEl(rootEl, codeEl) {
           let ul = document.createElement('ul')
           newEl.appendChild(ul)
           for (const arg of parsed.args) {
+            let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
             let li = document.createElement('li')
-            li.innerHTML = arg
+            li.innerHTML = argEl.innerHTML
             ul.appendChild(li)
           }
         }

@@ -3,17 +3,17 @@
   <div class="header" ref="root">
     <div class="background" ref="background"></div>
 
-    <div class="navbar" ref="navbar" :style="{ color }">
+    <div class="navbar" ref="navbar" :style="{ color, backgroundColor: height > 100 ? backgroundColor : '' }">
       
       <div v-if="logo" class="logo">
-        <a :href="`${config.baseurl}/`">
+        <a :href="`${config.baseurl || ''}/`">
           <img :src="logo" :class="`${iconFilter ? 'icon-' + iconFilter : ''}`" alt="logo"/>
         </a>
       </div>
       
       <div class="branding">
         <div v-if="title" class="title">
-          <a :href="`${config.baseurl}/`" v-html="title"></a>
+          <a :href="`${config.baseurl || ''}/`" v-html="title"></a>
         </div>
         <div v-if="subtitle" class="subtitle clamp1" v-html="subtitle"></div>
       </div>
@@ -30,7 +30,7 @@
     </div>
 
     <ve-breadcrumbs v-if="breadcrumbs"></ve-breadcrumbs>
-    <ve-manifest-popup v-if="manifest" :manifest="manifest"></ve-manifest-popup>
+    <ve-manifest-popup v-if="manifest && !noManifestPopover" :manifest="manifest"></ve-manifest-popup>
   </div>
 
 </template>
@@ -56,7 +56,7 @@
   const backgroundImage = computed(() => props.background || config.value.defaults?.header?.backgroundImage )
   const logo = computed(() => {
     let logo = props.logo || config.value.defaults?.header?.logo
-    return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl}/${logo[0] === '/' ? logo.slice(1) : logo}`)
+    return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl || ''}/${logo[0] === '/' ? logo.slice(1) : logo}`)
   })
   const iconFilter = computed(() => props.iconFilter === undefined ? config.value.defaults?.header?.iconFilter : props.iconFilter)
   const backgroundColor = computed(() => props.backgroundColor || config.value.defaults?.header?.backgroundColor || (backgroundImage.value ? 'black' : '#ddd'))
@@ -86,9 +86,10 @@
     breadcrumbs: { type: Boolean, default: false },
     color: { type: String },
     contact: { type: String },
-    height: { type: Number },
+    height: { type: Number, default: 400},
     iconFilter: { type: String },
     logo: { type: String },
+    noManifestPopover: { type: Boolean, default: false},
     options: { type: String },
     pdfDownloadEnabled: { type: Boolean, default: false },
     position: { type: String, default: 'center' },
@@ -201,7 +202,7 @@
   
   //convert hex to rgb
   function toRGBA(color:string, alpha:number = 1.0) {
-    console.log('toRGBA', color, alpha)
+    // console.log('toRGBA', color, alpha)
     let hex = color[0] === '#' ? color : colors[color.toLowerCase()]
     if (hex.length === 4) {
       let r = hex.slice(1,2)
@@ -230,6 +231,7 @@
   display: grid;
   grid-template-rows: 1fr 100px auto;
   grid-template-columns: 1fr;
+  position: relative;
 }
 
 .background {

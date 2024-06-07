@@ -1,14 +1,17 @@
 [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
-`header auth=github`
+```
+header auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
+- [Workbench](/wb)
+```
 
 # Juncture
 
-Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.
+Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses [GitHub](Q364) for storing the Markdown files.
 
 ## Getting Started
 
-To begin using Juncture you will need a [GitHub](Q364) account and some basic familiarity with Markdown.
+To begin using Juncture you will need a GitHub account and some basic familiarity with Markdown.
 
 **GitHub** is a free Internet hosting service commonly used for software development projects. It provides sophisticated features for version control and workflow management for distributed teams. Juncture primarily uses GitHub as a file hosting service, similar to how one might use Dropbox or Google Drive. The Markdown files that Juncture uses to render interactive web pages are stored in GitHub.
 
@@ -22,9 +25,11 @@ To begin using Juncture you will need a [GitHub](Q364) account and some basic fa
 
 ### Overview
 
-`animated-image https://shoelace.style/assets/images/walk.gif`
+`animated-image https://shoelace.style/assets/images/walk.gif "An animated image" .right`
 
 ### Creating your first Juncture essay
+
+[Example](/wb?source=rsnyder/juncture/main/examples/code.md)
 
 1. Create a Markdown file in your Github account.  Refer to this [simple guide to GitHub and Markdown](docs/github) for assistance, if needed.
 	- Create a Github repository named `essays` if it doesn't already exist.

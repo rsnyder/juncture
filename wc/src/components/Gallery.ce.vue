@@ -7,7 +7,12 @@
       :id="img.id"
       :style="layout[idx]"
     >
-      <img class="image fade-in" onload="this.style.opacity = 1" :src="images[idx].thumbnail" @click="imageSelected(idx)">
+      <img class="image fade-in" 
+        onload="this.style.opacity = 1" 
+        :src="images[idx].thumbnail" 
+        @click="imageSelected(idx)"
+        @dragstart="onDragStart(idx, $event)"
+        draggable>
       <div v-if="caption" style="height:32px;display:flex;align-items:center;margin-left:0.25em" v-html="images[idx].label"></div>
     </div>
     
@@ -266,6 +271,10 @@
   function copyTextToClipboard(text: string) {
     // console.log('copyTextToClipboard', text)
     if (navigator.clipboard) navigator.clipboard.writeText(text)
+  }
+
+  function onDragStart(index:number, event: DragEvent) {
+    event.dataTransfer?.setData('text/plain', manifests.value[index].id)
   }
 
 </script>

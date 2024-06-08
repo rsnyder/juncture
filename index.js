@@ -685,21 +685,6 @@ function structureContent(html) {
     }
   })
 
-
-  Array.from(restructured.querySelectorAll('a > img'))
-  .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
-  .forEach(viewAsButton => {
-    viewAsButton?.parentElement?.parentElement?.remove()
-  })
-
-  Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
-  .filter(heading => {
-    return !heading.innerHTML.replace('&nbsp;','').trim()
-  })
-  .forEach(heading => {
-    // heading.remove()
-  })
-
   Array.from(restructured?.querySelectorAll('p'))
   .forEach(para => {
     let lines = para.textContent?.split('\n').map(l => l.trim()) || []
@@ -810,6 +795,19 @@ function structureContent(html) {
     }
   });
 
+  Array.from(restructured.querySelectorAll('a > img'))
+  .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
+  .forEach(viewAsButton => {
+    viewAsButton?.parentElement?.parentElement?.remove()
+  })
+
+  Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+  .filter(heading => {
+    return !heading.innerHTML.replace('&nbsp;','').trim()
+  })
+  .forEach(heading => {
+     heading.remove()
+  })
 
   Array.from(restructured.querySelectorAll('a'))
   .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)

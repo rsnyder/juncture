@@ -114,6 +114,9 @@
 
       function init() {
 
+        document.body.addEventListener('drop', drop)
+        document.body.addEventListener('paste', paste)
+
         let ghSelector = document.getElementById('gh-selector')
         
         ghSelector.addEventListener('file-selected', e => {
@@ -177,6 +180,8 @@
           ]
         })
         easyMDE.codemirror.on('change', watchContent)
+        easyMDE.codemirror.on('paste', (_, evt) => evt.preventDefault())
+        easyMDE.codemirror.on('drop', (_, evt) => evt.preventDefault())
 
         setSaveButtonState()
         if (mode === 'view') easyMDE.togglePreview()
@@ -309,6 +314,29 @@
         return {status:resp.status, statusText:resp.statusText, sha}
       }
     
+      function drop(e) {
+        let cursorPos = easyMDE.codemirror.coordsChar({left:e.pageX, top:e.pageY})
+        let inputText = ''
+        if (e.dataTransfer) inputText = e.dataTransfer.getData('Text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
+        if (inputText) {
+          console.log(inputText)
+          inputText = decodeURIComponent(inputText)
+          easyMDE.codemirror.setSelection(cursorPos)
+          easyMDE.codemirror.replaceSelection(inputText)
+        }
+      }
+
+      function paste(e) {
+        let pastedText = e.clipboardData?.getData('Text') || ''
+        let text = cleanText(pastedText)
+        if (text.indexOf('https://iiif.juncture-digital.org/') === 0) text = text.replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
+        easyMDE.codemirror.replaceSelection(text)
+      }
+
+      function cleanText(text) {
+        return text.replace(/\[\d+\]/g,'')
+      }
+
     </script>
   </body>
 </html>

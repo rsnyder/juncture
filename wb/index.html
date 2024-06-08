@@ -314,23 +314,43 @@
         return {status:resp.status, statusText:resp.statusText, sha}
       }
     
+      function isJunctureV1Essay() {
+        let text = easyMDE.value()
+        return text.indexOf('<param') > -1 && text.indexOf('ve-config') > -1
+      }
+
+      function isManifestUrl(text) {
+        return text.indexOf('iiif.mdpress.io') > -1 || text.indexOf('iiif.juncture-digital.org') > -1
+      }
+
+      function manifestUrlToImageTag(manifestUrl) {
+        let shortFormUrl = manifestUrl.replace(/https:\/\/iiif\.mdpress\.io\//, '').replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
+        return isJunctureV1Essay()
+          ? `<param ve-image manifest="${shortFormUrl}">\n`
+          : `\n\`image ${shortFormUrl}\`\n`
+      }
+
       function drop(e) {
         let cursorPos = easyMDE.codemirror.coordsChar({left:e.pageX, top:e.pageY})
         let inputText = ''
         if (e.dataTransfer) inputText = e.dataTransfer.getData('Text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
         if (inputText) {
-          console.log(inputText)
-          inputText = decodeURIComponent(inputText)
+          let toInsert = isManifestUrl(inputText)
+            ? manifestUrlToImageTag(inputText)
+            : inputText
           easyMDE.codemirror.setSelection(cursorPos)
-          easyMDE.codemirror.replaceSelection(inputText)
+          easyMDE.codemirror.replaceSelection(toInsert)
         }
       }
 
       function paste(e) {
         let pastedText = e.clipboardData?.getData('Text') || ''
-        let text = cleanText(pastedText)
-        if (text.indexOf('https://iiif.juncture-digital.org/') === 0) text = text.replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
-        easyMDE.codemirror.replaceSelection(text)
+        pastedText = pastedText.replace(/\[\d+\]/g,'')
+        console.log(pastedText)
+        let toInsert = isManifestUrl(pastedText)
+          ? manifestUrlToImageTag(pastedText)
+          : pastedText
+        easyMDE.codemirror.replaceSelection(toInsert)
       }
 
       function cleanText(text) {

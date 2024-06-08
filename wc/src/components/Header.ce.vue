@@ -3,7 +3,7 @@
   <div class="header" ref="root">
     <div class="background" ref="background"></div>
 
-    <div class="navbar" ref="navbar" :style="{ color, backgroundColor: height > 100 ? backgroundColor : '' }">
+    <div class="navbar" ref="navbar" :style="{ color }">
       
       <div v-if="logo" class="logo">
         <a :href="`${config.baseurl || ''}/`">
@@ -69,7 +69,8 @@
   // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
   watch(navbar, (navbar) => {
-    if (navbar) navbar.style.backgroundColor = toRGBA(backgroundColor.value, props.alpha || (backgroundImage.value ? 0.5 : 1.0))
+    if (navbar) navbar.style.backgroundColor = 
+      toRGBA(backgroundColor.value, props.alpha || (backgroundImage.value ? 0.5 : 1.0))
   })
 
   const isSticky = ref<boolean>(false)
@@ -202,7 +203,7 @@
   
   //convert hex to rgb
   function toRGBA(color:string, alpha:number = 1.0) {
-    // console.log('toRGBA', color, alpha)
+    let rgba
     let hex = color[0] === '#' ? color : colors[color.toLowerCase()]
     if (hex.length === 4) {
       let r = hex.slice(1,2)
@@ -211,13 +212,15 @@
       r = parseInt(r+r, 16)
       g = parseInt(g+g, 16)
       b = parseInt(b+b, 16)
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`
+      rgba = `rgba(${r}, ${g}, ${b}, ${alpha})`
     } else {
       const r = parseInt(hex.slice(1, 3), 16)
       const g = parseInt(hex.slice(3, 5), 16)
       const b = parseInt(hex.slice(5, 7), 16)
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`
+      rgba = `rgba(${r}, ${g}, ${b}, ${alpha})`
     }
+    console.log('toRGBA', color, alpha, rgba)
+    return rgba
   }
 </script>
 
@@ -230,8 +233,7 @@
 .header {
   display: grid;
   grid-template-rows: 1fr 100px auto;
-  grid-template-columns: 1fr;
-  position: relative;
+  grid-template-columns: 1fr;  
 }
 
 .background {

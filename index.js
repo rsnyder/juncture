@@ -693,9 +693,11 @@ function structureContent(html) {
   })
 
   Array.from(restructured?.querySelectorAll('h1, h2, h3, h4, h5, h6'))
-  .filter(heading => !heading.innerHTML.replace('&nbsp;','').trim())
+  .filter(heading => {
+    return !heading.innerHTML.replace('&nbsp;','').trim()
+  })
   .forEach(heading => {
-    heading.remove()
+    // heading.remove()
   })
 
   Array.from(restructured?.querySelectorAll('p'))

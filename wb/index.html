@@ -136,8 +136,8 @@
         let defaultBranch = null
         let url = `https://api.github.com/repos/${acct}/${repo}`
         let resp = authToken
-          ? fetch(url, { headers: {Authorization: `Token ${authToken}`} })
-          : fetch(url)
+          ? await fetch(url, { headers: {Authorization: `Token ${authToken}`} })
+          : await fetch(url)
         console.log(resp)
         if (resp.ok) {
           resp = await resp.json()

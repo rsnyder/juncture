@@ -6,7 +6,8 @@
     let referrer = document.referrer && new URL(document.referrer)    
     let source = location.pathname.slice(1)
     if (referrer) source = `${referrer.searchParams.get('source') || ''}${source}`
-    location.href = `/?source=${source}/`
+    let href = `${location.origin}/?source=${source}/`
+    location.href = href
   </script>
 </body>
 </html>

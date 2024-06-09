@@ -5,9 +5,16 @@
   <script>
     let referrer = document.referrer && new URL(document.referrer)    
     let source = location.pathname.slice(1)
+    
+    console.log('location', location)
+    console.log('referrer', referrer)
+
     if (referrer) source = `${referrer.searchParams.get('source') || ''}${source}`
+    console.log('source', source)
+
     let href = `${location.origin}/?source=${source}/`
-    location.href = href
+    console.log('Redirecting to:', href)
+    // location.href = href
   </script>
 </body>
 </html>

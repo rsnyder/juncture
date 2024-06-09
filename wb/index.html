@@ -133,7 +133,9 @@
         // console.log(`GithubClient.defaultBranch: acct=${acct} repo=${repo}`)
         let defaultBranch = null
         let url = `https://api.github.com/repos/${acct}/${repo}`
-        let resp = await fetch(url, { headers: {Authorization: `Token ${this.authToken}`} })
+        let resp = authToken
+          ? fetch(url, { headers: {Authorization: `Token ${authToken}`} })
+          : fetch(url)
         if (resp.ok) {
           resp = await resp.json()
           defaultBranch = resp.default_branch

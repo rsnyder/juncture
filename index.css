@@ -30,13 +30,13 @@ article > * + * {
   margin-top: 1em;
 }
 
-article h1,
-article h2 {
+article .markdown-body h1,
+article .markdown-body h2 {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-article li > p {
+article .markdown-body li > p {
   margin: 0;
 }
 

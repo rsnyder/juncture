@@ -219,7 +219,7 @@
       const b = parseInt(hex.slice(5, 7), 16)
       rgba = `rgba(${r}, ${g}, ${b}, ${alpha})`
     }
-    console.log('toRGBA', color, alpha, rgba)
+    // console.log('toRGBA', color, alpha, rgba)
     return rgba
   }
 </script>

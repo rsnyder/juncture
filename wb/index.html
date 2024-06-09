@@ -11,13 +11,18 @@
     <style>
       body { font-family: Roboto, sans-serif; max-width:1200px; margin: auto; padding: 0 20px; }
       textarea { opacity: 0; }
-      .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 230px); }
+      .EasyMDEContainer .CodeMirror-wrap { height: calc(100dvh - 234px); }
       .EasyMDEContainer .CodeMirror-code { font-size: 1.2em; }
       .editor-preview { padding:0; }
       article.j1 { height: unset; }
       @media (min-width: 800px) { .j1 .viewers { height: calc(100dvh - 192px); } }
       .CodeMirror-line .cm-header { font-size: 1.4em; }
       button.disabled { display:none; }
+      .editor-toolbar button { min-width: 40px; }
+      .editor-toolbar button i { font-size: large; }
+      .editor-toolbar.disabled-for-preview button:not(.no-disable) { opacity: 0.3; }
+      .editor-toolbar button.preview i { font-size: x-large; }
+      .editor-toolbar button.preview.active { border: 2px solid #aaa; border-radius: 6px; background-color: #f0f0f0; }
       ve-header ul { display: none; }
       /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
     </style>
@@ -153,11 +158,8 @@
               ...['unordered-list', 'ordered-list', 'link']
             ], 
             ...[           
-              '|', 
-              'preview', 
-              // 'side-by-side',
-              '|',
-              {
+            '|', 
+            {
               class: 'save',
                 action: () => {saveFile()},
                 className: 'fa fa-download',
@@ -169,13 +171,17 @@
                 className: 'fa fa-copy',
                 title: 'Copy text',
                 attributes: {id: 'copy'}
+              /*
               }, { 
                 class: 'Share',
                 action: () => {share()},
                 className: 'fa fa-share',
                 title: 'Share',
                 attributes: {id: 'share'}
-              }
+              */
+              },
+              '|', 
+              'preview'
             ]
           ]
         })

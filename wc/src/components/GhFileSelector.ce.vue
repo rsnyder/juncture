@@ -170,7 +170,7 @@
   const requested = ref<any>()
   
   watch(authToken, () => {
-    console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
+    // console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
     isLoggedIn.value = window.localStorage.getItem('gh-auth-token') !== null
     githubClient.value = new GithubClient(authToken.value || '')
     if (acct.value) getRepositories()

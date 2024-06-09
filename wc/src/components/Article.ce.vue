@@ -32,7 +32,7 @@
   const markdown = ref()
   const parsed = computed(() => markdown.value && elFromHtml(structureContent(markdownToHtml(markdown.value)))?.firstElementChild)
   const html = computed(() => parsed.value?.innerHTML)
-  const classes = computed(() => parsed.value?.className)
+  const classes = computed(() => `article ${parsed.value?.className}`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
 
 function setViewersPosition() {

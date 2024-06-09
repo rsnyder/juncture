@@ -9,12 +9,12 @@
     console.log('location', location)
     console.log('referrer', referrer)
 
-    if (referrer) source = `${referrer.searchParams.get('source') || ''}${source}`
+    if (referrer) source = `${referrer.searchParams.get('source') || ''}`
     console.log('source', source)
 
     let href = `${location.origin}/?source=${source}/`
     console.log('Redirecting to:', href)
-    // location.href = href
+    location.href = href
   </script>
 </body>
 </html>

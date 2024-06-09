@@ -313,44 +313,37 @@
         }
         return {status:resp.status, statusText:resp.statusText, sha}
       }
-    
-      function isJunctureV1Essay() {
-        let text = easyMDE.value()
-        return text.indexOf('<param') > -1 && text.indexOf('ve-config') > -1
-      }
 
-      function isManifestUrl(text) {
-        return text.indexOf('iiif.mdpress.io') > -1 || text.indexOf('iiif.juncture-digital.org') > -1
-      }
-
-      function manifestUrlToImageTag(manifestUrl) {
-        let shortFormUrl = manifestUrl.replace(/https:\/\/iiif\.mdpress\.io\//, '').replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
-        return isJunctureV1Essay()
-          ? `<param ve-image manifest="${shortFormUrl}">\n`
-          : `\n\`image ${shortFormUrl}\`\n`
+      function insertText(text) {
+        let md = easyMDE.value()
+        let isJunctureV1Essay = md.indexOf('<param') > -1 && md.indexOf('ve-config') > -1
+        let toInsert = text
+        if (text.indexOf('https://www.youtube.com') === 0) {
+          let vid = new URL(text).searchParams.get('v')
+          toInsert = isJunctureV1Essay ? `<param ve-video vid="${vid}">\n` : `\n\`video ${vid}\`\n`
+        } else if (/^[\d\., \-+]+$/.test(text)) { //map coords
+          let args = text.split(',').map(e => e.trim())
+          let coords = args.slice(0,2).join(',')
+          let zoom = args[2] || 10
+          toInsert = isJunctureV1Essay ? `<param ve-map center="${coords}" zoom="${zoom}">\n` : `\n\`map ${coords},${zoom}\`\n`
+        } else if (text.indexOf('iiif.mdpress.io') > -1 || text.indexOf('iiif.juncture-digital.org') > -1) { //manifest
+          let shortFormUrl = text.replace(/https:\/\/iiif\.mdpress\.io\//, '').replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
+          toInsert = isJunctureV1Essay ? `<param ve-image manifest="${shortFormUrl}">\n` : `\n\`image ${shortFormUrl}\`\n`
+        }
+        easyMDE.codemirror.replaceSelection(toInsert)
       }
 
       function drop(e) {
-        let cursorPos = easyMDE.codemirror.coordsChar({left:e.pageX, top:e.pageY})
+        easyMDE.codemirror.setSelection(easyMDE.codemirror.coordsChar({left:e.pageX, top:e.pageY}))
         let inputText = ''
         if (e.dataTransfer) inputText = e.dataTransfer.getData('Text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
-        if (inputText) {
-          let toInsert = isManifestUrl(inputText)
-            ? manifestUrlToImageTag(inputText)
-            : inputText
-          easyMDE.codemirror.setSelection(cursorPos)
-          easyMDE.codemirror.replaceSelection(toInsert)
-        }
+        if (inputText) insertText(inputText)
       }
 
       function paste(e) {
-        let pastedText = e.clipboardData?.getData('Text') || ''
-        pastedText = pastedText.replace(/\[\d+\]/g,'')
-        console.log(pastedText)
-        let toInsert = isManifestUrl(pastedText)
-          ? manifestUrlToImageTag(pastedText)
-          : pastedText
-        easyMDE.codemirror.replaceSelection(toInsert)
+        let inputText = e.clipboardData?.getData('Text') || ''
+        inputText = inputText.replace(/\[\d+\]/g,'')
+        if (inputText) insertText(inputText)
       }
 
       function cleanText(text) {

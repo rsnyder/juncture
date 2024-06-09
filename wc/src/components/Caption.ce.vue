@@ -161,8 +161,6 @@
     fill: darkgray;
   }
   sl-dropdown svg:hover {
-    width: 1.2em;
-    height: 1.2em;
     fill: #333;
   }
   .annoid {

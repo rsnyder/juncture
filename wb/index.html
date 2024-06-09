@@ -70,7 +70,8 @@
       if (!sourceArg && referrer) {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-        if (acct && repo && branch && path.length > 0) {
+        console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path}`)
+        if (acct && repo && branch) {
           // window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch || 'main'}/${path.join('/')}&mode=view`}`
           let href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`}`
           console.log('Redirecting to:', href)

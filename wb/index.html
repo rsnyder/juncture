@@ -66,23 +66,15 @@
 
       let easyMDE
 
-      console.log('referrer', referrer)
-      console.log('sourceArg', sourceArg)
-
       if (!sourceArg && referrer) {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-        console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path}`)
         if (acct && repo) {
           if (branch) {
-            let href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
-            console.log('Redirecting to:', href)
-            // window.location.href = href
+            window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
           } else {
             getDefaultBranch(acct, repo).then(branch => {
-              let href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
-              console.log('Redirecting to:', href)
-              // window.location.href = href
+              window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
             })
           }
         }
@@ -132,13 +124,11 @@
       }
 
       async function getDefaultBranch(acct, repo) {
-        console.log(`getDefaultBranch: acct=${acct} repo=${repo}`)
         let defaultBranch = null
         let url = `https://api.github.com/repos/${acct}/${repo}`
         let resp = authToken
           ? await fetch(url, { headers: {Authorization: `Token ${authToken}`} })
           : await fetch(url)
-        console.log(resp)
         if (resp.ok) {
           resp = await resp.json()
           defaultBranch = resp.default_branch

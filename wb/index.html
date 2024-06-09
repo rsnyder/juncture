@@ -208,7 +208,8 @@
       }
 
       function share() {
-        window.open(`${location.origin}?source=${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
+        // window.open(`${location.origin}?source=${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
+        window.open(`${location.origin}/${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
       }
 
       function togglePreview(md, preview) {

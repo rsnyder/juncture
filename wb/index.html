@@ -172,11 +172,11 @@
                 title: 'Copy text',
                 attributes: {id: 'copy'}
               }, { 
-                class: 'Share',
-                action: () => {share()},
+                class: 'Open',
+                action: () => {open()},
                 className: 'fa fa-share',
-                title: 'Share',
-                attributes: {id: 'share'}
+                title: 'Open in new tab',
+                attributes: {id: 'open'}
               },
               '|', 
               'preview'
@@ -207,7 +207,7 @@
         if (navigator.clipboard) navigator.clipboard.writeText(easyMDE.value())
       }
 
-      function share() {
+      function open() {
         // window.open(`${location.origin}?source=${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
         window.open(`${location.origin}/${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
       }

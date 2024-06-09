@@ -266,7 +266,7 @@
     if (!branches.length) return
     // console.log('branches', toRaw(branches))
     if (!defaultBranch && acct.value && repo.value) defaultBranch = await githubClient.value.defaultBranch(acct.value, repo.value)
-    branch.value = defaultBranch || branches[0]?.name
+    branch.value = requested.value?.branch || defaultBranch || branches[0]?.name
   })
   function branchSelected(_branch:any) {
     requested.value = null
@@ -342,7 +342,6 @@
 
   async function parseGhSource(ghSource:(string|undefined|null)=props.ghSource, _trigger='select') {
     if (!ghSource) return
-    // console.log('parseGhSource', ghSource, _trigger)
     trigger.value = _trigger
     reset()
     // console.log(`ghSource=${ghSource}`);

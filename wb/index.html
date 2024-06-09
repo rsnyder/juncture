@@ -80,18 +80,14 @@
         }
       } 
 
-      console.log('sourceArg:', sourceArg)
-
       let ghSource
       if (sourceArg) {
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
-        console.log('ghSource from sourceArg:', ghSource)
         // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource')
-        console.log('ghSource from smde_ghsource:', ghSource)
         if (ghSource) {
           window.history.replaceState({}, null, `/wb?source=${ghSource}`)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)

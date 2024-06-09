@@ -64,6 +64,9 @@
 
       let easyMDE
 
+      console.log('referrer', referrer)
+      console.log('sourceArg', sourceArg)
+
       if (!sourceArg && referrer) {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')

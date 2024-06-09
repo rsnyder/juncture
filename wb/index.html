@@ -61,6 +61,8 @@
       const referrer = document.referrer && new URL(document.referrer)
       let mode = searchParams.get('mode') || 'edit'
       let markdownIsUpdated = false
+      
+      let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
 
       let easyMDE
 
@@ -303,8 +305,6 @@
         }, 100)
       }
     
-      let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
-
       // Encoding UTF8 ⇢ base64
       function b64EncodeUnicode(str) {
         return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(_, p1) {

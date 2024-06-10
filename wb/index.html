@@ -230,7 +230,7 @@
 
       function open() {
         // window.open(`${location.origin}?source=${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
-        let href = `${location.origin}/${ghSource.replace(/\/\w+\.md$/,'')}/`
+        let href = `${location.origin}/?source=${ghSource.replace(/\/\w+\.md$/,'')}/`
         console.log('Opening:', href)
         window.open(href, '_blank')
       }

@@ -10,7 +10,7 @@
     console.log('referrer', referrer)
 
     if (referrer) source = `${referrer.searchParams.get('source') || ''}${location.pathname.slice(1)}`
-    source = source.replace(/\/README\.md$/, '').replace(/\/index\.md$/, '').replace(/\.md$/, '')
+    source = source.replace(/\/README\.md$/, '').replace(/\/index\.md$/, '').replace(/\.md\/?$/, '')
     console.log('source', source)
 
     let href = `${location.origin}/?source=${source}/`

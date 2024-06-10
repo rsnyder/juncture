@@ -137,27 +137,25 @@
         ? 'search'
         : action
     if (action === 'contact') mailto()
-    // else if (action === 'home')
-    //   location.href = item.href
     else if (action === 'search')
       window.open(item.href, '_blank')
     else {
-      let href = new URL(item.href)
+      let itemHref = new URL(item.href)
       let config = (window as any)?.config || {}
-      console.log('menuItemSelected', href)
-      console.log('location', location)
-      console.log('config', config)
-      if (href.origin === location.origin) {
-        let baseurl = config.baseurl || ''
-        if (href.pathname === location.pathname) {
-          let [owner, repository, branch, path] = new URL(location.href).searchParams.get('source')?.split('/').filter(pe => pe) || []
-          console.log('source', source)
-          if (owner && repository && branch) baseurl = `/${owner}/${repository}/${branch}`
+      console.log(itemHref, location, config)
+      if (itemHref.origin === location.origin) {
+        let href
+        let sourceArg = new URL(location.href).searchParams.get('source')
+        if (sourceArg && itemHref.pathname === location.pathname) {
+          console.log('source', sourceArg)
+          let [owner, repository, branch] = sourceArg.split('/').filter(pe => pe) || []
+          href = `${location.origin}${location.pathname}?source=${owner}/${repository}/${branch}}/`
+        } else {
+          href = `${itemHref.origin}${config.baseurl || ''}${itemHref.pathname}`
         }
-        console.log('baseurl', baseurl)
-        let path = `${baseurl}${href.pathname}`
-        console.log('path', path)
-        // location.pathname = path
+        console.log('href', href)
+        // location.href = href
+        window.open(href, '_blank')
       } else {
         location.href = item.href
       }

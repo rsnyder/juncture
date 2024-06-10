@@ -137,28 +137,19 @@
         ? 'search'
         : action
     if (action === 'contact') mailto()
-    // else if (action === 'home')
-    //   location.href = item.href
     else if (action === 'search')
       window.open(item.href, '_blank')
     else {
       let href = new URL(item.href)
       let config = (window as any)?.config || {}
-      console.log('menuItemSelected', href)
-      console.log('location', location)
-      console.log('config', config)
       if (href.origin === location.origin) {
         let baseurl = config.baseurl || ''
         let source = new URL(location.href).searchParams.get('source')?.split('/').filter(pe => pe) || []
-        console.log('source', source)
         if (source.length > 2) {
           let [owner, repository, branch, path] = source
           baseurl = `/${owner}/${repository}/${branch}`
         }
-        console.log('baseurl', baseurl)
-        let path = `${baseurl}${href.pathname}`
-        console.log('path', path)
-        // location.pathname = path
+        location.pathname = `${baseurl}${href.pathname}`
       } else {
         location.href = item.href
       }

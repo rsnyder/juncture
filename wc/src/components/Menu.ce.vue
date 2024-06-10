@@ -148,9 +148,13 @@
       console.log('location', location)
       console.log('config', config)
       if (href.origin === location.origin) {
-        let source = new URL(location.href).searchParams.get('source')?.split('/').filter(pe => pe)
+        let baseurl = config.baseurl || ''
+        let source = new URL(location.href).searchParams.get('source')?.split('/').filter(pe => pe) || []
         console.log('source', source)
-        let baseurl = ''
+        if (source.length > 2) {
+          let [owner, repository, branch, path] = source
+          baseurl = `/${owner}/${repository}/${branch}`
+        }
         console.log('baseurl', baseurl)
         let path = `${baseurl}${href.pathname}`
         console.log('path', path)

@@ -378,7 +378,8 @@
       function paste(e) {
         let inputText = e.clipboardData?.getData('Text') || ''
         inputText = inputText.replace(/\[\d+\]/g,'')
-        if (inputText) insertText(inputText)
+        if (inputText && easyMDE.codemirror.getCursor().ch === 0) insertText(inputText)
+        else easyMDE.codemirror.replaceSelection(inputText)
       }
 
       function cleanText(text) {

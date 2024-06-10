@@ -23,6 +23,7 @@
       ]))
     : {}
   )
+  // watch(metadata, (metadata) => { console.log(toRaw(metadata)) })
 
   const label = computed(() => manifest.value?.label ? (manifest.value.label[props.language] || manifest.value.label.none || manifest.value.label.en || Object.values(manifest.value.label)[0])[0] : null)
 
@@ -107,6 +108,7 @@
         <div class="summary" v-html="summary"></div>
         <div v-if="attribution" class="attribution" v-html="attribution"></div>
         <div v-if="photoDetails" class="photo-details">{{ photoDetails }}</div>
+        <div v-if="metadata.size" class="photo-details">{{ metadata.size }}</div>
         <sl-dropdown v-if="coords" ref="details" distance="12" skidding="-30" placement="top">
           <div slot="trigger" style="cursor:pointer;">
             <span v-html="coords"></span>

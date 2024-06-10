@@ -137,14 +137,17 @@
         ? 'search'
         : action
     if (action === 'contact') mailto()
-    else if (action === 'home')
-      location.href = item.href
+    // else if (action === 'home')
+    //   location.href = item.href
     else if (action === 'search')
       window.open(item.href, '_blank')
     else {
       let href = new URL(item.href)
       if (href.origin === location.origin) {
-        let baseurl = ((window as any)?.config || {})?.baseurl || ''
+        let baseurl = href.origin === location.origin
+          ? ((window as any)?.config || {})?.baseurl || new URL(location.href).searchParams.get('source') || ''
+          : ''
+        if (baseurl && !baseurl[0] === '/') baseurl = `/${baseurl}` 
         let path = `${baseurl}${href.pathname}`
         location.pathname = path
       } else {

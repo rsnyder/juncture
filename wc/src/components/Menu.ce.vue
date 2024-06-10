@@ -149,13 +149,13 @@
         if (sourceArg && itemHref.pathname === location.pathname) {
           console.log('source', sourceArg)
           let [owner, repository, branch] = sourceArg.split('/').filter(pe => pe) || []
-          href = `${location.origin}${location.pathname}?source=${owner}/${repository}/${branch}}/`
+          href = `${location.origin}${location.pathname}?source=${owner}/${repository}/${branch}/`
         } else {
           href = `${itemHref.origin}${config.baseurl || ''}${itemHref.pathname}`
         }
         console.log('href', href)
-        // location.href = href
-        window.open(href, '_blank')
+        location.href = href
+        // window.open(href, '_blank')
       } else {
         location.href = item.href
       }

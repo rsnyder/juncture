@@ -9,7 +9,7 @@
     console.log('location', location)
     console.log('referrer', referrer)
 
-    if (referrer) source = `${referrer.searchParams.get('source') || ''}`
+    if (referrer) source = `${referrer.searchParams.get('source') || ''}${location.pathname}`
     source = source.replace(/\/README\.md$/, '').replace(/\/index\.md$/, '').replace(/\.md$/, '')
     console.log('source', source)
 

@@ -239,5 +239,10 @@ export class GithubClient {
       // console.log(`fullPath=${fullPath}`)
       return fullPath
     }
-  
+
+    async userCanUpdateRepo(acct:string, repo:string) {
+      return this.user()
+        .then((userData:any) => userData.login)
+        .then((username:string) => repo ? this.isCollaborator(acct, repo, username) : false)
+    }
   }

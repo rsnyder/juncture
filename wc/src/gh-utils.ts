@@ -2,8 +2,8 @@ export class GithubClient {
 
     authToken: string
   
-    constructor(authToken: string) {
-      this.authToken = authToken
+    constructor(authToken: string = '') {
+      this.authToken = authToken || window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token') || ''
     }
   
     // Encoding UTF8 ⇢ base64
@@ -68,7 +68,14 @@ export class GithubClient {
         }
       }).then(resp => resp.json())
     }
-      
+    
+    async userCanUpdateRepo(acct:string, repo:string) {
+      console.log(`GithubClient.userCanUpdateRepo: acct=${acct} repo=${repo}`)
+      return this.user()
+        .then((userData:any) => userData.login)
+        .then((username:string) => repo ? this.isCollaborator(acct, repo, username) : false)
+    }
+
     async createRepository({org=null, name='', description='', auto_init=true}): Promise<any> {
       let url = org ? `https://api.github.com/orgs/${org}/repos` : 'https://api.github.com/user/repos'
       // console.log(`createUserRepository: org=${org} name=${name} description=${description} auto_init=${auto_init} url=${url}`)

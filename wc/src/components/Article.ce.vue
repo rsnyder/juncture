@@ -14,7 +14,8 @@
     owner: { type: String },
     repo: { type: String },
     branch: { type: String, default: 'main' },
-    path: { type: String, default: 'README.md'}
+    path: { type: String, default: 'README.md'},
+    repoIsWritable: { type: Boolean, default: false }
   })
   const ghSource = computed(() => `${props.owner}/${props.repo}/${props.branch}/${props.path}`)
 
@@ -30,25 +31,30 @@
   })
 
   const markdown = ref()
-  const parsed = computed(() => markdown.value && elFromHtml(structureContent(markdownToHtml(markdown.value)))?.firstElementChild)
+  const parsed = computed(() => markdown.value && elFromHtml(structureContent(markdownToHtml(markdown.value), repoIsWritable.value))?.firstElementChild)
   const html = computed(() => parsed.value?.innerHTML)
   const classes = computed(() => `article ${parsed.value?.className}`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
 
-function setViewersPosition() {
-  let header = article.value?.querySelector('ve-header') as HTMLElement
-  let viewers = article.value?.querySelector('.viewers.active') as HTMLElement
-  if (header && viewers) {
-    let top = header.getBoundingClientRect().top
-    let height = header.getBoundingClientRect().height
-    let offset = top + height
-    viewers.style.top = `${offset}px`
-    viewers.style.height = `calc(100dvh - ${offset+32}px)`
-    // console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
+  const repoIsWritable = ref(props.repoIsWritable)
+  watch(props, () => { repoIsWritable.value = props.repoIsWritable })
+  // watch(repoIsWritable, () => { console.log(`repoIsWritable=${repoIsWritable.value}`) })
+
+  function setViewersPosition() {
+    let header = article.value?.querySelector('ve-header') as HTMLElement
+    let viewers = article.value?.querySelector('.viewers.active') as HTMLElement
+    if (header && viewers) {
+      let top = header.getBoundingClientRect().top
+      let height = header.getBoundingClientRect().height
+      let offset = top + height
+      viewers.style.top = `${offset}px`
+      viewers.style.height = `calc(100dvh - ${offset+32}px)`
+      // console.log(offset, parseInt(window.getComputedStyle(viewers).height.replace(/px/,'')))
+    }
   }
-}
 
   onMounted(async() => {
+    console.log(`repoIsWritable=${repoIsWritable.value}`)
     markdown.value = host.value.textContent
       ? host.value.firstChild.innerHTML
       : await getMarkdown(ghSource.value)

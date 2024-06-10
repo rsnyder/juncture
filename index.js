@@ -385,7 +385,7 @@ function parseCodeEl(codeEl, codeLang) {
   return parsed
 }
 
-function handleCodeEl(rootEl, codeEl) {
+function handleCodeEl(rootEl, codeEl, repoIsWritable) {
   // console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
@@ -424,6 +424,10 @@ function handleCodeEl(rootEl, codeEl) {
       parsed = parseCodeEl(codeEl)
       // console.log(parsed)
       codeLang = parsed.lang
+      if (repoIsWritable) {
+        if (!parsed.booleans) parsed.booleans = []
+        parsed.booleans.push('repo-is-writable')
+      }
     }
 
     if (codeLang === 'mermaid') {
@@ -541,7 +545,8 @@ function elFromHtml(html) {
 
 let isJunctureV1 = false
 
-function structureContent(html) {
+function structureContent(html, repoIsWritable) {
+  repoIsWritable = repoIsWritable || false
   let rootEl
   if (html) {
     let doc = new DOMParser().parseFromString(html, 'text/html')
@@ -715,7 +720,7 @@ function structureContent(html) {
   })
 
   Array.from(restructured?.querySelectorAll('code'))
-  .forEach(codeEl => handleCodeEl(restructured, codeEl))
+  .forEach(codeEl => handleCodeEl(restructured, codeEl, repoIsWriteable))
 
   restructured.querySelectorAll('section').forEach(section => {
     

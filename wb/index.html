@@ -242,7 +242,7 @@
           setSaveButtonState()
           // styleJunctureElements()
         }, 100)
-        return `<ve-article><pre>${md}</pre></ve-article>`
+        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''}><pre>${md}</pre></ve-article>`
       }
 
       function setSaveButtonState() {
@@ -352,6 +352,9 @@
           let coords = args.slice(0,2).join(',')
           let zoom = args[2] || 10
           toInsert = isJunctureV1Essay ? `<param ve-map center="${coords}" zoom="${zoom}">\n` : `\n\`map ${coords},${zoom}\`\n`
+        } else if (text.indexOf('https://commons.wikimedia.org/wiki') === 0) { //wikimedia
+          let title = text.split('/').pop().replace(/File:/,'')
+          toInsert = isJunctureV1Essay ? `<param ve-image manifest="wc:${title}">\n` : `\n\`image wc:${title}\`\n`
         } else if (text.indexOf('iiif.mdpress.io') > -1 || text.indexOf('iiif.juncture-digital.org') > -1) { //manifest
           let shortFormUrl = text.replace(/https:\/\/iiif\.mdpress\.io\//, '').replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
           toInsert = isJunctureV1Essay ? `<param ve-image manifest="${shortFormUrl}">\n` : `\n\`image ${shortFormUrl}\`\n`

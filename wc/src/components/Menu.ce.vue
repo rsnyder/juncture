@@ -143,13 +143,18 @@
       window.open(item.href, '_blank')
     else {
       let href = new URL(item.href)
+      let config = (window as any)?.config || {}
+      console.log('menuItemSelected', href)
+      console.log('location', location)
+      console.log('config', config)
       if (href.origin === location.origin) {
-        let baseurl = href.origin === location.origin
-          ? ((window as any)?.config || {})?.baseurl || new URL(location.href).searchParams.get('source') || ''
-          : ''
-        if (baseurl && !baseurl[0] === '/') baseurl = `/${baseurl}` 
+        let source = new URL(location.href).searchParams.get('source')?.split('/').filter(pe => pe)
+        console.log('source', source)
+        let baseurl = ''
+        console.log('baseurl', baseurl)
         let path = `${baseurl}${href.pathname}`
-        location.pathname = path
+        console.log('path', path)
+        // location.pathname = path
       } else {
         location.href = item.href
       }

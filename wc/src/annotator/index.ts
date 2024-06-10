@@ -120,7 +120,7 @@ export class Annotator {
   async saveAnnotations() {
     let content = JSON.stringify(this.annotorious.getAnnotations(), null, 2)
     // console.log(`saveAnnotations: acct=${this.acct} repo=${this.repo} ref=${this.ref} basePath=${this.basePath} imageId=${this.imageId}`, content)
-    let resp = await this.ghClient.putFile(this.acct, this.repo, `${this.basePath}/${this.imageId}.json`, content, this.ref, false, this.sha)
+    let resp = await this.ghClient.putFile(this.acct, this.repo, `${this.basePath}${this.basePath ? '/' : ''}${this.imageId}.json`, content, this.ref, false, this.sha)
   }
 
   async createAnnotation(anno:any) {

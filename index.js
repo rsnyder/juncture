@@ -720,7 +720,7 @@ function structureContent(html, repoIsWritable) {
   })
 
   Array.from(restructured?.querySelectorAll('code'))
-  .forEach(codeEl => handleCodeEl(restructured, codeEl, repoIsWriteable))
+  .forEach(codeEl => handleCodeEl(restructured, codeEl, repoIsWritable))
 
   restructured.querySelectorAll('section').forEach(section => {
     

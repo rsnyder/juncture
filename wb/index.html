@@ -354,7 +354,13 @@
           toInsert = isJunctureV1Essay ? `<param ve-map center="${coords}" zoom="${zoom}">\n` : `\n\`map ${coords},${zoom}\`\n`
         } else if (text.indexOf('https://commons.wikimedia.org/wiki') === 0) { //wikimedia
           let title = text.split('/').pop().replace(/File:/,'')
-          toInsert = isJunctureV1Essay ? `<param ve-image manifest="wc:${title}">\n` : `\n\`image wc:${title}\`\n`
+          let extension = title.split('.').pop()
+          if (extension === 'webm') // video
+            toInsert = isJunctureV1Essay ? `<param ve-video src="wc:${title}">\n` : `\n\`video src=wc:${title}\`\n`
+          else if (extension === 'oga') // audio
+            toInsert = isJunctureV1Essay ? `<param ve-audio src="wc:${title}">\n` : `\n\`audio src=wc:${title}\`\n`
+          else // image
+            toInsert = isJunctureV1Essay ? `<param ve-image manifest="wc:${title}">\n` : `\n\`image wc:${title}\`\n`
         } else if (text.indexOf('iiif.mdpress.io') > -1 || text.indexOf('iiif.juncture-digital.org') > -1) { //manifest
           let shortFormUrl = text.replace(/https:\/\/iiif\.mdpress\.io\//, '').replace(/https:\/\/iiif\.juncture-digital\.org\//, '').replace(/\/manifest\.json/, '')
           toInsert = isJunctureV1Essay ? `<param ve-image manifest="${shortFormUrl}">\n` : `\n\`image ${shortFormUrl}\`\n`

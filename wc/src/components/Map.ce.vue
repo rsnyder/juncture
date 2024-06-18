@@ -989,17 +989,17 @@
         let scope = host.value?.parentElement
         let added = new Set()
         while (scope?.parentElement && scope.tagName !== 'MAIN') {
-          scope = scope.parentElement;
-          (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
+         (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
             if (!added.has(el)) {
               addMutationObserver(el)
               added.add(el)
             }
           })
+          scope = scope.parentElement
         }
         
         scope = host.value?.parentElement
-        while (scope?.parentElement) {
+        while (scope && scope.tagName !== 'SECTION') {
           (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
             let link = new URL(anchorElem.href)
             let path = link.pathname.split('/').filter((p:string) => p)
@@ -1013,6 +1013,7 @@
                 let zoom = split.length > 1 ? Number(split[1]) : props.zoom || 10
                 location = `${coords},${zoom}`
               }
+              // console.log('flyto', location, trigger, caption.value)
               anchorElem.classList.add('flyto')
               anchorElem.href = 'javascript:;'
               anchorElem.setAttribute('data-location', location)
@@ -1116,6 +1117,7 @@
           center = new L.LatLng(lat, lng)
           if (z) zoom = z || props.zoom || zoom
         }
+        // console.log('flytoLoc', map.value, center, zoom, caption.value)
         map.value?.flyTo(center, zoom)
       }
     

@@ -204,6 +204,12 @@ const components = {
     },
   },
   juncture2: {
+    've-annotate': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
     've-card': {
       booleans: new Set([]),
       class: new Set(),
@@ -342,8 +348,10 @@ function parseHeadline(s, codeLang) {
       if (!parsed.entities) parsed.entities = []
       parsed.entities.push(token)
     }
-    else if (tokenIdx === 0 && !parsed.tag && tagMap[token]) parsed['tag'] = tagMap[token]
-    else if (token === 'script' || token === 'link') parsed['tag'] = token
+    else if (tokenIdx === 0 && !parsed.tag && tagMap[token]) {
+      parsed.tag = tagMap[token]
+      parsed.lang = components.juncture2[parsed.tag] ? 'juncture2' : 'juncture3'
+    } else if (token === 'script' || token === 'link') parsed.tag = token
     else {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
       else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
@@ -381,7 +389,7 @@ function parseCodeEl(codeEl, codeLang) {
     .filter(x => x) || []
   let parsed = parseHeadline(codeElems?.[0], codeLang) || {}
   if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
-  parsed.lang = codeLang || ((parsed.tag || parsed.class || parsed.style || parsed.id) ? 'juncture3' : 'plain')
+  parsed.lang = parsed.lang || codeLang || ((parsed.tag || parsed.class || parsed.style || parsed.id) ? 'juncture3' : 'plain')
   return parsed
 }
 

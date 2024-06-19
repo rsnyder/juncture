@@ -54,7 +54,6 @@
   }
 
   onMounted(async() => {
-    console.log(`repoIsWritable=${repoIsWritable.value}`)
     markdown.value = host.value.textContent
       ? host.value.firstChild.innerHTML
       : await getMarkdown(ghSource.value)

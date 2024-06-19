@@ -350,7 +350,7 @@ function parseHeadline(s, codeLang) {
     }
     else if (tokenIdx === 0 && !parsed.tag && tagMap[token]) {
       parsed.tag = tagMap[token]
-      parsed.lang = components.juncture2[parsed.tag] ? 'juncture2' : 'juncture3'
+      parsed.lang = codeLang || components.juncture3[parsed.tag] ? 'juncture3' : 'juncture2'
     } else if (token === 'script' || token === 'link') parsed.tag = token
     else {
       if (parsed.tag === 'script' && !parsed.src) parsed.src = token
@@ -431,7 +431,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
     if (!codeLang) {
       parsed = parseCodeEl(codeEl)
       parsed.inline = isInline
-      console.log(parsed)
+      codeLang = parsed.lang
       if (repoIsWritable) {
         if (!parsed.booleans) parsed.booleans = []
         parsed.booleans.push('repo-is-writable')

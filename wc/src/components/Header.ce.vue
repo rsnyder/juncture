@@ -1,7 +1,7 @@
 <template>
     
   <div class="header" ref="root">
-    <div class="background" ref="background"></div>
+    <div v-if="backgroundImage" class="background" ref="background"></div>
 
     <div class="navbar" ref="navbar" :style="{ color }">
       

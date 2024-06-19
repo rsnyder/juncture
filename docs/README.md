@@ -121,13 +121,7 @@ Note that the original and simplified notations can not be used in the same Junc
 
 #### Original
 
-The original syntax used for adding a Juncture tag to Markdown was based on the HTML `param` tag.  The param tag included parameters that defined the type of Juncture viewer to use (e.g., `ve-image` for the image viewer) and one or more viewer-specific parameters.  Viewer parameters are defined using name-value notation (`param-name="param-value"`).  In name-value notation the parameter name and value are separated by an equals sign and the parameter value is enclosed in quotes.  For example,
-
-```markdown
-<param juncture-tag param-1="value1" param-2="value2">
-```
-
-Below is a Juncture tag for an image viewer.  In this example the viewer is provided with the URL to the image and a title to be displayed as a viewer caption. 
+The original syntax used for adding a Juncture tag to Markdown was based on the HTML `param` tag.  The param tag included parameters that defined the type of Juncture viewer to use (e.g., `ve-image` for the image viewer) and one or more viewer-specific parameters.  Viewer parameters are defined using name-value notation (`param-name="param-value"`).  In name-value notation the parameter name and value are separated by an equals sign and the parameter value is enclosed in quotes.  For example, below is a Juncture tag for an image viewer.  In this example the viewer is provided with the URL to the image and a title to be displayed as a viewer caption. 
 
 ```markdown
 <param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="A Sunflower">

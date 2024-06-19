@@ -1,8 +1,16 @@
 [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
+```
+header "Getting Started" auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
+- [Workbench](/wb)
+```
+
 # Juncture
 
-## Markdown
+- [Markdown](#markdown)
+- [Juncture](#juncture)
+
+## Markdown `#markdown`
 
 Markdown is a lightweight markup language for creating formatted text using a plain-text editor. Below are some basic elements to get you started.
 
@@ -18,7 +26,7 @@ Use `#` for headings. The number of `#` symbols indicates the level of the headi
 
 ### Emphasis
 
-To emphasize text, use * or _ for italic and ** or __ for bold.
+To emphasize text, use `*` or `_` for italic and `**` or `__` for bold.
 
 ```markdown
 *italic* or _italic_
@@ -107,7 +115,7 @@ Create tables using pipes `|` and hyphens `-`.
 | Row 2    | Data 2   |
 ```
 
-## Juncture
+## Juncture `#juncture`
 
 Juncture viewers are defined by adding Juncture-specific tags to standard Markdown text.
 

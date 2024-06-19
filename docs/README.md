@@ -34,7 +34,7 @@ Juncture is a tool for creating and displaying interactive web pages.  Juncture 
     - [flyto](#flyto) - Uses a text link to trigger a `flyto` action on a map viewer
     - [play](#play) - Uses a text link to trigger to start an audio or video playback at a specified time
 
-## Creating and Modifying Juncture Essays
+## Creating and Modifying Juncture Essays `#editing`
 
 Juncture essays are defined using plain Markdown files stored in GitHub.  The essay Markdown files may be created and modified using the built-in GitHub web editor or the editor provided in the [Juncture Workbench](https://v3.juncture-digital.org/wb).
 
@@ -181,21 +181,21 @@ In the simplified syntax, the `ve-` prefix can omitted from the tag name and par
 
 ### Juncture Tags  `#juncture-viewers`
 
-#### ve-audio `#audio-player`
+#### Audio Player `#audio-player`
 
 ##### Parameters
 
 - [param1]: 
 - [param2]: 
 
-#### ve-compare `#image-compare`
+#### Image Compare Viewer `#image-compare`
 
 ##### Parameters
 
 - [param1]: 
 - [param2]: 
 
-#### ve-image `#image-viewer`
+#### Image Viewer `#image-viewer`
 
 The Juncture image viewer displays one or more images in an interactive IIIF viewer.  The viewer supports zooming and panning of high resolution images.  The viewer also provides captioning and attribution.
 
@@ -215,27 +215,54 @@ or
 - `caption` (or `title`): The text to use for the image caption
 - `fit`: Defines whether the image should fill the viewer or be scaled to show the entire image in the original image aspect ratio.  The value of `cover` is used to fill the viewer with the image. The value `contain` is used to show the entire image.
 
-#### ve-gallery `#image-gallery`
+#### Image Gallery `#image-gallery`
 
 ##### Parameters
 
 - [param1]: 
 - [param2]: 
 
-#### ve-map `#map-viewer`
+##### Examples
+
+original:
+
+```markdown
+<param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="A Sunflower">
+```
+
+simplified:
+
+```markdown
+`image https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
+```
+
+#### Map Viewer `#map-viewer`
 
 ##### Parameters
 
 - [param1]: 
 - [param2]: 
 
-#### ve-video `#video-player`
+#### Mermaid Diagram Viewer `#mermaid`
 
 ##### Parameters
 
 - [param1]: 
 - [param2]: 
 
+#### Video Player `#video-player`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
+
+#### VisJS Diagram Viewer `#visjs`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
 
 ### Juncture Interaction  `#juncture-interactions`
 

@@ -23,8 +23,9 @@ Juncture is a tool for creating and displaying interactive web pages.  Juncture 
       - [Mermaid](#mermaid-viewer)
       - [VisJS](#visjs-viewer)
     - [IFrame Viewer](#iframe-viewer) - Displays arbitrary web pages in an embedded HTML IFrame component
+    - [Image Viewer](#image-viewer) - Displays one or more images
     - [Image Compare Viewer](#image-compare) - Compares 2 images in a stacked viewer
-    - [Image Gallery](#image-galery) - Displays one or more images
+    - [Image Gallery](#image-gallery) - Displays multiple image thumbnails
     - [Map Viewer](#map-viewer) - Displays interactive maps with optional overlays
     - [Plant Specimen Viewer](#plant-viewer) - Displays high-resolution plant specimen images
     - [Video Player](#video-player) - Plays .mp4 video files and streams YouTube videos

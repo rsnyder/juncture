@@ -111,17 +111,21 @@ Create tables using pipes `|` and hyphens `-`.
 
 ### Original
 
+The original syntax used for adding a Juncture tag to Markdown was using the HTML `param` tag.  The param tag included attributes that define the type of Juncture viewer to use (e.g., `ve-image` for the image viewer) and one or more viewer specific parameters.  Viewer parameters are defined using name-value notation (`param-name="param-value"`).  In name-value notation the parameter name and value are separated by an equals sign and the parameter value is enclosed in quotes.
+
 ```markdown
-<param juncture-tag attr1="value1" attr2="value2">
+<param juncture-tag param-1="value1" param-2="value2">
 ```
 
-For example
+For example, below is a Juncture tag. 
 
 ```markdown
-<param ve-image attr1="value1" attr2="value2">
+<param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="Sunflower">
 ```
 
 ### Simplified
+
+The latest versions of Juncture support a simplified tagging syntax using the Markdown `inline code` tag.  A standard Markdown inline code tag is evaluated as a Juncture tag if it occurs at the start of a line.  The simplified tagging syntax does not use the `<param ...>` wrapper and does not require attribute values to be quoted unless the value includes a space character.
 
 ```markdown
 `ve-image URL`

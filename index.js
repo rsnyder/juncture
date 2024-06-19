@@ -430,8 +430,8 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
     
     if (!codeLang) {
       parsed = parseCodeEl(codeEl)
-      // console.log(parsed)
-      codeLang = parsed.lang
+      parsed.inline = isInline
+      console.log(parsed)
       if (repoIsWritable) {
         if (!parsed.booleans) parsed.booleans = []
         parsed.booleans.push('repo-is-writable')
@@ -443,7 +443,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
       newEl.textContent = codeEl.textContent
       codeWrapper?.replaceWith(newEl)
 
-    } else if (codeLang.indexOf('juncture') === 0) {
+    } else if (codeLang?.indexOf('juncture') === 0) {
 
       if (isInline && (parsed.tag || parsed.class || parsed.style || parsed.id)) {
         if (parsed.style) parsed.style.display = 'inline-block'

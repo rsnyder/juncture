@@ -163,6 +163,11 @@ or
 `image https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
 ```
 
+**Parameters**
+
+- `url`: The image URL
+- `caption` or `title`: The text to use for the image caption
+
 #### ve-map
 
 

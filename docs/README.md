@@ -124,8 +124,8 @@ For example, below is a Juncture tag.
 ```
 
 ```markdown
-<param ve-image 
-	            url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" 
+<param ve-image
+	            url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg"
               title="A Sunflower">
 ```
 

@@ -125,7 +125,7 @@ For example, below is a Juncture tag.
 
 ### Simplified
 
-The latest versions of Juncture support a simplified tagging syntax using the Markdown `inline code` tag.  A standard Markdown inline code tag is evaluated as a Juncture tag if it occurs at the start of a line.  The simplified tagging syntax does not use the `<param ...>` wrapper and does not require attribute values to be quoted unless the value includes a space character.
+The latest version of Juncture supports a simplified tagging syntax using the Markdown `inline code` tag.  A standard Markdown inline code tag is evaluated as a Juncture tag if it occurs at the start of a line.  The simplified tagging syntax does not use the `<param ...>` wrapper and does not require attribute values to be quoted unless they includes a space character.
 
 ```markdown
 `ve-image URL`

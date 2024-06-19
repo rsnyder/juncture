@@ -107,7 +107,9 @@ Create tables using pipes `|` and hyphens `-`.
 | Row 2    | Data 2   |
 ```
 
-## Juncture Tags
+## Juncture
+
+Juncture viewers are defined by adding Juncture-specific tags to standard Markdown text.
 
 The original syntax used for adding a Juncture tag to Markdown was based on the HTML `param` tag.  The param tag included parameters that defined the type of Juncture viewer to use (e.g., `ve-image` for the image viewer) and one or more viewer-specific parameters.
 
@@ -115,7 +117,9 @@ The latest version of Juncture supports a simplified tagging syntax using the Ma
 
 Note that the original and simplified notations can not be used in the same Juncture essay.
 
-### Original Notation
+### Juncture Tagging Syntax
+
+#### Original
 
 The original syntax used for adding a Juncture tag to Markdown was based on the HTML `param` tag.  The param tag included parameters that defined the type of Juncture viewer to use (e.g., `ve-image` for the image viewer) and one or more viewer-specific parameters.  Viewer parameters are defined using name-value notation (`param-name="param-value"`).  In name-value notation the parameter name and value are separated by an equals sign and the parameter value is enclosed in quotes.  For example,
 
@@ -131,7 +135,7 @@ Below is a Juncture tag for an image viewer.  In this example the viewer is prov
 
 Note that when using the original tagging syntax Juncture will format the essay using a 2-column layout where the text is shown in the left column and the viewer is displayed in the right column.  This side-by-side format is forced when using the original syntax.  More flexible formatting is supported when using the newer simplified tagging syntax described in the next section.
 
-### Simplified Notation
+#### Simplified
 
 The latest version of Juncture supports a simplified tagging syntax using the Markdown `inline code` tag.  A standard Markdown inline code tag is evaluated as a Juncture tag if it occurs at the start of a line.  The simplified tagging syntax does not use the `<param ...>` wrapper and does not require attribute values to be quoted unless they includes a space character.  For example,
 
@@ -144,6 +148,22 @@ In the simplified syntax, the `ve-` prefix can omitted from the tag name and par
 ```markdown
 `image https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
 ```
+
+### Juncture Tags
+
+#### ve-image
+
+```markdown
+<param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="A Sunflower">
+```
+
+or
+
+```markdown
+`image https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
+```
+
+#### ve-map
 
 
 

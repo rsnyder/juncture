@@ -165,8 +165,9 @@ or
 
 ##### Parameters
 
-- `url`: The image URL
-- `caption` or `title`: The text to use for the image caption
+- `src` (or `url`): The image URL
+- `caption` (or `title`): The text to use for the image caption
+- `fit`: Defines whether the image should fill the viewer or be scaled to show the entire image in the original image aspect ratio.  The value of `cover` is used to fill the viewer with the image. The value `contain` is used to show the entire image.
 
 #### ve-map
 

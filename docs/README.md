@@ -7,8 +7,13 @@ header "Getting Started" auth=github background=wc:Box_of_type.jpg height=100 no
 
 # Juncture
 
+Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses [GitHub](Q364) for storing the Markdown files.
+
 - [Markdown](#markdown)
 - [Juncture](#juncture)
+  - [Tagging syntax](#juncture-syntax)
+  - [Viewer Tags](#juncture-viewers)
+  - [Interaction triggers](#juncture-interactions)
 
 ## Markdown `#markdown`
 
@@ -125,7 +130,7 @@ The latest version of Juncture supports a simplified tagging syntax using the Ma
 
 Note that the original and simplified notations can not be used in the same Juncture essay.
 
-### Juncture Tagging Syntax
+### Juncture Tagging Syntax `#juncture-syntax`
 
 #### Original
 
@@ -151,7 +156,7 @@ In the simplified syntax, the `ve-` prefix can omitted from the tag name and par
 `image https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
 ```
 
-### Juncture Tags
+### Juncture Tags  `#juncture-viewers`
 
 #### ve-image
 

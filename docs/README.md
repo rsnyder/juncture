@@ -9,11 +9,28 @@ header "Getting Started" auth=github background=wc:Box_of_type.jpg height=100 no
 
 Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses [GitHub](Q364) for storing the Markdown files.
 
+**GitHub** is a free Internet hosting service commonly used for software development projects. It provides sophisticated features for version control and workflow management for distributed teams. Juncture primarily uses GitHub as a file hosting service, similar to how one might use Dropbox or Google Drive. The Markdown files that Juncture uses to render interactive web pages are stored in GitHub.
+
+- [Signup for a free Github account](https://github.com/signup)
+
+Quick links:
+
 - [Markdown](#markdown)
 - [Juncture](#juncture)
   - [Tagging syntax](#juncture-syntax)
   - [Viewer Tags](#juncture-viewers)
+    - [Audio Player](#audio-player) - Plays .mp3 audio files
+    - [IFrame Viewer](#iframe-viewer) - Displays arbitrary web pages in an embedded HTML IFrame component
+    - [Image Compare Viewer](#image-compare) - Compares 2 images in a stacked viewer
+    - [Image Gallery](#image-galery) - Displays one or more images
+    - [Map Viewer](#map-viewer) - Displays interactive maps with optional overlays
+    - [Plant Specimen Viewer](#plant-viewer) - Displays high-resolution plant specimen images
+    - [Video Player](#video-player) - Plays .mp4 video files and streams YouTube videos
   - [Interaction triggers](#juncture-interactions)
+    - [Entity Infobox](#entity-infobox) - Creates an infobox popup using Wikidata entity identifiers
+    - [zoomto](#zoomto) - Uses a text link to trigger a `zoomto` action on an image viewer
+    - [flyto](#flyto) - Uses a text link to trigger a `flyto` action on a map viewer
+    - [play](#play) - Uses a text link to trigger to start an audio or video playback at a specified time
 
 ## Markdown `#markdown`
 
@@ -158,7 +175,23 @@ In the simplified syntax, the `ve-` prefix can omitted from the tag name and par
 
 ### Juncture Tags  `#juncture-viewers`
 
-#### ve-image
+#### ve-audio `#audio-player`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
+
+#### ve-compare `#image-compare`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
+
+#### ve-image `#image-viewer`
+
+The Juncture image viewer displays one or more images in an interactive IIIF viewer.  The viewer supports zooming and panning of high resolution images.  The viewer also provides captioning and attribution.
 
 ```markdown
 <param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="A Sunflower">
@@ -176,7 +209,37 @@ or
 - `caption` (or `title`): The text to use for the image caption
 - `fit`: Defines whether the image should fill the viewer or be scaled to show the entire image in the original image aspect ratio.  The value of `cover` is used to fill the viewer with the image. The value `contain` is used to show the entire image.
 
-#### ve-map
+#### ve-gallery `#image-gallery`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
+
+#### ve-map `#map-viewer`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
+
+#### ve-video `#video-player`
+
+##### Parameters
+
+- [param1]: 
+- [param2]: 
+
+
+### Juncture Interaction  `#juncture-interactions`
+
+#### Entity Infobox `#entity-infobox`
+
+#### zoomto `#zoomto`
+
+#### flyto `#flyto`
+
+#### play `#play`
 
 
 

@@ -120,7 +120,13 @@ The original syntax used for adding a Juncture tag to Markdown was using the HTM
 For example, below is a Juncture tag. 
 
 ```markdown
-<param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="Sunflower">
+<param ve-image url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" title="A Sunflower">
+```
+
+```markdown
+<param ve-image 
+url="https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg" 
+title="A Sunflower">
 ```
 
 ### Simplified
@@ -128,7 +134,17 @@ For example, below is a Juncture tag.
 The latest version of Juncture supports a simplified tagging syntax using the Markdown `inline code` tag.  A standard Markdown inline code tag is evaluated as a Juncture tag if it occurs at the start of a line.  The simplified tagging syntax does not use the `<param ...>` wrapper and does not require attribute values to be quoted unless they includes a space character.
 
 ```markdown
-`ve-image URL`
+`ve-image url=https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
 ```
+
+```markdown
+`ve-image https://upload.wikimedia.org/wikipedia/commons/4/40/Sunflower_sky_backdrop.jpg title="A Sunflower"`
+```
+
+```markdown
+`ve-image wc:Sunflower_sky_backdrop.jpg`
+```
+
+
 
 

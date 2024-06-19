@@ -23,10 +23,6 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 - [markdowntutorial.com](https://www.markdowntutorial.com)
 - [Markdown tutorial](https://www.youtube.com/watch?v=6A5EpqqDOdk)
 
-### Overview
-
-`animated-image https://shoelace.style/assets/images/walk.gif "An animated image" .right`
-
 ### Creating your first Juncture essay
 
 [Example](/wb?source=juncture-digital/examples/main/sunflower/basic)

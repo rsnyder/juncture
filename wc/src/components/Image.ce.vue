@@ -347,7 +347,7 @@
     if (src) {
       [owner, repository, branch, ...path] = src
     }
-    annotator.value = new Annotator(osd.value, `${owner}/${repository}${path.length ? '/' : ''}${path.join('/')}`, props.repoIsWritable)
+    annotator.value = new Annotator(osd.value, `${owner}/${repository}${path?.length ? '/' : ''}${(path || []).join('/')}`, props.repoIsWritable)
     if (annoid.value) annotator.value.loadAnnotations(annoid.value).then(annos => annotations.value = annos)
   }
 
@@ -380,7 +380,7 @@
     // console.log('addInteractionHandlers')
 
       let el = host.value.parentElement
-      while (el?.className.indexOf('content') < 0) {
+      while (el && Array.from(el.className.split(' ') || []).indexOf('content') < 0) {
         (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
           let link = new URL(anchorElem.href)
           let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)

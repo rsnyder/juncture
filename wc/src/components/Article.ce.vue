@@ -54,8 +54,8 @@
   }
 
   onMounted(async() => {
-    markdown.value = host.value.textContent
-      ? host.value.firstChild.innerHTML
+    markdown.value = host.value.innerHTML
+      ? host.value.innerHTML
       : await getMarkdown(ghSource.value)
   })
 

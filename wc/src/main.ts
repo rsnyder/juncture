@@ -6,6 +6,7 @@ import '@shoelace-style/shoelace/dist/components/badge/badge.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb/breadcrumb.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb-item/breadcrumb-item.js'
 import '@shoelace-style/shoelace/dist/components/button/button.js'
+import '@shoelace-style/shoelace/dist/components/details/details.js'
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
 import '@shoelace-style/shoelace/dist/components/icon/icon.js'
@@ -52,6 +53,8 @@ import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import PlantSpecimen from './components/PlantSpecimen.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
+import SourceViewer from './components/SourceViewer.ce.vue'
+import Snippet from './components/Snippet.ce.vue'
 // import SlotTest from './components/SlotTest.ce.vue'
 // import SpcWrapper from './components/SpcWrapper.ce.vue'
 import Video from './components/Video.ce.vue'
@@ -93,6 +96,8 @@ function defineCustomElements() {
 	customElements.define('ve-site-search', defineCustomElement(SiteSearch))
 	// customElements.define('ve-slot-test', defineCustomElement(SlotTest))
 	// customElements.define('ve-sfc-wrapper', defineCustomElement(SpcWrapper))
+	customElements.define('ve-snippet', defineCustomElement(Snippet))
+	customElements.define('ve-source-viewer', defineCustomElement(SourceViewer))
 	customElements.define('ve-video', defineCustomElement(Video))
 	customElements.define('ve-visjs', defineCustomElement(VisJS))
 }

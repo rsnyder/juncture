@@ -190,6 +190,12 @@ const components = {
       positional: [],
       ignore: new Set()
     },
+    've-snippet': {
+      booleans: new Set([]),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
     've-video': {
       booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
       class: new Set(),

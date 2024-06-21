@@ -26,20 +26,20 @@
     host.parentElement.addEventListener('scroll', () => setViewersPosition())
   })
 
-  watch(article, (article) => {
+  watch(article, () => {
     setTimeout(() => setViewersPosition(), 200)
   })
 
-  const markdown = ref()
-  const parsed = computed(() => markdown.value && elFromHtml(structureContent(markdownToHtml(markdown.value), repoIsWritable.value))?.firstElementChild)
-  const html = computed(() => parsed.value?.innerHTML)
+  const html = ref()
+  const parsed = computed(() => html.value && elFromHtml(html.value)?.firstChild)
+  
   const classes = computed(() => `article ${parsed.value?.className}`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
 
   const repoIsWritable = ref(props.repoIsWritable)
   watch(props, () => { repoIsWritable.value = props.repoIsWritable })
   // watch(repoIsWritable, () => { console.log(`repoIsWritable=${repoIsWritable.value}`) })
-
+  
   function setViewersPosition() {
     let header = article.value?.querySelector('ve-header') as HTMLElement
     let viewers = article.value?.querySelector('.viewers.active') as HTMLElement
@@ -54,8 +54,7 @@
   }
 
   onMounted(async() => {
-    // markdown.value = host.value.innerHTML ? host.value.innerHTML : await getMarkdown(ghSource.value)
-    markdown.value = host.value.textContent ? host.value.firstChild.innerHTML : await getMarkdown(ghSource.value)
+    html.value = decodeURIComponent(host.value.innerHTML.trim())
   })
 
 </script>

@@ -33,11 +33,13 @@
           <ve-source-viewer v-if="markdown && active === 'markdown'" :draggable="props.disableDrag ? null : ''">{{ markdown }}</ve-source-viewer>
         </sl-tab-panel>
         <sl-tab-panel name="html">
-          <ve-source-viewer v-if="active === 'html' && html" v-html="html" language="html" :draggable="props.disableDrag ? null : ''"></ve-source-viewer>    
+          <ve-source-viewer v-if="active === 'html' && html" v-text="html" language="html" :draggable="props.disableDrag ? null : ''"></ve-source-viewer>    
         </sl-tab-panel>
         <sl-tab-panel name="preview">
           <div id="juncture" style="position:relative;" v-if="active === 'preview' && html" :draggable="props.disableDrag ? null : ''" @dragstart="onDrag">
-            <ve-article v-html="html"></ve-article>
+            <ve-article>
+              {{ encodeURIComponent(html) }}
+            </ve-article>
           </div>
         </sl-tab-panel>
       </sl-tab-group>
@@ -62,11 +64,13 @@
           <ve-source-viewer v-if="markdown && active === 'markdown'" :draggable="props.disableDrag ? null : ''">{{ markdown }}</ve-source-viewer>
         </sl-tab-panel>
         <sl-tab-pane name="html">
-          <ve-source-viewer v-if="active === 'html' && html" v-html="html" language="html" :draggable="props.disableDrag ? null : ''"></ve-source-viewer>    
+          <ve-source-viewer v-if="active === 'html' && html" v-text="html" language="html" :draggable="props.disableDrag ? null : ''"></ve-source-viewer>    
         </sl-tab-pane>
         <sl-tab-panel name="preview">
           <div id="juncture" style="position:relative;" v-if="active === 'preview' && html" :draggable="props.disableDrag ? null : ''" @dragstart="onDrag">
-            <ve-article v-html="html"></ve-article>
+            <ve-article>
+              {{ encodeURIComponent(html) }}
+            </ve-article>
           </div>
         </sl-tab-panel>
       </sl-tab-group>
@@ -146,6 +150,7 @@
       }).join('\n')
     }
     host.value.innerHTML = ''
+    host.value.style.display = 'block'
   })
 
   watch(active, () => {
@@ -201,7 +206,7 @@
       p.removeAttribute('id')
       p.removeAttribute('class')
     }))
-    html.value = el?.querySelector('article > main')?.innerHTML
+    html.value = el?.querySelector('article')?.innerHTML
   }
 
   function onDrag(evt:DragEvent) {

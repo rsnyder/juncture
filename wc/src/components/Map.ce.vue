@@ -307,18 +307,18 @@
 
       const width = ref<number>(0)
 
-      watch(contentEl, (contentEl) => {
-        if (!contentEl) return
-        width.value = contentEl.clientWidth
+      watch(host, (host) => {
+        if (!host) return
+        width.value = contentEl.value?.clientWidth || 0
         evalProps()
         // if (mapEl.clientHeight === 0) mapEl.style.height = `${mapEl.clientWidth * mapAspectRatio.value}px`
-        new ResizeObserver(e => {
-          if (width.value !== contentEl.clientWidth) setHeight()
+        if (host) new ResizeObserver(e => {
+          if (width.value !== contentEl.value?.clientWidth) setHeight()
           // let mapHeight = e[0].contentRect.width * mapAspectRatio.value
           // mapEl.style.height = `${mapHeight}px`
-          if (!map.value && contentEl.clientHeight > 0) init()
-        }).observe(contentEl)
-        if (contentEl.clientHeight > 0) init()
+          if (!map.value && (contentEl.value?.clientHeight || 0) > 0) init()
+        }).observe(host)
+        if ((contentEl.value?.clientHeight || 0) > 0) init()
       })
     
       watch(layerObjs, async () => {
@@ -429,6 +429,7 @@
       // watch(map, () => updateMap())
     
       function init() {
+        console.log('init', host.value)
         entities.value = props.entities ? props.entities.split(/\s+/).filter(qid => qid) : []
         let activeParagraph = document.querySelector('p.active')
         if (activeParagraph && activeParagraph.getAttribute('data-entities')) {
@@ -808,6 +809,7 @@
           dataEl = host.value
         }
 
+        console.log(dataEl)
         let _layerObjs = Array.from(dataEl?.querySelectorAll('li') || [])
           .map((item:any) => toObj(item.firstChild?.textContent))
         if (props.marker && props.center) {

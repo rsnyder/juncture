@@ -253,16 +253,6 @@
   }
 
   onMounted(() => {
-    console.log('onMounted', host.value?.parentElement)
-    // const rootNode = root.value?.getRootNode?.({composed: false})
-    // const host = (rootNode as ShadowRoot).host as HTMLElement
-    // console.log('host', host)
-    // console.log('parent', host.parentElement)
-
-    // console.log('onMounted', ancestors())
-    // addInteractionHandlers()
-    // addInteractionHandlers()
-
     evalProps()
   })
 

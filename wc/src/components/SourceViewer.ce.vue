@@ -59,12 +59,7 @@
   
   watch(host, () => {
     let text = host.value?.innerHTML.trim()
-    if (text) {
-      rawText.value = props.language === 'html'
-        ? styleHTML(text)
-        : `\n${text}`
-      host.value.innerHTML = ''
-    }
+    if (text) rawText.value = props.language === 'html' ? styleHTML(text) : `\n${text}`
   })
 
   watch(rawText, () => {
@@ -82,10 +77,7 @@
         .then(resp => resp.text())
         .then(markdown => {
           markdown = markdown.replace(/>/g,'&gt;').replace(/</g,'&lt;')
-          // rawText.value = `\n${markdown.trim()}`
-          rawText.value = props.language === 'html'
-            ? styleHTML(markdown)
-            : `\n${markdown}`
+          rawText.value = props.language === 'html' ? styleHTML(markdown) : `\n${markdown}`
         })
     }
   })

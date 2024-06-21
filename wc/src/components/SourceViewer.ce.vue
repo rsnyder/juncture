@@ -63,6 +63,7 @@
       rawText.value = props.language === 'html'
         ? styleHTML(text)
         : `\n${text}`
+      host.value.innerHTML = ''
     }
   })
 

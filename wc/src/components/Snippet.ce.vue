@@ -145,6 +145,7 @@
           : line
       }).join('\n')
     }
+    host.value.innerHTML = ''
   })
 
   watch(active, () => {

@@ -328,7 +328,7 @@
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
           .filter(item => item['ve-map-marker'] === undefined )
-          .filter(item => (item.geojson !== undefined && item.url) || (item.qid && (item.preferGeojson || props.preferGeojson)))
+          .filter(item => (item.geojson !== undefined) || (item.qid && (item.preferGeojson || props.preferGeojson)))
           .map (item => {
             let geoJsonUrl = item.url || item.geojson
             if (geoJsonUrl.indexOf('http') === 0) {
@@ -429,7 +429,6 @@
       // watch(map, () => updateMap())
     
       function init() {
-        console.log('init', host.value)
         entities.value = props.entities ? props.entities.split(/\s+/).filter(qid => qid) : []
         let activeParagraph = document.querySelector('p.active')
         if (activeParagraph && activeParagraph.getAttribute('data-entities')) {
@@ -809,9 +808,11 @@
           dataEl = host.value
         }
 
-        console.log(dataEl)
         let _layerObjs = Array.from(dataEl?.querySelectorAll('li') || [])
-          .map((item:any) => toObj(item.firstChild?.textContent))
+          .map((item:any) => {
+            Array.from(item.querySelectorAll('a') as HTMLAnchorElement[]).forEach((a:HTMLAnchorElement) => a.replaceWith(a.href))
+            return toObj(item.innerHTML)
+        })
         if (props.marker && props.center) {
           let split = props.center.split(',')
           if (isQid(split[0])) {

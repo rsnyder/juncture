@@ -201,6 +201,7 @@
   }
 
   async function findSpecimens() {
+    // console.log('findSpecimens', toRaw(props))
     let selector = props.jpid
       ? `jwdt:P1106 "${props.jpid}" ;`
       :  props.eid || props.qid || props.wdid

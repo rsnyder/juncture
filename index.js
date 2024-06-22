@@ -151,7 +151,7 @@ const components = {
     've-iframe': {
       booleans: new Set(['allow-full-screen', 'allow-transparency', 'full', 'left', 'right', 'sticky']),
       class: new Set(),
-      positional: [],
+      positional: ['src'],
       ignore: new Set()
     },
     've-image': {
@@ -187,7 +187,7 @@ const components = {
     've-plant-specimen': {
       booleans: new Set(['full', 'left', 'right', 'sticky']),
       class: new Set(),
-      positional: [],
+      positional: ['qid', 'max'],
       ignore: new Set()
     },
     've-snippet': {

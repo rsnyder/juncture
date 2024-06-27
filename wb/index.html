@@ -54,7 +54,7 @@
 
     <script src="https://v3.juncture-digital.org/wc/dist/js/index.js" type="module"></script>
     <script type="module">
-      import { getGhFile, getMarkdown } from 'https://v3.juncture-digital.org/index.js'
+      import { elFromHtml, getGhFile, getMarkdown, markdownToHtml, structureContent } from 'https://v3.juncture-digital.org/index.js'
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
@@ -242,7 +242,21 @@
           setSaveButtonState()
           // styleJunctureElements()
         }, 100)
-        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''}><pre>${md}</pre></ve-article>`
+        let html = mdToHtml(md)
+        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''}>${html}</ve-article>`
+      }
+
+      function mdToHtml(md) {
+        let rawHTML = markdownToHtml(md)
+        let structuredHTML = structureContent(rawHTML)
+        let el = elFromHtml(structuredHTML);
+        (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {
+          p.removeAttribute('data-id')
+          p.removeAttribute('id')
+          p.removeAttribute('class')
+        }))
+        let html = el?.querySelector('article').innerHTML
+        return html
       }
 
       function setSaveButtonState() {

@@ -7,9 +7,9 @@
   
 <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, onUpdated, ref, toRaw, watch } from 'vue'
+  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
-  import { elFromHtml, getMarkdown, structureContent, markdownToHtml, observeVisible } from '../../../index.js'
+  import { observeVisible } from '../../../index.js'
 
   const props = defineProps({
     owner: { type: String },
@@ -18,7 +18,6 @@
     path: { type: String, default: 'README.md'},
     repoIsWritable: { type: Boolean, default: false }
   })
-  const ghSource = computed(() => `${props.owner}/${props.repo}/${props.branch}/${props.path}`)
 
   const article = ref<HTMLElement | null>(null)
   const host = computed(() => (article.value?.getRootNode() as any)?.host)
@@ -32,7 +31,6 @@
   })
 
   const html = ref()
-  const parsed = computed(() => html.value && elFromHtml(html.value)?.firstChild)
   
   // const classes = computed(() => `article ${parsed.value?.className}`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })

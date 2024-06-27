@@ -74,7 +74,7 @@
         active: { type: Boolean, default: false },
         base: { type: String },
         basemaps: { type: String, default: 'OpenStreetMap' },
-        center: { type: String, default: '32.32347,-80.97122' },
+        center: { type: String, default: '0,0' },
         caption: { type: String },
         data: { type: String },
         entities: { type: String },
@@ -90,7 +90,7 @@
         scrollWheelZoom: { type: Boolean, default: false },
         slot: { type: String },
         title: { type: String },
-        zoom: { type: Number, default: 10 },
+        zoom: { type: Number, default: 2 },
         zoomOnClick: { type: Boolean }
       })
       watch(props, () => { evalProps() })

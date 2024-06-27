@@ -1,10 +1,6 @@
 <template>
 
 <div ref="root" class="main" :style="{width: '100%', height: '100%'}" :draggable="props.draggable" @dragstart="onDrag">
-  
-  <pre v-if="language === 'juncture'" id="juncture" class="language-juncture" style="margin:0;white-space:pre; white-space:pre-wrap; word-wrap:break-word;">
-    <code v-html="rawText"></code>
-  </pre>
 
   <pre v-if="language === 'html'"
     id="html"
@@ -12,15 +8,20 @@
     :style="{
       margin: 0,
       // whiteSpace: 'pre',
-      whiteSpace: 'pre-wrap',
+      whiteSpace: 'pre-line',
       wordWrap: 'break-word',
       // opacity: ready ? '1' : '0',
       // transition: 'opacity .1s linear'
     }"
   >
     <code>{{rawText}}</code></pre>
-
-  <pre v-if="language === 'wxr'" id="wxr" class="language-xml"><code>{{rawText}}</code></pre>
+    
+  <pre v-else 
+    id="juncture" 
+    class="language-markdown" 
+    style="margin:0;white-space:pre; white-space:pre-line; word-wrap:break-word;">
+    <code v-html="rawText"></code>
+  </pre>
 
   <sl-tooltip content="Text copied to clipboard" placement="top" hoist trigger="manual" style="--sl-tooltip-arrow-size: 0;" >
     <sl-button class="copy-button" @click="copyTextToClipboard">Copy Text</sl-button>
@@ -56,6 +57,7 @@
 
   // const ready = ref(false)
   const rawText = ref<string>()
+  watch(rawText, () => console.log(`"${rawText.value}"`))
   
   watch(host, () => {
     let text = host.value?.innerHTML.trim()
@@ -84,12 +86,12 @@
 
   Prism.languages.juncture = Prism.languages.extend('markdown', {
   'juncture-tag': {
-		pattern: /\.ve-[a-z0-9-]+.+/,
+		pattern: /\w-[a-z0-9-]+.+/,
 		greedy: true,
 		inside: {
-			
+
       'juncture-tag': {
-				pattern: /\.ve-[a-z0-9-]+/
+				pattern: /ve-[a-z0-9-]+/
 			},
       
       'string': [{ 

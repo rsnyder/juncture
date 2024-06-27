@@ -111,13 +111,11 @@
   
   const markdown = ref<string>()
   const html = ref<string>()
-  const wxr = ref<string>()
   const active = ref<string>()
   const tabs = ref<any>({})
 
   // watch(markdown, () => console.log('markdown', markdown.value))
-
-  // watch(html, () => { console.log(html.value) })
+  // watch(html, () => { console.log('html', html.value) })
 
   onMounted(() => {
     if (props.src) {
@@ -130,6 +128,7 @@
   })
 
   watch(host, () => {
+    if (!host.value) return
     tabs.value = Object.fromEntries(props.tabs.split(',').map(tab => [tab, true]))
     let text = host.value.innerHTML
       .replace(/<pre v-pre="" data-lang="markup"><code class="lang-markup">/,'')
@@ -200,13 +199,18 @@
   }
   
   function getHTML() {
-    let el = elFromHtml(markdownToHtml(structureContent(markdownToHtml(markdown.value))));
+    console.log('markdown:', markdown.value)
+    let rawHTML = markdownToHtml(markdown.value)
+    console.log('raw html:', rawHTML)
+    let structuredHTML = structureContent(rawHTML)
+    console.log('structured html:', structuredHTML)
+    let el = elFromHtml(structuredHTML);
     (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {
       p.removeAttribute('data-id')
       p.removeAttribute('id')
       p.removeAttribute('class')
     }))
-    html.value = el?.querySelector('article')?.innerHTML
+    html.value = el?.querySelector('article')?.firstElementChild?.innerHTML.replace(/<\/?em>/g, '_')
   }
 
   function onDrag(evt:DragEvent) {

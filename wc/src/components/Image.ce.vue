@@ -2,7 +2,10 @@
 
   <div ref="root" class="image">
 
-    <div v-if="tileSources" ref="osdEl" :class="annotationsEditable ? 'osd edit' : 'osd view'" id="osd" role="img" :aria-label="caption" :alt="caption">
+    <img v-if="static && staticImage" :src="staticImage" style="width:100%;"/>
+    <div v-else-if="tileSources" ref="osdEl" 
+      :class="annotationsEditable ? 'osd edit' : 'osd view'" 
+      id="osd" role="img" :aria-label="caption" :alt="caption">
       <div v-if="coords"
         class="coords"
         v-html="coords" 
@@ -31,7 +34,7 @@
   
   <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
   import OpenSeadragon, { TileSource } from 'openseadragon'
   import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
@@ -51,14 +54,20 @@
     caption: { type: String },
     data: { type: String },
     fit: { type: String, default: 'contain' },
+    format: { type: String },
     height: { type: Number },
     noCaption: { type: Boolean, default: false },
+    options: { type: String },
     region: { type: String },
     repoIsWritable: { type: Boolean, default: false },
+    quality: { type: String },
     rotate: { type: Number },
+    rotation: { type: String },
     seq: { type: Number, default: 1},
-    src: { type: String },
+    size: { type: String },
     slot: { type: String },
+    src: { type: String },
+    static: { type: Boolean, default: false},
     width: { type: Number },
     zoomOnScroll: { type: Boolean, default: false },
 
@@ -92,6 +101,33 @@
 
   // watch(host, (host) => { if (host) init() })
 
+  const staticImage = computed(() => {
+    let itemInfo = manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
+    if (!itemInfo) return ''
+    let url
+    let [region, size, rotation, ...rest] = props.options?.split('/') || []
+    let [quality, format] = rest
+    region = props.region || region || 'full'
+    size = props.size
+      ? props.size
+      : size
+        ? size
+        : width.value
+          ? height.value
+            ? `${width.value},${height.value}`
+            : `${width.value},`
+          : height.value
+            ? `,${height.value}`
+            : '400,'
+    rotation = props.rotation || rotation || '0'
+    quality = props.quality || quality || 'default'
+    format = props.format || format || 'jpg'
+    // console.log(`region=${region} size=${size} rotation=${rotation} quality=${quality} format=${format}`)
+    url =`${itemInfo.service[0].id || itemInfo.service[0]['@id']}/${region}/${size}/${rotation}/${quality}.${format}`
+    // console.log(url)
+    return url
+  })
+
   function ancestors() {
     let ancestors: any[] = []
     let el = host.value
@@ -106,7 +142,7 @@
   const osdWidth = ref<number>(0)
   watch(osdWidth, () => {
     resize()
-    if (osdWidth.value > 0 && !tileSources.value.length) init()
+    if (osdWidth.value > 0 && (!tileSources.value.length || props.static)) init()
     if (osdWidth.value > 0 && !osd.value) initOpenSeadragon()
   })
 
@@ -149,6 +185,8 @@
   const selectedItemInfo = computed(() => 
     manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
   )
+  // watch(selectedItemInfo, (selectedItemInfo) => {console.log(toRaw(selectedItemInfo))})
+
 
   const annoid = computed(() => selectedItemInfo.value && sha256(decodeURIComponent(selectedItemInfo.value.id?.split('/').pop().toLowerCase().replace('.jpeg','.jpg'))).slice(0,8))
   watch(annoid, async(annoid) =>
@@ -194,7 +232,7 @@
     }
 
     function getImageDefs () {
-      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'rotate', 'seq', 'src', 'summary', 'title', 'url'])
+      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'region', 'rotate', 'seq', 'src', 'summary', 'title', 'url'])
       let imageDefFromProps = (props.src || props.url) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
       Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
@@ -323,6 +361,12 @@
     osd.value.world.addHandler('add-item', (e) => {
       let currentItem = imageDefs.value[selected.value]
       if (currentItem?.rotate) e.item.setRotation(parseInt(currentItem.rotate), true)
+      // console.log('add-item', toRaw(currentItem))
+
+      if (currentItem?.region && osd.value) {
+        let rect = parseRegionString(currentItem.region, osd.value)
+        setTimeout(() => osd.value?.viewport.fitBounds(rect, false), 100)
+      }
     })
     configureImageViewerBehavior()
     // console.log('initOpenSeadragon', ancestors())

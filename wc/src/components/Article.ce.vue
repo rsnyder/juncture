@@ -1,6 +1,7 @@
 <template>
 
-  <article ref="article" v-html="html" :class="classes"></article>
+  <!-- <article ref="article" v-html="html" :class="classes"></article> -->
+  <article ref="article" v-html="html"></article>
 
 </template>
   
@@ -33,8 +34,9 @@
   const html = ref()
   const parsed = computed(() => html.value && elFromHtml(html.value)?.firstChild)
   
-  const classes = computed(() => `article ${parsed.value?.className}`)
+  // const classes = computed(() => `article ${parsed.value?.className}`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
+  watch(html, () => { console.log(html.value) })
 
   const repoIsWritable = ref(props.repoIsWritable)
   watch(props, () => { repoIsWritable.value = props.repoIsWritable })

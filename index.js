@@ -86,7 +86,10 @@ async function getGhFile(acct, repo, branch, path) {
 // return Promise.resolve({content, sha: resp.sha})
 
 function markdownToHtml(markdown) {
-  return marked.use(window.markedFootnote()).parse(markdown)
+  // console.log(markdown)
+  let html = marked.use(window.markedFootnote()).parse(markdown)
+  // console.log(html)
+  return html
 }
 
 async function getHtml(ghSource) {
@@ -155,7 +158,7 @@ const components = {
       ignore: new Set()
     },
     've-image': {
-      booleans: new Set(['no-caption', 'zoom-on-scroll']),
+      booleans: new Set(['no-caption', 'static', 'zoom-on-scroll']),
       class: new Set(),
       positional: ['src', 'caption'],
       ignore: new Set()
@@ -414,7 +417,9 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
     if (previousElTag === 'IMG' || previousElTag === 'A' || previousElTag === 'EM' || previousElTag === 'STRONG') codeWrapper = codeEl
     else if (parentTag === 'P') {
       let paraText = Array.from(codeEl.parentElement?.childNodes || []).map(c => c.nodeValue?.trim()).filter(x => x).join('')
-      codeWrapper = paraText ? codeEl : codeEl.parentElement
+      codeWrapper = paraText || Array.from(codeEl.parentElement.childNodes).filter(cn => cn.tagName === 'CODE' || cn.tagName?.indexOf('-') > 0).length > 1
+        ? codeEl
+        : codeEl.parentElement
       isInline = paraText ? true : false
     } 
     else if (parentTag === 'PRE' ) codeWrapper = codeEl.parentElement
@@ -519,7 +524,6 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
             }
           }
           else {
-            // console.log(codeWrapper)
             codeWrapper.replaceWith(newEl)
           }
         }
@@ -561,11 +565,13 @@ function elFromHtml(html) {
 let isJunctureV1 = false
 
 function structureContent(html, repoIsWritable) {
+  // console.log('structureContent', elFromHtml(html))
   repoIsWritable = repoIsWritable || false
   let rootEl
+  let styleSheet
   if (html) {
     let doc = new DOMParser().parseFromString(html, 'text/html')
-    let styleSheet = doc.head.querySelector('style')
+    styleSheet = doc.head.querySelector('style')
     if (styleSheet) document.head.appendChild(styleSheet)
     rootEl = doc.body
   } else {
@@ -575,6 +581,7 @@ function structureContent(html, repoIsWritable) {
   deleteAllComments(rootEl)
 
   let restructured = document.createElement('main')
+  if (styleSheet) restructured.appendChild(styleSheet.cloneNode(true))
   
   restructured.className = 'page-content markdown-body'
   restructured.setAttribute('aria-label', 'Content')

@@ -922,6 +922,10 @@ video {
   width: 0.25rem;
 }
 
+.w-\[a-z0-9-\] {
+  width: a-z0-9-;
+}
+
 .w-full {
   width: 100%;
 }

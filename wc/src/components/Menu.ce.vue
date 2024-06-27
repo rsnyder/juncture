@@ -108,11 +108,9 @@
           let icon = (li.querySelector('svg') as SVGElement)?.outerHTML
           if (!icon) {
             let action = a?.href.split('/').filter((x:string) => x).pop()?.toLowerCase() || ''
-            action = location.host === action 
-              ? 'home' 
-              : action.indexOf('search') === 0
-                ? 'search'
-                : action
+            if  (location.host === action) action = 'home'
+            else if (action.indexOf('search') === 0) action = 'search'
+            else if (action === 'docs.juncture-digital.org') action = 'docs'
             if (icons[action]) icon = icons[action]
           }
           return { label, icon, href: a?.href }

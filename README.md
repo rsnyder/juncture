@@ -2,7 +2,7 @@
 
 ```
 header auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
-- [Help](/https://docs.juncture-digital.org)
+- [Help](https://docs.juncture-digital.org)
 - [Workbench](/wb)
 ```
 

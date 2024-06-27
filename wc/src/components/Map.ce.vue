@@ -1002,7 +1002,9 @@
         }
         
         scope = host.value?.parentElement
-        while (scope && scope.tagName !== 'SECTION') {
+        // while (scope && scope.tagName !== 'SECTION') {
+        while (scope) {
+          // console.log(scope);
           (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
             let link = new URL(anchorElem.href)
             let path = link.pathname.split('/').filter((p:string) => p)

@@ -10,6 +10,12 @@ header auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
 
 Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses [GitHub](Q364) for storing the Markdown files.
 
+To create a new repository using this template go to [https://github.com/juncture-digital/template/generate](https://github.com/juncture-digital/template/generate)
+
+Example essays can be found at [https://github.com/juncture-digital/examples](https://github.com/juncture-digital/examples)
+
+Documentation is located at [https://docs.juncture-digital.org](https://docs.juncture-digital.org)
+
 ## Getting Started
 
 To begin using Juncture you will need a GitHub account and some basic familiarity with Markdown.
@@ -26,25 +32,36 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 ### Creating your first Juncture essay
 
-[Example](/wb?source=juncture-digital/examples/main/sunflower/basic)
+#### Create and configure a Juncture-enabled Github repository
 
-1. Create a Markdown file in your Github account.  Refer to this [simple guide to GitHub and Markdown](docs/github) for assistance, if needed.
-	- Create a Github repository named `essays` if it doesn't already exist.
-	- In the `essays` repository create a new file named `sunflower.md`.
+1. Create a Juncture-enabled Github repository using this link - [https://github.com/juncture-digital/template/generate](https://github.com/juncture-digital/template/generate)
 
-2. At the top of this file add the following text.  This text will create a button enabling the rendered Juncture essay to be easily previewed (from the Chrome browser).  It is recommended that this button link be added to the beginning of the Markdown file for each Juncture essay.
-	```
-	[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
-	```
-	
-3. Add the Markdown text for your Juncture essay.  Add this text below the button text previously inserted, separated by a blank line, for example.
- 
-```markdown
+  - Enter a Repository name (e.g,, "essays") and optional Description.
+  - Press **Create Repository**
+
+2. In the newly created repository, enable Github Pages by selecting **Pages** from the **Code and automation** section in the repository **Settings** page.  In the **Pages** form select **main** from the **Branch** pull-down menu and press **Save**.
+
+### Create a new Markdown file to use for the Juncture essay
+
+1. In the newly created repository, create a new markdown file for the Juncture essay by selecting **Create new file** from the **Add file** pull-down menu located on the repository home page.  
+2. In the file name input field enter "sunflower/README.md"
+3. In the editor field add the text `[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)`
+4. Press the **Commit changes...** button located at the top-right of the page.
+
+### Add Markdown text for your essay
+
+At this point you should have a new repository with a `README.md` file located in a folder named `sunflower`.
+
+To add Markdown text for the essay you may continue to use the Github editor or the editor provided in the Juncture Workbench.  The Juncture Workbench editor is recommended as it provides a preview toggle for rapidly making and viewing changes.  
+
+To activate the workbench press the button now displayed at the top of the Markdown file when viewing from the Github site,
+
+```
 # Common Sunflower
 
 The **common sunflower** (*Helianthus annuus*) is a species of large annual forb of the daisy family Asteraceae. The [common sunflower](https://en.wikipedia.org/wiki/Common_sunflower) is harvested for its edible oily seeds which are used in the production of cooking oil.
 
-![Common sunflower](	https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
+![Common sunflower](https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
 ```
 	
 4. Commit (save) the file

@@ -1439,6 +1439,10 @@ function setViewersPosition() {
 }
 
 function mount(root, html) {  
+  if (window.config?.source?.path && !window.config?.source.dir) {
+    let pathElems = window.config.source.path.split('/').filter(pe => pe)
+    window.config.source.dir = `/source/${pathElems.slice(0,-1).join('/')}`
+  }
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   setMeta()
   root = root || document.body.querySelector('main')

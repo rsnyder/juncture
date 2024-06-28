@@ -1158,7 +1158,9 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
   let topMargin = offset + Array.from(rootEl.querySelectorAll('VE-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin} isJunctureV1=${isJunctureV1} useSlotBasedViewers=${useSlotBasedViewers}`)
+  isJunctureV1 = true
+
+  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin} isJunctureV1=${isJunctureV1}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {

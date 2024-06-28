@@ -10,12 +10,6 @@ header auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
 
 Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses [GitHub](Q364) for storing the Markdown files.
 
-To create a new repository using this template go to [https://github.com/juncture-digital/template/generate](https://github.com/juncture-digital/template/generate)
-
-Example essays can be found at [https://github.com/juncture-digital/examples](https://github.com/juncture-digital/examples)
-
-Documentation is located at [https://docs.juncture-digital.org](https://docs.juncture-digital.org)
-
 ## Getting Started
 
 To begin using Juncture you will need a GitHub account and some basic familiarity with Markdown.
@@ -52,18 +46,29 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 At this point you should have a new repository with a `README.md` file located in a folder named `sunflower`.
 
-To add Markdown text for the essay you may continue to use the Github editor or the editor provided in the Juncture Workbench.  The Juncture Workbench editor is recommended as it provides a preview toggle for rapidly making and viewing changes.  
+To add Juncture Markdown text for the essay you may continue to use the Github editor or use the editor provided in the Juncture Workbench.  The Juncture Workbench editor is recommended as it provides a preview toggle for rapidly making and viewing changes.  The instructions in this Getting Started guide assume the Juncture editor is being used.
 
-To activate the workbench press the button now displayed at the top of the Markdown file when viewing from the Github site,
+To activate the workbench, press the button now displayed at the top of the Markdown file when viewing from the Github site.  The first time the Workbench editor is used you'll be asked to authorize Juncture to access your repository.
+
+Append the following text to your `sunflower/README.md` file, leaving a blank line between the workbench button text added in the previous step and this new text.
 
 ```
 # Common Sunflower
 
-The **common sunflower** (*Helianthus annuus*) is a species of large annual forb of the daisy family Asteraceae. The [common sunflower](https://en.wikipedia.org/wiki/Common_sunflower) is harvested for its edible oily seeds which are used in the production of cooking oil.
+`image wc:Sunflower_sky_backdrop.jpg .right`
 
-![Common sunflower](https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/217px-Sunflower_sky_backdrop.jpg)
+The [common sunflower](Q171497) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.
+
+```
+
+Alternately, use the following text for a side-by-side essay layout using the original Juncture tagging syntax.
+
+```
+<param ve-config title="Sunflower" banner="wc:Sunflower_sky_backdrop.jpg">
+
+The [common sunflower](Q171497) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.
+<param ve-image manifest="wc:Sunflower_sky_backdrop.jpg">
+
 ```
 	
-4. Commit (save) the file
-
-5. Press the button found at the top of the essay to see the Juncture rendered essay.  Note that at this point we are not using any Juncture extensions, just basic Markdown. 
+After adding the new text, press the preview button located in the workbench toolbar.

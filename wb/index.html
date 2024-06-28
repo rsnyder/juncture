@@ -230,9 +230,11 @@
 
       function open() {
         // window.open(`${location.origin}?source=${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
-        let href = `${location.origin}/?source=${ghSource.replace(/\/\w+\.md$/,'')}/`
+        let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+        path = path.join('/').replace(/\/?README\.md$/, '').replace(/\.md$/, '')
+        let href = `https://${acct}.github.io/${repo}/${path}`
         console.log('Opening:', href)
-        window.open(href, '_blank')
+        window.open(href, '_blank') 
       }
 
       function togglePreview(md, preview) {
@@ -242,8 +244,8 @@
           setSaveButtonState()
           // styleJunctureElements()
         }, 100)
-        let html = mdToHtml(md)
-        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''}>${html}</ve-article>`
+        let resp = mdToHtml(md)
+        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''} class=${resp.classes}>${resp.html}</ve-article>`
       }
 
       function mdToHtml(md) {
@@ -256,7 +258,8 @@
           p.removeAttribute('class')
         }))
         let html = el?.querySelector('article').innerHTML
-        return html
+        let classes = el?.querySelector('article').className  
+        return {html, classes}
       }
 
       function setSaveButtonState() {

@@ -148,7 +148,6 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    console.log (toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
@@ -232,7 +231,6 @@
     }
 
     function getImageDefs () {
-      console.log('getImageDefs')
       let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'region', 'rotate', 'seq', 'src', 'summary', 'title', 'url'])
       let imageDefFromProps = (props.src || props.url) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
@@ -243,7 +241,6 @@
 
       _imageDefs.forEach(def => {
         if (def.src && def.src.indexOf('http') < 0) {
-          console.log(toRaw(source.value))
           if (!/^[\w-]+:/.test(def.src)) def.src = `gh:${source.value.owner}/${source.value.repository}${source.value.dir}/${def.src}`
         }
       })

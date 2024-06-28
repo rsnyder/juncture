@@ -1,7 +1,6 @@
 <template>
 
-  <!-- <article ref="article" v-html="html" :class="classes"></article> -->
-  <article ref="article" v-html="html"></article>
+  <article ref="article" v-html="html" :class="classes"></article>
 
 </template>
   
@@ -9,7 +8,7 @@
 
   import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
-  import { observeVisible } from '../../../index.js'
+  import { elFromHtml, observeVisible } from '../../../index.js'
 
   const props = defineProps({
     owner: { type: String },
@@ -32,9 +31,12 @@
 
   const html = ref()
   
-  // const classes = computed(() => `article ${parsed.value?.className}`)
+  const parsed = computed(() => elFromHtml(html.value)?.firstElementChild)
+  // watch(parsed, () => { console.log(parsed.value) })
+
+  const classes = computed(() => `article ${parsed.value?.className}`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
-  watch(html, () => { console.log(html.value) })
+  // watch(html, () => { console.log(html.value) })
 
   const repoIsWritable = ref(props.repoIsWritable)
   watch(props, () => { repoIsWritable.value = props.repoIsWritable })

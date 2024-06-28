@@ -210,7 +210,9 @@
       p.removeAttribute('id')
       p.removeAttribute('class')
     }))
-    html.value = el?.querySelector('article')?.firstElementChild?.innerHTML.replace(/<\/?em>/g, '_')
+    // html.value = el?.querySelector('article')?.firstElementChild?.innerHTML.replace(/<\/?em>/g, '_')
+    // html.value = el?.querySelector('article')?.firstElementChild?.innerHTML
+    html.value = el?.querySelector('article').innerHTML
   }
 
   function onDrag(evt:DragEvent) {

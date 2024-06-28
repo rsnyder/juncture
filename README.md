@@ -48,7 +48,7 @@ At this point you should have a new repository with a `README.md` file located i
 
 To add Juncture Markdown text for the essay you may continue to use the Github editor or use the editor provided in the Juncture Workbench.  The Juncture Workbench editor is recommended as it provides a preview toggle for rapidly making and viewing changes.  The instructions in this Getting Started guide assume the Juncture editor is being used.
 
-To activate the workbench, press the button now displayed at the top of the Markdown file when viewing from the Github site.  The first time the Workbench editor is used you'll be asked to authorize Juncture to access your repository.
+To access the workbench, press the two-toned "Juncture Workbench" button now displayed at the top of the Markdown file when viewing from the Github site.  The first time the Workbench editor is used you'll be asked to authorize Juncture to access your repository.
 
 Append the following text to your `sunflower/README.md` file, leaving a blank line between the workbench button text added in the previous step and this new text.
 

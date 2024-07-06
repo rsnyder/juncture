@@ -1052,17 +1052,17 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-iframe') {
           setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
         } else if (slotName === 've-image') {
-          setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'fit':'', src:'', 'zoom-on-scroll':''})
+          setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'data-id':'', 'fit':'', src:'', 'zoom-on-scroll':''})
           viewerEl.appendChild(propsList(tagProps))
         } else if (slotName === 've-knightlab-timeline') {
           setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
         } else if (slotName === 've-map') {
-          setElProps(viewerEl, tagProps[0], {basemap:'basemaps', caption:'', center:'', data:'', entities:'', 'gesture-handling':'', 'gh-dir':'', marker:'', overlay:'', 'prefer-geojson':'', 'scroll-wheel-zoom':'', title:'', zoom:'', 'zoom-on-click':''})
+          setElProps(viewerEl, tagProps[0], {basemap:'basemaps', caption:'', center:'', data:'', 'data-id':'', entities:'', 'gesture-handling':'', 'gh-dir':'', marker:'', overlay:'', 'prefer-geojson':'', 'scroll-wheel-zoom':'', title:'', zoom:'', 'zoom-on-click':''})
           viewerEl.appendChild(propsList(tagProps.slice(1)))
         } else if (slotName === 've-plant-specimen') {
           setElProps(viewerEl, tagProps[0], {caption:'', eid:'', jpid:'', max:'', qid:'', 'taxon-name':'', wdid:''})
         } else if (slotName === 've-video') {
-          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', end:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
+          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', 'data-id':'', end:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
         } else if (slotName === 've-visjs') {
           setElProps(viewerEl, tagProps[0], {caption:'', edges:'', nodes:'', title:'caption', url:''})
         } else if (slotName === 'data') {
@@ -1084,6 +1084,7 @@ function structureContent(html, repoIsWritable) {
       Object.entries(veTags).forEach(([tag, tagProps]) => {
         if (tag === 've-map-marker' || tag === 've-map-layer') return
         tagProps[0].entities = entities.join(' ')
+        tagProps[0]['data-id'] = j1Viewers.dataset.id
         if (tag === 've-map') {
           j1Viewers.appendChild(makeViewerEl('ve-map', tag,
             [...tagProps,
@@ -1160,7 +1161,7 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
 
   isJunctureV1 = true
 
-  console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin} isJunctureV1=${isJunctureV1}`)
+  // console.log(`observeVisible: setActiveParagraph=${setActiveParagraph} topMargin=${topMargin} isJunctureV1=${isJunctureV1}`)
 
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {

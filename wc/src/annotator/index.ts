@@ -33,7 +33,7 @@ export class Annotator {
     this.setVisible(true)
     this.ghAuthToken = localStorage.getItem('gh-auth-token') || ''
     this.ghClient = new GithubClient(this.ghAuthToken)
-    console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
+    // console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
   }
 
   async loadAnnotations(imageId:string) {

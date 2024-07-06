@@ -211,16 +211,17 @@
   }
   function inputHandler(evt:KeyboardEvent) {
     let typedInput = (acctInput.value as HTMLInputElement).value.trim()
-    // console.log(`typedInput=${typedInput.length}`)
     if (acctMenu.value) acctMenu.value.style.display = typedInput.length ? 'none' : 'block'
-    if (evt.key === 'Enter') acct.value = typedInput
+    if (evt.key === 'Enter') {
+      acct.value = typedInput
+    }
   }
 
   // Repository
   const repos = ref<any[]>([])
   const repo = ref('')
   watch(acct, (acct) => {
-    // console.log(`acct=${acct}`)
+    repo.value = ''
     getRepositories()
   })
   watch(repos, (repos) => {

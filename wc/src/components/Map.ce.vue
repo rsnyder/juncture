@@ -1010,18 +1010,41 @@
             let path = link.pathname.split('/').filter((p:string) => p)
             let flytoIdx = path.indexOf('flyto')
             if (flytoIdx >= 0) {
-              let location = path[path.length-1]
-              let trigger = path.length > flytoIdx + 2 ? path[flytoIdx+1] : 'click'
-              let split = location.split(',')
+              let locZoom = path[flytoIdx+1]
+              let trigger = path.slice(flytoIdx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
+              let targetId = path.slice(flytoIdx+2).filter(val => val !== 'click' && val !== 'mouseover')[0]
+              let target
+              let split = locZoom.split(',')
               if (isQid(split[0])) {
                 let coords = await coordsFromQid(split[0])
                 let zoom = split.length > 1 ? Number(split[1]) : props.zoom || 10
-                location = `${coords},${zoom}`
+                locZoom = `${coords},${zoom}`
               }
-              // console.log('flyto', location, trigger, caption.value)
+
+              let paraDataId
+              let parent = anchorElem.parentElement
+              while (parent && !paraDataId) {
+                paraDataId = parent.dataset.id
+                parent = parent.parentElement
+              }
+              if (paraDataId) {
+                let mapDataId = host.value?.dataset.id
+                if (mapDataId && mapDataId !== paraDataId) return
+              }
+
+              if (targetId) {
+                target = document.getElementById(targetId)
+                if (!target) return
+              }
+
+              target = findClosestMap(anchorElem)
+              if (target !== host.value) return
+
+              // console.log(`flyto: ${locZoom} ${trigger} ${targetId || paraDataId}`)
+
               anchorElem.classList.add('flyto')
               anchorElem.href = 'javascript:;'
-              anchorElem.setAttribute('data-location', location)
+              anchorElem.setAttribute('data-location', locZoom)
               anchorElem.addEventListener(trigger, (evt:Event) => {
                 let target = evt.target as HTMLElement
                 let _flytoLoc = target.getAttribute('data-location') || target?.parentElement?.getAttribute('data-location')
@@ -1033,6 +1056,16 @@
           })
           scope = scope.parentElement;
         }
+      }
+
+      function findClosestMap(anchorElem: HTMLElement) {
+        let found
+        let scope = anchorElem.parentElement
+        while (scope && !found) {
+          found = scope.querySelector('ve-map')
+          scope = scope.parentElement
+        }
+        return found
       }
 
       async function coordsFromQid(qid:string) {

@@ -56,7 +56,8 @@
   }
 
   onMounted(async() => {
-    html.value = decodeURIComponent(host.value.innerHTML.trim())
+    // html.value = decodeURIComponent(host.value.innerHTML.trim())
+    html.value = host.value.innerHTML.trim()
   })
 
 </script>

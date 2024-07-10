@@ -4,7 +4,7 @@
 {%- seo -%}
 <link href="{{ site.baseurl }}/favicon.ico" rel="icon" />
 <link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
-<link href="{{ site.baseurl }}/index.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@rdsnyderjr/juncture@3.6/css/index.css" rel="stylesheet">
 
 <script>
   window.jekyll = {
@@ -46,9 +46,9 @@
   {{ content }}
 </main>
 
-<script src="{{ site.baseurl }}/wc/dist/js/index.js" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/@rdsnyderjr/juncture@3.6/js/index.js" type="module"></script>
 <script type="module">
-  import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/index.js'
+  import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/@rdsnyderjr/juncture@3.6/js/ghp.js'
   
   let referrer = document.referrer ? new URL(document.referrer) : null
 

@@ -938,7 +938,7 @@ function structureContent(html, repoIsWritable) {
   if (isJunctureV1) {
   
     function serializeProps(props) {
-      return Object.entries(props).map(([key, value]) => `${key}="${value}"`).join(' ')
+      return  Object.entries(props).map(([key, value]) => `${key}="${value}"`).join(' ').replace(/“/g, '&quot;').replace(/”/g, '&quot;')
     }
 
     Array.from(article.querySelectorAll('[data-id]'))
@@ -1028,7 +1028,7 @@ function structureContent(html, repoIsWritable) {
         let ul = document.createElement('ul')
         tagProps.forEach(tp => {
           let li = document.createElement('li')
-          li.innerHTML = serializeProps(tp)
+          li.innerText = serializeProps(tp)
           ul.appendChild(li)
         })
         return ul

@@ -68,8 +68,8 @@ template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CON
 html_template = open(template_path, 'r').read()
 
 if LOCAL_WC: 
-  html_template = re.sub(r'["\'].*/wc/dist/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', html_template)
-  html_template = re.sub(r'["\'].*/(index\.(css|js))["\']', f'"http://localhost:{PORT}/\\1"', html_template)
+  html_template = re.sub(r'["\'].*/[-\w@]*juncture[-\w.@]+/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', html_template)
+  html_template = re.sub(r'["\'].*/(index|ghp\.(css|js))["\']', f'"http://localhost:{PORT}/wc/src/\\1"', html_template)
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
 html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPOSITORY)
@@ -92,8 +92,6 @@ def html_from_markdown(md, baseurl):
       img['src'] = f'{baseurl}{src}'
 
   for code in soup.find_all('code'):
-    logger.info(code)
-    logger.info(code.parent.name)
     if code.parent.name == 'pre':
       top_div = soup.new_tag('div')
       if code.get('class'): top_div['class'] = code.get('class')
@@ -136,10 +134,10 @@ def html_from_markdown(md, baseurl):
 async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
-
-  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
-    logger.info('here')
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
+  # if len(path) > 0 and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
+    logger.info(f'local_file_path: {local_file_path}')
 
   elif ext:
     local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}'
@@ -170,8 +168,9 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = re.sub(r'https:\/\/.+\/wc/dist/js/index.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
-      content = re.sub(r'https:\/\/.+\/(index\.(css|js))', f'http://localhost:{PORT}/\\1', content)
+      content = re.sub(r'["\'].*/[-\w@]*juncture[-\w.@]+/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', content)
+      content = re.sub(r'["\'].*/(index|ghp\.(css|js))["\']', f'"http://localhost:{PORT}/wc/src/\\1"', content)
+
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:
       local_file_path = [pe for pe in local_file_path.replace(CONTENT_ROOT, '').split('/') if pe != '']

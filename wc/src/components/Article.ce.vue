@@ -8,7 +8,7 @@
 
   import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
-  import { elFromHtml, observeVisible } from '../../../index.js'
+  import { elFromHtml, observeVisible } from '../ghp.js'
 
   const props = defineProps({
     owner: { type: String },
@@ -63,7 +63,7 @@
 </script>
 
 <style>
-  @import '../../../index.css';
+  @import '../index.css';
   :host {
     display: block;
     height: 100%;

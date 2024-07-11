@@ -1,12 +1,12 @@
 {
   "name": "juncture-digital",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "private": false,
   "scripts": {
     "dev": "vite",
     "build": "tailwindcss -i input.css -o tailwind.css && run-p type-check build-only",
     "preview": "vite preview",
-    "build-only": "vite build --base=https://cdn.jsdelivr.net/npm/juncture-digital/",
+    "build-only": "vite build --base=https://cdn.jsdelivr.net/npm/juncture-digital@3/",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "tailwind": "tailwindcss -i input.css -o tailwind.css --watch",
     "postbuild": "cp package.json ../dist; cp ghp.js ../dist/js/ghp.js"

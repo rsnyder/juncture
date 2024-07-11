@@ -26,7 +26,7 @@
       
     <script setup lang="ts">
     
-      import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+      import { computed, onMounted, ref, toRaw, watch } from 'vue'
         
       import L, { LatLng } from 'leaflet'
 
@@ -328,7 +328,7 @@
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
           .filter(item => item['ve-map-marker'] === undefined )
-          .filter(item => (item.geojson !== undefined) || (item.qid && (item.preferGeojson || props.preferGeojson)))
+          .filter(item => item.geojson !== undefined)
           .map (item => {
             let geoJsonUrl = item.url || item.geojson
             if (geoJsonUrl.indexOf('http') === 0) {
@@ -428,7 +428,10 @@
       // watch(warpedMapLayers, () => updateMap())
       // watch(map, () => updateMap())
     
+      let initialized = false
       function init() {
+        if (initialized) return
+        initialized = true
         entities.value = props.entities ? props.entities.split(/\s+/).filter(qid => qid) : []
         let activeParagraph = document.querySelector('p.active')
         if (activeParagraph && activeParagraph.getAttribute('data-entities')) {
@@ -784,7 +787,6 @@
         let _entities = entities.value.length
           ? Object.values(await getEntityData(entities.value)).filter((entity:any) => entity.coords).map((entity:any) => entityToInfoObj(entity))
           : []
-        // console.log(_entities)
         return _entities
       }
 
@@ -792,7 +794,7 @@
         if (!host.value) return
         if (props.ghDir) {
           layerObjs.value = [
-            ...layerObjs.value, 
+            ...layerObjs.value || [], 
             ...await getLocationImagesForGhPath(props.ghDir)
           ]
         } 
@@ -824,7 +826,7 @@
           }
         }
         layerObjs.value = [
-          ...layerObjs.value, 
+          ...layerObjs.value || [], 
           ..._layerObjs,
           ...await getLocationEntities()
         ]
@@ -877,7 +879,8 @@
       function entityToInfoObj(entity:any, id:string='') {
         let obj:any = {id: id || entity.id}
         if (entity.coords) obj.coords = entity.coords
-        if (entity.geojson) obj.geojson = entity.geojson
+        // if (entity.geojson) obj.geojson = entity.geojson
+        if (props.preferGeojson && entity.geojson) obj.geojson = entity.geojson
         if (entity.label) obj.label = entity.label
         if (entity.description) obj.description = entity.description
         if (entity.thumbnail) obj.image = entity.thumbnail
@@ -935,7 +938,7 @@
             else obj.label = text
           }
         }
-        obj.preferGeojson = (obj.preferGeojson || (props.preferGeojson) && obj.geojson ) || (obj.geojson && !obj.coords)
+        obj.preferGeojson = (obj.preferGeojson || (props.preferGeojson) && obj.geojson ) || (obj.geojson && !obj.coords) ? true : false
         return obj
       }
     

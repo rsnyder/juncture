@@ -223,8 +223,9 @@ export async function getEntityData(qids: string[], language:string = 'en') {
             _entityData.logoImage = rec.logoImage.value
             if (!_entityData.thumbnail) _entityData.thumbnail = mwImage(rec.logoImage.value, 300)
           }
+          // if (rec.whosOnFirst) _entityData.whosOnFirst = whosOnFirstUrl(rec.whosOnFirst.value)
           if (rec.whosOnFirst) _entityData.geojson = whosOnFirstUrl(rec.whosOnFirst.value)
-          window.entityData[qid] = _entityData
+              window.entityData[qid] = _entityData
 
         } else {
           if (rec.alias) _entityData.aliases.push(rec.alias.value)

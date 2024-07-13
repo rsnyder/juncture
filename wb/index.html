@@ -246,7 +246,7 @@
           // styleJunctureElements()
         }, 100)
         let resp = mdToHtml(md)
-        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''} class=${resp.classes}>${resp.html}</ve-article>`
+        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''} class=${resp.classes}>${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
       }
 
       function mdToHtml(md) {

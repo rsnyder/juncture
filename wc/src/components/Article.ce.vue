@@ -31,10 +31,11 @@
 
   const html = ref()
   
-  const parsed = computed(() => elFromHtml(html.value)?.firstElementChild)
+  //const parsed = computed(() => elFromHtml(html.value)?.firstElementChild)
   // watch(parsed, () => { console.log(parsed.value) })
 
-  const classes = computed(() => `article ${parsed.value?.className}`)
+  // const classes = computed(() => `article ${parsed.value?.className}`)
+  const classes = computed(() => `article`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
   // watch(html, () => { console.log(html.value) })
 
@@ -56,8 +57,8 @@
   }
 
   onMounted(async() => {
-    // html.value = decodeURIComponent(host.value.innerHTML.trim())
-    html.value = host.value.innerHTML.trim()
+    html.value = host.value.textContent
+    // html.value = host.value.innerHTML
   })
 
 </script>

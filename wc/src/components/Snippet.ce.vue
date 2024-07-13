@@ -38,7 +38,7 @@
         <sl-tab-panel name="preview">
           <div id="juncture" style="position:relative;" v-if="active === 'preview' && html" :draggable="props.disableDrag ? null : ''" @dragstart="onDrag">
             <ve-article>
-              {{ encodeURIComponent(html) }}
+              {{ html }}
             </ve-article>
           </div>
         </sl-tab-panel>
@@ -69,7 +69,7 @@
         <sl-tab-panel name="preview">
           <div id="juncture" style="position:relative;" v-if="active === 'preview' && html" :draggable="props.disableDrag ? null : ''" @dragstart="onDrag">
             <ve-article>
-              {{ encodeURIComponent(html) }}
+              {{ html }}
             </ve-article>
           </div>
         </sl-tab-panel>
@@ -199,20 +199,18 @@
   }
   
   function getHTML() {
-    console.log('markdown:', markdown.value)
     let rawHTML = markdownToHtml(markdown.value)
-    console.log('raw html:', rawHTML)
     let structuredHTML = structureContent(rawHTML)
-    console.log('structured html:', structuredHTML)
     let el = elFromHtml(structuredHTML);
     (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {
       p.removeAttribute('data-id')
       p.removeAttribute('id')
       p.removeAttribute('class')
     }))
-    // html.value = el?.querySelector('article')?.firstElementChild?.innerHTML.replace(/<\/?em>/g, '_')
-    // html.value = el?.querySelector('article')?.firstElementChild?.innerHTML
-    html.value = el?.querySelector('article').innerHTML
+    let main = el?.querySelector('main')
+    let firstChild = main?.firstElementChild as HTMLElement
+    // console.log(main?.children.length, main?.firstChild)
+    html.value = main?.children.length === 1 && firstChild.tagName === 'P' ? firstChild.innerHTML : main?.innerHTML
   }
 
   function onDrag(evt:DragEvent) {

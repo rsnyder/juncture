@@ -7,14 +7,13 @@
     class="language-markup"
     :style="{
       margin: 0,
-      // whiteSpace: 'pre',
-      whiteSpace: 'pre-line',
+      whiteSpace: 'pre-wrap',
+      // whiteSpace: 'pre-line',
       wordWrap: 'break-word',
       // opacity: ready ? '1' : '0',
       // transition: 'opacity .1s linear'
     }"
-  >
-    <code>{{rawText}}</code></pre>
+  ><code>{{rawText}}</code></pre>
     
   <pre v-else 
     id="juncture" 
@@ -57,7 +56,7 @@
 
   // const ready = ref(false)
   const rawText = ref<string>()
-  watch(rawText, () => console.log(`"${rawText.value}"`))
+  // watch(rawText, () => console.log(`"${rawText.value}"`))
   
   watch(host, () => {
     let text = host.value?.innerHTML.trim()
@@ -65,7 +64,6 @@
   })
 
   watch(rawText, () => {
-    rawText.value = rawText.value?.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
     let el = shadowRoot.value?.querySelector(`#${props.language}`)
     if (el && rawText.value) nextTick(() => {
       Prism.highlightElement(el)
@@ -154,30 +152,39 @@
 
   function getIndent(level:number) {
     var result = '',
-        i = level * 2
+      i = level * 2
     while (i--) result += ' '
     return result
   }
 
   function styleHTML(html:string) {
-    html = html.trim().replace(/&amp;/g,'&');
+    let inline = new Set(['</li>', '<code>', '</code>', '<em>', '</em>', '<strong>', '</strong>', '<mark>', '</mark>', '<a>', '</a>'])
+    html = html.trim().replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
     let result = '',
         indentLevel = 0,
         tokens = html.split(/</)
     for (var i = 0, l = tokens.length; i < l; i++) {
       var parts = tokens[i].split(/>/)
       if (parts.length === 2) {
-        if (tokens[i][0] === '/') indentLevel--
-        result += getIndent(indentLevel)
-        if (tokens[i][0] !== '/') indentLevel++
-        if (i > 0) result += '<'
 
-        result += parts[0].trim() + '>\n'
-        if (parts[1].trim() !== '')
-          result += getIndent(indentLevel) + parts[1].trim().replace(/\s+/g, ' ') + '\n'
+        let tag = (i > 0 ? '<' : '') + parts[0].trim() + '>'
+        indentLevel = tag[1] === '/' ? --indentLevel : ++indentLevel
+
+        let text = parts[1].trim().replace(/\s+/g, ' ')
+
+        if (inline.has(tag)) result += tag
+        else result += '\n' + getIndent(tag == '</ul>' ? indentLevel + 1 : indentLevel) + tag
+        
+        if (tag == '</ul>') result += '\n'
+
+        // if (text !== '') result += getIndent(indentLevel) + text
+        if (text !== '') result += text
+
         if (parts[0].match(/^(img|hr|br)/)) indentLevel--
       } else {
-        result += getIndent(indentLevel) + parts[0] + '\n'
+        // result += getIndent(indentLevel) + parts[0] + '\n'
+        result += parts[0]
+
       }
     }
     return result
@@ -192,6 +199,7 @@
       .replace(/<ve-/g, '\n<ve-')
       .replace(/ anno-base="undefined\/"/g, '')
       .replace(/^\n\n/g, '\n')
+      .trim()
   }
 
   function copyTextToClipboard() {

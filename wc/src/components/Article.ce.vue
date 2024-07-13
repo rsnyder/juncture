@@ -35,7 +35,7 @@
   // watch(parsed, () => { console.log(parsed.value) })
 
   // const classes = computed(() => `article ${parsed.value?.className}`)
-  const classes = computed(() => `article`)
+  const classes = computed(() => `article markdown-body`)
   watch(html, () => { nextTick(() => { observeVisible(article.value, true, 612) }) })
   // watch(html, () => { console.log(html.value) })
 

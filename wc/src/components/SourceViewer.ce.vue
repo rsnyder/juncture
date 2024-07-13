@@ -37,6 +37,8 @@
   import '@shoelace-style/shoelace/dist/components/button/button.js'
   import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js'
 
+  import SimplyBeautiful from 'simply-beautiful'
+
   import Prism from 'prismjs'
 
   import 'prismjs/components/prism-markup'
@@ -158,48 +160,21 @@
   }
 
   function styleHTML(html:string) {
-    let inline = new Set(['</li>', '<code>', '</code>', '<em>', '</em>', '<strong>', '</strong>', '<mark>', '</mark>', '<a>', '</a>'])
-    html = html.trim().replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
-    let result = '',
-        indentLevel = 0,
-        tokens = html.split(/</)
-    for (var i = 0, l = tokens.length; i < l; i++) {
-      var parts = tokens[i].split(/>/)
-      if (parts.length === 2) {
-
-        let tag = (i > 0 ? '<' : '') + parts[0].trim() + '>'
-        indentLevel = tag[1] === '/' ? --indentLevel : ++indentLevel
-
-        let text = parts[1].trim().replace(/\s+/g, ' ')
-
-        if (inline.has(tag)) result += tag
-        else result += '\n' + getIndent(tag == '</ul>' ? indentLevel + 1 : indentLevel) + tag
-        
-        if (tag == '</ul>') result += '\n'
-
-        // if (text !== '') result += getIndent(indentLevel) + text
-        if (text !== '') result += text
-
-        if (parts[0].match(/^(img|hr|br)/)) indentLevel--
-      } else {
-        // result += getIndent(indentLevel) + parts[0] + '\n'
-        result += parts[0]
-
-      }
+    function sanitize(el:HTMLElement) {
+      let attrsToRemove = ['id', 'data-id']
+      let classesToRemove = ['segment', 'section1', 'section2', 'section3', 'section4', 'section5', 'section6']
+      attrsToRemove.forEach(attr => el.removeAttribute(attr))
+      classesToRemove.forEach(cls => el.classList.remove(cls))
     }
-    return result
-      .replace(/\s+<mark([^>]*>)\s+/gm, ' <mark$1')
-      .replace(/\s+<\/mark>\s+/mg, '</mark> ')
-      .replace(/<a([^>]*>)\s+/gm, ' <a$1')
-      .replace(/\s+<\/a>/mg, '</a> ')
-      .replace(/=""/g, '')
-      .replace(/(<ve-[^>]+>)\s(<\/ve-[^>]+>\n)/g, '$1$2\n')
-      .replace(/<p>\s+/g, '<p>')
-      .replace(/\s+<\/p>\s+/g, '</p>\n')
-      .replace(/<ve-/g, '\n<ve-')
-      .replace(/ anno-base="undefined\/"/g, '')
-      .replace(/^\n\n/g, '\n')
-      .trim()
+    let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body.firstChild
+    sanitize(root)
+    root.querySelectorAll('section, p').forEach((el) => sanitize(el))  
+    let formatted = SimplyBeautiful.html(root.outerHTML, {indent_size: 2})
+    formatted = formatted
+      .replace(/\s+<\/li>/g, '</li>')
+      .replace(/\s+<ve-entity-infobox/g, ' <ve-entity-infobox')
+      .replace(/\s+class=""/g, '')
+    return formatted
   }
 
   function copyTextToClipboard() {

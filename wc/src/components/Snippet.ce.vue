@@ -114,10 +114,11 @@
   const active = ref<string>()
   const tabs = ref<any>({})
 
-  // watch(markdown, () => console.log('markdown', markdown.value))
+  watch(markdown, () => console.log('markdown', markdown.value))
   // watch(html, () => { console.log('html', html.value) })
 
   onMounted(() => {
+    console.log(host.value.innerHTML)
     if (props.src) {
       fetch(`/${props.src}?fmt=md`)
         .then(resp => resp.text())
@@ -129,6 +130,8 @@
 
   watch(host, () => {
     if (!host.value) return
+    console.log(host.value.innerHTML)
+
     tabs.value = Object.fromEntries(props.tabs.split(',').map(tab => [tab, true]))
     let text = host.value.innerHTML
       .replace(/<pre v-pre="" data-lang="markup"><code class="lang-markup">/,'')

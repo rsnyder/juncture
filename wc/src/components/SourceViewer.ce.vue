@@ -18,7 +18,7 @@
   <pre v-else 
     id="juncture" 
     class="language-markdown" 
-    style="margin:0;white-space:pre; white-space:pre-line; word-wrap:break-word;">
+    style="margin:0;white-space:pre-wrap; word-wrap:break-word;">
     <code v-html="rawText"></code>
   </pre>
 
@@ -160,15 +160,21 @@
   }
 
   function styleHTML(html:string) {
+  
     function sanitize(el:HTMLElement) {
+      if (el.tagName === 'VE-MERMAID') {
+        el.innerHTML = `\n<pre>\n\n${el.innerHTML}</pre>`
+        return
+      }
       let attrsToRemove = ['id', 'data-id']
       let classesToRemove = ['segment', 'section1', 'section2', 'section3', 'section4', 'section5', 'section6']
       attrsToRemove.forEach(attr => el.removeAttribute(attr))
       classesToRemove.forEach(cls => el.classList.remove(cls))
     }
+
     let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body.firstChild as HTMLElement
     sanitize(root)
-    root.querySelectorAll('section, p').forEach((el) => sanitize(el))  
+    root.querySelectorAll('section, p').forEach((el:any) => sanitize(el))
     let formatted = SimplyBeautiful.html(root.outerHTML, {indent_size: 2})
     formatted = formatted
       .replace(/\s+<\/li>/g, '</li>')

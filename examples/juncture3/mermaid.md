@@ -1,4 +1,5 @@
-```mermaid
+```
+mermaid
 graph TD
     A((Indigenous Amazonians)) --- B((Ayahuasca))
     F((New Age Practitioners)) --- B

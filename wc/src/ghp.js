@@ -181,6 +181,13 @@ const components = {
       positional: [],
       ignore: new Set()
     },
+    've-mermaid': {
+      raw: true,
+      booleans: new Set([]),
+      class: new Set(),
+      positional: [],
+      ignore: new Set()
+    },
     've-meta': {
       booleans: new Set([]),
       class: new Set(),
@@ -370,7 +377,8 @@ function parseHeadline(s, codeLang) {
     }
     tokenIdx++
   }
-  if (parsed.tag && components[codeLang]?.[parsed.tag]?.positional && parsed.args) {
+  if (parsed.tag && components[codeLang]?.[parsed.tag]?.raw) {
+  } else if (parsed.tag && components[codeLang]?.[parsed.tag]?.positional && parsed.args) {
     if (!parsed.kwargs) parsed.kwargs = {}
     parsed.args.forEach((value, idx) => {
       let key = components[codeLang][parsed.tag].positional[idx]
@@ -391,13 +399,15 @@ function parseCodeEl(codeEl, codeLang) {
     .map(l => l.replace(/<em>/g, '_').replace(/<\/em>/g, '_'))
     .filter(x => x) || []
   let parsed = parseHeadline(codeElems?.[0], codeLang) || {}
-  if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
+  if (parsed.tag === 've-mermaid') {
+    parsed.raw = codeEl.textContent.split('\n').slice(1).join('\n')
+  } else if (codeElems.length > 1) parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   parsed.lang = parsed.lang || codeLang || ((parsed.tag || parsed.class || parsed.style || parsed.id) ? 'juncture3' : 'plain')
   return parsed
 }
 
 function handleCodeEl(rootEl, codeEl, repoIsWritable) {
-  console.log(codeEl)
+  // console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -474,6 +484,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
             ul.appendChild(li)
           }
         }
+        if (parsed.raw) newEl.textContent = parsed.raw
         
         /*
         if (codeEl.nextElementSibling?.tagName === 'CODE') {

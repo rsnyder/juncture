@@ -267,12 +267,6 @@ const components = {
       positional: ['src'],
       ignore: new Set()
     },
-    've-mermaid': {
-      booleans: new Set(['full', 'left', 'right', 'sticky']),
-      class: new Set(),
-      positional: [],
-      ignore: new Set()
-    },
     've-meta': {
       booleans: new Set([]),
       class: new Set(),
@@ -403,7 +397,7 @@ function parseCodeEl(codeEl, codeLang) {
 }
 
 function handleCodeEl(rootEl, codeEl, repoIsWritable) {
-  // console.log(codeEl)
+  console.log(codeEl)
   let parentTag = codeEl.parentElement?.tagName || ''
   let previousElTag = codeEl.previousElementSibling?.tagName
   let isInline = false
@@ -447,7 +441,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
         if (!parsed.booleans) parsed.booleans = []
         parsed.booleans.push('repo-is-writable')
       }
-      // console.log(parsed)
+      console.log(parsed)
     }
 
     if (codeLang === 'mermaid') {

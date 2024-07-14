@@ -209,7 +209,8 @@
   function init() {
     function parseImageDefStr(s:String): Object {
       let tokens: string[] = []
-      s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+      // s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+      s = s.replace(/”/g,'"').replace(/”/g,'"')
       s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
         if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
         else tokens.push(token)
@@ -236,7 +237,7 @@
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
       Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
         .map((li:HTMLLIElement) => parseImageDefStr(li.textContent || ''))
-        .filter((def:any ) => def.src || def.manifest || def.url)
+        .filter((def:any) => def.src || def.manifest || def.url)
         .forEach((def:any, idx) => _imageDefs.push({...def, idx}))
 
       _imageDefs.forEach(def => {

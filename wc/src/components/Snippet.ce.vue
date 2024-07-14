@@ -197,7 +197,11 @@
       container.style.height = ''
     }
   }
-  
+
+
+  // Vincent_van_Gogh’s_famous_painting,_digitally_enhanced_by_rawpixel-com_49.jpg
+  // Vincent_van_Gogh%27s_famous_painting%2C_digitally_enhanced_by_rawpixel-com_49.jpg
+
   function getHTML() {
     let rawHTML = markdownToHtml(markdown.value)
     let structuredHTML = structureContent(rawHTML)
@@ -210,7 +214,7 @@
     let main = el?.querySelector('main')
     let firstChild = main?.firstElementChild as HTMLElement
     // console.log(main?.children.length, main?.firstChild)
-    html.value = main?.children.length === 1 && firstChild.tagName === 'P' ? firstChild.innerHTML : main?.innerHTML
+    html.value = (main?.children.length === 1 && firstChild.tagName === 'P' ? firstChild.innerHTML : main?.innerHTML)?.replace(/(wc:.+?)<em>([^<]+)<\/em>([^<]+)/g, '$1_$2_$3')
   }
 
   function onDrag(evt:DragEvent) {

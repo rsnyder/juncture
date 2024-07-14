@@ -6,7 +6,7 @@
       <sl-image-comparer ref="compare" position="50">
         <img v-for="src, idx in scaledImages" :key="`img-${idx}`" :slot="idx === 0 ? 'before' : 'after'" :src="src" :alt="label(manifests[idx])" />
       </sl-image-comparer>
-      <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
+      <div ref="captionEl" class="caption">{{ caption }}</div>
     </div>
 
   </div>
@@ -76,25 +76,32 @@
   const scaledImages = computed(() => (manifests.value.length && height.value && width.value) ? scaleImages() : [] )
   // watch (scaledImages, (scaledImages) => { console.log(toRaw(scaledImages)) })
 
-  const caption = computed(() => imageDefs.value.filter(def => def.caption).map(def => def.caption).join(' ') )
+  const caption = computed(() => props.caption || imageDefs.value.filter(def => def.caption).map(def => def.caption).join(' ') )
   
   function init() {
     
     evalProps()
 
     function parseImageDefStr(s:String): Object {
-      let tokens: String[] = []
-      s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+      let tokens: string[] = []
+      // s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+      s = s.replace(/”/g,'"').replace(/”/g,'"')
       s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
         if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
         else tokens.push(token)
       })
       let parsed:any = {}
-      tokens.forEach(token => {
-        let idx = token.indexOf('=')
-        let key = token.slice(0, idx)
-        let value = token.slice(idx+1)
-        parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+      let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotate', 'seq' ]
+      tokens.filter(t => t !== 'image').forEach((token, idx) => {
+        if (token.indexOf('=') > 0) {
+          let i = token.indexOf('=')
+          let key = token.slice(0, i)
+          let value = token.slice(i+1)
+          parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+
+        } else {
+          parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
+        }
       })
       return parsed
     }
@@ -102,7 +109,7 @@
     function getImageDefs () {
       imageDefs.value = Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
         .map((li:HTMLLIElement) => parseImageDefStr(li.textContent || ''))
-        .filter((def:any ) => def.src || def.manifest || def.url)
+        .filter((def:any) => def.src || def.manifest || def.url)
     }
 
     new MutationObserver((mutationsList:any) => {
@@ -133,7 +140,6 @@
   }
 
   function evalProps() {
-    // console.log('evalProps', toRaw(props))
     if (props.width) {
       width.value = props.width
       host.value.style.width = `${width.value}px`

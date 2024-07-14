@@ -166,14 +166,15 @@
       attrsToRemove.forEach(attr => el.removeAttribute(attr))
       classesToRemove.forEach(cls => el.classList.remove(cls))
     }
-    let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body.firstChild
+    let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body.firstChild as HTMLElement
     sanitize(root)
     root.querySelectorAll('section, p').forEach((el) => sanitize(el))  
     let formatted = SimplyBeautiful.html(root.outerHTML, {indent_size: 2})
     formatted = formatted
       .replace(/\s+<\/li>/g, '</li>')
       .replace(/\s+<ve-entity-infobox/g, ' <ve-entity-infobox')
-      .replace(/\s+class=""/g, '')
+      .replace(/(wc:.+)<em>(.+)<\/em>(.+)/g, '$1_$2_$3')
+    
     return formatted
   }
 

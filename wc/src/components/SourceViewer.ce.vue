@@ -162,10 +162,9 @@
   function styleHTML(html:string) {
   
     function sanitize(el:HTMLElement) {
-      if (el.tagName === 'VE-MERMAID') {
+      el.querySelectorAll('VE-MERMAID').forEach((el:any) => {
         el.innerHTML = `\n<pre>\n\n${el.innerHTML}</pre>`
-        return
-      }
+      })
       let attrsToRemove = ['data-id']
       let classesToRemove = ['segment', 'section1', 'section2', 'section3', 'section4', 'section5', 'section6']
       attrsToRemove.forEach(attr => el.removeAttribute(attr))

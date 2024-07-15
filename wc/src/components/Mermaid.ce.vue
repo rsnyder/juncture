@@ -33,6 +33,7 @@
   })
 
   const diagramText = computed(() => host.value?.textContent.trim() )
+  // watch(diagramText, (diagramText) => { console.log(diagramText)})
   const caption = computed(() => props.caption )
 
   watch(diagramText, async(diagramText) => {

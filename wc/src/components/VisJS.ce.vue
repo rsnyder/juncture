@@ -1,7 +1,7 @@
 <template>
 
   <div ref="root" class="content">
-    <div ref="diagramEl" class="diagram" ></div>
+    <div ref="diagramEl" class="diagram"></div>
     <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
   </div>
 
@@ -11,12 +11,17 @@
 
   import { computed, nextTick, ref, toRaw, watch } from 'vue'
   import vis from 'visjs-network'
+  import { DataSet } from 'vis-data/peer'
+  import { Timeline as visTimeline } from 'vis-timeline/peer'
 
   const props = defineProps({
     caption: { type: String },
+    timeline: { type: String },
     edges: { type: String },
     height: { type: Number },
+    // network: { type: Boolean, default: false },
     nodes: { type: String },
+    // timeline: { type: Boolean, default: false },
     url: { type: String },
     width: { type: Number }
   })
@@ -86,8 +91,16 @@
 
   const nodes = ref<any>()
   const edges = ref<any>()
-  const data = computed(() => ({nodes: nodes.value, edges: edges.value}))
-  watch(data, (data) => nextTick(() => new vis.Network(diagramEl.value, data, {})))  
+  const timeline = ref<any>()
+
+  const networkData = computed(() => ({nodes: nodes.value, edges: edges.value}))
+  watch(networkData, (data) => nextTick(() => new vis.Network(diagramEl.value, data, {})))  
+
+  const timelineData = computed(() => timeline.value )
+  watch(timelineData, (data) => {
+    console.log(toRaw(data))
+    new visTimeline(diagramEl.value as HTMLElement, data, {})
+  })  
 
   function setWidth() {
     if (!props.width) new ResizeObserver(() => host.value.style.width = `${host.value.parentNode.clientWidth}px`).observe(host.value.parentNode)
@@ -125,6 +138,7 @@
     if (!diagramEl) return
     setWidth()
     setHeight()
+    if (props.timeline) timeline.value = new DataSet(tableToObjs(props.timeline))
     if (props.edges) edges.value = new vis.DataSet(tableToObjs(props.edges))
     if (props.nodes) nodes.value = new vis.DataSet(tableToObjs(props.nodes))
     if (props.url) getDataFromUrl(props.url)
@@ -134,6 +148,8 @@
 </script>
 
 <style>
+
+  @import 'vis-timeline/dist/vis-timeline-graph2d.min.css';
 
   * { box-sizing: border-box; }
 

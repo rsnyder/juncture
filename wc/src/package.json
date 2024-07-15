@@ -1,6 +1,6 @@
 {
   "name": "juncture-digital",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "private": false,
   "scripts": {
     "dev": "vite",
@@ -31,6 +31,8 @@
     "preline": "^1.9.0",
     "prismjs": "^1.29.0",
     "simply-beautiful": "^1.0.1",
+    "vis-data": "^7.1.9",
+    "vis-timeline": "^7.7.3",
     "visjs-network": "^4.24.11",
     "vue": "^3.3.4",
     "youtube-player": "^5.6.0"

@@ -1069,7 +1069,7 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-video') {
           setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', 'data-id':'', end:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
         } else if (slotName === 've-visjs') {
-          setElProps(viewerEl, tagProps[0], {caption:'', edges:'', nodes:'', title:'caption', url:''})
+          setElProps(viewerEl, tagProps[0], {network:'', caption:'', edges:'', nodes:'', title:'caption', url:''})
         } else if (slotName === 'data') {
           viewerEl.appendChild(propsList(tagProps))
         } else {

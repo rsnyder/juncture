@@ -166,20 +166,22 @@
         el.innerHTML = `\n<pre>\n\n${el.innerHTML}</pre>`
         return
       }
-      let attrsToRemove = ['id', 'data-id']
+      let attrsToRemove = ['data-id']
       let classesToRemove = ['segment', 'section1', 'section2', 'section3', 'section4', 'section5', 'section6']
       attrsToRemove.forEach(attr => el.removeAttribute(attr))
+      if (el.tagName !== 'TABLE') el.removeAttribute('id')
       classesToRemove.forEach(cls => el.classList.remove(cls))
     }
 
-    let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body.firstChild as HTMLElement
+    let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body as HTMLElement
     sanitize(root)
-    root.querySelectorAll('section, p').forEach((el:any) => sanitize(el))
-    let formatted = SimplyBeautiful.html(root.outerHTML, {indent_size: 2})
+    root.querySelectorAll('section, p, table').forEach((el:any) => sanitize(el))
+    let formatted = SimplyBeautiful.html(root.innerHTML, {indent_size: 2})
     formatted = formatted
       .replace(/\s+<\/li>/g, '</li>')
       .replace(/\s+<ve-entity-infobox/g, ' <ve-entity-infobox')
       .replace(/(wc:.+)<em>(.+)<\/em>(.+)/g, '$1_$2_$3')
+      .replace(/class=""/g, '')
     
     return formatted
   }

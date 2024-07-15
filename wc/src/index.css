@@ -97,7 +97,8 @@ ve-header ul,
 ve-image ul,
 ve-map ul,
 ve-menu ul,
-ve-navbar ul {
+ve-navbar ul,
+ve-snippet pre {
   display: none;
 }
 

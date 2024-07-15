@@ -75,4 +75,10 @@
     display: none;
   }
   */
+
+
+  table[id] {
+    display: none;
+  }
+
 </style>

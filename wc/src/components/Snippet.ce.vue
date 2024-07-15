@@ -114,11 +114,10 @@
   const active = ref<string>()
   const tabs = ref<any>({})
 
-  watch(markdown, () => console.log('markdown', markdown.value))
+  // ('markdown', markdown.value))
   // watch(html, () => { console.log('html', html.value) })
 
   onMounted(() => {
-    console.log(host.value.innerHTML)
     if (props.src) {
       fetch(`/${props.src}?fmt=md`)
         .then(resp => resp.text())
@@ -130,7 +129,6 @@
 
   watch(host, () => {
     if (!host.value) return
-    console.log(host.value.innerHTML)
 
     tabs.value = Object.fromEntries(props.tabs.split(',').map(tab => [tab, true]))
     let text = host.value.innerHTML
@@ -236,7 +234,6 @@
   * { box-sizing: border-box; }
 
   :host {
-    display: block;
     margin-top: 1.5rem;
     border-radius: 2px;
     border: 0.5px solid #ddd;
@@ -297,6 +294,10 @@
     margin-left: 12px;
     color: #555;
     font-weight: normal;
+  }
+
+  pre {
+    display: none;
   }
 
 </style>

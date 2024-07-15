@@ -451,7 +451,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
         if (!parsed.booleans) parsed.booleans = []
         parsed.booleans.push('repo-is-writable')
       }
-      console.log(parsed)
+      // console.log(parsed)
     }
 
     if (codeLang === 'mermaid') {

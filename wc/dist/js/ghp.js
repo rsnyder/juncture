@@ -213,7 +213,7 @@ const components = {
       ignore: new Set()
     },
     've-visjs': {
-      booleans: new Set(),
+      booleans: new Set(['hierarchical']),
       class: new Set(),
       positional: [],
       ignore: new Set()
@@ -1069,7 +1069,7 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-video') {
           setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', 'data-id':'', end:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
         } else if (slotName === 've-visjs') {
-          setElProps(viewerEl, tagProps[0], {network:'', caption:'', edges:'', nodes:'', title:'caption', url:''})
+          setElProps(viewerEl, tagProps[0], {caption:'', edges:'', hierarchical:'', nodes:'', title:'caption', url:''})
         } else if (slotName === 'data') {
           viewerEl.appendChild(propsList(tagProps))
         } else {

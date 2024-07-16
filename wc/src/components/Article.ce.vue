@@ -1,6 +1,6 @@
 <template>
 
-  <article ref="article" v-html="html" :class="classes"></article>
+  <article ref="article" v-html="html" :class="classes" style="width:100%;"></article>
 
 </template>
   

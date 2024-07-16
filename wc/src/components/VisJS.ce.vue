@@ -10,7 +10,7 @@
 <script setup lang="ts">
 
   import { computed, nextTick, ref, toRaw, watch } from 'vue'
-  import vis from 'visjs-network'
+  import { Network } from 'vis-network'
   import { DataSet } from 'vis-data/peer'
   import { Timeline as visTimeline } from 'vis-timeline/peer'
 
@@ -18,16 +18,10 @@
     caption: { type: String },
     timeline: { type: String },
     edges: { type: String },
-    height: { type: Number },
-    // network: { type: Boolean, default: false },
     nodes: { type: String },
-    // timeline: { type: Boolean, default: false },
     url: { type: String },
-    width: { type: Number }
-  })
-  watch(props, () => {
-    if (props.width) host.value.style.width = `${props.width}px`
-    if (props.height) host.value.style.height = `${props.height}px`
+
+    hierarchical: { type: Boolean, default: false }
   })
 
   const root = ref<HTMLElement | null>(null)
@@ -94,29 +88,13 @@
   const timeline = ref<any>()
 
   const networkData = computed(() => ({nodes: nodes.value, edges: edges.value}))
-  watch(networkData, (data) => nextTick(() => new vis.Network(diagramEl.value, data, {})))  
+  watch(networkData, (data) => nextTick(() => new Network(diagramEl.value as HTMLElement, data, {layout: {hierarchical: props.hierarchical}})))  
 
   const timelineData = computed(() => timeline.value )
-  watch(timelineData, (data) => {
-    console.log(toRaw(data))
-    new visTimeline(diagramEl.value as HTMLElement, data, {})
-  })  
-
-  function setWidth() {
-    if (!props.width) new ResizeObserver(() => host.value.style.width = `${host.value.parentNode.clientWidth}px`).observe(host.value.parentNode)
-    let _width = props.width || host.value.parentNode.clientWidth
-    if (_width) host.value.style.width = `${_width}px`
-  }
+  watch(timelineData, (data) => { new visTimeline(diagramEl.value as HTMLElement, data, {}) })  
 
   function setHeight() {
-    let height = 
-      props.height
-        ? props.height
-        : props.width
-          ? props.width
-          : host.value.parentNode.clientWidth
-    host.value.style.height = `${height}px`
-    if (diagramEl.value) diagramEl.value.style.height = `${height - (captionEl.value?.clientHeight || 0)}px`
+    if (diagramEl.value) diagramEl.value.style.height = `${(root.value?.clientHeight || 0) - (captionEl.value?.clientHeight || 0)}px`
   }
 
   function getDataFromUrl(url:string) {
@@ -129,18 +107,17 @@
           if (!_nodes[obj.source.id]) _nodes[obj.source.id] = {id: obj.source.id, label: obj.source.label}
           if (!_nodes[obj.target.id]) _nodes[obj.target.id] = {id: obj.target.id, label: obj.target.label}
         })
-        nodes.value = new vis.DataSet(Object.values(_nodes))
-        edges.value = new vis.DataSet(objs.map(obj => ({ from: obj.source.id, to: obj.target.id })))
+        nodes.value = new DataSet(Object.values(_nodes))
+        edges.value = new DataSet(objs.map(obj => ({ from: obj.source.id, to: obj.target.id })))
       })
   }
 
   watch(diagramEl, (diagramEl) => {
     if (!diagramEl) return
-    setWidth()
     setHeight()
     if (props.timeline) timeline.value = new DataSet(tableToObjs(props.timeline))
-    if (props.edges) edges.value = new vis.DataSet(tableToObjs(props.edges))
-    if (props.nodes) nodes.value = new vis.DataSet(tableToObjs(props.nodes))
+    if (props.edges) edges.value = new DataSet(tableToObjs(props.edges))
+    if (props.nodes) nodes.value = new DataSet(tableToObjs(props.nodes))
     if (props.url) getDataFromUrl(props.url)
   })
 

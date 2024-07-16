@@ -61,7 +61,7 @@
   // watch(rawText, () => console.log(`"${rawText.value}"`))
   
   watch(host, () => {
-    let text = host.value?.innerHTML.trim()
+    let text = host.value?.textContent?.trim()
     if (text) rawText.value = props.language === 'html' ? styleHTML(text) : `\n${text}`
   })
 
@@ -173,6 +173,7 @@
     }
 
     let root = new DOMParser().parseFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'text/html').body as HTMLElement
+
     sanitize(root)
     root.querySelectorAll('section, p, table').forEach((el:any) => sanitize(el))
     let formatted = SimplyBeautiful.html(root.innerHTML, {indent_size: 2})
@@ -181,7 +182,7 @@
       .replace(/\s+<ve-entity-infobox/g, ' <ve-entity-infobox')
       .replace(/(wc:.+)<em>(.+)<\/em>(.+)/g, '$1_$2_$3')
       .replace(/class=""/g, '')
-    
+      .replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
     return formatted
   }
 

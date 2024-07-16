@@ -32,7 +32,7 @@
     mermaid.initialize({ startOnLoad: false }) 
   })
 
-  const diagramText = computed(() => host.value?.textContent.trim() )
+  const diagramText = computed(() => host.value?.textContent.trim().replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<') )
   // watch(diagramText, (diagramText) => { console.log(diagramText)})
   const caption = computed(() => props.caption )
 

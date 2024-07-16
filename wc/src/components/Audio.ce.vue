@@ -2,9 +2,11 @@
 
   <div ref="root">
 
-    <audio v-if="manifest" ref="html5Player" id="html5-player" controls>
+    <audio v-if="manifest" ref="html5Player" id="html5-player" controls  :autoplay="props.autoplay" >
       <source :src="src" :type="mime"/>
     </audio>
+    <div v-if="caption" class="caption">{{ caption }}</div>
+
   </div>
 
 </template>
@@ -22,12 +24,12 @@
     autoplay: { type: Boolean, default: false },
     caption: { type: String },
     class: { type: String },
-    end: { type: Number },
+    end: { type: String },
     muted: { type: Boolean, default: true },
     noCaption: { type: Boolean },
     poster: { type: String },
     src: { type: String },
-    start: { type: Number },
+    start: { type: String },
     sync: { type: Boolean, default: false}
   })
 
@@ -37,6 +39,12 @@
   watch (html5Player, async (html5Player) => {
     if (!manifest.value && props.src) manifest.value = await getManifest(props.src)
     mediaPlayer = html5Player
+    mediaPlayer.addEventListener('play', () => {
+      if (!firstPlay.value) {
+        firstPlay.value = true
+        if (props.start) seekTo(props.start, props.end)
+      }
+    })
     monitor()
   })
 
@@ -59,6 +67,7 @@
   let mediaPlayer
   const isMuted = ref(false)
   const isPlaying = ref(false)
+  const firstPlay = ref(false)
 
   watch (host, async () => {
     // console.log(`audio: type=html5 src=${props.src}`)
@@ -66,6 +75,7 @@
     addInteractionHandlers()
     EventBus.on('seekto', (evt) => seekTo(evt.start, evt.end))
     if (props.sync) syncAudioWithText()
+    else if (props.autoplay && props.start) seekTo(props.start, props.end)
   })
 
   function syncAudioWithText() {
@@ -90,7 +100,7 @@
         el.insertBefore(timestampLink, el.firstChild)
         return { start: hmsToSeconds(el.dataset.head.split(/\s+/)[0]), id: el.id }
       })
-    EventBus.on('video-at-time', (evt) => {
+    EventBus.on('audio-at-time', (evt) => {
       let time = evt.time
       let text = syncData.find((t:any) => t.start <= time && (syncData[syncData.indexOf(t)+1]?.start || Infinity) > time)
       if (text && mediaPlayer && isPlaying.value) {
@@ -101,58 +111,72 @@
   }
 
   function addInteractionHandlers() {
-    let el = host.value.parentElement
-    while (el?.parentElement && el.tagName !== 'MAIN') {
-      (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
-        let link = new URL(anchorElem.href)
-        let path = link.pathname.split('/').filter((p:string) => p)
-        let platAtIdx = path.indexOf('play')
-        if (platAtIdx >= 0 && path.length > platAtIdx+1) {
-          let imageEl = findComponentEl(anchorElem)
-          if (imageEl) {
-            let start = path[platAtIdx+1]
-            let end = path.length > platAtIdx + 1 ? path[platAtIdx+2] : null
-            // console.log(`Found play link: ${start} ${end}`)
+    // console.log('addInteractionHandlers')
+    let scope = host.value?.parentElement
+      while (scope) {
+        // console.log(scope);
+        (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
+          let link = new URL(anchorElem.href)
+          let path = link.pathname.split('/').filter((p:string) => p)
+          let playAtIdx = path.indexOf('play')
+          if (playAtIdx >= 0) {
+            let playAt = path[playAtIdx+1]
+            let trigger = path.slice(playAtIdx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
+            let targetId = path.slice(playAtIdx+2).filter(val => val !== 'click' && val !== 'mouseover')[0]
+            let target
+
+            let paraDataId
+            let parent = anchorElem.parentElement
+            while (parent && !paraDataId) {
+              paraDataId = parent.dataset.id
+              parent = parent.parentElement
+            }
+            if (paraDataId) {
+              let mapDataId = host.value?.dataset.id
+              if (mapDataId && mapDataId !== paraDataId) return
+            }
+
+            if (targetId) {
+              target = document.getElementById(targetId)
+              if (!target) return
+            }
+
+            target = findClosestAudioPlayer(anchorElem)
+            if (target !== host.value) return
+
+            // console.log(`playAt: ${playAt} ${trigger} ${targetId || paraDataId}`)
+
             anchorElem.classList.add('play')
             anchorElem.href = 'javascript:;'
-            anchorElem.setAttribute('data-play', end ? `${start} ${end}` : start)
-            anchorElem.addEventListener('click', (evt:Event) => {
+            anchorElem.setAttribute('data-play', playAt)
+            anchorElem.addEventListener(trigger, (evt:Event) => {
               let [start, end] = (evt.target as HTMLElement).getAttribute('data-play')?.split(/\s+/) || []
               if (start) seekTo(start, end)
             })
           }
-        }
-      })
-      el = el.parentElement;
-    }
-  }
-
-  function findComponentEl(el:any) {
-
-    function checkSibs(el:any) {
-      let sib = el.previousSibling
-      while (sib) {
-        if (sib.nodeName === 'VE-AUDIO') return sib === host.value ? sib : null
-        sib = sib.previousSibling
+        })
+        scope = scope.parentElement;
       }
     }
 
-    checkSibs(el)
-    while (el.parentElement && el.tagName !== 'BODY') {
-      el = el.parentElement
-      let videoEl = el.querySelector(':scope ve-audio')
-      if (videoEl) return videoEl === host.value ? videoEl : null
+  function findClosestAudioPlayer(anchorElem: HTMLElement) {
+    let found
+    let scope = anchorElem.parentElement
+    while (scope && !found) {
+      found = scope.querySelector('ve-audio')
+      scope = scope.parentElement
     }
+    return found
   }
 
   async function monitor() {
-    getCurrentTime().then(time => EventBus.emit('video-at-time', { time: Math.round(time) }))
+    getCurrentTime().then(time => EventBus.emit('audio-at-time', { time: Math.round(time) }))
 
     setInterval(async () => {
       isMuted.value = await getIsMuted()
       isPlaying.value = await getIsPlaying()
 
-      if (isPlaying.value) getCurrentTime().then(time => EventBus.emit('video-at-time', { time: Math.round(time) }))
+      if (isPlaying.value) getCurrentTime().then(time => EventBus.emit('audio-at-time', { time: Math.round(time) }))
 
     }, 1000)
   }
@@ -229,6 +253,14 @@
 
   audio {
     width: 100%;
+  }
+
+  .caption {
+    text-align: start;
+    padding: 6px 12px;
+    font-size: 1em;
+    line-height: 1.1;
+    border: 1px solid #ddd;
   }
 
 </style>

@@ -29,13 +29,13 @@
     autoplay: { type: Boolean, default: false },
     caption: { type: String },
     class: { type: String },
-    end: { type: Number },
+    end: { type: String },
     id: { type: String },
     muted: { type: Boolean, default: true },
     noCaption: { type: Boolean },
     poster: { type: String },
     src: { type: String },
-    start: { type: Number },
+    start: { type: String },
     sync: { type: Boolean, default: false},
     vid: { type: String }
   })
@@ -46,9 +46,19 @@
   const html5Player = ref<HTMLVideoElement | null>(null)
   watch(html5Player, (html5Player) => {
     mediaPlayer = html5Player
+    mediaPlayer.addEventListener('play', () => {
+      if (!firstPlay.value) {
+        firstPlay.value = true
+        if (props.start) seekTo(props.start, props.end)
+      }
+    })
     monitor()
   })
-  const isYouTube = computed(() => props.src?.includes('youtube.com') || props.id || props.vid)
+  const isYouTube = computed(() => {
+    // console.log(props.src, /^[A-Za-z0-9-]+$/.test(props.src || ''))
+    return props.src?.includes('youtube.com') || props.id || props.vid || /^[A-Za-z0-9-]+$/.test(props.src || '')
+  })
+
   const isVimeo = computed(() => props.src?.includes('vimeo.com'))
   const isHTML5 = computed(() => !isYouTube.value && !isVimeo.value)
   watch(isHTML5, async () => {
@@ -58,6 +68,16 @@
   const manifest = ref<any>(null)
   const itemInfo = computed(() => manifest.value ? getItemInfo(manifest.value) : null)
   const src = computed(() => itemInfo.value?.id)
+  const youtubeId = computed(() => {
+    return isYouTube.value 
+      ? props.id || props.vid 
+        ? props.id || props.vid
+        : props.src?.includes('youtube.com')
+          ? new URL(props.src).searchParams.get('v')
+          : props.src
+      : null
+  })
+  // watch (youtubeId, (youtubeId) => { console.log(`youtubeId=${youtubeId}`)})
   const mime = computed(() => {
     let fileExtension = src.value?.split('#')[0].split('.').pop()
     return fileExtension === 'mp4'
@@ -70,13 +90,14 @@
   let mediaPlayer
   const isMuted = ref(false)
   const isPlaying = ref(false)
+  const firstPlay = ref(false)
 
   watch (host, async () => {
     let videoType = isYouTube.value ? 'youtube' : isVimeo.value ? 'vimeo' : 'html5'
     if (videoType === 'html5' && !manifest.value && props.src) manifest.value = await getManifest(props.src)
     addInteractionHandlers()
     EventBus.on('seekto', (evt) => seekTo(evt.start, evt.end))
-    if (isYouTube.value) await initYoutubePlayer()
+    if (youtubeId.value) await initYoutubePlayer()
     if (props.sync) syncVideoWithText()
   })
 
@@ -119,55 +140,78 @@
   }
 
   function addInteractionHandlers() {
-    let el = host.value.parentElement
-    while (el?.parentElement && el.tagName !== 'MAIN') {
-      (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
+    // console.log('addInteractionHandlers')
+    let scope = host.value?.parentElement
+    while (scope) {
+      // console.log(scope);
+      (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
         let link = new URL(anchorElem.href)
         let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'playat' ? 'play' : p)
-        let platAtIdx = path.indexOf('play')
-        if (platAtIdx >= 0 && path.length > platAtIdx+1) {
-          let imageEl = findComponentEl(anchorElem)
-          if (imageEl) {
-            let start = path[platAtIdx+1]
-            let end = path.length > platAtIdx + 1 ? path[platAtIdx+2] : null
-            // console.log(`Found play link: ${start} ${end}`)
-            anchorElem.classList.add('play')
-            anchorElem.href = 'javascript:;'
-            anchorElem.setAttribute('data-play', end ? `${start} ${end}` : start)
-            anchorElem.addEventListener('click', (evt:Event) => {
-              let [start, end] = (evt.target as HTMLElement).getAttribute('data-play')?.split(/\s+/) || []
-              if (start) seekTo(start, end)
-            })
+        let playAtIdx = path.indexOf('play')
+        if (playAtIdx >= 0) {
+          let playAt = path[playAtIdx+1]
+          let trigger = path.slice(playAtIdx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
+          let targetId = path.slice(playAtIdx+2).filter(val => val !== 'click' && val !== 'mouseover')[0]
+          let target
+
+          let paraDataId
+          let parent = anchorElem.parentElement
+          while (parent && !paraDataId) {
+            paraDataId = parent.dataset.id
+            parent = parent.parentElement
           }
+          if (paraDataId) {
+            let mapDataId = host.value?.dataset.id
+            if (mapDataId && mapDataId !== paraDataId) return
+          }
+
+          if (targetId) {
+            target = document.getElementById(targetId)
+            if (!target) return
+          }
+
+          target = findClosestPlayer(anchorElem, 've-video')
+          if (target !== host.value) return
+
+          // console.log(`playAt: ${playAt} ${trigger} ${targetId || paraDataId}`)
+
+          anchorElem.classList.add('play')
+          anchorElem.href = 'javascript:;'
+          anchorElem.setAttribute('data-play', playAt)
+          anchorElem.addEventListener(trigger, (evt:Event) => {
+            let [start, end] = (evt.target as HTMLElement).getAttribute('data-play')?.split(/\s+/) || []
+            if (start) seekTo(start, end)
+          })
         }
       })
-      el = el.parentElement;
+      scope = scope.parentElement;
     }
   }
 
-  function findComponentEl(el:any) {
-
-    function checkSibs(el:any) {
-      let sib = el.previousSibling
-      while (sib) {
-        if (sib.nodeName === 'VE-VIDEO') return sib === host.value ? sib : null
-        sib = sib.previousSibling
-      }
+  function findClosestPlayer(anchorElem: HTMLElement, playerTag) {
+    let found
+    let scope = anchorElem.parentElement
+    while (scope && !found) {
+      found = scope.querySelector(playerTag)
+      scope = scope.parentElement
     }
-
-    checkSibs(el)
-    while (el.parentElement && el.tagName !== 'BODY') {
-      el = el.parentElement
-      let videoEl = el.querySelector(':scope ve-video')
-      if (videoEl) return videoEl === host.value ? videoEl : null
-    }
+    return found
   }
 
+  /* YouTube
+
+   States:
+    -1 (unstarted)
+    0 (ended)
+    1 (playing)
+    2 (paused)
+    3 (buffering)
+    5 (video cued)
+  */
   async function initYoutubePlayer() {
     let playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-    let videoId = props.id || props.vid || props.src && new URL(props.src).searchParams.get('v')
-    if (videoId && playerEl) {
-      let metadata = await youtubeMetadata(videoId)
+    if (youtubeId.value && playerEl) {
+      let metadata = await youtubeMetadata(youtubeId.value)
   
       if (host.value) new ResizeObserver(() => { 
         playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
@@ -178,7 +222,7 @@
 
       mediaPlayer = YouTubePlayer(
         playerEl as HTMLElement, {
-          videoId,
+          videoId: youtubeId.value,
           width: playerEl?.clientWidth,
           playerVars: {
             color: 'white',
@@ -187,7 +231,21 @@
             playsinline: 1
           }
       })
-      mediaPlayer.on('ready', (evt:any) => monitor())
+      mediaPlayer.on('ready', (evt:any) => {
+        monitor()
+        mediaPlayer.on('stateChange', (evt:any) => {
+          if (evt.data === 1) {
+            if (!firstPlay.value) {
+              firstPlay.value = true
+              if (props.start) seekTo(props.start, props.end)
+            }
+          }
+        })
+        if (props.autoplay) {
+          mediaPlayer.playVideo()
+          if (props.start) seekTo(props.start, props.end)
+        }
+      })
     }
   }
 

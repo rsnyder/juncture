@@ -209,7 +209,7 @@ const components = {
     've-video': {
       booleans: new Set(['autoplay', 'muted', 'no-caption', 'sync']),
       class: new Set(),
-      positional: ['vid', 'caption'],
+      positional: ['src', 'caption'],
       ignore: new Set()
     },
     've-visjs': {

@@ -113,57 +113,57 @@
   function addInteractionHandlers() {
     // console.log('addInteractionHandlers')
     let scope = host.value?.parentElement
-      while (scope) {
-        // console.log(scope);
-        (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
-          let link = new URL(anchorElem.href)
-          let path = link.pathname.split('/').filter((p:string) => p)
-          let playAtIdx = path.indexOf('play')
-          if (playAtIdx >= 0) {
-            let playAt = path[playAtIdx+1]
-            let trigger = path.slice(playAtIdx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
-            let targetId = path.slice(playAtIdx+2).filter(val => val !== 'click' && val !== 'mouseover')[0]
-            let target
+    while (scope) {
+      // console.log(scope);
+      (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[]).forEach( async (anchorElem) => {
+        let link = new URL(anchorElem.href)
+        let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'playat' ? 'play' : p)
+        let playAtIdx = path.indexOf('play')
+        if (playAtIdx >= 0) {
+          let playAt = path[playAtIdx+1]
+          let trigger = path.slice(playAtIdx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
+          let targetId = path.slice(playAtIdx+2).filter(val => val !== 'click' && val !== 'mouseover')[0]
+          let target
 
-            let paraDataId
-            let parent = anchorElem.parentElement
-            while (parent && !paraDataId) {
-              paraDataId = parent.dataset.id
-              parent = parent.parentElement
-            }
-            if (paraDataId) {
-              let mapDataId = host.value?.dataset.id
-              if (mapDataId && mapDataId !== paraDataId) return
-            }
-
-            if (targetId) {
-              target = document.getElementById(targetId)
-              if (!target) return
-            }
-
-            target = findClosestAudioPlayer(anchorElem)
-            if (target !== host.value) return
-
-            // console.log(`playAt: ${playAt} ${trigger} ${targetId || paraDataId}`)
-
-            anchorElem.classList.add('play')
-            anchorElem.href = 'javascript:;'
-            anchorElem.setAttribute('data-play', playAt)
-            anchorElem.addEventListener(trigger, (evt:Event) => {
-              let [start, end] = (evt.target as HTMLElement).getAttribute('data-play')?.split(/\s+/) || []
-              if (start) seekTo(start, end)
-            })
+          let paraDataId
+          let parent = anchorElem.parentElement
+          while (parent && !paraDataId) {
+            paraDataId = parent.dataset.id
+            parent = parent.parentElement
           }
-        })
-        scope = scope.parentElement;
-      }
-    }
+          if (paraDataId) {
+            let mapDataId = host.value?.dataset.id
+            if (mapDataId && mapDataId !== paraDataId) return
+          }
 
-  function findClosestAudioPlayer(anchorElem: HTMLElement) {
+          if (targetId) {
+            target = document.getElementById(targetId)
+            if (!target) return
+          }
+
+          target = findClosestPlayer(anchorElem, 've-audio')
+          if (target !== host.value) return
+
+          // console.log(`playAt: ${playAt} ${trigger} ${targetId || paraDataId}`)
+
+          anchorElem.classList.add('play')
+          anchorElem.href = 'javascript:;'
+          anchorElem.setAttribute('data-play', playAt)
+          anchorElem.addEventListener(trigger, (evt:Event) => {
+            let [start, end] = (evt.target as HTMLElement).getAttribute('data-play')?.split(/\s+/) || []
+            if (start) seekTo(start, end)
+          })
+        }
+      })
+      scope = scope.parentElement;
+    }
+  }
+
+  function findClosestPlayer(anchorElem: HTMLElement, playerTag) {
     let found
     let scope = anchorElem.parentElement
     while (scope && !found) {
-      found = scope.querySelector('ve-audio')
+      found = scope.querySelector(playerTag)
       scope = scope.parentElement
     }
     return found

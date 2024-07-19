@@ -383,7 +383,7 @@
     let owner = source.value?.owner
     let repository = source.value?.repository
     let branch
-    let path = source.value?.dir.slice(0,-1).split('/').filter(pe => pe)
+    let path = source.value?.dir.split('/').filter(pe => pe)
     let src = new URL(location.href).searchParams.get('source')?.split('/').filter(pe => pe).filter(pe => !/\.md$/.test(pe))
     if (src) {
       [owner, repository, branch, ...path] = src

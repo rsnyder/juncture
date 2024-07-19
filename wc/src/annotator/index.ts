@@ -84,10 +84,10 @@ export class Annotator {
   }
 
   onSelect(anno:any) {
-    // console.log(`annotator.onSelect=${anno.id}`)
+    console.log(`annotator.onSelect=${anno.id}`)
     this.selected = anno.id
     if (navigator.clipboard) navigator.clipboard.writeText(this.selected)
-    // console.log(this.osd.element.querySelector('.a9s-selection-mask'))
+    console.log(this.osd.element.querySelector('.a9s-selection-mask'))
   }
 
   annoEl(annoId:string) {
@@ -103,10 +103,11 @@ export class Annotator {
   }
 
   select(annoId:string) {
-  // console.log(`annotator.select=${annoId}`, this.selected?.id)
+    console.log(`annotator.select=${annoId}`, this.selected?.id)
     if (annoId !== this.selected?.id) {
       this.deselect() 
       this.selected = this.annotorious.selectAnnotation(annoId)
+      console.log(this.osd.element.querySelector('.a9s-selection-mask'))
       if (this.selected) {
         let annoEl = this.annoEl(annoId)
         if (annoEl) annoEl.style.visibility = 'visible'

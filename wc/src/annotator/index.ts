@@ -40,8 +40,7 @@ export class Annotator {
     this.imageId = imageId
     this.setVisible(false)
     let annotations = []
-
-    console.log(`Annotator.loadAnnotations: acct=${this.acct} repo=${this.repo} ref=${this.ref} basePath=${this.basePath} imageId=${imageId}`)
+    // console.log(`Annotator.loadAnnotations: acct=${this.acct} repo=${this.repo} ref=${this.ref} basePath=${this.basePath} imageId=${imageId}`)
     let ghFile = await this.ghClient.getFile(this.acct, this.repo, `${this.basePath}/${this.imageId}.json`, this.ref)
     if (ghFile?.content) {
       annotations = ghFile.content
@@ -88,6 +87,7 @@ export class Annotator {
     // console.log(`annotator.onSelect=${anno.id}`)
     this.selected = anno.id
     if (navigator.clipboard) navigator.clipboard.writeText(this.selected)
+    // console.log(this.osd.element.querySelector('.a9s-selection-mask'))
   }
 
   annoEl(annoId:string) {
@@ -103,7 +103,7 @@ export class Annotator {
   }
 
   select(annoId:string) {
-    //console.log(`annotator.select=${annoId}`, this.selected?.id)
+  // console.log(`annotator.select=${annoId}`, this.selected?.id)
     if (annoId !== this.selected?.id) {
       this.deselect() 
       this.selected = this.annotorious.selectAnnotation(annoId)

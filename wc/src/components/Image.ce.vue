@@ -289,7 +289,7 @@
 
   function evalProps() {
     if (props.active && !interactionsHandlersInitialized.value) {
-      addInteractionHandlers()
+      // addInteractionHandlers()
       interactionsHandlersInitialized.value = true
     }
     width.value = props.width || 0
@@ -419,19 +419,20 @@
 
   let annoSelected = ''
 
-  function addInteractionHandlers() {
+  function addInteractionHandlersOld() {
     // console.log('addInteractionHandlers')
 
       let el = host.value.parentElement
       while (el && Array.from(el.className.split(' ') || []).indexOf('content') < 0) {
-        (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[]).forEach(anchorElem => {
+        (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[])
+          .forEach(anchorElem => {
           let link = new URL(anchorElem.href)
           let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
           let zoomIdx = path.indexOf('zoom')
           if (zoomIdx >= 0) {
             let region = path[path.length-1]
             let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
-            console.log(`zoomto: region=${region} trigger=${trigger}`)
+            // console.log(`zoomto: region=${region} trigger=${trigger}`)
             anchorElem.classList.add('zoom')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-region', region)
@@ -460,29 +461,83 @@
       }
     //}
   }
-
-  function findImageEl(el:any) {
-
-    function checkSibs(el:any) {
-      let sib = el.previousSibling
-      while (sib) {
-        if (sib.nodeName === 'VE-IMAGE') return sib === host.value ? sib : null
-        sib = sib.previousSibling
-      }
-    }
   
-    checkSibs(el)
-    while (el.parentElement && el.tagName !== 'BODY') {
-      el = el.parentElement
-      let imageEl = el.querySelector(':scope ve-image')
-      if (imageEl) return imageEl === host.value ? imageEl : null
+  function addInteractionHandlers() {
+    console.log('addInteractionHandlers')
+    let scope = host.value?.parentElement
+    while (scope) {
+      // console.log(scope);
+      (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[])
+        .filter(anchorElem => anchorElem.href !== 'javascript:;')
+        .forEach( async (anchorElem) => {
+        let link = new URL(anchorElem.href)
+        let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
+        let idx = path.indexOf('zoom')
+        console.log(path)
+        if (idx >= 0) {
+          let region = /^(pct:|pixel:|px:)?[-+\d.]+,[-+\d.]+,[-+\d.]+,[-+\d.]+$/.test(path[idx+1]) ? path[idx+1] : ''
+          let annoId = path.slice(idx+1).find(val => val.length === 8 && /^[0-9a-f]+$/.test(val))
+          let trigger = path.slice(idx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
+          let targetId = path.slice(idx+2).filter(val => val !== 'click' && val !== 'mouseover' && val !== annoId)[0]
+          console.log(`zoom: region=${region} trigger=${trigger} annoId=${annoId} targetId=${targetId}`)
+
+          let target
+
+          let paraDataId
+          let parent = anchorElem.parentElement
+          while (parent && !paraDataId) {
+            paraDataId = parent.dataset.id
+            parent = parent.parentElement
+          }
+          if (paraDataId) {
+            let mapDataId = host.value?.dataset.id
+            if (mapDataId && mapDataId !== paraDataId) return
+          }
+
+          if (targetId) {
+            target = document.getElementById(targetId)
+            if (!target) return
+          }
+
+          target = findClosestPlayer(anchorElem, 've-image')
+          if (target !== host.value) return
+
+
+          anchorElem.classList.add('zoom')
+          anchorElem.href = 'javascript:;'
+          if (region) anchorElem.setAttribute('data-region', region)
+          if (annoId) anchorElem.setAttribute('data-annoid', annoId)
+          anchorElem.addEventListener(trigger, (evt:Event) => {
+            let target = anchorElem
+            let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
+            let annoId = target.getAttribute('data-annoId') || target?.parentElement?.getAttribute('data-annoId')
+            console.log(`zoomto: region=${region} annoId=${annoId}`)
+            if (region) zoomto(region)
+            if (annoId) {
+              annotator.value.setVisible(true)
+              annotator.value.select(annoId)
+            }
+          })
+        }
+      })
+      scope = scope.parentElement;
     }
+  }
+
+  function findClosestPlayer(anchorElem: HTMLElement, playerTag) {
+    let found
+    let scope = anchorElem.parentElement
+    while (scope && !found) {
+      found = scope.querySelector(playerTag)
+      scope = scope.parentElement
+    }
+    return found
   }
 
   let zoomedToRegion:string = ''
   function zoomto(arg: string) {
     arg = arg.replace(/^zoom\|/i,'')
-    const match = arg?.match(/^(?<region>(pct:|pixel:|px:)?[\d.]+,[\d.]+,[\d.]+,[\d.]+)?$/)
+    const match = arg?.match(/^(?<region>(pct:|pixel:|px:)?[+-\d.]+,[+-\d.]+,[+-\d.]+,[+-\d.]+)?$/)
     if (match) {
       let region = match?.groups?.region
       // console.log(`ve-image.zoom: region=${region}`)
@@ -615,6 +670,7 @@ function copyTextToClipboard(text: string) {
   .view .r6o-widget {
     display: inline-block;
     min-height: unset !important;
+    min-width: 200px;
     font-size: 1.0em;
     line-height: 1.2;
     /* padding: 9px; */
@@ -646,6 +702,12 @@ function copyTextToClipboard(text: string) {
   svg.a9s-annotationlayer .a9s-annotation .a9s-inner  {
     stroke-width: 3;
     stroke: rgba(255,255,0,1.0);
+  }
+
+  .a9s-selection-mask {
+    stroke: none;
+    fill: rgba(0,0,0,0.4);
+    pointer-events: none
   }
 
 </style>

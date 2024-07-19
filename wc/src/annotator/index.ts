@@ -107,15 +107,19 @@ export class Annotator {
       this.annotorious.selectAnnotation(annoId)
 
       console.log(this.osd.element.querySelector('g[transform]'))
-      /*
+
       let el = this.osd.element.querySelector('.a9s-selection-mask')
       while (el) {
         console.log(el)
         el = el.parentElement
       }
-      */
+
       this.osd.element.querySelectorAll('.a9s-annotation').forEach((el:HTMLElement) => {
         if (el.dataset.id && el.dataset.id !== annoId) el.style.visibility = 'hidden'
+        else {
+          el.classList.add('editable')
+          el.classList.add('selected')
+        }
       })
 
       if (this.selected) {

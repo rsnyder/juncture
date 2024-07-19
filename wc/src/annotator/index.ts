@@ -33,7 +33,7 @@ export class Annotator {
     this.setVisible(true)
     this.ghAuthToken = localStorage.getItem('gh-auth-token') || ''
     this.ghClient = new GithubClient(this.ghAuthToken)
-    console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
+    // console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
   }
 
   async loadAnnotations(imageId:string) {
@@ -64,7 +64,7 @@ export class Annotator {
 
   setVisible(visible:boolean) {
     if (this.selected) {
-      this.deselect()
+      // this.deselect()
     } else {
       this.visible = visible
       // console.log('setVisible', this.visible, this.annotorious.readOnly)
@@ -84,10 +84,8 @@ export class Annotator {
   }
 
   onSelect(anno:any) {
-    console.log(`annotator.onSelect=${anno.id}`)
     this.selected = anno.id
     if (navigator.clipboard) navigator.clipboard.writeText(this.selected)
-    console.log(this.osd.element.querySelector('.a9s-selection-mask'))
   }
 
   annoEl(annoId:string) {
@@ -103,18 +101,31 @@ export class Annotator {
   }
 
   select(annoId:string) {
-    console.log(`annotator.select=${annoId}`, this.selected?.id)
-    if (annoId !== this.selected?.id) {
-      this.deselect() 
-      this.selected = this.annotorious.selectAnnotation(annoId)
-      console.log(this.osd.element.querySelector('.a9s-selection-mask'))
+    // console.log(`annotator.select=${annoId}`, this.selected)
+    if (annoId !== this.selected) {
+      this.selected = annoId
+      this.annotorious.selectAnnotation(annoId)
+
+      console.log(this.osd.element.querySelector('g[transform]'))
+      /*
+      let el = this.osd.element.querySelector('.a9s-selection-mask')
+      while (el) {
+        console.log(el)
+        el = el.parentElement
+      }
+      */
+      this.osd.element.querySelectorAll('.a9s-annotation').forEach((el:HTMLElement) => {
+        if (el.dataset.id && el.dataset.id !== annoId) el.style.visibility = 'hidden'
+      })
+
       if (this.selected) {
         let annoEl = this.annoEl(annoId)
         if (annoEl) annoEl.style.visibility = 'visible'
-        let annoLayer = this.osd.element.querySelector('.a9s-annotation.selected') as HTMLElement
-        if (annoLayer) annoLayer.style.visibility = 'visible'
+        // let annoLayer = this.osd.element.querySelector('.a9s-annotation.selected') as HTMLElement
+        // if (annoLayer) annoLayer.style.visibility = 'visible'
       }
     } else {
+      // this.annotorious.selectAnnotation(null)
       this.deselect() 
     }
   }

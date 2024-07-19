@@ -463,23 +463,21 @@
   }
   
   function addInteractionHandlers() {
-    console.log('addInteractionHandlers')
+    // console.log('addInteractionHandlers')
     let scope = host.value?.parentElement
     while (scope) {
-      // console.log(scope);
       (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[])
         .filter(anchorElem => anchorElem.href !== 'javascript:;')
         .forEach( async (anchorElem) => {
         let link = new URL(anchorElem.href)
         let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
         let idx = path.indexOf('zoom')
-        console.log(path)
         if (idx >= 0) {
           let region = /^(pct:|pixel:|px:)?[-+\d.]+,[-+\d.]+,[-+\d.]+,[-+\d.]+$/.test(path[idx+1]) ? path[idx+1] : ''
           let annoId = path.slice(idx+1).find(val => val.length === 8 && /^[0-9a-f]+$/.test(val))
           let trigger = path.slice(idx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
           let targetId = path.slice(idx+2).filter(val => val !== 'click' && val !== 'mouseover' && val !== annoId)[0]
-          console.log(`zoom: region=${region} trigger=${trigger} annoId=${annoId} targetId=${targetId}`)
+          // console.log(`zoom: region=${region} trigger=${trigger} annoId=${annoId} targetId=${targetId}`)
 
           let target
 

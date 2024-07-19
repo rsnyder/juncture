@@ -512,7 +512,7 @@
             console.log(`zoomto: region=${region} annoId=${annoId}`)
             if (region) zoomto(region)
             if (annoId) {
-              annotator.value.setVisible(true)
+              // annotator.value.setVisible(true)
               annotator.value.select(annoId)
             }
           })
@@ -706,6 +706,40 @@ function copyTextToClipboard(text: string) {
     stroke: none;
     fill: rgba(0,0,0,0.4);
     pointer-events: none
+  }
+
+  /** Hides the outer shapes - for this style we only need one **/
+  svg.a9s-annotationlayer .a9s-selection .a9s-outer, 
+  svg.a9s-annotationlayer .a9s-annotation .a9s-outer {
+    display:none;
+  }
+
+  svg.a9s-annotationlayer .a9s-handle .a9s-handle-outer {
+    display:none;
+  }
+
+  /** New style for the annotation outlines **/
+  svg.a9s-annotationlayer .a9s-selection .a9s-inner,
+  svg.a9s-annotationlayer .a9s-annotation .a9s-inner  {
+    stroke-width:4;
+    stroke:white;
+    stroke-dasharray:5;
+  }
+
+  /** Disable the hover effect from the default stylesheet **/
+  svg.a9s-annotationlayer .a9s-annotation.editable:hover .a9s-inner {
+    fill:transparent;
+  }
+
+  /** Corner handles **/
+  svg.a9s-annotationlayer .a9s-handle .a9s-handle-inner {
+    fill:white;
+    stroke:white;
+  }
+
+  /** Enable the dim mask, black with 60% transparency **/
+  svg.a9s-annotationlayer .a9s-selection-mask {
+    fill:rgba(0, 0, 0, 0.6);
   }
 
 </style>

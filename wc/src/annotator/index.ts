@@ -33,7 +33,7 @@ export class Annotator {
     this.setVisible(true)
     this.ghAuthToken = localStorage.getItem('gh-auth-token') || ''
     this.ghClient = new GithubClient(this.ghAuthToken)
-    // console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
+    console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
   }
 
   async loadAnnotations(imageId:string) {
@@ -63,9 +63,10 @@ export class Annotator {
   }
 
   setVisible(visible:boolean) {
-    if (this.selected) {
+    // if (this.selected) {
       // this.deselect()
-    } else {
+      // this.selected = null
+    // } else {
       this.visible = visible
       // console.log('setVisible', this.visible, this.annotorious.readOnly)
       let el = this.osd.element.querySelector('.a9s-annotationlayer') as HTMLElement
@@ -75,7 +76,7 @@ export class Annotator {
       };
       (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[])
         .forEach(el => el.style.visibility = this.visible ? 'visible' : 'hidden')
-    }
+    // }
   }
 
   toggleVisibility(evt:MouseEvent) {
@@ -101,8 +102,9 @@ export class Annotator {
   }
 
   select(annoId:string) {
-    // console.log(`annotator.select=${annoId}`, this.selected)
+    console.log(`annotator.select=${annoId}`, this.selected)
     if (annoId !== this.selected) {
+      this.setVisible(true)
       this.selected = annoId
       this.annotorious.selectAnnotation(annoId)
 
@@ -120,17 +122,19 @@ export class Annotator {
           el.classList.add('editable')
           el.classList.add('selected')
           el.removeAttribute('data-id')
-          el.style.visibility = ''
+          el.style.visibility = 'visible'
         }
       })
 
       if (this.selected) {
+        // this.setVisible(false)
         let annoEl = this.annoEl(annoId)
         if (annoEl) annoEl.style.visibility = 'visible'
         // let annoLayer = this.osd.element.querySelector('.a9s-annotation.selected') as HTMLElement
         // if (annoLayer) annoLayer.style.visibility = 'visible'
       }
     } else {
+      this.setVisible(false)
       // this.annotorious.selectAnnotation(null)
       this.deselect() 
     }

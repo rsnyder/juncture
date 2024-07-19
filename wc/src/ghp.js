@@ -110,7 +110,7 @@ function computeDataId(el) {
 const components = {
   juncture3: {
     've-animated-image': {
-      booleans: new Set(),
+      booleans: new Set(['autoplay']),
       class: new Set(),
       positional: ['src', 'caption'],
       ignore: new Set()
@@ -158,7 +158,7 @@ const components = {
       ignore: new Set()
     },
     've-image': {
-      booleans: new Set(['no-caption', 'static', 'zoom-on-scroll']),
+      booleans: new Set(['no-caption', 'static', 'repo-is-writable', 'zoom-on-scroll']),
       class: new Set(),
       positional: ['src', 'caption'],
       ignore: new Set()

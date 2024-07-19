@@ -3,6 +3,7 @@
   <div ref="main" class="main">
     <sl-animated-image
       :src="src"
+      :play="props.autoplay"
       :alt="caption"
       :style="{width: `${width}px`, height: `${height}px`}"
     ></sl-animated-image>
@@ -13,12 +14,14 @@
   
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
-  
+  import { onMounted, ref, watch } from 'vue'
+  import { Md5 } from '../utils'
+
   const props = defineProps({
+    autoplay: { type: Boolean, default: false },
     caption: { type: String },
     height: { type: String},
-    src: { type: String }, // URL
+    src: { type: String, required: true }, // URL
     width: { type: String },
   })
 
@@ -28,13 +31,16 @@
   const width = ref(0)
   const height = ref(0)
 
+  const src = ref()
+  // watch(src, (src) => { console.log(`src=${src}`) })
+
   onMounted(() => {
+    src.value = props.src.indexOf('wc:') === 0 ? mwURL(props.src.slice(3)) : props.src
     if (props.width) width.value = Number(props.width)
     if (props.height) height.value = Number(props.height)
     if (!props.width && !props.height) width.value = main.value?.clientWidth || 0
-    console.log('width', width.value)
     if (!props.width || !props.height) {
-      getImageSize(props.src).then((size) => {
+      getImageSize(src.value).then((size) => {
         if (width.value) height.value = Math.round(width.value / size.aspect_ratio)
         else width.value = size.width
         if (height.value) width.value = Math.round(height.value * size.aspect_ratio)
@@ -52,6 +58,15 @@
       img.onerror = () => reject()
       img.src = src
     })
+  }
+
+  function mwURL(file:string) {
+    // Converts Wikimedia commons image URL to a thumbnail link
+    file = decodeURIComponent(file).replace(/ /g,'_')
+    const _md5 = Md5(file)
+    let url = `https://upload.wikimedia.org/wikipedia/commons`
+    url += `/${_md5.slice(0,1)}/${_md5.slice(0,2)}/${file}`
+    return url
   }
 
 </script>

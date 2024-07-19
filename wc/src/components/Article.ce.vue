@@ -11,10 +11,11 @@
   import { elFromHtml, observeVisible } from '../ghp.js'
 
   const props = defineProps({
-    owner: { type: String },
-    repo: { type: String },
+    base: { type: String },
     branch: { type: String, default: 'main' },
+    owner: { type: String },
     path: { type: String, default: 'README.md'},
+    repo: { type: String },
     repoIsWritable: { type: Boolean, default: false }
   })
 
@@ -57,7 +58,13 @@
   }
 
   onMounted(async() => {
-    html.value = host.value.textContent
+    let el = new DOMParser().parseFromString(host.value.textContent, 'text/html').body
+    el.querySelectorAll('ve-image, ve-map').forEach((veComponent) => {
+      veComponent.setAttribute('base', props.base as string)
+      if (repoIsWritable) veComponent.setAttribute('repo-is-writable', '')
+    })  
+    html.value = el.innerHTML
+
     // html.value = host.value.innerHTML
   })
 

@@ -94,6 +94,14 @@ export class Annotator {
     return this.osd.element.querySelector(`[data-id="${annoId}"]`) as HTMLElement
   }
 
+  getAnnotation(annoId:string) {
+    return this.annotorious.getAnnotations().find((anno:any) => anno.id === annoId)
+  }
+
+  getAnnotationRegion(annoId:string) {
+    return this.getAnnotation(annoId).target.selector.value.replace(/xywh=pixel:/g, '')
+  }
+
   select(annoId:string) {
     //console.log(`annotator.select=${annoId}`, this.selected?.id)
     if (annoId !== this.selected?.id) {

@@ -417,6 +417,8 @@
     }
   }
 
+  let annoSelected = ''
+
   function addInteractionHandlers() {
     // console.log('addInteractionHandlers')
 
@@ -429,13 +431,27 @@
           if (zoomIdx >= 0) {
             let region = path[path.length-1]
             let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
-            // console.log(`zoomto: region=${region} trigger=${trigger}`)
+            console.log(`zoomto: region=${region} trigger=${trigger}`)
             anchorElem.classList.add('zoom')
             anchorElem.href = 'javascript:;'
             anchorElem.setAttribute('data-region', region)
             anchorElem.addEventListener(trigger, (evt:Event) => {
-              let target = evt.target as HTMLElement
+              // let target = evt.target as HTMLElement
+              let target = anchorElem
               let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
+              if (region && /^[0-9a-f]+$/.test(region)) {
+                annoSelected = annoSelected === region ? '' : region
+                console.log(`zoomto: annoSelected=${annoSelected}`)
+                if (annoSelected) {
+                  region = annotator.value.getAnnotationRegion(annoSelected)
+                  annotator.value.setVisible(true)
+                  annotator.value.select(annoSelected)
+                } else {
+                  console.log('deselect')
+                  annotator.value.setVisible(false)
+                  osd.value?.viewport.goHome()
+                }
+              }
               if (region) zoomto(region) 
             })
           }

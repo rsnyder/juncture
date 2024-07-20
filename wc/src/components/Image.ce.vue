@@ -416,51 +416,6 @@
       ]})
     }
   }
-
-  let annoSelected = ''
-
-  function addInteractionHandlersOld() {
-    // console.log('addInteractionHandlers')
-
-      let el = host.value.parentElement
-      while (el && Array.from(el.className.split(' ') || []).indexOf('content') < 0) {
-        (Array.from(el.querySelectorAll('a')) as HTMLAnchorElement[])
-          .forEach(anchorElem => {
-          let link = new URL(anchorElem.href)
-          let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
-          let zoomIdx = path.indexOf('zoom')
-          if (zoomIdx >= 0) {
-            let region = path[path.length-1]
-            let trigger = path.length > zoomIdx + 2 ? path[zoomIdx+1] : 'click'
-            // console.log(`zoomto: region=${region} trigger=${trigger}`)
-            anchorElem.classList.add('zoom')
-            anchorElem.href = 'javascript:;'
-            anchorElem.setAttribute('data-region', region)
-            anchorElem.addEventListener(trigger, (evt:Event) => {
-              // let target = evt.target as HTMLElement
-              let target = anchorElem
-              let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
-              if (region && /^[0-9a-f]+$/.test(region)) {
-                annoSelected = annoSelected === region ? '' : region
-                console.log(`zoomto: annoSelected=${annoSelected}`)
-                if (annoSelected) {
-                  region = annotator.value.getAnnotationRegion(annoSelected)
-                  annotator.value.setVisible(true)
-                  annotator.value.select(annoSelected)
-                } else {
-                  console.log('deselect')
-                  annotator.value.setVisible(false)
-                  osd.value?.viewport.goHome()
-                }
-              }
-              if (region) zoomto(region) 
-            })
-          }
-        })
-        el = el.parentElement;
-      }
-    //}
-  }
   
   function addInteractionHandlers() {
     // console.log('addInteractionHandlers')
@@ -509,12 +464,9 @@
             let target = anchorElem
             let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
             let annoId = target.getAttribute('data-annoId') || target?.parentElement?.getAttribute('data-annoId')
-            console.log(`zoomto: region=${region} annoId=${annoId}`)
+            // console.log(`zoomto: region=${region} annoId=${annoId}`)
             if (region) zoomto(region)
-            if (annoId) {
-              // annotator.value.setVisible(true)
-              annotator.value.select(annoId)
-            }
+            if (annoId) annotator.value.select(annoId)
           })
         }
       })
@@ -706,40 +658,6 @@ function copyTextToClipboard(text: string) {
     stroke: none;
     fill: rgba(0,0,0,0.4);
     pointer-events: none
-  }
-
-  /** Hides the outer shapes - for this style we only need one **/
-  svg.a9s-annotationlayer .a9s-selection .a9s-outer, 
-  svg.a9s-annotationlayer .a9s-annotation .a9s-outer {
-    display:none;
-  }
-
-  svg.a9s-annotationlayer .a9s-handle .a9s-handle-outer {
-    display:none;
-  }
-
-  /** New style for the annotation outlines **/
-  svg.a9s-annotationlayer .a9s-selection .a9s-inner,
-  svg.a9s-annotationlayer .a9s-annotation .a9s-inner  {
-    stroke-width:4;
-    stroke:white;
-    stroke-dasharray:5;
-  }
-
-  /** Disable the hover effect from the default stylesheet **/
-  svg.a9s-annotationlayer .a9s-annotation.editable:hover .a9s-inner {
-    fill:transparent;
-  }
-
-  /** Corner handles **/
-  svg.a9s-annotationlayer .a9s-handle .a9s-handle-inner {
-    fill:white;
-    stroke:white;
-  }
-
-  /** Enable the dim mask, black with 60% transparency **/
-  svg.a9s-annotationlayer .a9s-selection-mask {
-    fill:rgba(0, 0, 0, 0.6);
   }
 
 </style>

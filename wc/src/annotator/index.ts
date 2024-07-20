@@ -33,7 +33,7 @@ export class Annotator {
     this.setVisible(true)
     this.ghAuthToken = localStorage.getItem('gh-auth-token') || ''
     this.ghClient = new GithubClient(this.ghAuthToken)
-    console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
+    // console.log(`Annotator: base=${base} readOnly=${!editable} authenticated=${this.ghAuthToken !== ''}`)
   }
 
   async loadAnnotations(imageId:string) {
@@ -102,28 +102,17 @@ export class Annotator {
   }
 
   select(annoId:string) {
-    console.log(`annotator.select=${annoId}`, this.selected)
     if (annoId !== this.selected) {
       this.setVisible(true)
       this.selected = annoId
-      this.annotorious.selectAnnotation(annoId)
 
-      // console.log(this.osd.element.querySelector('g[transform]'))
-
-      let el = this.osd.element.querySelector('g[transform]')
-      while (el) {
-        console.log(el)
-        el = el.parentElement
-      }
 
       this.osd.element.querySelectorAll('.a9s-annotation').forEach((el:HTMLElement) => {
-        if (el.dataset.id && el.dataset.id !== annoId) el.style.visibility = 'hidden'
-        else {
-          el.classList.add('editable')
-          el.classList.add('selected')
-          el.removeAttribute('data-id')
+        if (el.dataset.id === annoId) {
           el.style.visibility = 'visible'
-        }
+          el.classList.add('selected')
+          this.annotorious.selectAnnotation(annoId)
+        } else el.style.visibility = 'hidden'
       })
 
       if (this.selected) {
@@ -143,7 +132,7 @@ export class Annotator {
   deselect() {
     (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[])
     .forEach(el => el.style.visibility = this.visible ? 'visible' : 'hidden')
-    this.annotorious.selectAnnotation()
+    this.annotorious.cancelSelected()
     this.selected = undefined
   }
 

@@ -480,7 +480,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
           for (const arg of parsed.args) {
             let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
             let li = document.createElement('li')
-            li.innerHTML = argEl.innerHTML
+            li.innerHTML = argEl.innerHTML.replace(/(wc:.+?)<em>([^<]+)<\/em>([^<]+)/g, '$1_$2_$3')
             ul.appendChild(li)
           }
         }

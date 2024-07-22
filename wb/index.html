@@ -370,8 +370,11 @@
           let coords = args.slice(0,2).join(',')
           let zoom = args[2] || 10
           toInsert = isJunctureV1Essay ? `<param ve-map center="${coords}" zoom="${zoom}">\n` : `\n\`map ${coords},${zoom}\`\n`
-        } else if (text.indexOf('https://commons.wikimedia.org/wiki') === 0) { //wikimedia
-          let title = text.split('/').pop().replace(/File:/,'')
+        } else if (text.indexOf('https://commons.wikimedia.org/wiki') === 0 ||
+                   text.indexOf('https://upload.wikimedia.org/wikipedia/commons') === 0 ||
+                   /^https:\/\/.+\.wikipedia\.org\/wiki/.test(text)
+                  ){ //wikimedia
+          let title = decodeURIComponent(text.split('/').pop().replace(/File:/,'').replace(/^\d+px-/,'') )
           let extension = title.split('.').pop()
           if (extension === 'webm') // video
             toInsert = isJunctureV1Essay ? `<param ve-video src="wc:${title}">\n` : `\n\`video src=wc:${title}\`\n`

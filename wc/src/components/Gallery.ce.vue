@@ -49,6 +49,7 @@
   const shadowRoot = computed(() => root?.value?.parentNode)
 
   const props = defineProps({
+    class: { type: String },
     data: { type: String },
     dialogWidth: { type: String, default: '100vw' },
     ghDir: { type: String},
@@ -154,7 +155,7 @@
         manifestUrls.value = data.map((item:any) => imageIdtoUrl(`gh:${props.ghDir}/${item.name}`))
       })
     } else {
-      let slot = host.value.parentElement
+      let slot = host.value
       function parseSlot() {
         manifestUrls.value = Array.from(slot.querySelectorAll('li'))
         .map((li: any) => li.innerText)

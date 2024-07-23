@@ -480,7 +480,7 @@ function handleCodeEl(rootEl, codeEl, repoIsWritable) {
           for (const arg of parsed.args) {
             let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
             let li = document.createElement('li')
-            li.innerHTML = argEl.innerHTML.replace(/(wc:.+?)<em>([^<]+)<\/em>([^<]+)/g, '$1_$2_$3')
+            li.innerHTML = argEl.innerHTML.indexOf('wc:') === 0 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
             ul.appendChild(li)
           }
         }
@@ -570,7 +570,7 @@ function elFromHtml(html) {
 let isJunctureV1 = false
 
 function structureContent(html, repoIsWritable) {
-  // console.log('structureContent', elFromHtml(html))
+  // console.log(elFromHtml(html))
   repoIsWritable = repoIsWritable || false
   let rootEl
   let styleSheet
@@ -584,6 +584,15 @@ function structureContent(html, repoIsWritable) {
   }
 
   deleteAllComments(rootEl)
+
+  // Move child params to be siblings with parent element
+  rootEl.querySelectorAll('ul, ol').forEach(list => {
+    let ref = list
+    list.querySelectorAll('param').forEach(param => {
+      ref.parentNode.insertBefore(param, ref.nextSibling)
+      ref = param
+    })
+  })
 
   let restructured = document.createElement('main')
   if (styleSheet) restructured.appendChild(styleSheet.cloneNode(true))
@@ -610,6 +619,7 @@ function structureContent(html, repoIsWritable) {
         heading.parentElement?.insertBefore(codeWrapper, heading.nextSibling)
       }
     })
+
 
   // For compatibility with Juncture V2
   Array.from(rootEl?.querySelectorAll('p'))
@@ -985,7 +995,7 @@ function structureContent(html, repoIsWritable) {
     .forEach(seg => {
       if (seg.tagName === 'SECTION') return
       let id = seg.getAttribute('data-id') || ''
-      let para = seg.querySelector('p')
+      let para = seg.querySelector('p, ol, ul')
       let viewersDiv = seg.querySelector('.viewers')
       if (!viewersDiv) return
       
@@ -1056,9 +1066,13 @@ function structureContent(html, repoIsWritable) {
           viewerEl.appendChild(propsList(tagProps))
         } else if (slotName === 've-iframe') {
           setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
-        } else if (slotName === 've-image') {
-          setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'data-id':'', 'fit':'', src:'', 'zoom-on-scroll':''})
-          viewerEl.appendChild(propsList(tagProps))
+        } else if (slotName === 've-image' || slotName === 've-gallery') {
+          if (tagProps.length === 1) {
+            setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'data-id':'', 'fit':'', src:'', 'zoom-on-scroll':''})
+          } else {
+            setElProps(viewerEl, tagProps[0], {'zoom-on-scroll':''})
+            viewerEl.appendChild(propsList(tagProps))
+          }
         } else if (slotName === 've-knightlab-timeline') {
           setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
         } else if (slotName === 've-map') {
@@ -1203,7 +1217,7 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
 
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 
-        rootEl.querySelectorAll('p.active').forEach(p => p.classList.remove('active'))
+        rootEl.querySelectorAll('p.active, ol.active, ul.active').forEach(p => p.classList.remove('active'))
         currentActiveParagraph?.classList.add('active')
         
         // auto entity tagging
@@ -1257,7 +1271,7 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
   }, { root: null, threshold: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], rootMargin: `${topMargin ? -topMargin : 0}px 0px 0px 0px`})
 
   // target the elements to be observed
-  rootEl.querySelectorAll('p').forEach((paragraph) => observer.observe(paragraph))
+  rootEl.querySelectorAll('p, .segment > ol, .segment > ul').forEach((paragraph) => observer.observe(paragraph))
 }
 
 function mwImage(mwImg, width) {

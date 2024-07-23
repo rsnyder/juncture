@@ -291,7 +291,7 @@ ve-breadcrumbs {
 }
 
 .subtitle {
-  font-size: 1.2em;
+  font-size: 1.5em;
   line-height: 1;
   font-weight: 300;
 }

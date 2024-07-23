@@ -180,7 +180,7 @@
     formatted = formatted
       .replace(/\s+<\/li>/g, '</li>')
       .replace(/\s+<ve-entity-infobox/g, ' <ve-entity-infobox')
-      .replace(/(wc:.+)<em>(.+)<\/em>(.+)/g, '$1_$2_$3')
+      // .replace(/(wc:.+)<em>(.+)<\/em>(.+)/g, '$1_$2_$3')
       .replace(/class=""/g, '')
       .replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
     return formatted

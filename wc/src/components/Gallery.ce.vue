@@ -49,11 +49,15 @@
   const shadowRoot = computed(() => root?.value?.parentNode)
 
   const props = defineProps({
+    active: { type: Boolean },
+    base: { type: String },
+    caption: { type: Boolean, default: false },
     class: { type: String },
     data: { type: String },
     dialogWidth: { type: String, default: '100vw' },
     ghDir: { type: String},
-    caption: { type: Boolean, default: false }
+    height: { type: Number},
+    slot: { type: String}
   })
 
   const window = (self as any).window
@@ -66,6 +70,15 @@
   })
   const userCanUpdateRepo = ref(false)
   // watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
+
+  const source = computed(() => {
+    if (config.value.source) return config.value.source
+    else if (props.base) {
+      let [owner, repository, branch, ...dir] = props.base.split('/')
+      return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
+    }
+    return null
+  })
 
   const manifestUrls = ref<string[]>([])
   watch(manifestUrls, async (manifestUrls) => {
@@ -130,15 +143,47 @@
   const showDialog = ref(false)
   watch(showDialog, () => { dialog.open = showDialog.value })
 
-  function imageIdtoUrl(imageId:string) {
-    let imageIdParts = imageId.split('/')
-    let fname = imageIdParts[imageIdParts.length - 1]
+  function imageIdtoUrl(imageId: string) {
+    if (imageId.indexOf('http') === 0) return imageId
+    let imgSource, imgPath
+    if (imageId.indexOf(':') > 0) {
+      [imgSource, imgPath] = imageId.split(':')
+    } else imgPath = imageId
+    let imagePathParts = imgPath.split('/')
+    let fname = imagePathParts[imagePathParts.length - 1]
     let extSeparator = fname.lastIndexOf('.')
     let name = fname.slice(0, extSeparator)
     let ext = fname.slice(extSeparator + 1)
-    imageIdParts[imageIdParts.length - 1] = `${encodeURIComponent(name)}.${ext}`
-    imageId = imageIdParts.join('/')
-    return imageId.indexOf('http') === 0 ? imageId : `https://iiif.mdpress.io/${imageId}/manifest.json`
+    imagePathParts[imagePathParts.length - 1] = `${encodeURIComponent(name)}.${ext}`
+    imageId = imagePathParts.join('/')
+    imageId = imgSource 
+      ? `${imgSource}:${imagePathParts.join('/')}`
+      : `gh:${source.value.owner}/${source.value.repository}${source.value.dir}/${imagePathParts.join('/')}`
+    return `https://iiif.mdpress.io/${imageId}/manifest.json`
+  }
+
+  function parseImageDefStr(s:String): Object {
+    let tokens: string[] = []
+    // s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
+    s = s.replace(/”/g,'"').replace(/”/g,'"')
+    s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
+      if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
+      else tokens.push(token)
+    })
+    let parsed:any = {}
+    let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotate', 'seq' ]
+    tokens.filter(t => t !== 'image').forEach((token, idx) => {
+      if (token.indexOf('=') > 0) {
+        let i = token.indexOf('=')
+        let key = token.slice(0, i)
+        let value = token.slice(i+1)
+        parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+
+      } else {
+        parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
+      }
+    })
+    return parsed
   }
 
   function getImageData() {
@@ -159,7 +204,12 @@
       function parseSlot() {
         manifestUrls.value = Array.from(slot.querySelectorAll('li'))
         .map((li: any) => li.innerText)
-        .map((imageId:string) => imageIdtoUrl(imageId))
+        .map((liText:string) => parseImageDefStr(liText))
+        .map((imgObj:any) => {
+          // console.log(imgObj)
+          // imageIdtoUrl(imageId)
+          return imageIdtoUrl(imgObj.src)
+        })
       }
       parseSlot()
       new MutationObserver(
@@ -234,6 +284,7 @@
   }
 
   onMounted(() => {
+    console.log('Gallery mounted')
     user.value = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     dialog = shadowRoot.value?.querySelector('.dialog')
     dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )

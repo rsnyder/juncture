@@ -576,9 +576,13 @@ function structureContent(html, repoIsWritable) {
   let styleSheet
   if (html) {
     let doc = new DOMParser().parseFromString(html, 'text/html')
-    console.log(doc)
+        
     styleSheet = doc.head.querySelector('style') || doc.body.querySelector('style')
     console.log(styleSheet)
+
+    styleSheet = Array.from(doc.body.querySelector('p')).find(p => /^<style.*<\/style>$/.test(p.textContent.trim()))
+    console.log(styleSheet)
+
     if (styleSheet) document.head.appendChild(styleSheet)
     rootEl = doc.body
   } else {

@@ -580,10 +580,18 @@ function structureContent(html, repoIsWritable) {
     styleSheet = doc.head.querySelector('style') || doc.body.querySelector('style')
     console.log(styleSheet)
 
-    styleSheet = Array.from(doc.body.querySelector('p')).find(p => /^<style.*<\/style>$/.test(p.textContent.trim()))
+    styleSheet = Array.from(doc.body.querySelectorAll('p'))
+      .find(p => {
+        console.log(p)
+        return /^<style.*<\/style>$/.test(p.textContent.trim())
+    })
     console.log(styleSheet)
+    if (styleSheet) {
+      let ss = document.createElement('style')
+      ss.textContent = styleSheet.textContent
+      document.head.appendChild(ss)
+    }
 
-    if (styleSheet) document.head.appendChild(styleSheet)
     rootEl = doc.body
   } else {
     rootEl = document.querySelector('main')

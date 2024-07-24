@@ -1474,16 +1474,18 @@ function setViewersPosition() {
 }
 
 function mount(root, html) {  
+  root = root || document.body.querySelector('main')
+  console.log('mount', root)
+  html = html || root.innerHTML
+  console.log('html', html)
+  
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   if (window.config.source?.path && !window.config.source.dir) {
     let pathElems = window.config.source.path.split('/').filter(pe => pe)
     window.config.source.dir = `/${pathElems.slice(0,-1).join('/')}`
   }
   setMeta()
-  root = root || document.body.querySelector('main')
-  console.log('mount', root)
-  html = html || root.innerHTML
-  console.log('html', html)
+
   let articleWrapper = elFromHtml(structureContent(html))
   let article = articleWrapper.firstChild
   root.replaceWith(article)

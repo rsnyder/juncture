@@ -1481,7 +1481,9 @@ function mount(root, html) {
   }
   setMeta()
   root = root || document.body.querySelector('main')
+  console.log('mount', root)
   html = html || root.innerHTML
+  console.log('html', html)
   let articleWrapper = elFromHtml(structureContent(html))
   let article = articleWrapper.firstChild
   root.replaceWith(article)

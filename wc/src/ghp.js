@@ -569,31 +569,12 @@ function elFromHtml(html) {
 
 let isJunctureV1 = false
 
-function findStylesheet(html) {
-  console.log(html)
-  let el = elFromHtml(html)
-  console.log(el)
-  let styleSheet = el.querySelector('style')
-  if (styleSheet) return styleSheet
-  styleSheet = Array.from(el.childNodes)
-    .find(c => {
-      console.log(c)
-      let text = c.nodeValue?.trim() || ''
-      console.log(text)
-      // return false
-      return /^<style.*<\/style>$/.test(text)
-    })
-  return styleSheet
-}
-
 function structureContent(html, repoIsWritable) {
   // console.log(elFromHtml(html))
   repoIsWritable = repoIsWritable || false
 
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
-  console.log(rootEl)
-
-  let styleSheet = html ? findStylesheet(html) : null
+  let styleSheet = rootEl.querySelector('style')
   console.log(styleSheet)
 
   deleteAllComments(rootEl)
@@ -1478,7 +1459,7 @@ function mount(root, html) {
   console.log('mount', root)
   html = html || root.innerHTML
   console.log('html', html)
-  
+
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   if (window.config.source?.path && !window.config.source.dir) {
     let pathElems = window.config.source.path.split('/').filter(pe => pe)

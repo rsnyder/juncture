@@ -578,8 +578,8 @@ function findStylesheet(html) {
   styleSheet = Array.from(el.childNodes)
     .find(c => {
       console.log(c)
-      let text = c.item(0)?.nodeValue?.trim() || ''
-      console.log(text)
+      // let text = c.item(0)?.nodeValue?.trim() || ''
+      // console.log(text)
       return false
       // return /^<style.*<\/style>$/.test(p.textContent.trim())
     })

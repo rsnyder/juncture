@@ -22,3 +22,5 @@
 - [Docs](docs)
 - [Code tags](code)
 - [Juncture Syntax](juncture)
+
+- [Style](style)

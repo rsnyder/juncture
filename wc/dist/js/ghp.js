@@ -570,33 +570,11 @@ function elFromHtml(html) {
 let isJunctureV1 = false
 
 function structureContent(html, repoIsWritable) {
-  console.log(elFromHtml(html))
+  // console.log(elFromHtml(html))
   repoIsWritable = repoIsWritable || false
-  let rootEl
-  let styleSheet
-  if (html) {
-    let doc = new DOMParser().parseFromString(html, 'text/html')
 
-    styleSheet = doc.head.querySelector('style') || doc.body.querySelector('style')
-    console.log(styleSheet)
-
-    styleSheet = Array.from(doc.body.querySelectorAll('p'))
-      .find(p => {
-        console.log(p)
-        return /^<style.*<\/style>$/.test(p.textContent.trim())
-    })
-    console.log(styleSheet)
-    if (styleSheet) {
-      let ss = document.createElement('style')
-      ss.textContent = styleSheet.textContent
-      document.head.appendChild(ss)
-    }
-
-    rootEl = doc.body
-  } else {
-    rootEl = document.querySelector('main')
-  }
-  console.log(rootEl)
+  let rootEl = html ? elFromHtml(html) : document.querySelector('main')
+  let styleSheet = rootEl.querySelector('style')
 
   deleteAllComments(rootEl)
 
@@ -1476,14 +1454,16 @@ function setViewersPosition() {
 }
 
 function mount(root, html) {  
+  root = root || document.body.querySelector('main')
+  html = html || root.innerHTML
+
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   if (window.config.source?.path && !window.config.source.dir) {
     let pathElems = window.config.source.path.split('/').filter(pe => pe)
     window.config.source.dir = `/${pathElems.slice(0,-1).join('/')}`
   }
   setMeta()
-  root = root || document.body.querySelector('main')
-  html = html || root.innerHTML
+
   let articleWrapper = elFromHtml(structureContent(html))
   let article = articleWrapper.firstChild
   root.replaceWith(article)

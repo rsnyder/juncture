@@ -569,36 +569,32 @@ function elFromHtml(html) {
 
 let isJunctureV1 = false
 
+function findStylesheet(html) {
+  console.log(html)
+  let el = elFromHtml(html)
+  console.log(el)
+  let styleSheet = el.querySelector('style')
+  if (styleSheet) return styleSheet
+  styleSheet = Array.from(el.querySelectorAll('p'))
+    .find(p => {
+      console.log(p)
+      console.log(p.innerHtml.trim())
+      console.log(p.textContent.trim())
+      return false
+      // return /^<style.*<\/style>$/.test(p.textContent.trim())
+    })
+  return styleSheet
+}
+
 function structureContent(html, repoIsWritable) {
   // console.log(elFromHtml(html))
   repoIsWritable = repoIsWritable || false
-  let rootEl
-  let styleSheet
-  if (html) {
-    let doc = new DOMParser().parseFromString(html, 'text/html')
-    console.log(doc.body)
-    styleSheet = doc.head.querySelector('style') || doc.body.querySelector('style')
-    console.log(styleSheet)
 
-    styleSheet = Array.from(doc.body.querySelectorAll('p'))
-      .find(p => {
-        console.log(p)
-        console.log(p.textContent.trim())
-        return false
-        // return /^<style.*<\/style>$/.test(p.textContent.trim())
-      })
-    console.log(styleSheet)
-    if (styleSheet) {
-      let ss = document.createElement('style')
-      ss.textContent = styleSheet.textContent
-      document.head.appendChild(ss)
-    }
-
-    rootEl = doc.body
-  } else {
-    rootEl = document.querySelector('main')
-  }
+  let rootEl = html ? elFromHtml(html) : document.querySelector('main')
   console.log(rootEl)
+
+  let styleSheet = html ? findStylesheet(html) : null
+  console.log(styleSheet)
 
   deleteAllComments(rootEl)
 

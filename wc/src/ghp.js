@@ -575,7 +575,6 @@ function structureContent(html, repoIsWritable) {
 
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
   let styleSheet = rootEl.querySelector('style')
-  console.log(styleSheet?.textContent)
 
   deleteAllComments(rootEl)
 

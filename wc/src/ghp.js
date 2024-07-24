@@ -575,11 +575,11 @@ function findStylesheet(html) {
   console.log(el)
   let styleSheet = el.querySelector('style')
   if (styleSheet) return styleSheet
-  styleSheet = Array.from(el.querySelectorAll('p'))
-    .find(p => {
-      console.log(p)
-      console.log(p.innerHtml.trim())
-      console.log(p.textContent.trim())
+  styleSheet = Array.from(el.childNodes)
+    .find(c => {
+      console.log(c)
+      console.log(c.innerHTML.trim())
+      console.log(c.textContent.trim())
       return false
       // return /^<style.*<\/style>$/.test(p.textContent.trim())
     })

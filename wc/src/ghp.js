@@ -575,7 +575,7 @@ function structureContent(html, repoIsWritable) {
 
   let rootEl = html ? elFromHtml(html) : document.querySelector('main')
   let styleSheet = rootEl.querySelector('style')
-  console.log(styleSheet)
+  console.log(styleSheet?.textContent)
 
   deleteAllComments(rootEl)
 
@@ -1456,9 +1456,7 @@ function setViewersPosition() {
 
 function mount(root, html) {  
   root = root || document.body.querySelector('main')
-  console.log('mount', root)
   html = html || root.innerHTML
-  console.log('html', html)
 
   window.config = {...yaml.parse(window.options || ''), ...(window.jekyll || {}), ...(window.config || {})}
   if (window.config.source?.path && !window.config.source.dir) {

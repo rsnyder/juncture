@@ -570,21 +570,23 @@ function elFromHtml(html) {
 let isJunctureV1 = false
 
 function structureContent(html, repoIsWritable) {
-  console.log(elFromHtml(html))
+  // console.log(elFromHtml(html))
   repoIsWritable = repoIsWritable || false
   let rootEl
   let styleSheet
   if (html) {
     let doc = new DOMParser().parseFromString(html, 'text/html')
-
+    console.log(doc.body)
     styleSheet = doc.head.querySelector('style') || doc.body.querySelector('style')
     console.log(styleSheet)
 
     styleSheet = Array.from(doc.body.querySelectorAll('p'))
       .find(p => {
         console.log(p)
-        return /^<style.*<\/style>$/.test(p.textContent.trim())
-    })
+        console.log(p.textContent.trim())
+        return false
+        // return /^<style.*<\/style>$/.test(p.textContent.trim())
+      })
     console.log(styleSheet)
     if (styleSheet) {
       let ss = document.createElement('style')

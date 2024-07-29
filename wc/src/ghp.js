@@ -1060,8 +1060,9 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-iframe') {
           setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
         } else if (slotName === 've-image' || slotName === 've-gallery') {
+          console.log('ve-image', tagProps)
           if (tagProps.length === 1) {
-            setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'data-id':'', 'fit':'', src:'', 'zoom-on-scroll':''})
+            setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'data-id':'', 'fit':'', src:'', url:'', 'zoom-on-scroll':''})
           } else {
             setElProps(viewerEl, tagProps[0], {'zoom-on-scroll':''})
             viewerEl.appendChild(propsList(tagProps))

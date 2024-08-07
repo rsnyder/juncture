@@ -55,7 +55,7 @@
 
   if (window.location.search.includes('source')) {
     let [acct, repo, branch, ...path] = new URL(location.href).searchParams.get('source').split('/').filter(pe => pe)
-    window.jekyll.source = { owner: acct, repository: repo, branch: branch, dir: path.join('/') }
+    window.jekyll.source = { owner: acct, repository: repo, branch: branch || 'main', dir: path.join('/') }
     getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
       mount(document.body.firstChild, markdownToHtml(markdown))
       console.log(window.config)

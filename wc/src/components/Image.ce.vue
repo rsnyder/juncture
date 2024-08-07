@@ -124,7 +124,7 @@
     format = props.format || format || 'jpg'
     // console.log(`region=${region} size=${size} rotation=${rotation} quality=${quality} format=${format}`)
     url =`${itemInfo.service[0].id || itemInfo.service[0]['@id']}/${region}/${size}/${rotation}/${quality}.${format}`
-    // console.log(url)
+    console.log(url)
     return url
   })
 

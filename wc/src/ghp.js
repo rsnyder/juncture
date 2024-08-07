@@ -1062,7 +1062,7 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-image' || slotName === 've-gallery') {
           console.log('ve-image', tagProps)
           if (tagProps.length === 1) {
-            setElProps(viewerEl, tagProps[0], {caption:'', data:'', 'data-id':'', 'fit':'', src:'', url:'', 'zoom-on-scroll':''})
+            setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', 'fit':'', label:'', license:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
           } else {
             setElProps(viewerEl, tagProps[0], {'zoom-on-scroll':''})
             viewerEl.appendChild(propsList(tagProps))

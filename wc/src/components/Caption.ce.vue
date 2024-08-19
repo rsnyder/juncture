@@ -2,6 +2,7 @@
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import { getManifest } from '../utils';
+  import { marked } from 'marked'
 
   const root = ref<HTMLElement | null>(null)
   const details = ref<HTMLElement | null>(null)
@@ -93,19 +94,24 @@
     else if (props.src) getManifest(props.src).then((data) => manifest.value = data)
   })
 
+  function htmlFromMarkdown(md) {
+    let html = md ? marked.parse(md).slice(3,-5) : ''
+    return html
+  }
+
 </script>
 
 <template>
   <div class="caption" ref="root">
-    <div class="label">{{ caption || label }}</div>
+    <div class="label clamp" v-html="htmlFromMarkdown(caption || label)"></div>
     
     <sl-dropdown ref="details" distance="12" skidding="-30" style="align-self: flex-start;">
       <div slot="trigger" style="display:flex; flex-direction: column;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
       </div>
       <div class="details">
-        <div class="label" v-html="caption || label"></div>
-        <div class="summary" v-html="summary"></div>
+        <div class="label" v-html="htmlFromMarkdown(caption || label)"></div>
+        <div class="summary" v-html="htmlFromMarkdown(summary || '')"></div>
         <div v-if="attribution" class="attribution" v-html="attribution"></div>
         <div v-if="photoDetails" class="photo-details">{{ photoDetails }}</div>
         <div v-if="metadata.size" class="photo-details">{{ metadata.size }}</div>
@@ -136,9 +142,24 @@
     font-weight: 450;
     line-height: 1.1;
   }
+  .details .label {
+    font-size: 1.1em;
+    font-weight: 500;
+    line-height: 1.1;
+  }
+
+  .clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    /* margin-bottom: 6px; */
+  }
+
   .summary {
     font-size: 1em;
     font-weight: normal;
+    line-height: 1.2;
   }
   .photo-details,
   .attribution {

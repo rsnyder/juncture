@@ -183,7 +183,6 @@
   })
 
   watch(imgUrl, () => {
-    console.log('imgUrl', imgUrl.value)
     if (background.value) {
       background.value.style.backgroundImage = `url("${imgUrl.value}")`
       background.value.style.backgroundPosition = props.position

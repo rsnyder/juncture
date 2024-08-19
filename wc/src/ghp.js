@@ -994,7 +994,6 @@ function structureContent(html, repoIsWritable) {
       
       const params = Array.from(viewersDiv.querySelectorAll(':scope > param'))
         .map((param, idx) => ({ ...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} }))
-      
       let idx = params.length
       let parent = viewersDiv.parentElement
       while (parent && parent.tagName !== 'ARTICLE') {
@@ -1060,9 +1059,8 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-iframe') {
           setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
         } else if (slotName === 've-image' || slotName === 've-gallery') {
-          console.log('ve-image', tagProps)
           if (tagProps.length === 1) {
-            setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', 'fit':'', label:'', license:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
+            setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', 'fit':'', label:'', license:'', manifest:'', refresh:'', region:'', seq:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
           } else {
             setElProps(viewerEl, tagProps[0], {'zoom-on-scroll':''})
             viewerEl.appendChild(propsList(tagProps))

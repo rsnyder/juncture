@@ -38,7 +38,7 @@
   import OpenSeadragon, { TileSource } from 'openseadragon'
   import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
-  import { iiifServer, getManifest, sha256 } from '../utils'
+  import { iiifServer, getManifest, mwImage, sha256 } from '../utils'
 
   import { Annotator } from '../annotator'
 
@@ -56,8 +56,10 @@
     fit: { type: String, default: 'contain' },
     format: { type: String },
     height: { type: Number },
+    manifest: { type: String },
     noCaption: { type: Boolean, default: false },
     options: { type: String },
+    refresh: { type: Boolean, default: false },
     region: { type: String },
     repoIsWritable: { type: Boolean, default: false },
     quality: { type: String },
@@ -124,7 +126,6 @@
     format = props.format || format || 'jpg'
     // console.log(`region=${region} size=${size} rotation=${rotation} quality=${quality} format=${format}`)
     url =`${itemInfo.service[0].id || itemInfo.service[0]['@id']}/${region}/${size}/${rotation}/${quality}.${format}`
-    console.log(url)
     return url
   })
 
@@ -139,6 +140,11 @@
     return ancestors
   }
 
+  const refresh = computed(() => {
+    let refreshArg = new URLSearchParams(window.location.search).get('refresh')
+    return props.refresh || refreshArg === 'true' || refreshArg === ''
+  })
+
   const osdWidth = ref<number>(0)
   watch(osdWidth, () => {
     resize()
@@ -152,14 +158,20 @@
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest)
-        : fetch(`https://${iiifServer}/manifest/`, {
+        : fetch(`https://${iiifServer}/manifest/${refresh.value ? '?refresh' : ''}`, {
           method: 'POST', 
           body: JSON.stringify(
             Object.fromEntries(
               Object.entries(def)
               .filter(([k,v]) => ['attribution', 'caption', 'description', 'fit', 'label', 'license', 'summary', 'title', 'url'].includes(k))
               .map(([k,v]) => {
-                if (k === 'url' && (v as string).indexOf('http') < 0) v = `${ghBaseurl.value}/${v}`
+                if (k === 'url' && (v as string).indexOf('http') < 0) {
+                  v = (v as string).indexOf('wc:') === 0
+                    ? mwImage((v as string).slice(3), 0)
+                    : (v as string).indexOf('gh:') === 0
+                      ? `${ghBaseurl.value}/${(v as string).slice(3)}`
+                      : `${ghBaseurl.value}/${v}`
+                }
                 return [k, v]
               })
             )) 
@@ -234,7 +246,7 @@
 
     function getImageDefs () {
       let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'region', 'rotate', 'seq', 'src', 'summary', 'title', 'url'])
-      let imageDefFromProps = (props.src || props.url) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
+      let imageDefFromProps = (props.src || props.url || props.manifest) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
       Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
         .map((li:HTMLLIElement) => parseImageDefStr(li.textContent || ''))
@@ -298,6 +310,7 @@
   }
 
   onMounted(() => {
+    console.log(`refresh=${refresh.value}`)
     evalProps()
   })
 

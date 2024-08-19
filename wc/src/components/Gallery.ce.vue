@@ -57,6 +57,7 @@
     dialogWidth: { type: String, default: '100vw' },
     ghDir: { type: String},
     height: { type: Number},
+    repoIsWritable: { type: Boolean, default: false },
     slot: { type: String}
   })
 
@@ -158,7 +159,7 @@
     imageId = imagePathParts.join('/')
     imageId = imgSource 
       ? `${imgSource}:${imagePathParts.join('/')}`
-      : `gh:${source.value.owner}/${source.value.repository}${source.value.dir}/${imagePathParts.join('/')}`
+      : `gh:${source.value?.owner}/${source.value?.repository}${source.value?.dir}/${imagePathParts.join('/')}`
     return `https://iiif.mdpress.io/${imageId}/manifest.json`
   }
 
@@ -284,7 +285,7 @@
   }
 
   onMounted(() => {
-    console.log('Gallery mounted')
+    // console.log('Gallery mounted')
     user.value = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     dialog = shadowRoot.value?.querySelector('.dialog')
     dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )

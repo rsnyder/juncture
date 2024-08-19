@@ -310,7 +310,6 @@
   }
 
   onMounted(() => {
-    console.log(`refresh=${refresh.value}`)
     evalProps()
   })
 

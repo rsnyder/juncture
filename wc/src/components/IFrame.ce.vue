@@ -16,15 +16,16 @@
       :webkitallowfullscreen="allowfullscreen" 
       :width="width" 
     ></iframe>
-    <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
+    <div class="caption" v-html="htmlFromMarkdown(caption)"></div>
   </div>
 
 </template>
   
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, toRaw, watch } from 'vue'
-  
+  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { marked } from 'marked'
+
   const props = defineProps({
     allow: { type: String },
     allowfullscreen: { type: Boolean },
@@ -48,26 +49,21 @@
     right: { type: Boolean },
     sticky: { type: Boolean  }
   })
-  watch(props, () => setDimensions() )
 
   const main = ref<HTMLElement | null>(null)
   const host = computed(() => (main.value?.getRootNode() as any)?.host)
-  const captionEl = ref<HTMLElement | null>(null)
-  watch (captionEl, () => setDimensions() )
+  watch(host, (host) => { new ResizeObserver(() => setDimensions()).observe(host.parentElement) })
 
-  const width = ref(0)
-  const height = ref(0)
+  const width = ref(props.width)
+  const height = ref(props.height)
+  watch(height, () => { if (host.value) host.value.style.height = `${height.value}px` })
+
+  function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }
 
   function setDimensions() {
-    // console.log(`setDimensions: props=${props.width}x${props.height} container=${host.value.parentElement.clientWidth}x${host.value.parentElement.clientHeight}`)
-    height.value = (props.height <= host.value.parentElement.clientHeight ? props.height : host.value.parentElement.clientHeight) - (captionEl.value?.clientHeight || 0)
+    height.value = (props.height <= host.value.parentElement.clientHeight ? props.height : host.value.parentElement.clientHeight)
     width.value = props.width || host.value.parentElement.clientWidth || 0
   }
-
-  watch(host, (host) => {
-    new ResizeObserver(() => setDimensions()).observe(host.parentElement)
-    setDimensions()
-  })
 
 </script>
 
@@ -78,8 +74,7 @@
   .main {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
+    background-color: white;
   }
   
   .caption {
@@ -88,8 +83,8 @@
     font-size: 1em;
     font-weight: 500;
     text-align: left;
-    margin-bottom: 0.3em;
     line-height: 1.3;
+    margin-bottom: 0.3em;
   }
 
 </style>

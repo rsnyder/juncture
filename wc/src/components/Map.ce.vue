@@ -615,7 +615,8 @@
               let serializedEntityData = JSON.stringify(entityData).replace(/"/g, '&quot;')
               let html = `<ve-info-card data="${serializedEntityData}"></ve-info-card>`
               layer.bindPopup(html)
-            } else {
+            } else if (feature.properties.label || feature.properties.title || feature.properties.description || feature.properties['marker-description'] || feature.properties.image ) {
+              if (feature.properties.url) feature.properties.image = feature.properties.url
               // console.log(toRaw(feature.properties))
               let stringifiedFeatureData = JSON.stringify(feature.properties).replace(/"/g, '&quot;')
               let html = `<ve-info-card data="${stringifiedFeatureData}"></ve-info-card>`

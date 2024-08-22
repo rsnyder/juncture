@@ -1,14 +1,53 @@
 <template>
 
-  <div ref="root">
+<div ref="main" class="main" :style="`visibility:${playerHeight ? 'visible' : 'hidden'}`">
 
-    <div v-if="isYouTube" id="youtube-player" style="width:100%;"></div>
-
-    <video v-if="manifest" ref="html5Player" id="html5-player" controls playsinline :muted="props.muted" :autoplay="props.autoplay" :poster="props.poster">
+    <div v-if="isYouTube"
+      id="youtube-player"
+      :style="{
+        width: '100%',
+        height: playerHeight + 'px',
+        position: 'relative'
+      }">
+      <!--
+      <div
+        class="poster"
+        :style="{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          zIndex: showPoster ? 2 : 0,
+          backgroundImage,
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center'
+        }"
+        @click="showPoster = false"
+      ></div>
+      -->
+      <div
+        class="player" 
+        :style="{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+        }"
+        ></div>
+    </div>
+    <video v-if="manifest" ref="html5Player" controls playsinline 
+      id="html5-player" 
+      :muted="props.muted" 
+      :autoplay="props.autoplay" 
+      :poster="props.poster"
+    >
       <source :src="src" :type="mime"/>
     </video>
-
-    <div v-if="caption" class="caption">{{ caption }}</div>
+    <div class="caption" ref="captionEl" v-html="htmlFromMarkdown(caption)"></div>
   
   </div>
 
@@ -24,12 +63,16 @@
 
   import EventBus from './EventBus'
 
+  import { marked } from 'marked'
+
   const props = defineProps({
     alt: { type: String },
     autoplay: { type: Boolean, default: false },
     caption: { type: String },
     class: { type: String },
     end: { type: String },
+    fit: { type: String },
+    height: { type: Number, default: 650},
     id: { type: String },
     muted: { type: Boolean, default: true },
     noCaption: { type: Boolean },
@@ -37,13 +80,16 @@
     src: { type: String },
     start: { type: String },
     sync: { type: Boolean, default: false},
-    vid: { type: String }
+    vid: { type: String },
+    width: { type: Number }
   })
 
-  const root = ref<HTMLElement | null>(null)
-  const shadowRoot = computed(() => root?.value?.parentNode)
-  const host = computed(() => (root.value?.getRootNode() as any)?.host)
+  const main = ref<HTMLElement | null>(null)
+  const shadowRoot = computed(() => main?.value?.parentNode)
+  const host = computed(() => (main.value?.getRootNode() as any)?.host)
+
   const html5Player = ref<HTMLVideoElement | null>(null)
+  const captionEl = ref<HTMLElement | null>(null)
   watch(html5Player, (html5Player) => {
     mediaPlayer = html5Player
     mediaPlayer.addEventListener('play', () => {
@@ -58,6 +104,7 @@
     // console.log(props.src, /^[A-Za-z0-9-]+$/.test(props.src || ''))
     return props.src?.includes('youtube.com') || props.id || props.vid || /^[A-Za-z0-9-]+$/.test(props.src || '')
   })
+  const showPoster = ref(false)
 
   const isVimeo = computed(() => props.src?.includes('vimeo.com'))
   const isHTML5 = computed(() => !isYouTube.value && !isVimeo.value)
@@ -78,6 +125,9 @@
       : null
   })
   // watch (youtubeId, (youtubeId) => { console.log(`youtubeId=${youtubeId}`)})
+  const playerHeight = ref(0)
+  const backgroundImage = computed(() => `url("https://img.youtube.com/vi/${youtubeId.value}/maxresdefault.jpg")` )
+
   const mime = computed(() => {
     let fileExtension = src.value?.split('#')[0].split('.').pop()
     return fileExtension === 'mp4'
@@ -92,7 +142,21 @@
   const isPlaying = ref(false)
   const firstPlay = ref(false)
 
+  const width = ref(props.width)
+  const height = ref(props.height || host.value.parentElement.clientHeight || 0) 
+  watch(height, () => { 
+    if (host.value) host.value.style.height = `${height.value}px` 
+    if (main.value) main.value.style.height = `${height.value}px` 
+  })
+
+  function setDimensions() {
+    height.value = (props.height <= host.value.parentElement.clientHeight ? props.height : host.value.parentElement.clientHeight)
+    width.value = props.width || host.value.parentElement.clientWidth || 0
+  }
+
   watch (host, async () => {
+    youtubeMetadata(youtubeId.value)
+    new ResizeObserver(() => setDimensions()).observe(host.value.parentElement)
     let videoType = isYouTube.value ? 'youtube' : isVimeo.value ? 'vimeo' : 'html5'
     if (videoType === 'html5' && !manifest.value && props.src) manifest.value = await getManifest(props.src)
     addInteractionHandlers()
@@ -209,16 +273,25 @@
     5 (video cued)
   */
   async function initYoutubePlayer() {
-    let playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-    if (youtubeId.value && playerEl) {
+    let playerWrapperEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
+    if (youtubeId.value && playerWrapperEl) {
       let metadata = await youtubeMetadata(youtubeId.value)
   
       if (host.value) new ResizeObserver(() => { 
-        playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-        let width = playerEl?.clientWidth
-        let height =  Math.round(width / metadata.aspect)
-        playerEl.style.height = `${height}px`
-       } ).observe(host.value)
+        // playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
+        let viewerHeight = height.value
+        let viewerWidth = playerWrapperEl?.clientWidth
+        let videoHeight = Math.round(viewerWidth / metadata.aspect)
+        let captionHeight = captionEl.value?.clientHeight || 0
+
+        // console.log(`fit=${props.fit} videoHeight=${videoHeight} captionHeight=${captionHeight} viewerHeight=${viewerHeight} viewerWidth=${viewerWidth}`)
+        
+        playerHeight.value = props.fit === 'cover' ? viewerHeight - captionHeight: videoHeight
+        console.log(`playerHeight=${playerHeight.value}`)
+      }).observe(host.value)
+
+      playerWrapperEl.style.height = playerHeight.value + 'px'
+      let playerEl = playerWrapperEl.querySelector('.player')
 
       mediaPlayer = YouTubePlayer(
         playerEl as HTMLElement, {
@@ -295,6 +368,7 @@
     let resp = await fetch(url)
     let data:any = await resp.json()
     data.aspect = data.width/data.height
+    // console.log('youtubeMetadata', data)
     return data
   }
 
@@ -371,6 +445,8 @@
 
   }
 
+  function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }
+
 </script>
 
 <style>
@@ -382,9 +458,24 @@
     background-color: inherit;
   }
 
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
+
   video {
     width: 100%;
     height: auto;
+  }
+
+  .caption {
+    padding: 0.3em;
+    width: 100%;
+    font-size: 1em;
+    font-weight: 500;
+    text-align: left;
+    line-height: 1.3;
+    margin-bottom: 0.3em;
   }
 
 </style>

@@ -4,7 +4,7 @@
     
     <div class="label" v-html="label"></div>
     <div class="description" v-html="description"></div>
-    <div v-if="image" class="image" :style="{backgroundImage, width: thumbnailWidth}" @click="imageSelected"></div>
+    <div class="image" :style="{backgroundImage, width: thumbnailWidth}" @click="imageSelected"></div>
   
   </div>
   
@@ -23,7 +23,7 @@
   import EventBus from './EventBus'
 
   function imageSelected() { 
-    EventBus.emit('imageSelected', {src:src.value})
+    // EventBus.emit('imageSelected', {src:src.value})
   }
 
   const props = defineProps({
@@ -47,7 +47,8 @@
   const image = computed(() => data.value.image || props.image)
   const href = computed(() => data.value.href || props.href)
 
-  const backgroundImage = computed(() => image.value && `url('${encodeUrl(image.value)}')`)
+  // const backgroundImage = computed(() => image.value && `url('${encodeUrl(image.value)}')`)
+  const backgroundImage = computed(() => image.value && `url('${image.value}')`)
   const thumbnailWidth = computed(() => `${host.value?.clientWidth * .33}px`)
 
   let dialog: any
@@ -59,11 +60,6 @@
     let encoded = `${parts.slice(0,-1).join('/')}/${encodeURIComponent(parts[parts.length-1])}`
     return encoded
   }
-
-  onMounted(() => {
-    // dialog = shadowRoot.value?.querySelector('.dialog')
-    // dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
-  })
 
 </script>
 

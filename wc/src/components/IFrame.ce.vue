@@ -2,11 +2,12 @@
 
   <div ref="main" class="main">
     <iframe
+      ref="iframeEl"
       :allow="allow" 
       :allowfullscreen="allowfullscreen" 
       :allowtransparency="allowtransparency" 
       :frameborder="frameborder" 
-      :height="height" 
+      :height="height - (captionEl?.clientHeight || 0)" 
       :loading="loading"
       :mozallowfullscreen="allowfullscreen" 
       :msallowfullscreen="allowfullscreen" 
@@ -16,7 +17,7 @@
       :webkitallowfullscreen="allowfullscreen" 
       :width="width" 
     ></iframe>
-    <div class="caption" v-html="htmlFromMarkdown(caption)"></div>
+    <div v-if="caption" ref="captionEl" class="caption" v-html="htmlFromMarkdown(caption)"></div>
   </div>
 
 </template>
@@ -33,37 +34,38 @@
     allowtransparency: { type: Boolean, default: true },
     caption: { type: String },
     frameborder: { type: Number, default: 0 },
-    height: { type: Number, default: 650},
+    height: { type: Number },
     loading: { type: String, default: 'eager' }, // eager or lazy
     name: { type: String },
     referrerpolicy: { type: String }, // no-referrer, no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin-when-cross-origin, or unsafe-url 
     sandbox: { type: String }, // allow-forms, allow-pointer-lock, allow-popups, allow-same-origin, allow-scripts, or allow-top-navigation 
     src: { type: String }, // URL
     srcdoc: { type: String }, // HTML
-    width: { type: Number },
-
-    // Positioning props
-    position: { type: String },
-    full: { type: Boolean },
-    left: { type: Boolean  },
-    right: { type: Boolean },
-    sticky: { type: Boolean  }
+    width: { type: Number }
   })
+
+  watch(props, () => { setDimensions() })
 
   const main = ref<HTMLElement | null>(null)
   const host = computed(() => (main.value?.getRootNode() as any)?.host)
-  watch(host, (host) => { new ResizeObserver(() => setDimensions()).observe(host.parentElement) })
+  watch(host, (host) => { new ResizeObserver(() => setDimensions()).observe(host) })
 
-  const width = ref(props.width)
-  const height = ref(props.height)
-  watch(height, () => { if (host.value) host.value.style.height = `${height.value}px` })
+  const captionEl = ref<HTMLElement | null>(null)
 
-  function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }
+  const definedWidth = ref(props.width || (host.value?.style.width && host.value.clientWidth))
+  const definedHeight = ref(props.height || (host.value?.style.height && host.value.clientHeight))
+
+  const width = ref(definedWidth.value || host.value?.clientWidth)
+  const height = ref(definedHeight.value || width.value)
 
   function setDimensions() {
-    height.value = (props.height <= host.value.parentElement.clientHeight ? props.height : host.value.parentElement.clientHeight)
-    width.value = props.width || host.value.parentElement.clientWidth || 0
+    definedWidth.value = props.width || (host.value.style.width && host.value.clientWidth)
+    definedHeight.value = props.height || (host.value.style.height && host.value.clientHeight)
+    width.value = definedWidth.value || host.value.clientWidth
+    height.value  = (definedHeight.value || width.value)
   }
+
+  function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }
 
 </script>
 
@@ -71,10 +73,19 @@
 
   * { box-sizing: border-box; }
 
+  :host {
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   .main {
     display: flex;
     flex-direction: column;
     background-color: white;
+    width: 100% !important
   }
   
   .caption {

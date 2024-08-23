@@ -241,7 +241,7 @@ export async function getEntityData(qids: string[], language:string = 'en') {
   return Object.fromEntries(qids.filter(qid => window.entityData[qid]).map(qid => [qid,window.entityData[qid]]))
 }
 
-export function mwImage(mwImg:string, width:number) {
+export function mwImage(mwImg:string, width:number = 0) {
   // Converts Wikimedia commons image URL to a thumbnail link
   mwImg = (Array.isArray(mwImg) ? mwImg[0] : mwImg).replace(/Special:FilePath\//, 'File:').split('File:').pop()
   mwImg = decodeURIComponent(mwImg).replace(/ /g,'_')
@@ -249,7 +249,7 @@ export function mwImage(mwImg:string, width:number) {
   const extension = mwImg.split('.').pop()
   let url = `https://upload.wikimedia.org/wikipedia/commons${width ? '/thumb' : ''}`
   url += `/${_md5.slice(0,1)}/${_md5.slice(0,2)}/${mwImg}`
-  if (width) {
+  if (width > 0) {
     url += `/${width}px-${mwImg}`
     if (extension === 'svg') {
       url += '.png'

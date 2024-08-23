@@ -154,7 +154,7 @@ const components = {
     've-iframe': {
       booleans: new Set(['allow-full-screen', 'allow-transparency', 'full', 'left', 'right', 'sticky']),
       class: new Set(),
-      positional: ['src'],
+      positional: ['src', 'caption'],
       ignore: new Set()
     },
     've-image': {
@@ -253,7 +253,7 @@ const components = {
     've-iframe': {
       booleans: new Set(['allow', 'allowfullscreen', 'full', 'left', 'right', 'sticky']),
       class: new Set(),
-      positional: ['src'],
+      positional: ['src', 'caption'],
       ignore: new Set()
     },
     've-image': {
@@ -1057,7 +1057,7 @@ function structureContent(html, repoIsWritable) {
           setElProps(viewerEl, tagProps[0], {caption:''})
           viewerEl.appendChild(propsList(tagProps))
         } else if (slotName === 've-iframe') {
-          setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', frameborder:'', loading:'', name:'', src:''})
+          setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', caption:'', frameborder:'', loading:'', name:'', src:''})
         } else if (slotName === 've-image' || slotName === 've-gallery') {
           if (tagProps.length === 1) {
             setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', 'fit':'', label:'', license:'', manifest:'', refresh:'', region:'', seq:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
@@ -1073,7 +1073,7 @@ function structureContent(html, repoIsWritable) {
         } else if (slotName === 've-plant-specimen') {
           setElProps(viewerEl, tagProps[0], {caption:'', eid:'', jpid:'', max:'', qid:'', 'taxon-name':'', wdid:''})
         } else if (slotName === 've-video') {
-          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', 'data-id':'', end:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
+          setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', 'data-id':'', end:'', fit:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
         } else if (slotName === 've-visjs') {
           setElProps(viewerEl, tagProps[0], {caption:'', edges:'', hierarchical:'', nodes:'', title:'caption', url:''})
         } else if (slotName === 'data') {

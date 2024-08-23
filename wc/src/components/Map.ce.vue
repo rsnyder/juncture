@@ -38,7 +38,7 @@
       import 'leaflet.smoothwheelzoom'
       import { WarpedMapLayer } from '@allmaps/leaflet'
 
-      import { isQid, getEntity, getEntityData, getManifest, kebabToCamel, metadataAsObj, isMobile, loadManifests } from '../utils'
+      import { isQid, getEntity, getEntityData, getManifest, kebabToCamel, mwImage, isMobile, loadManifests } from '../utils'
       import EventBus from './EventBus'
 
       const window = (self as any).window
@@ -557,7 +557,8 @@
                 : [100, 100]
               let style = `width:${width}px;height:${height}px;`
               if (_props.circle) style += `border-radius:50%;border:4px solid ${_props.color || '#555555'};`
-              let img = `<img src="${_props.url}" style="${style}"/>`
+              let imgUrl = _props.url.indexOf('wc:') === 0 ? mwImage(_props.url.slice(3), 108) : _props.url
+              let img = `<img src="${imgUrl}" style="${style}"/>`
               marker = new L.Marker(_latlng, {
                 icon: L.divIcon({
                   html: img,

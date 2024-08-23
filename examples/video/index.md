@@ -4,7 +4,8 @@
 
 ## Basic
 
-[Basic](basic)
+- [Basic](basic)
+- [Basic Juncture 1](basic-v1)
 
 ## Synchronize video with text
 

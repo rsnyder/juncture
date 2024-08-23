@@ -4,6 +4,7 @@
 
     <div v-if="isYouTube"
       id="youtube-player"
+      ref-="youtubePlayer"
       :style="{
         width: '100%',
         height: playerHeight + 'px',
@@ -47,7 +48,7 @@
     >
       <source :src="src" :type="mime"/>
     </video>
-    <div class="caption" ref="captionEl" v-html="htmlFromMarkdown(caption)"></div>
+    <div v-if="caption" class="caption" ref="captionEl" v-html="caption"></div>
   
   </div>
 
@@ -68,11 +69,11 @@
   const props = defineProps({
     alt: { type: String },
     autoplay: { type: Boolean, default: false },
-    caption: { type: String },
+    caption: { type: String, default: null },
     class: { type: String },
     end: { type: String },
     fit: { type: String },
-    height: { type: Number, default: 650},
+    height: { type: Number },
     id: { type: String },
     muted: { type: Boolean, default: true },
     noCaption: { type: Boolean },
@@ -87,6 +88,9 @@
   const main = ref<HTMLElement | null>(null)
   const shadowRoot = computed(() => main?.value?.parentNode)
   const host = computed(() => (main.value?.getRootNode() as any)?.host)
+
+  const caption = ref(props.caption && htmlFromMarkdown(props.caption))
+  // watch(caption, () => { console.log(`caption="${caption.value}"`) })
 
   const html5Player = ref<HTMLVideoElement | null>(null)
   const captionEl = ref<HTMLElement | null>(null)
@@ -142,20 +146,22 @@
   const isPlaying = ref(false)
   const firstPlay = ref(false)
 
-  const width = ref(props.width)
-  const height = ref(props.height || host.value.parentElement.clientHeight || 0) 
-  watch(height, () => { 
-    if (host.value) host.value.style.height = `${height.value}px` 
-    if (main.value) main.value.style.height = `${height.value}px` 
-  })
+  const definedWidth = ref(props.width || (host.value?.style.width && main.value?.clientWidth))
+  const definedHeight = ref(props.height || (host.value?.style.height && main.value?.clientHeight))
+
+  const width = ref(definedWidth.value || host.value?.clientWidth)
+  const height = ref(definedHeight.value || width.value)
 
   function setDimensions() {
-    height.value = (props.height <= host.value.parentElement.clientHeight ? props.height : host.value.parentElement.clientHeight)
-    width.value = props.width || host.value.parentElement.clientWidth || 0
+    definedWidth.value = props.width || (host.value.style.width && main.value?.clientWidth)
+    definedHeight.value = props.height || (host.value.style.height && main.value?.clientHeight)
+    width.value = definedWidth.value || main.value?.clientWidth
+    height.value  = (definedHeight.value || playerHeight.value || width.value)
+    console.log(`setDimensions: width=${width.value} height=${height.value} definedWidth=${definedWidth.value} definedHeight=${definedHeight.value}`)
   }
 
   watch (host, async () => {
-    youtubeMetadata(youtubeId.value)
+    // youtubeMetadata(youtubeId.value)
     new ResizeObserver(() => setDimensions()).observe(host.value.parentElement)
     let videoType = isYouTube.value ? 'youtube' : isVimeo.value ? 'vimeo' : 'html5'
     if (videoType === 'html5' && !manifest.value && props.src) manifest.value = await getManifest(props.src)
@@ -276,18 +282,17 @@
     let playerWrapperEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
     if (youtubeId.value && playerWrapperEl) {
       let metadata = await youtubeMetadata(youtubeId.value)
+      if (props.caption === null) caption.value = metadata.title
   
       if (host.value) new ResizeObserver(() => { 
-        // playerEl = shadowRoot.value?.querySelector('#youtube-player') as HTMLElement
-        let viewerHeight = height.value
         let viewerWidth = playerWrapperEl?.clientWidth
         let videoHeight = Math.round(viewerWidth / metadata.aspect)
         let captionHeight = captionEl.value?.clientHeight || 0
+        playerHeight.value = definedHeight.value || (videoHeight + captionHeight)
+        if (main.value) main.value.style.height = `${playerHeight.value}px`
 
-        // console.log(`fit=${props.fit} videoHeight=${videoHeight} captionHeight=${captionHeight} viewerHeight=${viewerHeight} viewerWidth=${viewerWidth}`)
+        console.log(`videoHeight=${videoHeight} captionHeight=${captionHeight} viewerWidth=${viewerWidth} playerHeight=${playerHeight.value}`)
         
-        playerHeight.value = props.fit === 'cover' ? viewerHeight - captionHeight: videoHeight
-        console.log(`playerHeight=${playerHeight.value}`)
       }).observe(host.value)
 
       playerWrapperEl.style.height = playerHeight.value + 'px'
@@ -453,19 +458,19 @@
 
   * { box-sizing: border-box; }
 
-  :host {
-    display: block;
-    background-color: inherit;
-  }
-
   .main {
     display: flex;
     flex-direction: column;
+    background-color: inherit;
   }
 
   video {
     width: 100%;
     height: auto;
+  }
+
+  #youtube-player {
+    flex-grow: 1;
   }
 
   .caption {

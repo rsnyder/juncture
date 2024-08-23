@@ -61,7 +61,6 @@
   }
 
   function mwURL(file:string) {
-    // Converts Wikimedia commons image URL to a thumbnail link
     file = decodeURIComponent(file).replace(/ /g,'_')
     const _md5 = Md5(file)
     let url = `https://upload.wikimedia.org/wikipedia/commons`

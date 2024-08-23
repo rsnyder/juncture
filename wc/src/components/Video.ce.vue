@@ -151,13 +151,14 @@
 
   const width = ref(definedWidth.value || host.value?.clientWidth)
   const height = ref(definedHeight.value || width.value)
+  watch(height, (height) => { if (main.value) main.value.style.height = `${height}px` })
 
   function setDimensions() {
     definedWidth.value = props.width || (host.value.style.width && main.value?.clientWidth)
     definedHeight.value = props.height || (host.value.style.height && main.value?.clientHeight)
     width.value = definedWidth.value || main.value?.clientWidth
     height.value  = (definedHeight.value || playerHeight.value || width.value)
-    console.log(`setDimensions: width=${width.value} height=${height.value} definedWidth=${definedWidth.value} definedHeight=${definedHeight.value}`)
+    // console.log(`setDimensions: width=${width.value} height=${height.value} definedWidth=${definedWidth.value} definedHeight=${definedHeight.value}`)
   }
 
   watch (host, async () => {

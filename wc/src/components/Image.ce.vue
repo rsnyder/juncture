@@ -29,7 +29,7 @@
       <ve-caption v-if="manifests.length && !noCaption" 
         :manifest="manifests[selected]" 
         :caption="caption"
-        :description="description"
+        :description="src && description"
         :annoid="annoid">
       </ve-caption>
     </div>

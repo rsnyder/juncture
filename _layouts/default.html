@@ -15,8 +15,9 @@
 
 <script type="module">
 
-    import { mount, getMarkdown, markdownToHtml } from 'https://rdsnyder.github.io/juncture/wc/src/ghp.js'
-    
+    // import { mount, getMarkdown, markdownToHtml } from 'https://rdsnyder.github.io/juncture/wc/src/ghp.js'
+    import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/wc/src/ghp.js'
+
     let referrer = document.referrer ? new URL(document.referrer) : null
   
     if (window.location.search.includes('source')) {

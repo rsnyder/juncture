@@ -292,7 +292,7 @@ function convertTags(rootEl) {
         codeEl.parentElement.removeAttribute('id')
         codeEl.parentElement.removeAttribute('data-id')
         codeEl.parentElement.removeAttribute('class')
-        codeEl.parentElement.parentElement.className = 'segment'
+        if (codeEl.parentElement.parentElement) codeEl.parentElement.parentElement.className = 'segment'
         if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
           codeEl.parentElement.replaceWith(codeEl)
         }
@@ -975,7 +975,7 @@ function mount(mountPoint, html) {
  
   console.log('mountPoint', mountPoint)
   console.log('html', html)
-  
+
   let article = articleFromHtml(html)
 
   mountPoint.replaceWith(article)

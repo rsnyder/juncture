@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <base href="/juncture/" />
+    <base href="/" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Juncture Workbench</title>
@@ -54,9 +54,7 @@
       </div>
     </sl-dialog>
     <script>
-      let baseurl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/'
-      console.log(`Base URL: ${baseurl}`)
-      document.querySelector('base').setAttribute('href', baseurl)
+      document.querySelector('base').setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/')
     </script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js" type="module"></script> -->

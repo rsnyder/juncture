@@ -985,6 +985,22 @@ function mount(mountPoint, html) {
   return article
 }
 
+let scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src).map(script => script.src)
+let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.href).map(link => link.href)
+
+console.log('scripts', scripts)
+console.log('stylesheets', stylesheets)
+
+if (! scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src === 'wc/dist/js/index.js')) {
+  addScript({type: 'module', 
+    src: mode === 'local'
+      ? 'http://localhost:5173/main.ts'
+      : mode === 'prod' 
+        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
+        : 'wc/dist/js/index.js'
+  })
+}
+
 addLink({rel: 'stylesheet', type: 'text/css', 
   href: mode === 'local'
     ? 'http://localhost:8080/wc/src/index.css'
@@ -992,13 +1008,7 @@ addLink({rel: 'stylesheet', type: 'text/css',
       ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
       : 'wc/dist/css/index.css'
 })
-addScript({type: 'module', 
-  src: mode === 'local'
-    ? 'http://localhost:5173/main.ts'
-    : mode === 'prod' 
-      ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-      : 'wc/dist/js/index.js'
-})
+
 
 setConfig()
 

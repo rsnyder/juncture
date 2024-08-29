@@ -989,6 +989,8 @@ function mount(mountPoint, html) {
   return article
 }
 
+setConfig()
+
 let scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src).map(script => script.src)
 let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.type == 'text/css'&& link.href).map(link => link.href)
 
@@ -1001,7 +1003,7 @@ if (!scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'htt
       ? 'http://localhost:5173/main.ts'
       : mode === 'prod' 
         ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-        : `${config.baseurl}/wc/dist/js/index.js`
+        : `${window.config.baseurl}/wc/dist/js/index.js`
   })
 }
 
@@ -1011,11 +1013,9 @@ if (!stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' 
       ? 'http://localhost:8080/wc/src/index.css'
       : mode === 'prod' 
         ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-        : `${config.baseurl}/wc/dist/css/index.css`
+        : `${window.config.baseurl}/wc/dist/css/index.css`
   })
 }
-
-setConfig()
 
 docReady(function() {
   console.log(`docReady mode=${mode}`)

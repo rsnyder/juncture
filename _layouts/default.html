@@ -5,5 +5,26 @@
 <link href="{{ site.baseurl }}/favicon.ico" rel="icon" />
 <link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
 <script>window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}</script>
-<script src="wc/src/ghp.js" type="module"></script>
 <article style="visibility:hidden;">{{ content }}</article>
+<script type="module">
+
+    import { mount, getMarkdown, markdownToHtml } from 'wc/src/ghp.js'
+    
+    let referrer = document.referrer ? new URL(document.referrer) : null
+  
+    if (window.location.search.includes('source')) {
+      let [acct, repo, branch, ...path] = new URL(location.href).searchParams.get('source').split('/').filter(pe => pe)
+      window.jekyll.source = { owner: acct, repository: repo, branch: branch || 'main', dir: path.join('/') }
+      getMarkdown(`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`).then(markdown => {
+        mount(document.body.firstChild, markdownToHtml(markdown))
+        console.log(window.config)
+      })
+    } else if (referrer?.host === 'github.com') {
+      let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+      let source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
+      window.location.search = `source=${source}`
+    } else {
+      mount()
+      console.log(window.config)
+    }
+  </script>

@@ -8,7 +8,10 @@
 <script>
   document.querySelector('base').setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/')
 </script>
-<script>window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}</script>
+<script>
+  window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}
+  document.querySelector('base').setAttribute('{{ site.baseurl }}{{ page.url }}')
+</script>
 <article style="visibility:hidden;">{{ content }}</article>
 
 <script type="module">

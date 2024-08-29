@@ -966,27 +966,28 @@ function mount(mountPoint, html) {
   return article
 }
 
-document.querySelectorAll('script').forEach(script => {
-  if (script.src === 'http://localhost:8080/wc/src/ghp.js' || script.src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/ghp.js' || script.src === 'https://rsnyder.github.io/gh-test/index.js')
-    addLink({rel: 'stylesheet', type: 'text/css', 
-      href: mode === 'local'
-        ? 'http://localhost:8080/wc/src/index.css'
-        : mode === 'prod' 
-          ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-          : 'wc/dist/css/index.css'
-    })
-    addScript({type: 'module', 
-      src: mode === 'local'
-        ? 'http://localhost:5173/main.ts'
-        : mode === 'prod' 
-          ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-          : 'wc/dist/js/index.js'
-    })
-    docReady(function() {
-      console.log('docReady')
-      setConfig()
-      mount()
-    })
-})
+let doInit = Array.from(document.getElementsByTagName('script')).filter(script => script.src === 'http://localhost:8080/wc/src/ghp.js' || script.src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/ghp.js' || script.src === 'https://rsnyder.github.io/gh-test/index.js').length
+
+if (doInit) {
+  addLink({rel: 'stylesheet', type: 'text/css', 
+    href: mode === 'local'
+      ? 'http://localhost:8080/wc/src/index.css'
+      : mode === 'prod' 
+        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
+        : 'wc/dist/css/index.css'
+  })
+  addScript({type: 'module', 
+    src: mode === 'local'
+      ? 'http://localhost:5173/main.ts'
+      : mode === 'prod' 
+        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
+        : 'wc/dist/js/index.js'
+  })
+  docReady(function() {
+    console.log('doInit.docReady')
+    setConfig()
+    mount()
+  })
+}
 
 export { articleFromHtml, elFromHtml, getGhFile, markdownToHtml, mount, observeVisible, structureContent }

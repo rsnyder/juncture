@@ -775,6 +775,26 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
   rootEl.querySelectorAll('p, .segment > ol, .segment > ul').forEach((paragraph) => observer.observe(paragraph))
 }
 
+async function getMarkdown(ghSource) {
+  let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+  path = path.join('/')
+  let extension = ghSource.slice(-3)
+  // console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
+  if (extension === '.md') {
+    let resp = await getGhFile(owner, repo, branch, path)
+    return resp.content
+  } else {
+    return await Promise.all([
+      getGhFile(owner, repo, branch, `${path}.md`),
+      getGhFile(owner, repo, branch, `${path}/README.md`),
+      getGhFile(owner, repo, branch, `${path}/index.md`)
+    ]).then(resp => { 
+      let found = resp.find(r => r?.status === 200)
+      return found?.content || ''
+    })
+  }
+}
+
 function setMeta() {
   let meta
   let header
@@ -1017,4 +1037,4 @@ if (doInit) {
 }
 */
 
-export { articleFromHtml, elFromHtml, getGhFile, markdownToHtml, mount, observeVisible, structureContent }
+export { articleFromHtml, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mount, observeVisible, structureContent }

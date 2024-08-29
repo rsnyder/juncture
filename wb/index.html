@@ -52,12 +52,13 @@
         <sl-button variant="primary" class="proceed">Proceed</sl-button>
       </div>
     </sl-dialog>
+    <script>
+      console.log('site.baseurl: {{ site.baseurl }}')
+    </script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js" type="module"></script> -->
     <script type="module">
-      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from '../index.js'
-
-      console.log('site.baseurl: {{ site.baseurl }}')
+      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from '{{ site.baseurl }}/wc/src/ghp.js'
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')

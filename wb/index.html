@@ -105,7 +105,7 @@
         if (ghSource) {
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
           console.log('browserUrl:', browserUrl)
-          window.history.replaceState({}, null, browserUrl)
+          // window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
@@ -125,7 +125,7 @@
 
       function loadMarkdown() {
         dialog.hide()
-        window.history.replaceState({}, null, browserUrl)
+        // window.history.replaceState({}, null, browserUrl)
 
         let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
         getGhFile(acct, repo, branch, path.join('/')).then(resp => {
@@ -258,7 +258,7 @@
       function togglePreview(md, preview) {
         setTimeout(() => {
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
-          window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
+          // window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
           setSaveButtonState()
           // styleJunctureElements()
         }, 100)

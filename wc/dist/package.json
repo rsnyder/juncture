@@ -9,7 +9,7 @@
     "build-only": "vite build --base=https://cdn.jsdelivr.net/npm/juncture-digital/",
     "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
     "tailwind": "tailwindcss -i input.css -o tailwind.css --watch",
-    "postbuild": "cp package.json ../dist; cp ghp.js ../dist/js/ghp.js"
+    "postbuild": "cp package.json ../dist; cp ../../ghp.js ../dist/js/ghp.js"
   },
   "dependencies": {
     "@allmaps/leaflet": "^1.0.0-beta.25",

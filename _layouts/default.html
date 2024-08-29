@@ -1,5 +1,4 @@
 <!doctype html>
-<base href="/" />
 <meta charset=utf-8>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 {%- seo -%}
@@ -10,7 +9,7 @@
 </script>
 <script>
   window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}
-  document.querySelector('base').setAttribute('href', '{{ site.baseurl }}{{ page.url }}')
+  // document.querySelector('base').setAttribute('href', '{{ site.baseurl }}{{ page.url }}')
 </script>
 <article style="visibility:hidden;">{{ content }}</article>
 

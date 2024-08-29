@@ -97,12 +97,14 @@
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
         browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
+        console.log('browserUrl:', browserUrl)
         // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource')
         if (ghSource) {
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
+          console.log('browserUrl:', browserUrl)
           window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
@@ -173,6 +175,7 @@
             else loadMarkdown()
           }
           browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
+          console.log('browserUrl:', browserUrl)
         })
 
         ghSelector.addEventListener('repo-is-writable', e => {

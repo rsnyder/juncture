@@ -73,7 +73,7 @@
   // watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
 
   const source = computed(() => {
-    if (config.value.source) return config.value.source
+    if (config.value.source?.owner) return config.value.source
     else if (props.base) {
       let [owner, repository, branch, ...dir] = props.base.split('/')
       return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}

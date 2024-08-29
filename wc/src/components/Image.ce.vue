@@ -93,11 +93,13 @@
   const window = (self as any).window
   const config = ref<any>(window.config || {})
   const source = computed(() => {
-    if (config.value.source) return config.value.source
+  console.log(toRaw(config.value), props.base)
+    if (config.value.source?.owner) return config.value.source
     else if (props.base) {
       let [owner, repository, branch, ...dir] = props.base.split('/')
+      console.log({ owner, repository, branch, dir })
       return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
-    }
+    } 
     return null
   })
   const ghBaseurl = computed(() => `https://raw.githubusercontent.com/${source.value?.owner}/${source.value?.repository}/${source.value?.branch}/${source.value?.dir.replace(/\/(README|index)\.md$/,'')}`)

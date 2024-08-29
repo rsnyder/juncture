@@ -11,6 +11,7 @@ const mode = location.hostname === 'localhost'
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 function addLink(attrs) {
+  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
@@ -972,6 +973,9 @@ function mount(mountPoint, html) {
     document.body.innerHTML = mountPoint.outerHTML
   }
  
+  console.log('mountPoint', mountPoint)
+  console.log('html', html)
+  
   let article = articleFromHtml(html)
 
   mountPoint.replaceWith(article)
@@ -991,7 +995,7 @@ let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link 
 console.log('scripts', scripts)
 console.log('stylesheets', stylesheets)
 
-if (! scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0)) {
+if (!scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0)) {
   addScript({type: 'module', 
     src: mode === 'local'
       ? 'http://localhost:5173/main.ts'
@@ -1001,14 +1005,15 @@ if (! scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'ht
   })
 }
 
-addLink({rel: 'stylesheet', type: 'text/css', 
-  href: mode === 'local'
-    ? 'http://localhost:8080/wc/src/index.css'
-    : mode === 'prod' 
-      ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-      : 'wc/dist/css/index.css'
-})
-
+if (!stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0)) {
+  addLink({rel: 'stylesheet', type: 'text/css', 
+    href: mode === 'local'
+      ? 'http://localhost:8080/wc/src/index.css'
+      : mode === 'prod' 
+        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
+        : 'wc/dist/css/index.css'
+  })
+}
 
 setConfig()
 

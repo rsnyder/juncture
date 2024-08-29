@@ -966,7 +966,9 @@ function mount(mountPoint, html) {
   return article
 }
 
-let scripts = document.getElementsByTagName('script').filter(script => script.src).map(script => script.src)
+let scripts = Array.from(document.getElementsByTagName('script'))
+  .filter(script => script.src)
+  .map(script => script.src)
 console.log('scripts', scripts)
 let doInit = scripts.filter(src => src.indexOf('ghp.js') > 0).length > 0
 console.log('doInit', doInit)

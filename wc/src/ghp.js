@@ -1000,9 +1000,11 @@ addScript({type: 'module',
       : 'wc/dist/js/index.js'
 })
 
+setConfig()
+
 docReady(function() {
-  console.log('docReady `mode=${mode}')
-  setConfig()
+  console.log(`docReady mode=${mode}`)
+  // setConfig()
   // mount()
 })
 

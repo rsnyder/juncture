@@ -972,9 +972,6 @@ function mount(mountPoint, html) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
- 
-  console.log('mountPoint', mountPoint)
-  console.log('html', html)
 
   let article = articleFromHtml(html)
 

@@ -5,11 +5,12 @@
 {%- seo -%}
 <link href="{{ site.baseurl }}/favicon.ico" rel="icon" />
 <link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
-<script>window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}</script>
-<article style="visibility:hidden;">{{ content }}</article>
 <script>
   document.querySelector('base').setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/')
 </script>
+<script>window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}</script>
+<article style="visibility:hidden;">{{ content }}</article>
+
 <script type="module">
 
     import { mount, getMarkdown, markdownToHtml } from './wc/src/ghp.js'

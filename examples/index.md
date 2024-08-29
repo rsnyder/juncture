@@ -25,7 +25,7 @@
 
 - [Style](style)
 
-[Workbench](../wb)
+[Workbench](../wb/)
 
 Unified
 

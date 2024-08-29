@@ -5,7 +5,7 @@ import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min
 console.log(location)
 const mode = location.hostname === 'localhost'
   ? 'local'
-  : location.hostname.startsWith('dev.') 
+  : location.hostname.indexOf('github.io') > 0 && location.pathname.indexOf('/juncture/') === 0
     ? 'dev'
     : 'prod'
 console.log(`mode=${mode}`)

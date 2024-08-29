@@ -2,7 +2,6 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
-console.log(location)
 const mode = location.hostname === 'localhost'
   ? 'local'
   : location.hostname.indexOf('github.io') > 0 && location.pathname.indexOf('/juncture/') === 0
@@ -23,7 +22,7 @@ function addScript(attrs) {
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
-  }
+}
 
 function docReady(fn) {
   if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(fn, 1)
@@ -220,21 +219,6 @@ function makeEl(parsed) {
   if (parsed.raw) el.textContent = parsed.raw
   return el
 }
-    
-addLink({rel: 'stylesheet', type: 'text/css', 
-  href: mode === 'local'
-    ? 'http://localhost:8080/wc/src/index.css'
-    : mode === 'prod' 
-      ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-      : 'wc/dist/css/index.css'
-})
-addScript({type: 'module', 
-  src: mode === 'local'
-    ? 'http://localhost:5173/main.ts'
-    : mode === 'prod' 
-      ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-      : 'wc/dist/js/index.js'
-})
 
 function deleteAllComments(rootEl) {
   var iterator = document.createNodeIterator(rootEl, NodeFilter.SHOW_COMMENT, () => { return NodeFilter.FILTER_ACCEPT}, false);
@@ -984,6 +968,20 @@ function mount(mountPoint, html) {
 
 document.querySelectorAll('script').forEach(script => {
   if (script.src === 'http://localhost:8080/wc/src/ghp.js' || script.src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/ghp.js' || script.src === 'https://rsnyder.github.io/gh-test/index.js')
+    addLink({rel: 'stylesheet', type: 'text/css', 
+      href: mode === 'local'
+        ? 'http://localhost:8080/wc/src/index.css'
+        : mode === 'prod' 
+          ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
+          : 'wc/dist/css/index.css'
+    })
+    addScript({type: 'module', 
+      src: mode === 'local'
+        ? 'http://localhost:5173/main.ts'
+        : mode === 'prod' 
+          ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
+          : 'wc/dist/js/index.js'
+    })
     docReady(function() {
       console.log('docReady')
       setConfig()

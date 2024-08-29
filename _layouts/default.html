@@ -10,7 +10,7 @@
 </script>
 <script>
   window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}
-  document.querySelector('base').setAttribute('{{ site.baseurl }}{{ page.url }}')
+  document.querySelector('base').setAttribute('href', '{{ site.baseurl }}{{ page.url }}')
 </script>
 <article style="visibility:hidden;">{{ content }}</article>
 

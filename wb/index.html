@@ -53,12 +53,15 @@
       </div>
     </sl-dialog>
     <script>
-      console.log('site.baseurl: {{ site.baseurl }}')
+      window.config = { 
+        baseurl: location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ''
+      }
+      console.log(window.config)
     </script>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js" type="module"></script> -->
     <script type="module">
-      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from '{{ site.baseurl }}/wc/src/ghp.js'
+      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from `${window.config.baseurl}/wc/src/ghp.js`
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')

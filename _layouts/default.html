@@ -8,7 +8,7 @@
 <article style="visibility:hidden;">{{ content }}</article>
 <script type="module">
 
-    import { mount, getMarkdown, markdownToHtml } from './wc/src/ghp.js'
+    import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/wc/src/ghp.js'
     
     let referrer = document.referrer ? new URL(document.referrer) : null
   

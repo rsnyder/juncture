@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <base href="/" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Juncture Workbench</title>
@@ -55,7 +56,7 @@
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js" type="module"></script> -->
     <script type="module">
-      document.querySelector('base').href = window.location.hostname.indexOf('github.io') > 0 ? `/${window.location.pathname.split('/')[1]}/` : `/`
+      document.querySelector('base')?.setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : `/`)
       // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://rdsnyder.github.io/juncture/wc/src/ghp.js'
       import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from './wc/src/ghp.js'
 

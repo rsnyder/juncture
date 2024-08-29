@@ -25,7 +25,7 @@ GH_BRANCH = os.environ.get('GH_BRANCH', 'main')
 from bs4 import BeautifulSoup
 import markdown
 import yaml
-
+from urllib.parse import quote
 from typing import Optional
 
 import uvicorn
@@ -78,9 +78,26 @@ html_template = html_template.replace('{{ site.github.source.branch }}', GH_BRAN
 
 html_template = html_template.replace('{%- seo -%}', '')
 
-def html_from_markdown(md, baseurl):
+CONFIG = {
+  'site': {
+    'baseurl': '',
+    'github': {
+      'owner_name': GH_OWNER or 'rsnyder',
+      'repository_name': GH_REPOSITORY or 'gh-test',
+      'source': {
+        'branch': GH_BRANCH or 'main'
+      }
+    }
+  },
+  'page': {},
+  'content': ''
+}
+  
+def html_from_markdown(md, baseurl, dir, name, path):
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
-  soup = BeautifulSoup(html, 'html5lib')
+  html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
+  
+  soup = BeautifulSoup(markdown.markdown(md, extensions=['extra', 'toc']), 'html5lib')
       
   for link in soup.find_all('a'):
     href = link.get('href')
@@ -127,9 +144,20 @@ def html_from_markdown(md, baseurl):
               sibling.decompose()
           break
       heading.replace_with(para)
-      
-  # logger.info(soup.prettify())
-  return str(soup)
+  
+  CONFIG['content'] = str(soup.body.decode_contents())
+  CONFIG['page'] = {
+    'dir': dir,
+    'name': name,
+    'path': path
+  }
+  serialized_config = json.dumps(CONFIG)
+  
+  html = html_template.replace('{{ content }}', CONFIG['content'])
+  html = re.sub(r'<script>window\.jekyll=.*>', '', html)
+  html += '<script>window.jekyll=' + serialized_config + '</script>'
+  
+  return html
   
 @app.get('{path:path}')
 async def serve(path: Optional[str] = None):
@@ -138,7 +166,7 @@ async def serve(path: Optional[str] = None):
   if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
   # if len(path) > 0 and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
-    logger.info(f'local_file_path: {local_file_path}')
+    # logger.info(f'local_file_path: {local_file_path}')
 
   elif ext:
     local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}'
@@ -179,7 +207,7 @@ async def serve(path: Optional[str] = None):
       md_dir = '/' if len(local_file_path) == 1 else f'/{"/".join(local_file_path[:-1])}/'
       md_path = '/'.join(local_file_path)
       logger.debug(f'md_dir={md_dir} md_name={md_name} md_path={md_path}')
-    content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/')
+    content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/', dir=md_dir, name=md_name, path=md_path)
     content = content.replace('{{ page.dir }}', md_dir)
     content = content.replace('{{ page.name }}', md_name)
     content = content.replace('{{ page.path }}', md_path)

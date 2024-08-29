@@ -874,7 +874,7 @@ function setConfig() {
     ...(window.jekyll || {}), 
     ...(window.config || {}),
     ...{
-      baseurl: window.jekyll?.site.baseurl,
+      baseurl: window.jekyll?.site.baseurl || location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/',
       source: {
         owner: window.jekyll?.site.github.owner_name,
         repository: window.jekyll?.site.github.repository_name,
@@ -972,9 +972,6 @@ function mount(mountPoint, html) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
- 
-  console.log('mountPoint', mountPoint)
-  console.log('html', html)
 
   let article = articleFromHtml(html)
 

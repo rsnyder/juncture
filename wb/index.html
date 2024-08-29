@@ -57,6 +57,8 @@
     <script type="module">
       import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from '../index.js'
 
+      console.log('site.baseurl: {{ site.baseurl }}')
+
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
       const referrer = document.referrer && new URL(document.referrer)

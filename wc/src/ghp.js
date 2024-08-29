@@ -986,12 +986,12 @@ function mount(mountPoint, html) {
 }
 
 let scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src).map(script => script.src)
-let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.href).map(link => link.href)
+let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.type == 'text/css'&& link.href).map(link => link.href)
 
 console.log('scripts', scripts)
 console.log('stylesheets', stylesheets)
 
-if (! scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src === 'wc/dist/js/index.js')) {
+if (! scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0)) {
   addScript({type: 'module', 
     src: mode === 'local'
       ? 'http://localhost:5173/main.ts'

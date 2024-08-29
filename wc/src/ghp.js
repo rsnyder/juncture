@@ -966,7 +966,10 @@ function mount(mountPoint, html) {
   return article
 }
 
-let doInit = Array.from(document.getElementsByTagName('script')).filter(script => script.src === 'http://localhost:8080/wc/src/ghp.js' || script.src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/ghp.js' || script.src === 'https://rsnyder.github.io/gh-test/index.js').length
+let scripts = document.getElementsByTagName('script').filter(script => script.src).map(script => script.src)
+console.log('scripts', scripts)
+let doInit = scripts.filter(src => src.indexOf('ghp.js') > 0).length > 0
+console.log('doInit', doInit)
 
 if (doInit) {
   addLink({rel: 'stylesheet', type: 'text/css', 

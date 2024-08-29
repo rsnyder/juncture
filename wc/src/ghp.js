@@ -16,10 +16,10 @@ function addLink(attrs) {
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
-
 }
 
 function addScript(attrs) {
+  console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)

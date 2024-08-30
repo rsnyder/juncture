@@ -19,6 +19,7 @@ function addLink(attrs) {
 }
 
 function addScript(attrs) {
+  console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -1115,7 +1116,8 @@ if (hasGhpJs && !hasWcCss) {
     href: mode === 'local'
       ? 'http://localhost:8080/wc/src/index.css'
       : mode === 'prod' 
-        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
+        // ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
+        ? `${window.config.baseurl}wc/dist/css/index.css`
         : `${window.config.baseurl}wc/dist/css/index.css`
   })
   hasWcCss = true
@@ -1126,14 +1128,15 @@ if (hasGhpJs && !hasWcJs) {
     src: mode === 'local'
       ? 'http://localhost:5173/main.ts'
       : mode === 'prod' 
-        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
+        // ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
+        ? `${window.config.baseurl}wc/dist/js/index.js`
         : `${window.config.baseurl}wc/dist/js/index.js`
   })
   hasGhpJs = true
 }
 
 docReady(function() {
-  // console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
+  console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
   if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 

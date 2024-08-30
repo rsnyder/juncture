@@ -2,6 +2,8 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
+window.customEntityData = {}
+
 const mode = location.hostname === 'localhost'
   ? 'local'
   : location.hostname.indexOf('github.io') > 0 && location.pathname.indexOf('/juncture/') === 0
@@ -574,7 +576,7 @@ function restructureForJ1(article) {
       let file = veEntity.file ||veEntity.article
       if (aliases.length || file) {
         if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
-        }
+      }
       entities.push(qid)
     })
     delete veTags['ve-entity']

@@ -19,7 +19,7 @@ function addLink(attrs) {
 }
 
 function addScript(attrs) {
-  console.log('addScript', attrs)
+  // console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -1136,7 +1136,7 @@ if (hasGhpJs && !hasWcJs) {
 }
 
 docReady(function() {
-  console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
+  // console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
   if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 

@@ -194,6 +194,8 @@ function parseCodeEl(codeEl) {
     parsed.raw = codeEl.textContent.split('\n').slice(1).join('\n')
   } else if (parsed.tag === 've-media') {
     parsed.tag = 've-image' //TODO: implement ve-media conversion
+  } else if (parsed.tag === 've-vis-network') {
+    parsed.tag = 've-visjs'
   } else if (codeElems.length > 1) {
     parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   }

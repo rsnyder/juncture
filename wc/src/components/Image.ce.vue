@@ -93,11 +93,10 @@
   const window = (self as any).window
   const config = ref<any>(window.config || {})
   const source = computed(() => {
-  console.log(toRaw(config.value), props.base)
     if (config.value.source?.owner) return config.value.source
     else if (props.base) {
       let [owner, repository, branch, ...dir] = props.base.split('/')
-      console.log({ owner, repository, branch, dir })
+      // console.log({ owner, repository, branch, dir })
       return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
     } 
     return null

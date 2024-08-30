@@ -84,7 +84,7 @@
 
   import { computed, onMounted, nextTick, ref, toRaw, watch, h } from 'vue'
 
-  import { elFromHtml, structureContent, markdownToHtml } from '../ghp.js'
+  import { elFromHtml, structureContent, markdownToHtml } from '../../../ghp.js'
 
   import type SlTab from '@shoelace-style/shoelace/dist/components/tab/tab.js'
 

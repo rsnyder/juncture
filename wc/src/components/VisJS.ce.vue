@@ -9,25 +9,41 @@
   
 <script setup lang="ts">
 
-  import { computed, nextTick, ref, toRaw, watch } from 'vue'
+  import { computed, h, nextTick, ref, toRaw, watch } from 'vue'
   import { Network } from 'vis-network'
   import { DataSet } from 'vis-data/peer'
   import { Timeline as visTimeline } from 'vis-timeline/peer'
 
   const props = defineProps({
+    base: { type: String },
     caption: { type: String },
+    height: { type: Number },
     timeline: { type: String },
     edges: { type: String },
     nodes: { type: String },
     url: { type: String },
-
     hierarchical: { type: Boolean, default: false }
+  })
+
+  watch(props, () => {
+    setHeight()
   })
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
   const diagramEl = ref<HTMLElement | null>(null)
   const captionEl = ref<HTMLElement | null>(null)
+
+  const window = (self as any).window
+  const config = ref<any>(window.config || {})
+  const source = computed(() => {
+    if (config.value.source?.owner) return config.value.source
+    else if (props.base) {
+      let [owner, repository, branch, ...dir] = props.base.split('/')
+      return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
+    } 
+    return null
+  })
 
   const caption = computed(() => props.caption )
 
@@ -94,10 +110,13 @@
   watch(timelineData, (data) => { new visTimeline(diagramEl.value as HTMLElement, data, {}) })  
 
   function setHeight() {
-    if (diagramEl.value) diagramEl.value.style.height = `${(root.value?.clientHeight || 0) - (captionEl.value?.clientHeight || 0)}px`
+    let height = (props.height || root.value?.clientHeight || 0) -6
+    if (diagramEl.value) diagramEl.value.style.height = `${height - (captionEl.value?.clientHeight || 40)}px`
+    if (root.value) root.value.style.height = `${height}px`
   }
 
   function getDataFromUrl(url:string) {
+    if (url.indexOf('http') !== 0) url = `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}${source.value.dir}${url}`
     fetch(url)
       .then(response => response.text())
       .then(text => {
@@ -137,6 +156,7 @@
     align-content: center;
     box-shadow: 0 2px 4px rgb(0,0,0,0.5) !important;
     background-color: white;
+    width: 100%;
   }
 
   .diagram {
@@ -150,6 +170,7 @@
     font-size: 1em;
     line-height: 1.1;
     border: 1px solid #ddd;
+    background-color: white;
   }
 
 </style>

@@ -2,13 +2,13 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
-console.log(location)
+window.customEntityData = {}
+
 const mode = location.hostname === 'localhost'
   ? 'local'
-  : location.hostname.startsWith('dev.') 
+  : location.hostname.indexOf('github.io') > 0 && location.pathname.indexOf('/juncture/') === 0
     ? 'dev'
     : 'prod'
-console.log(`mode=${mode}`)
 
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
@@ -16,14 +16,14 @@ function addLink(attrs) {
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
-
 }
 
 function addScript(attrs) {
+  // console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
-  }
+}
 
 function docReady(fn) {
   if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(fn, 1)
@@ -46,6 +46,8 @@ const components = {
   },
   've-entities': {
     booleans: 'cards'
+  },
+  've-footer': {
   },
   've-gallery': {
     booleans: 'caption'
@@ -193,6 +195,8 @@ function parseCodeEl(codeEl) {
     parsed.raw = codeEl.textContent.split('\n').slice(1).join('\n')
   } else if (parsed.tag === 've-media') {
     parsed.tag = 've-image' //TODO: implement ve-media conversion
+  } else if (parsed.tag === 've-vis-network') {
+    parsed.tag = 've-visjs'
   } else if (codeElems.length > 1) {
     parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   }
@@ -220,21 +224,6 @@ function makeEl(parsed) {
   if (parsed.raw) el.textContent = parsed.raw
   return el
 }
-    
-addLink({rel: 'stylesheet', type: 'text/css', 
-  href: mode === 'local'
-    ? 'http://localhost:8080/wc/src/index.css'
-    : mode === 'prod' 
-      ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-      : 'wc/dist/css/index.css'
-})
-addScript({type: 'module', 
-  src: mode === 'local'
-    ? 'http://localhost:5173/main.ts'
-    : mode === 'prod' 
-      ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-      : 'wc/dist/js/index.js'
-})
 
 function deleteAllComments(rootEl) {
   var iterator = document.createNodeIterator(rootEl, NodeFilter.SHOW_COMMENT, () => { return NodeFilter.FILTER_ACCEPT}, false);
@@ -302,18 +291,47 @@ function convertTags(rootEl) {
   })
   rootEl.querySelectorAll('code').forEach(codeEl => {
     let parsed = parseCodeEl(codeEl)
+    // console.log(parsed)
     if (parsed.tag) {
       if (codeEl.parentElement.tagName === 'PRE') {
         codeEl = codeEl.parentElement
         codeEl.parentElement.removeAttribute('id')
         codeEl.parentElement.removeAttribute('data-id')
         codeEl.parentElement.removeAttribute('class')
-        codeEl.parentElement.parentElement.className = 'segment'
+        if (codeEl.parentElement.parentElement) codeEl.parentElement.parentElement.className = 'segment'
         if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
           codeEl.parentElement.replaceWith(codeEl)
         }
       }
       codeEl.replaceWith(makeEl(parsed))
+    } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
+      let codeWrapper = codeEl.parentElement
+      let target
+      let priorEl = codeWrapper.previousElementSibling
+      if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
+        target = document.createElement('span')
+        target.innerHTML = priorEl.innerHTML
+        priorEl.replaceWith(target)
+      } else if (parent?.tagName === 'TD') {
+        target = parent?.parentElement?.parentElement?.parentElement // table
+        parent?.parentElement?.remove() // row
+      } else if (parent?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
+        target = priorEl
+      } else {
+        target = priorEl.children.length === 1 && priorEl.children[0]?.tagName === 'VE-HEADER'
+          ? codeWrapper.parentElement
+          : priorEl
+      }
+      if (target) {
+        if (parsed.id) target.id = parsed.id
+        if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
+        if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
+        if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
+        if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) target.setAttribute(k, v === true ? '' : v)
+      } else {
+        console.log('no target for', parsed)
+      }
+      codeWrapper.remove()
     }
   })
 }
@@ -338,6 +356,7 @@ function restructure(rootEl) {
   main.className = 'page-content markdown-body'
   main.setAttribute('aria-label', 'Content')
   main.setAttribute('data-theme', 'light')
+  if (rootEl.style) main.setAttribute('style', rootEl.style.cssText)
   let currentSection = main;
   let sectionParam
 
@@ -473,6 +492,8 @@ function restructure(rootEl) {
       }
     })
 
+  configCustomClasses(main)
+
   let header, footer
   let article = document.createElement('article')
 
@@ -502,13 +523,92 @@ function restructure(rootEl) {
 
   footer = main.querySelector('ve-footer')
   if (footer) {
-    let toRemove = footer
-    while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
+    // let toRemove = footer
+    // while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
     article.appendChild(footer)
-    toRemove.remove()
+    // toRemove.remove()
   }
 
   return article
+}
+
+function configCustomClasses(rootEl) {
+  let cardCtr = 0
+
+  rootEl.querySelectorAll('section').forEach(section => {
+    
+    if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
+      section.classList.remove('cards')
+      let wrapper = document.createElement('section')
+      wrapper.className = 'cards wrapper'
+      Array.from(section.children).slice(1).forEach(card => {
+        wrapper.appendChild(card)
+        card.classList.add('card')
+        let heading = card.querySelector('h1, h2, h3, h4, h5, h6')
+        if (heading) heading.remove()
+        let img = card.querySelector('p > img')
+        if (img) img.parentElement?.replaceWith(img)
+        let link = card.querySelector('p > a')
+        if (link) link.parentElement?.replaceWith(link)
+        card.querySelectorAll('p').forEach(p => {
+          ++cardCtr
+          let readMoreWrapper = document.createElement('div')
+          readMoreWrapper.className = 'read-more'
+          let input = document.createElement('input')
+          input.setAttribute('type', 'checkbox')
+          input.id = `read-more-${cardCtr}`
+          readMoreWrapper.appendChild(input)
+          let para = document.createElement('p')
+          para.innerHTML = p.innerHTML
+          readMoreWrapper.appendChild(para)
+          let label = document.createElement('label')
+          label.setAttribute('for', `read-more-${cardCtr}`)
+          label.setAttribute('role', 'button')
+          label.innerHTML = 'More'
+          readMoreWrapper.appendChild(label)
+          p.replaceWith(readMoreWrapper)
+        })
+      })
+      section.appendChild(wrapper)
+    }
+
+    if (section.classList.contains('tabs')) {
+      let tabGroup = document.createElement('sl-tab-group');
+      Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls))
+      Array.from(section.attributes).forEach(attr => tabGroup.setAttribute(attr.name, attr.value))
+      Array.from(section.querySelectorAll(':scope > section'))
+      .forEach((tabSection, idx) => {
+        let tab = document.createElement('sl-tab')
+        tab.setAttribute('slot', 'nav')
+        tab.setAttribute('panel', `tab${idx+1}`)
+        tab.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML || ''
+        tabGroup.appendChild(tab)      
+      })
+      Array.from(section.querySelectorAll(':scope > section'))
+      .forEach((tabSection, idx) => {
+        let tabPanel = document.createElement('sl-tab-panel')
+        tabPanel.setAttribute('name', `tab${idx+1}`)
+        let tabContent = Array.from(tabSection.children).slice(1).map(el => el.outerHTML).join(' ')
+        tabPanel.innerHTML = tabContent
+        tabGroup.appendChild(tabPanel)
+      })
+      section.replaceWith(tabGroup)
+    }
+
+    if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
+      let wrapper = document.createElement('section')
+      wrapper.className = 'columns wrapper'
+      section.classList.remove('columns')
+      section.classList.remove('mcol')
+      Array.from(section.children)
+        .filter(child => child.tagName === 'SECTION')
+        .forEach((col, idz) => {
+        wrapper.appendChild(col)
+        col.classList.add(`col-${idz+1}`)
+      })
+      section.appendChild(wrapper)
+    }
+  })
 }
 
 function restructureForJ1(article) {
@@ -590,7 +690,7 @@ function restructureForJ1(article) {
       let file = veEntity.file ||veEntity.article
       if (aliases.length || file) {
         if (!window.customEntityData[qid]) window.customEntityData[qid] = {aliases: aliases, file: file}
-        }
+      }
       entities.push(qid)
     })
     delete veTags['ve-entity']
@@ -792,6 +892,26 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
   rootEl.querySelectorAll('p, .segment > ol, .segment > ul').forEach((paragraph) => observer.observe(paragraph))
 }
 
+async function getMarkdown(ghSource) {
+  let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+  path = path.join('/')
+  let extension = ghSource.slice(-3)
+  // console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
+  if (extension === '.md') {
+    let resp = await getGhFile(owner, repo, branch, path)
+    return resp.content
+  } else {
+    return await Promise.all([
+      getGhFile(owner, repo, branch, `${path}.md`),
+      getGhFile(owner, repo, branch, `${path}/README.md`),
+      getGhFile(owner, repo, branch, `${path}/index.md`)
+    ]).then(resp => { 
+      let found = resp.find(r => r?.status === 200)
+      return found?.content || ''
+    })
+  }
+}
+
 function setMeta() {
   let meta
   let header
@@ -870,7 +990,7 @@ function setConfig() {
     ...(window.jekyll || {}), 
     ...(window.config || {}),
     ...{
-      baseurl: window.jekyll?.site.baseurl,
+      baseurl: window.jekyll?.site.baseurl || location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/',
       source: {
         owner: window.jekyll?.site.github.owner_name,
         repository: window.jekyll?.site.github.repository_name,
@@ -956,7 +1076,6 @@ function articleFromHtml(html) {
   convertTags(contentEl)
   let article = restructure(contentEl)
   if (isJunctureV1(contentEl)) article = restructureForJ1(article)
-  console.log(article)
   return article
 }
 
@@ -968,7 +1087,7 @@ function mount(mountPoint, html) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
- 
+
   let article = articleFromHtml(html)
 
   mountPoint.replaceWith(article)
@@ -982,13 +1101,43 @@ function mount(mountPoint, html) {
   return article
 }
 
-document.querySelectorAll('script').forEach(script => {
-  if (script.src === 'http://localhost:8080/wc/src/ghp.js' || script.src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/ghp.js' || script.src === 'https://rsnyder.github.io/gh-test/index.js')
-    docReady(function() {
-      console.log('docReady')
-      setConfig()
-      mount()
-    })
+if (!window.config) setConfig()
+
+let scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src).map(script => script.src)
+let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.type == 'text/css'&& link.href).map(link => link.href)
+
+let hasGhpJs = scripts.find(src => src.indexOf('ghp.js') > 0) !== undefined
+let hasWcJs = scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0) !== undefined
+let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0) !== undefined
+let isMounted = document.querySelector('body > article') !== null
+
+if (hasGhpJs && !hasWcCss) {
+  addLink({rel: 'stylesheet', type: 'text/css', 
+    href: mode === 'local'
+      ? 'http://localhost:8080/wc/src/index.css'
+      : mode === 'prod' 
+        // ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
+        ? 'https://rdsnyder.github.io/juncture/wc/dist/css/index.css'
+        : `${window.config.baseurl}wc/dist/css/index.css`
+  })
+  hasWcCss = true
+}
+
+if (hasGhpJs && !hasWcJs) {
+  addScript({type: 'module', 
+    src: mode === 'local'
+      ? 'http://localhost:5173/main.ts'
+      : mode === 'prod' 
+        // ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
+        ? 'https://rdsnyder.github.io/juncture/wc/dist/js/index.js'
+        : `${window.config.baseurl}wc/dist/js/index.js`
+  })
+  hasGhpJs = true
+}
+
+docReady(function() {
+  // console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
+  if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 
-export { articleFromHtml, elFromHtml, getGhFile, markdownToHtml, mount, observeVisible, structureContent }
+export { articleFromHtml, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mount, observeVisible, structureContent }

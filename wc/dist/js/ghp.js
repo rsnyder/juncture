@@ -1117,7 +1117,7 @@ if (hasGhpJs && !hasWcCss) {
       ? 'http://localhost:8080/wc/src/index.css'
       : mode === 'prod' 
         // ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-        ? `${window.config.baseurl}wc/dist/css/index.css`
+        ? 'https://rdsnyder.github.io/juncture/wc/dist/css/index.css'
         : `${window.config.baseurl}wc/dist/css/index.css`
   })
   hasWcCss = true
@@ -1129,7 +1129,7 @@ if (hasGhpJs && !hasWcJs) {
       ? 'http://localhost:5173/main.ts'
       : mode === 'prod' 
         // ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-        ? `${window.config.baseurl}wc/dist/js/index.js`
+        ? 'https://rdsnyder.github.io/juncture/wc/dist/js/index.js'
         : `${window.config.baseurl}wc/dist/js/index.js`
   })
   hasGhpJs = true

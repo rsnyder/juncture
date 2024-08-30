@@ -65,6 +65,7 @@
   :host {
     display: block;
     height: 100%;
+    background-color: white;
   }
   svg { width: 20px; height: 20px; }
 

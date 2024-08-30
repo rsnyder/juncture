@@ -1,7 +1,7 @@
 <template>
 
-<div ref="main" class="main" :style="`visibility:${playerHeight ? 'visible' : 'hidden'}`">
-
+ <!-- <div ref="main" class="main" :style="`visibility:${playerHeight ? 'visible' : 'hidden'}`"> -->
+<div ref="main" class="main">
     <div v-if="isYouTube"
       id="youtube-player"
       ref-="youtubePlayer"
@@ -292,7 +292,7 @@
         playerHeight.value = definedHeight.value || (videoHeight + captionHeight)
         if (main.value) main.value.style.height = `${playerHeight.value}px`
 
-        console.log(`videoHeight=${videoHeight} captionHeight=${captionHeight} viewerWidth=${viewerWidth} playerHeight=${playerHeight.value}`)
+        // console.log(`videoHeight=${videoHeight} captionHeight=${captionHeight} viewerWidth=${viewerWidth} playerHeight=${playerHeight.value}`)
         
       }).observe(host.value)
 

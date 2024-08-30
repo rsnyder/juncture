@@ -13,14 +13,12 @@ const mode = location.hostname === 'localhost'
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 function addLink(attrs) {
-  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -47,6 +45,8 @@ const components = {
   },
   've-entities': {
     booleans: 'cards'
+  },
+  've-footer': {
   },
   've-gallery': {
     booleans: 'caption'
@@ -290,6 +290,7 @@ function convertTags(rootEl) {
   })
   rootEl.querySelectorAll('code').forEach(codeEl => {
     let parsed = parseCodeEl(codeEl)
+    // console.log(parsed)
     if (parsed.tag) {
       if (codeEl.parentElement.tagName === 'PRE') {
         codeEl = codeEl.parentElement
@@ -302,6 +303,34 @@ function convertTags(rootEl) {
         }
       }
       codeEl.replaceWith(makeEl(parsed))
+    } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
+      let codeWrapper = codeEl.parentElement
+      let target
+      let priorEl = codeWrapper.previousElementSibling
+      if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
+        target = document.createElement('span')
+        target.innerHTML = priorEl.innerHTML
+        priorEl.replaceWith(target)
+      } else if (parent?.tagName === 'TD') {
+        target = parent?.parentElement?.parentElement?.parentElement // table
+        parent?.parentElement?.remove() // row
+      } else if (parent?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
+        target = priorEl
+      } else {
+        target = priorEl.children.length === 1 && priorEl.children[0]?.tagName === 'VE-HEADER'
+          ? codeWrapper.parentElement
+          : priorEl
+      }
+      if (target) {
+        if (parsed.id) target.id = parsed.id
+        if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
+        if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
+        if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
+        if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) target.setAttribute(k, v === true ? '' : v)
+      } else {
+        console.log('no target for', parsed)
+      }
+      codeWrapper.remove()
     }
   })
 }
@@ -326,6 +355,7 @@ function restructure(rootEl) {
   main.className = 'page-content markdown-body'
   main.setAttribute('aria-label', 'Content')
   main.setAttribute('data-theme', 'light')
+  if (rootEl.style) main.setAttribute('style', rootEl.style.cssText)
   let currentSection = main;
   let sectionParam
 
@@ -461,6 +491,8 @@ function restructure(rootEl) {
       }
     })
 
+  configCustomClasses(main)
+
   let header, footer
   let article = document.createElement('article')
 
@@ -490,13 +522,92 @@ function restructure(rootEl) {
 
   footer = main.querySelector('ve-footer')
   if (footer) {
-    let toRemove = footer
-    while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
+    // let toRemove = footer
+    // while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
     article.appendChild(footer)
-    toRemove.remove()
+    // toRemove.remove()
   }
 
   return article
+}
+
+function configCustomClasses(rootEl) {
+  let cardCtr = 0
+
+  rootEl.querySelectorAll('section').forEach(section => {
+    
+    if (section.classList.contains('cards') && !section.classList.contains('wrapper')) {
+      section.classList.remove('cards')
+      let wrapper = document.createElement('section')
+      wrapper.className = 'cards wrapper'
+      Array.from(section.children).slice(1).forEach(card => {
+        wrapper.appendChild(card)
+        card.classList.add('card')
+        let heading = card.querySelector('h1, h2, h3, h4, h5, h6')
+        if (heading) heading.remove()
+        let img = card.querySelector('p > img')
+        if (img) img.parentElement?.replaceWith(img)
+        let link = card.querySelector('p > a')
+        if (link) link.parentElement?.replaceWith(link)
+        card.querySelectorAll('p').forEach(p => {
+          ++cardCtr
+          let readMoreWrapper = document.createElement('div')
+          readMoreWrapper.className = 'read-more'
+          let input = document.createElement('input')
+          input.setAttribute('type', 'checkbox')
+          input.id = `read-more-${cardCtr}`
+          readMoreWrapper.appendChild(input)
+          let para = document.createElement('p')
+          para.innerHTML = p.innerHTML
+          readMoreWrapper.appendChild(para)
+          let label = document.createElement('label')
+          label.setAttribute('for', `read-more-${cardCtr}`)
+          label.setAttribute('role', 'button')
+          label.innerHTML = 'More'
+          readMoreWrapper.appendChild(label)
+          p.replaceWith(readMoreWrapper)
+        })
+      })
+      section.appendChild(wrapper)
+    }
+
+    if (section.classList.contains('tabs')) {
+      let tabGroup = document.createElement('sl-tab-group');
+      Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls))
+      Array.from(section.attributes).forEach(attr => tabGroup.setAttribute(attr.name, attr.value))
+      Array.from(section.querySelectorAll(':scope > section'))
+      .forEach((tabSection, idx) => {
+        let tab = document.createElement('sl-tab')
+        tab.setAttribute('slot', 'nav')
+        tab.setAttribute('panel', `tab${idx+1}`)
+        tab.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML || ''
+        tabGroup.appendChild(tab)      
+      })
+      Array.from(section.querySelectorAll(':scope > section'))
+      .forEach((tabSection, idx) => {
+        let tabPanel = document.createElement('sl-tab-panel')
+        tabPanel.setAttribute('name', `tab${idx+1}`)
+        let tabContent = Array.from(tabSection.children).slice(1).map(el => el.outerHTML).join(' ')
+        tabPanel.innerHTML = tabContent
+        tabGroup.appendChild(tabPanel)
+      })
+      section.replaceWith(tabGroup)
+    }
+
+    if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
+      let wrapper = document.createElement('section')
+      wrapper.className = 'columns wrapper'
+      section.classList.remove('columns')
+      section.classList.remove('mcol')
+      Array.from(section.children)
+        .filter(child => child.tagName === 'SECTION')
+        .forEach((col, idz) => {
+        wrapper.appendChild(col)
+        col.classList.add(`col-${idz+1}`)
+      })
+      section.appendChild(wrapper)
+    }
+  })
 }
 
 function restructureForJ1(article) {
@@ -964,7 +1075,6 @@ function articleFromHtml(html) {
   convertTags(contentEl)
   let article = restructure(contentEl)
   if (isJunctureV1(contentEl)) article = restructureForJ1(article)
-  console.log(article)
   return article
 }
 
@@ -990,25 +1100,17 @@ function mount(mountPoint, html) {
   return article
 }
 
-setConfig()
+if (!window.config) setConfig()
 
 let scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src).map(script => script.src)
 let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.type == 'text/css'&& link.href).map(link => link.href)
 
-console.log('scripts', scripts)
-console.log('stylesheets', stylesheets)
+let hasGhpJs = scripts.find(src => src.indexOf('ghp.js') > 0) !== undefined
+let hasWcJs = scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0) !== undefined
+let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0) !== undefined
+let isMounted = document.querySelector('body > article') !== null
 
-if (!scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0)) {
-  addScript({type: 'module', 
-    src: mode === 'local'
-      ? 'http://localhost:5173/main.ts'
-      : mode === 'prod' 
-        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-        : `${window.config.baseurl}wc/dist/js/index.js`
-  })
-}
-
-if (!stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0)) {
+if (hasGhpJs && !hasWcCss) {
   addLink({rel: 'stylesheet', type: 'text/css', 
     href: mode === 'local'
       ? 'http://localhost:8080/wc/src/index.css'
@@ -1016,43 +1118,23 @@ if (!stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' 
         ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
         : `${window.config.baseurl}wc/dist/css/index.css`
   })
+  hasWcCss = true
 }
 
-docReady(function() {
-  console.log(`docReady mode=${mode}`)
-  // setConfig()
-  // mount()
-})
-
-/*
-let scripts = Array.from(document.getElementsByTagName('script'))
-  .filter(script => script.src)
-  .map(script => script.src)
-console.log('scripts', scripts)
-let doInit = scripts.filter(src => src.indexOf('ghp.js') > 0).length > 0
-console.log('doInit', doInit)
-
-if (doInit) {
-  addLink({rel: 'stylesheet', type: 'text/css', 
-    href: mode === 'local'
-      ? 'http://localhost:8080/wc/src/index.css'
-      : mode === 'prod' 
-        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-        : 'wc/dist/css/index.css'
-  })
+if (hasGhpJs && !hasWcJs) {
   addScript({type: 'module', 
     src: mode === 'local'
       ? 'http://localhost:5173/main.ts'
       : mode === 'prod' 
         ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-        : 'wc/dist/js/index.js'
+        : `${window.config.baseurl}wc/dist/js/index.js`
   })
-  docReady(function() {
-    console.log('doInit.docReady')
-    setConfig()
-    mount()
-  })
+  hasGhpJs = true
 }
-*/
+
+docReady(function() {
+  // console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
+  if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
+})
 
 export { articleFromHtml, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mount, observeVisible, structureContent }

@@ -13,13 +13,14 @@ const mode = location.hostname === 'localhost'
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 function addLink(attrs) {
+  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  // console.log('addScript', attrs)
+  console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -1111,7 +1112,7 @@ let hasWcJs = scripts.find(src => src === 'http://localhost:5173/main.ts' || src
 let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0) !== undefined
 let isMounted = document.querySelector('body > article') !== null
 
-if (hasGhpJs && !hasWcCss) {
+if (!hasWcCss) {
   addLink({rel: 'stylesheet', type: 'text/css', 
     href: mode === 'local'
       ? 'http://localhost:8080/wc/src/index.css'
@@ -1123,7 +1124,7 @@ if (hasGhpJs && !hasWcCss) {
   hasWcCss = true
 }
 
-if (hasGhpJs && !hasWcJs) {
+if (!hasWcJs) {
   addScript({type: 'module', 
     src: mode === 'local'
       ? 'http://localhost:5173/main.ts'

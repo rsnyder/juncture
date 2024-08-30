@@ -117,8 +117,6 @@
 
   function getDataFromUrl(url:string) {
     if (url.indexOf('http') !== 0) url = `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}${source.value.dir}${url}`
-    console.log(`url=${url}`)
-    console.log(toRaw(source.value))
     fetch(url)
       .then(response => response.text())
       .then(text => {

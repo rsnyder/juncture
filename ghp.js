@@ -1111,10 +1111,8 @@ let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/i
 let isMounted = document.querySelector('body > article') !== null
 
 console.log(`hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
-if (hasGhpJs) {
-  console.dir(scripts.find(src => src.indexOf('ghp.js')))
-  console.log(document.scripts)
-}
+console.log(document.scripts)
+console.dir(scripts.find(src => src.indexOf('ghp.js')))
 
 if (!hasWcCss) {
   addLink({rel: 'stylesheet', type: 'text/css', 

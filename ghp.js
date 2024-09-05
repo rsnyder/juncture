@@ -1110,6 +1110,7 @@ let hasWcJs = scripts.find(src => src === 'http://localhost:5173/main.ts' || src
 let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0) !== undefined
 let isMounted = document.querySelector('body > article') !== null
 
+console.log(`hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
 if (hasGhpJs) {
   console.dir(scripts.find(src => src.indexOf('ghp.js')))
   console.log(document.scripts)

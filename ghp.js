@@ -1112,20 +1112,8 @@ let isMounted = document.querySelector('body > article') !== null
 
 console.log(import.meta.url)
 console.log(document.scripts)
-console.log(scripts)
 
-let source
-if (hasGhpJs) {
-  console.dir(scripts.find(src => src.indexOf('ghp.js')))
-} else {
-  Array.from(document.getElementsByTagName('script'))
-    .filter(script => !script.src)
-    .filter(script => script.type === 'module')
-    .forEach(script => {
-      console.dir(script)
-    })
-}
-
+let source = import.meta.url ? /\/ghp\.js$/.replace('') : 'local'
 console.log(`source=${source}`)
 
 if (!hasWcCss) {

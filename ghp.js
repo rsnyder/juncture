@@ -6,10 +6,17 @@ window.customEntityData = {}
 
 const mode = location.hostname === 'localhost'
   ? 'local'
-  : location.hostname.indexOf('github.io') > 0 && location.pathname.indexOf('/juncture/') === 0
-    ? 'dev'
-    : 'prod'
+  : import.meta.url.indexOf('https://cdn.jsdelivr.net/npm/juncture-digital') === 0
+    ? 'prod'
+    : 'dev'
 
+
+const base = prod
+  ? import.meta.url.replace(/\/js\/ghp\.js$/, '')
+  : import.meta.url.replace(/\/ghp\.js$/, '/wc/dist')
+
+console.log(`mode=${mode} base=${base}`)
+    
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 function addLink(attrs) {
@@ -1106,37 +1113,18 @@ let scripts = Array.from(document.getElementsByTagName('script')).filter(script 
 let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.type == 'text/css'&& link.href).map(link => link.href)
 
 let hasGhpJs = scripts.find(src => src.indexOf('ghp.js') > 0) !== undefined
-let hasWcJs = scripts.find(src => src === 'http://localhost:5173/main.ts' || src === 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' || src.indexOf('wc/dist/js/index.js') > 0) !== undefined
-let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/index.css' || href === 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' || href.indexOf('wc/dist/css/index.css') > 0) !== undefined
+let hasWcJs = scripts.find(src => src === 'http://localhost:5173/main.ts' || src === `${base}/js/index.js`) !== undefined
+let hasWcCss = stylesheets.find(href => href === `${base}/css/index.css`) !== undefined
 let isMounted = document.querySelector('body > article') !== null
 
-console.log(import.meta.url)
-console.log(Array.from(document.getElementsByTagName('script')).filter(script => script.src).find(script => script.src.indexOf('ghp.js') > 0))
-console.log(document.scripts)
-
-let source = import.meta.url ? import.meta.url.replace(/\/ghp\.js$/, '') : 'tbd'
-console.log(`source=${source}`)
-
 if (!hasWcCss) {
-  addLink({rel: 'stylesheet', type: 'text/css', 
-    href: mode === 'local'
-      ? 'http://localhost:8080/wc/src/index.css'
-      : mode === 'prod' 
-        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/css/index.css' 
-        : `${window.config.baseurl}wc/dist/css/index.css` // mode === 'dev'
-  })
+  addLink({rel: 'stylesheet', type: 'text/css', href: `${base}/css/index.css`})
   hasWcCss = true
 }
 
 if (!hasWcJs) {
-  addScript({type: 'module', 
-    src: mode === 'local'
-      ? 'http://localhost:5173/main.ts'
-      : mode === 'prod' 
-        ? 'https://cdn.jsdelivr.net/npm/juncture-digital/js/index.js' 
-        : `${window.config.baseurl}wc/dist/js/index.js` // mode === 'dev'
-  })
-  hasGhpJs = true
+  addScript({type: 'module', src: mode === 'local' ? 'http://localhost:5173/main.ts' : `${base}/js/index.js`})
+  hasWcJs = true
 }
 
 docReady(function() {

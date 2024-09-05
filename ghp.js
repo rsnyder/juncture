@@ -13,14 +13,12 @@ const mode = location.hostname === 'localhost'
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 function addLink(attrs) {
-  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -1113,13 +1111,7 @@ let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/i
 let isMounted = document.querySelector('body > article') !== null
 
 if (hasGhpJs) {
-  console.log(scripts.find(src => src.indexOf('ghp.js')))
-} else {
-  Array.from(document.getElementsByTagName('script'))
-    .filter(script => !script.src)
-    .forEach(script => {
-      console.dir(script)
-    })
+  console.dir(scripts.find(src => src.indexOf('ghp.js')))
 }
 
 if (!hasWcCss) {

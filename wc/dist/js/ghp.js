@@ -1,12 +1,4 @@
-import { addLink, addScript, getMarkdown, markdownToHtml, mount, setConfig } from './ghp-lib.js'
-
-window.customEntityData = {}
-console.log(location)
-const mode = location.hostname === 'localhost'
-  ? 'local'
-  : import.meta.url.indexOf('https://cdn.jsdelivr.net/npm/juncture-digital') === 0
-    ? 'prod'
-    : 'dev'
+import { addLink, addScript, getMarkdown, markdownToHtml, mode, mount, setConfig } from './ghp-lib.js'
 
 const base = mode === 'prod'
   ? import.meta.url.replace(/\/js\/ghp\.js$/, '')
@@ -40,7 +32,6 @@ function docReady(fn) {
 }
 
 docReady(function() {
-  // console.log(`docReady mode=${mode} hasGhpJs=${hasGhpJs} hasWcJs=${hasWcJs} hasWcCss=${hasWcCss} isMounted=${isMounted}`)
   if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 

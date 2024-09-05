@@ -2,6 +2,14 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
+const mode = location.hostname === 'localhost'
+  ? 'local'
+  : import.meta.url.indexOf('https://cdn.jsdelivr.net/npm/juncture-digital') === 0
+    ? 'prod'
+    : 'dev'
+
+window.customEntityData = {}
+
 function addLink(attrs) {
   console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
@@ -1087,4 +1095,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mount, observeVisible, setConfig, structureContent }
+export { addLink, addScript, articleFromHtml, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, setConfig, structureContent }

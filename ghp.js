@@ -1112,6 +1112,7 @@ let isMounted = document.querySelector('body > article') !== null
 
 if (hasGhpJs) {
   console.dir(scripts.find(src => src.indexOf('ghp.js')))
+  console.log(document.scripts)
 }
 
 if (!hasWcCss) {

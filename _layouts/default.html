@@ -6,7 +6,7 @@
 <link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
 
 <script>
-  window.jekyll={site:{{site|jsonify}},page:{{page|jsonify}},content:{{content|jsonify}}}
+  window.jekyll={ site: {{site|jsonify}}, page: {{page|jsonify}}, content: {{content|jsonify}} }
   window.options = `
   title: Juncture
   description: Website framework using Markdown, Github Pages, and custom web components.
@@ -30,13 +30,10 @@
 `</script>
 
 <main style="visibility:hidden;">{{ content }}</main>
-<script src="{{ site.baseurl }}/ghp.js" type="module"></script>
 
-<!-- 
 <script type="module">
 
 	import { mount, getMarkdown, markdownToHtml } from '{{ site.baseurl }}/ghp.js'
-
   let referrer = document.referrer ? new URL(document.referrer) : null
 
   if (window.location.search.includes('source')) {
@@ -53,4 +50,3 @@
     mount()
   }
 </script>
--->

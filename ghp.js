@@ -1111,6 +1111,7 @@ let hasWcCss = stylesheets.find(href => href === 'http://localhost:8080/wc/src/i
 let isMounted = document.querySelector('body > article') !== null
 
 console.log(import.meta.url)
+console.log(Array.from(document.getElementsByTagName('script')).filter(script => script.src).find(script => script.src.indexOf('ghp.js') > 0))
 console.log(document.scripts)
 
 let source = import.meta.url ? import.meta.url.replace(/\/ghp\.js$/, '') : 'tbd'

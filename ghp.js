@@ -1113,7 +1113,7 @@ let isMounted = document.querySelector('body > article') !== null
 console.log(import.meta.url)
 console.log(document.scripts)
 
-let source = import.meta.url ? /\/ghp\.js$/.replace(import.meta.url, '') : 'tbd'
+let source = import.meta.url ? import.meta.url.replace(/\/ghp\.js$/, '') : 'tbd'
 console.log(`source=${source}`)
 
 if (!hasWcCss) {

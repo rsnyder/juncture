@@ -95,7 +95,6 @@ CONFIG = {
   
 def html_from_markdown(md, baseurl, dir, name, path):
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
-  html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
   
   soup = BeautifulSoup(markdown.markdown(md, extensions=['extra', 'toc']), 'html5lib')
       
@@ -154,9 +153,8 @@ def html_from_markdown(md, baseurl, dir, name, path):
   serialized_config = json.dumps(CONFIG)
   
   html = html_template.replace('{{ content }}', CONFIG['content'])
-  html = re.sub(r'<script>window\.jekyll=.*>', '', html)
+  html = re.sub(r'window\.jekyll=.*', '', html)
   html += '<script>window.jekyll=' + serialized_config + '</script>'
-  
   return html
   
 @app.get('{path:path}')
@@ -228,7 +226,6 @@ if __name__ == '__main__':
   parser.add_argument('--owner', default='', help='Github owner')
   parser.add_argument('--repo', default='', help='Github repository')
   parser.add_argument('--branch', default='main', help='Github branch')
-
 
   args = vars(parser.parse_args())
   

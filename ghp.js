@@ -11,7 +11,7 @@ const mode = location.hostname === 'localhost'
     : 'dev'
 
 
-const base = prod
+const base = mode === 'prod'
   ? import.meta.url.replace(/\/js\/ghp\.js$/, '')
   : import.meta.url.replace(/\/ghp\.js$/, '/wc/dist')
 

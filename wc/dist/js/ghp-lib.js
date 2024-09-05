@@ -7,6 +7,8 @@ const mode = location.hostname === 'localhost'
   : import.meta.url.indexOf('https://cdn.jsdelivr.net/npm/juncture-digital') === 0
     ? 'prod'
     : 'dev'
+    
+const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 window.customEntityData = {}
 

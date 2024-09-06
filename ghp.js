@@ -4,7 +4,7 @@ const base = mode === 'prod'
   ? import.meta.url.replace(/\/js\/ghp\.js$/, '')
   : import.meta.url.replace(/\/ghp\.js$/, '/wc/dist')
 
-console.log(`mode=${mode} base=${base}`)
+// console.log(`mode=${mode} base=${base}`)
     
 if (!window.config) setConfig()
 

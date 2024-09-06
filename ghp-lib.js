@@ -13,14 +13,14 @@ const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(nav
 window.customEntityData = {}
 
 function addLink(attrs) {
-  console.log('addLink', attrs)
+  // console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  console.log('addScript', attrs)
+  // console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -512,10 +512,10 @@ function restructure(rootEl) {
   } else {
     header = main.querySelector('ve-header')
     if (header) {
-      let toRemove = header
-      while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
+      // let toRemove = header
+      // while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
       article.appendChild(header)
-      toRemove.remove()
+      // toRemove.remove()
     }
   }
 
@@ -988,7 +988,6 @@ function isJunctureV1(contentEl) {
 
 // set the configuration
 function setConfig() {
-  console.log('setConfig', window.jekyll)
   window.config = {
     ...yaml.parse(window.options || ''), 
     ...(window.jekyll || {}), 
@@ -1009,7 +1008,7 @@ function setConfig() {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = window.config.content || document.body.innerHTML
   window.config.isJunctureV1 = isJunctureV1(contentEl)
-  console.log(window.config)
+  // console.log(window.config)
 }
 
 function readMoreSetup() {

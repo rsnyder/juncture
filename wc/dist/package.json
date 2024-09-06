@@ -1,6 +1,6 @@
 {
   "name": "juncture-digital",
-  "version": "3.1.0-beta.3",
+  "version": "3.1.0-beta.4",
   "private": false,
   "scripts": {
     "dev": "vite",
@@ -15,7 +15,7 @@
     "@allmaps/leaflet": "^1.0.0-beta.25",
     "@openseadragon-imaging/openseadragon-viewerinputhook": "^2.2.1",
     "@recogito/annotorious-openseadragon": "2.6.0",
-    "@shoelace-style/shoelace": "^2.13.1",
+    "@shoelace-style/shoelace": "^2.16.0",
     "@types/leaflet": "^1.9.8",
     "js-md5": "^0.8.3",
     "js-sha256": "^0.11.0",

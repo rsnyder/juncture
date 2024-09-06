@@ -1008,7 +1008,7 @@ function setConfig() {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = window.config.content || document.body.innerHTML
   window.config.isJunctureV1 = isJunctureV1(contentEl)
-  console.log(window.config)
+  // console.log(window.config)
 }
 
 function readMoreSetup() {

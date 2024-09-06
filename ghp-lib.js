@@ -499,6 +499,8 @@ function restructure(rootEl) {
   let header, footer
   let article = document.createElement('article')
 
+  console.log('isJunctureV1', isJunctureV1(rootEl))
+
   if (isJunctureV1(rootEl)) {
     article.classList.add('j1')
     let veConfig = main.querySelector('param[ve-config]')
@@ -513,11 +515,12 @@ function restructure(rootEl) {
     veConfig?.remove()
   } else {
     header = main.querySelector('ve-header')
+    console.log('header', header)
     if (header) {
       let toRemove = header
       while (toRemove.parentElement.tagName !== 'MAIN') toRemove = toRemove.parentElement 
       article.appendChild(header)
-      toRemove.remove()
+      // toRemove.remove()
     }
   }
 

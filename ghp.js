@@ -1,4 +1,4 @@
-import { addLink, addScript, getMarkdown, markdownToHtml, mode, mount, setConfig } from './ghp-lib.js'
+import { addLink, addScript, articleFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, setConfig, structureContent } from './ghp-lib.js'
 
 const base = mode === 'prod'
   ? import.meta.url.replace(/\/js\/ghp\.js$/, '')
@@ -35,4 +35,4 @@ docReady(function() {
   if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 
-export { mount, getMarkdown, markdownToHtml }
+export { articleFromHtml, mount, getGhFile, getMarkdown, markdownToHtml, structureContent }

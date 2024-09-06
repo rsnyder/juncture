@@ -196,7 +196,7 @@ async def serve(path: Optional[str] = None):
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
       content = re.sub(r'["\'].*/[-\w@]*juncture[-\w.@]+/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', content)
-      content = re.sub(r'["\'].*/(index|ghp\.(css|js))["\']', f'"http://localhost:{PORT}/wc/src/\\1"', content)
+      # content = re.sub(r'["\'].*/(index|ghp\.(css|js))["\']', f'"http://localhost:{PORT}/wc/src/\\1"', content)
 
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:

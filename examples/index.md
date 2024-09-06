@@ -25,6 +25,8 @@
 
 - [Style](style)
 
+- [Carousel](carousel)
+
 [Workbench](../wb)
 
 Unified

@@ -37,6 +37,10 @@ const components = {
     positional: 'src caption'
   },
   've-breadcrumbs': {},
+  've-carousel': {
+    booleans: 'autoplay loop navigation pagination',
+    positional: 'caption'
+  },
   've-compare': {
     positional: 'src'
   },
@@ -714,7 +718,10 @@ function restructureForJ1(article) {
     function makeViewerEl(tagName, slotName, tagProps) {
       let viewerEl = document.createElement(tagName)
       viewerEl.setAttribute('slot', slotName)
-      if (slotName === 've-compare') {
+      if (slotName === 've-carousel') {
+        setElProps(viewerEl, tagProps[0], {autoplay:'', caption:'', loop:'', navigation:'', pagination:''})
+        viewerEl.appendChild(propsList(tagProps))
+      } else if (slotName === 've-compare') {
         setElProps(viewerEl, tagProps[0], {caption:''})
         viewerEl.appendChild(propsList(tagProps))
       } else if (slotName === 've-iframe') {
@@ -981,6 +988,7 @@ function isJunctureV1(contentEl) {
 
 // set the configuration
 function setConfig() {
+  console.log('setConfig', window.jekyll)
   window.config = {
     ...yaml.parse(window.options || ''), 
     ...(window.jekyll || {}), 

@@ -1,3 +1,5 @@
+// 1
+
 import { addLink, addScript, articleFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, setConfig, structureContent } from './ghp-lib.js'
 
 const base = mode === 'prod'

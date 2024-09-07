@@ -986,6 +986,10 @@ function isJunctureV1(contentEl) {
   return contentEl.querySelector('param[ve-config]') ? true : false
 }
 
+function getContent() {
+  return window.config.content || document.body.children[0].innerHTML
+}
+
 // set the configuration
 function setConfig() {
   window.config = {
@@ -1084,7 +1088,7 @@ function articleFromHtml(html) {
 
 // mount the content
 function mount(mountPoint, html) {
-  html = html || window.config.content || document.body.innerHTML
+  html = html || getContent()
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
   if (!mountPoint) {
     mountPoint = document.createElement('article')

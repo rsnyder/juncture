@@ -914,10 +914,6 @@ video {
   height: 100%;
 }
 
-.h-64 {
-  height: 16rem;
-}
-
 .min-h-\[calc\(100\%-3\.5rem\)\] {
   min-height: calc(100% - 3.5rem);
 }

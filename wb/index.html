@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <base href="/" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Juncture Workbench</title>
@@ -52,10 +53,13 @@
         <sl-button variant="primary" class="proceed">Proceed</sl-button>
       </div>
     </sl-dialog>
+    <script>
+      document.querySelector('base').setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : `/`)
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/juncture-digital@3.0/js/index.js" type="module"></script>
     <script type="module">
-      import { elFromHtml, getGhFile, getMarkdown, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.0/js/ghp.js'
+      import { elFromHtml, getGhFile, getMarkdown, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
 
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
@@ -67,7 +71,8 @@
 
       let easyMDE
 
-      if (!sourceArg && referrer) {
+      console.log('referrer:', referrer.hostname )
+      if (!sourceArg && referrer?.hostname === 'github.com') {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
         if (acct && repo) {
@@ -81,16 +86,19 @@
         }
       } 
 
-      let ghSource
+      let ghSource, browserUrl
+
       if (sourceArg) {
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
+        browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
         // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
         ghSource = localStorage.getItem('smde_ghsource')
         if (ghSource) {
-          window.history.replaceState({}, null, `/wb?source=${ghSource}`)
+          browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
+          window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
@@ -110,7 +118,7 @@
 
       function loadMarkdown() {
         dialog.hide()
-        window.history.replaceState({}, null, `/wb?source=${ghSource}`)
+        window.history.replaceState({}, null, browserUrl)
 
         let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
         getGhFile(acct, repo, branch, path.join('/')).then(resp => {
@@ -159,6 +167,7 @@
             if (markdownIsUpdated && evt.trigger !== 'delete') dialog.show()
             else loadMarkdown()
           }
+          browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
         })
 
         ghSelector.addEventListener('repo-is-writable', e => {
@@ -241,7 +250,7 @@
       function togglePreview(md, preview) {
         setTimeout(() => {
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
-          window.history.replaceState({}, null, `/wb?source=${ghSource}&mode=${mode}`)
+          window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
           setSaveButtonState()
           // styleJunctureElements()
         }, 100)
@@ -251,15 +260,18 @@
 
       function mdToHtml(md) {
         let rawHTML = markdownToHtml(md)
-        let structuredHTML = structureContent(rawHTML)
-        let el = elFromHtml(structuredHTML);
+        
+        // let el = structureContent(rawHTML);
+        let el =articleFromHtml(rawHTML);
+
         (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {
           p.removeAttribute('data-id')
           p.removeAttribute('id')
           p.removeAttribute('class')
         }))
-        let html = el?.querySelector('article').innerHTML
-        let classes = el?.querySelector('article').className  
+        console.log(el)
+        let html = el.innerHTML
+        let classes = el.className  
         return {html, classes}
       }
 

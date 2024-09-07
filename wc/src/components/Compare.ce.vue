@@ -173,7 +173,7 @@
     return found
   }
 
-function scaleImages() {
+  function scaleImages() {
     let targetWidth = width.value
     let targetHeight = height.value
     // let targetAspectRatio = aspectRatio.value

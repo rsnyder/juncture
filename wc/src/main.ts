@@ -6,6 +6,8 @@ import '@shoelace-style/shoelace/dist/components/badge/badge.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb/breadcrumb.js'
 import '@shoelace-style/shoelace/dist/components/breadcrumb-item/breadcrumb-item.js'
 import '@shoelace-style/shoelace/dist/components/button/button.js'
+import '@shoelace-style/shoelace/dist/components/carousel/carousel.js'
+import '@shoelace-style/shoelace/dist/components/carousel-item/carousel-item.js'
 import '@shoelace-style/shoelace/dist/components/details/details.js'
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
@@ -27,6 +29,7 @@ import Article from './components/Article.ce.vue'
 import Audio from './components/Audio.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
 // import Button from './components/Button.ce.vue'
+import Carousel from './components/Carousel.ce.vue'
 import Compare from './components/Compare.ce.vue'
 import ContentSelector from './components/ContentSelector.ce.vue'
 // import Dropdown from './components/Dropdown.ce.vue'
@@ -67,6 +70,7 @@ function defineCustomElements() {
 	customElements.define('ve-article', defineCustomElement(Article))
 	customElements.define('ve-audio', defineCustomElement(Audio))
 	customElements.define('ve-breadcrumbs', defineCustomElement(Breadcrumbs))
+	customElements.define('ve-carousel', defineCustomElement(Carousel))
 	customElements.define('ve-compare', defineCustomElement(Compare))
 	customElements.define('ve-content-selector', defineCustomElement(ContentSelector))
 	// customElements.define('ve-button', defineCustomElement(Button))

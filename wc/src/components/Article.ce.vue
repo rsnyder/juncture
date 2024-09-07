@@ -8,7 +8,7 @@
 
   import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
-  import { elFromHtml, observeVisible } from '../ghp.js'
+  import { observeVisible } from '../../../ghp-lib.js'
 
   const props = defineProps({
     base: { type: String },

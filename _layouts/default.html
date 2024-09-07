@@ -4,33 +4,19 @@
 {%- seo -%}
 <link href="{{ site.baseurl }}/favicon.ico" rel="icon" />
 <link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
-<link href="https://cdn.jsdelivr.net/npm/juncture-digital@3.0/css/index.css" rel="stylesheet">
-
 <script>
-  window.jekyll = {
-    baseurl: '{{ site.baseurl }}',
-    source: {
-      owner: `{{ site.github.owner_name }}`,
-      repository: `{{ site.github.repository_name }}`,
-      branch: `{{ site.github.source.branch }}`,
-      dir: `{{ page.dir }}`,
-      path: `{{ page.path }}`,
-      name: `{{ page.name }}`
-    }
-  };
+  window.jekyll={ site: {{site|jsonify}}, page: {{page|jsonify}}, content: {{content|jsonify}} }
   window.options = `
   title: Juncture
   description: Website framework using Markdown, Github Pages, and custom web components.
   defaults:
     iiifServer: iiif.mdpress.io
     header:
-      # backgroundImage: wc:Mont_Blanc_from_Les_Arcs_1950.jpg
       backgroundColor: black
       color: white
       logo: /images/logo.svg
       iconFilter: white
       contact: ron@snyderjr.com
-      # class: sticky
       breadcrumbs: false
       pdfDownloadEnabled: false
       nav:
@@ -42,15 +28,12 @@
         #  icon: <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
 `</script>
 
-<main class="page-content" aria-label="Content" style="display:none;">
-  {{ content }}
-</main>
+<main style="visibility:hidden;">{{ content }}</main>
 
-<script src="https://cdn.jsdelivr.net/npm/juncture-digital@3.0/js/index.js" type="module"></script>
 <script type="module">
 
-  import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.0/js/ghp.js'
-  
+  import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
+
   let referrer = document.referrer ? new URL(document.referrer) : null
 
   if (window.location.search.includes('source')) {
@@ -58,7 +41,6 @@
     window.jekyll.source = { owner: acct, repository: repo, branch: branch || 'main', dir: path.join('/') }
     getMarkdown(`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`).then(markdown => {
       mount(document.body.firstChild, markdownToHtml(markdown))
-      console.log(window.config)
     })
   } else if (referrer?.host === 'github.com') {
     let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
@@ -66,6 +48,5 @@
     window.location.search = `source=${source}`
   } else {
     mount()
-    console.log(window.config)
   }
 </script>

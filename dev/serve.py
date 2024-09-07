@@ -69,8 +69,8 @@ html_template = open(template_path, 'r').read()
 
 if LOCAL_WC: 
   html_template = re.sub(r'["\'].*/[-\w@]*juncture[-\w.@]+/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', html_template)
-  html_template = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital\/css\/index\.css', f'http://localhost:{PORT}/wc/src/index.css', html_template)
-  html_template = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', html_template)
+  html_template = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/css\/index\.css', f'http://localhost:{PORT}/wc/src/index.css', html_template)
+  html_template = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', html_template)
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
 html_template = html_template.replace('{{ site.github.repository_name }}', GH_REPOSITORY)
@@ -161,7 +161,7 @@ def html_from_markdown(md, baseurl, dir, name, path):
 async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
-  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'ghp-lib.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
   # if len(path) > 0 and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
     # logger.info(f'local_file_path: {local_file_path}')

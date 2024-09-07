@@ -13,7 +13,7 @@
       
       <div class="branding">
         <div v-if="title" class="title">
-          <a :href="`${config.baseurl || ''}/`" v-html="title"></a>
+          <a :href="`${config.baseurl || '/'}`" v-html="title"></a>
         </div>
         <div v-if="subtitle" class="subtitle clamp1" v-html="subtitle"></div>
       </div>
@@ -56,7 +56,7 @@
   const backgroundImage = computed(() => props.background || config.value.defaults?.header?.backgroundImage )
   const logo = computed(() => {
     let logo = props.logo || config.value.defaults?.header?.logo
-    return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl || ''}/${logo[0] === '/' ? logo.slice(1) : logo}`)
+    return logo && (logo?.indexOf('http') === 0 ? logo : `${config.value.baseurl || '/'}${logo[0] === '/' ? logo.slice(1) : logo}`)
   })
   const iconFilter = computed(() => props.iconFilter === undefined ? config.value.defaults?.header?.iconFilter : props.iconFilter)
   const backgroundColor = computed(() => props.backgroundColor || config.value.defaults?.header?.backgroundColor || (backgroundImage.value ? 'black' : '#ddd'))

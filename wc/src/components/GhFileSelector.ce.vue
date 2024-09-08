@@ -405,6 +405,7 @@
   }
 
   async function getAuthToken() {
+    console.log('getAuthToken')
     if (!window.localStorage.getItem('gh-unscoped-token')) await getUnscopedToken()
     authToken.value = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
   }

@@ -271,10 +271,11 @@
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
       console.log('gh-token', url)
       let resp = await fetch(url)
-      console.log('gh-token', resp)
-      if (resp.ok) {
-        let token = await resp.text()
+      let token = resp.ok ? await resp.text() : null
+      console.log('gh-token', resp, token)
+      if (token) {
         let _user = await getGhUserInfo(token)
+        console.log(toRaw(_user))
         user.value = _user
       }
     }
@@ -304,7 +305,8 @@
       let href = clientIds[location.hostname] !== undefined
         ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${redirectTo}` + (source ? `&source=${source}` : '')
         : null
-      if (href) window.location.href = href
+      console.log('ghLogin', href)
+      if (href) setTimeout(() => {window.location.href = href}, 5000)
     }
   }
 

@@ -8,7 +8,7 @@
     <sl-breadcrumb>
 
       <sl-breadcrumb-item>
-        <sl-dropdown>
+        <sl-dropdown ref="acctDropdown">
           <sl-input ref="acctInput" slot="trigger" size="medium" placeholder="Github username" autocomplete="off" @keyup="inputHandler" :value="acct">
             <svg v-if="accts.length > 0" slot="suffix" width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
           </sl-input>
@@ -71,7 +71,7 @@
         </sl-dropdown>
       </sl-breadcrumb-item>
 
-      <sl-dropdown v-if="userCanUpdateRepo">
+      <sl-dropdown v-if="userCanUpdateRepo && path.length">
         <svg width="24" height="24" slot="trigger" fill="#999" style="cursor:pointer; padding:0 0 0 8px; margin-top:-12px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/></svg>
         <sl-menu>
           <sl-menu-item @click="deleteDialog?.show()">
@@ -117,6 +117,8 @@
 
   import { defineExpose, onMounted, ref, toRaw, watch } from 'vue'
   import type SLDIalog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
+  import type SLDropdown from '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
+  import type SLMenu from '@shoelace-style/shoelace/dist/components/menu/menu.js'
   import { GithubClient } from '../gh-utils'
 
   defineExpose({ GithubClient })
@@ -159,7 +161,8 @@
   })
 
   const acctInput = ref<HTMLElement | null>(null)
-  const acctMenu = ref<HTMLElement | null>(null)
+  const acctDropdown = ref<SLDropdown | null>(null)
+  const acctMenu = ref<SLMenu | null>(null)
 
   const authToken = ref<string | null>('')
   const githubClient = ref<any>()
@@ -195,8 +198,8 @@
   const accts = ref<any[]>([])
   const acct = ref('')
   watch(accts, (accts) => {
-    if (!accts.length) return
     // console.log('accts', toRaw(accts))
+    if (!accts.length) return
     let selected = accts.find(acct => acct.login === requested.value?.acct)
     acct.value = selected?.login || requested.value?.acct || accts[0].login
   })
@@ -214,6 +217,8 @@
     if (acctMenu.value) acctMenu.value.style.display = typedInput.length ? 'none' : 'block'
     if (evt.key === 'Enter') {
       acct.value = typedInput
+      acctDropdown.value?.hide()
+      // if (acctMenu.value) acctMenu.value.style.display = 'none'
     }
   }
 
@@ -221,17 +226,28 @@
   const repos = ref<any[]>([])
   const repo = ref('')
   watch(acct, (acct) => {
-    repo.value = ''
-    getRepositories()
+    // console.log(`acct=${acct}`)
+    if (acct) {
+      repo.value = ''
+      getRepositories()
+    } else {
+      repos.value = []
+    }
   })
   watch(repos, (repos) => {
-    if (!repos.length) return
     // console.log('repos', toRaw(repos))
-    let selected = repos.find(repo => repo.name === requested.value?.repo) || repos.find(repo => repo.name === 'essays') || repos[0]
-    repo.value = selected.name
+    if (repos.length) {
+      // console.log('repos', toRaw(repos))
+      let selected = repos.find(repo => repo.name === requested.value?.repo) || repos.find(repo => repo.name === 'essays') || repos[0]
+      repo.value = selected.name
+    } else {
+      repo.value = ''
+    }
   })
   function getRepositories() {
-    githubClient.value?.repos(acct.value).then((_repos:any[]) => repos.value = _repos)
+    // console.log('getRepositories', acct.value)
+    if (acct.value) githubClient.value?.repos(acct.value).then((_repos:any[]) => repos.value = _repos)
+    else repos.value = []
   }
   function repoSelected(_repo:any) {
     requested.value = null
@@ -247,27 +263,35 @@
   const branches = ref<any[]>([])
   const branch = ref('')
   watch(repo, (repo) => {
-    if (!repo) return
     // console.log(`repo=${repo}`)
-    branch.value = ''
-    if (isLoggedIn.value) {
-      githubClient.value.user()
-        .then((userData:any) => userData.login)
-        .then((username:string) => repo ? githubClient.value.isCollaborator(acct.value, repo, username) : false)
-        .then((isCollaborator:boolean) => userCanUpdateRepo.value = isCollaborator)
+    if (repo) {
+      branch.value = ''
+      if (isLoggedIn.value) {
+        githubClient.value.user()
+          .then((userData:any) => userData.login)
+          .then((username:string) => repo ? githubClient.value.isCollaborator(acct.value, repo, username) : false)
+          .then((isCollaborator:boolean) => userCanUpdateRepo.value = isCollaborator)
+      }
+      getBranches()
+    } else {
+      branches.value = []
     }
-    getBranches()
   })
   async function getBranches() {
-    githubClient.value.branches(acct.value, repo.value).then((_branches:any[]) => branches.value = _branches)
+    // console.log('getBranches', acct.value, repo.value)
+    if (acct.value && repo.value) githubClient.value.branches(acct.value, repo.value).then((_branches:any[]) => branches.value = _branches)
+    else branches.value = []
   }
 
   let defaultBranch: string
   watch(branches, async (branches) => {
-    if (!branches.length) return
     // console.log('branches', toRaw(branches))
-    if (!defaultBranch && acct.value && repo.value) defaultBranch = await githubClient.value.defaultBranch(acct.value, repo.value)
-    branch.value = requested.value?.branch || defaultBranch || branches[0]?.name
+    if (branches.length) {
+      if (!defaultBranch && acct.value && repo.value) defaultBranch = await githubClient.value.defaultBranch(acct.value, repo.value)
+      branch.value = requested.value?.branch || defaultBranch || branches[0]?.name
+    } else {
+      branch.value = ''
+    }
   })
   function branchSelected(_branch:any) {
     requested.value = null
@@ -282,28 +306,32 @@
         // console.log(toRaw(selected))
         path.value = [{dirList, selected}]
       })
+    } else {
+      path.value = []
     }
   })  
 
   // Path
   const path = ref<any[]>([])
   watch(path, () => {
-    // console.log('path', toRaw(path.value))
     // console.log(`path=${path.value.map((p:any) => p.selected.name).join('/')}`)
-    if (!path.value.length) return
-    let lastIdx = path.value.length-1
-    let lastPathElement = path.value[lastIdx]
-    // console.log(toRaw(lastPathElement))
-    if (lastPathElement?.selected?.type === 'dir') {
-      getDirList(path.value.map((p:any) => p.selected.name).join('/')).then((dirList) => {
-        // console.log('dirList', toRaw(dirList))
-        let selected = selectFromDirlist(dirList, lastIdx+1)
-        path.value = [...path.value, {dirList, selected}]
-      })
+    if (path.value.length) {
+      let lastIdx = path.value.length-1
+      let lastPathElement = path.value[lastIdx]
+      // console.log(toRaw(lastPathElement))
+      if (lastPathElement?.selected?.type === 'dir') {
+        getDirList(path.value.map((p:any) => p.selected.name).join('/')).then((dirList) => {
+          // console.log('dirList', toRaw(dirList))
+          let selected = selectFromDirlist(dirList, lastIdx+1)
+          path.value = [...path.value, {dirList, selected}]
+        })
+      } else {
+        // console.log(acct.value, repo.value, branch.value, toRaw(path.value))
+        let ghSource = `${acct.value}/${repo.value}/${branch.value}/${path.value.map((p:any) => p.selected?.name).join('/')}`
+        emit('fileSelected', {trigger: trigger.value, path: ghSource})
+      }
     } else {
-      // console.log(acct.value, repo.value, branch.value, toRaw(path.value))
-      let ghSource = `${acct.value}/${repo.value}/${branch.value}/${path.value.map((p:any) => p.selected?.name).join('/')}`
-      // console.log(`ghSource=${ghSource}`)
+      let ghSource = ''
       emit('fileSelected', {trigger: trigger.value, path: ghSource})
     }
   })
@@ -378,6 +406,8 @@
   async function getAuthToken() {
     if (!window.localStorage.getItem('gh-unscoped-token')) await getUnscopedToken()
     authToken.value = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
+    githubClient.value = new GithubClient(authToken.value || '')
+    isLoggedIn.value = window.localStorage.getItem('gh-auth-token') !== null
   }
 
   function toTitleCase(str:string) {

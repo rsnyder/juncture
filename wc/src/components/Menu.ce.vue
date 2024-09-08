@@ -94,8 +94,6 @@
 
   onMounted(async () => {
     if (props.auth === 'github') setupGithubAuth()
-    console.log('props', toRaw(props))
-    setupGithubAuth()
   })
 
   const menuItems = ref<any[]>([])
@@ -261,12 +259,10 @@
   }
 
   async function setupGithubAuth() {
+    console.log('setupGithubAuth')
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
-    console.log('setupGithubAuth', _user)
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
-    console.log(user.value)
-    console.log(location)
     console.log(location.href)
     let searchParams = new URL(location.href).searchParams
     let code = searchParams.get('code')
@@ -276,13 +272,10 @@
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
       // window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
-      console.log('gh-token', url)
       let resp = await fetch(url)
       let token = resp.ok ? await resp.text() : null
-      console.log('gh-token', resp, token)
       if (token) {
         let _user = await getGhUserInfo(token)
-        console.log(toRaw(_user))
         user.value = _user
       }
     }
@@ -294,25 +287,19 @@
   async function ghLogin() {
     let hostname = (new URL(window.location.href)).hostname
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
-    console.log(`ghLogin: hostname=${hostname} isDev=${isDev}`)
-    if ((new URL(window.location.href)).hostname === 'localhost') {
+    if (isDev) {
       let resp = await fetch(`https:iiif.mdpress.io/gh-token?hostname=${hostname}&code=testing`)
       if (resp.ok) {
         let token = await resp.text()
-        console.log(token)
         let _user = await getGhUserInfo(token)
         user.value = _user
         userCanUpdateRepo.value = await isCollaborator(config.value?.github?.owner_name, config.value?.github?.repository_name, user.value.username, token)
-        console.log(toRaw(user.value))
         location.reload()
       }
     } else {
-      let source = new URL(location.href).searchParams.get('source')
-      let redirectTo = `${window.location.href}`
       let href = clientIds[location.hostname] !== undefined
         ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${location.href}`
         : null
-      console.log('ghLogin', href)
       if (href) setTimeout(() => {window.location.href = href}, 5000)
     }
   }

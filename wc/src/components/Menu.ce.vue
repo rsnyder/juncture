@@ -267,9 +267,11 @@
     let source = searchParams.get('source')
     if (code) {
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
-      window.history.replaceState({}, '', href)
+      // window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
+      console.log('gh-token', url)
       let resp = await fetch(url)
+      console.log('gh-token', resp)
       if (resp.ok) {
         let token = await resp.text()
         let _user = await getGhUserInfo(token)
@@ -285,14 +287,15 @@
     let hostname = (new URL(window.location.href)).hostname
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
     console.log(`ghLogin: hostname=${hostname} isDev=${isDev}`)
-    if (isDev) {
-      // let resp = await fetch('http://localhost:8088/gh-token?hostname=localhost&code=testing')
-      let resp = await fetch('https:iiif.mdpress.io/gh-token?hostname=localhost&code=testing')
+    if ((new URL(window.location.href)).hostname === 'localhost') {
+      let resp = await fetch(`https:iiif.mdpress.io/gh-token?hostname=${hostname}&code=testing`)
       if (resp.ok) {
         let token = await resp.text()
+        console.log(token)
         let _user = await getGhUserInfo(token)
         user.value = _user
         userCanUpdateRepo.value = await isCollaborator(config.value?.github?.owner_name, config.value?.github?.repository_name, user.value.username, token)
+        console.log(toRaw(user.value))
         location.reload()
       }
     } else {

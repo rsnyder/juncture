@@ -173,7 +173,7 @@
   const requested = ref<any>()
   
   watch(authToken, () => {
-    // console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
+    console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
     isLoggedIn.value = window.localStorage.getItem('gh-auth-token') !== null
     githubClient.value = new GithubClient(authToken.value || '')
     if (acct.value) getRepositories()
@@ -407,8 +407,6 @@
   async function getAuthToken() {
     if (!window.localStorage.getItem('gh-unscoped-token')) await getUnscopedToken()
     authToken.value = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
-    githubClient.value = new GithubClient(authToken.value || '')
-    isLoggedIn.value = window.localStorage.getItem('gh-auth-token') !== null
   }
 
   function toTitleCase(str:string) {

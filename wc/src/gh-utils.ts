@@ -23,8 +23,8 @@ export class GithubClient {
     }
 
     user() {
-      // console.log(`GithubClient.user`)
-      return fetch('https://api.github.com/user' ,{
+      console.log(`GithubClient.user`, this.authToken)
+      return fetch('https://api.github.com/user', {
         headers: {
           Accept: 'application/vnd.github+json',
           Authorization: `token ${this.authToken}`
@@ -45,7 +45,7 @@ export class GithubClient {
     }
   
     organizations() {
-      // console.log(`GithubClient.organizations`)
+      console.log(`GithubClient.organizations`, this.authToken)
       return fetch('https://api.github.com/user/orgs', {
         headers: {
           Accept: 'application/vnd.github+json',

@@ -3,6 +3,7 @@ import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
 let scriptUrl = new URL(import.meta.url)
+console.log('scriptUrl', scriptUrl)
 
 const mode = scriptUrl.hostname === 'localhost'
   ? 'local'
@@ -13,28 +14,28 @@ const mode = scriptUrl.hostname === 'localhost'
 const scriptBase = mode === 'local'
   ? 'http://localhost:5173'
   : mode === 'prod'
-    ? scriptUrl.href.replace(/\/js\/ghp\.js$/, '')
-    : scriptUrl.href.replace(/\/ghp\.js$/, '/wc/dist')
+    ? `${scriptUrl}/js`
+    : `${scriptUrl.origin}/wc/dist/js`
 
 const cssBase = mode === 'local'
     ? `${scriptUrl.origin}/wc/src`
     : mode === 'prod'
-      ? scriptUrl.href.replace(/\/js\/ghp\.js$/, '')
-      : scriptUrl.href.replace(/\/ghp\.js$/, '/wc/dist')
+      ? `${scriptUrl}/css`
+      : `${scriptUrl.origin}/wc/dist/css`
 
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 window.customEntityData = {}
 
 function addLink(attrs) {
-  // if (mode === 'local') console.log('addLink', attrs)
+  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  // if (mode === 'local') console.log('addScript', attrs)
+  console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)

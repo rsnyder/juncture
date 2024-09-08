@@ -1,6 +1,6 @@
 import { addLink, addScript, articleFromHtml, cssBase, getGhFile, getMarkdown, markdownToHtml, mode, mount, scriptBase, setConfig, structureContent } from './ghp-lib.js'
 
-if (mode === 'local') console.log(`mode=${mode} scriptBase=${scriptBase} cssBase=${cssBase}`)
+console.log(`mode=${mode} scriptBase=${scriptBase} cssBase=${cssBase}`)
   
 if (!window.config) setConfig()
 
@@ -18,7 +18,7 @@ if (!hasWcCss) {
 }
 
 if (!hasWcJs) {
-  addScript({type: 'module', src: `${scriptBase}/${mode === 'locall' ? 'index.js' : 'main.ts'}`})
+  addScript({type: 'module', src: `${scriptBase}/${mode === 'local' ? 'main.ts' : 'index.js'}`})
   hasWcJs = true
 }
 

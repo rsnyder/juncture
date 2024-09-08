@@ -14,14 +14,14 @@ const mode = scriptUrl.hostname === 'localhost'
 const scriptBase = mode === 'local'
   ? 'http://localhost:5173'
   : mode === 'prod'
-    ? scriptUrl.href.replace(/\/js\/ghp\.js$/, '')
-    : scriptUrl.href.replace(/\/ghp\.js$/, '/wc/dist')
+    ? `${scriptUrl}/js`
+    : `${scriptUrl.origin}/wc/dist/js`
 
 const cssBase = mode === 'local'
     ? `${scriptUrl.origin}/wc/src`
     : mode === 'prod'
-      ? scriptUrl.href.replace(/\/js\/ghp\.js$/, '')
-      : scriptUrl.href.replace(/\/ghp\.js$/, '/wc/dist')
+      ? `${scriptUrl}/css`
+      : `${scriptUrl.origin}/wc/dist/css`
 
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 

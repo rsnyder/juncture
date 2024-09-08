@@ -94,6 +94,8 @@
 
   onMounted(async () => {
     if (props.auth === 'github') setupGithubAuth()
+    console.log('props', toRaw(props))
+    setupGithubAuth()
   })
 
   const menuItems = ref<any[]>([])
@@ -303,7 +305,7 @@
       let source = new URL(location.href).searchParams.get('source')
       let redirectTo = `${window.location.href}`
       let href = clientIds[location.hostname] !== undefined
-        ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${redirectTo}` + (source ? `&source=${source}` : '')
+        ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${location.href}`
         : null
       console.log('ghLogin', href)
       if (href) setTimeout(() => {window.location.href = href}, 5000)

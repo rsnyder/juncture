@@ -2,7 +2,7 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
-const mode = location.hostname === 'localhost'
+const mode = location.hostname === 'localhost' && location.port === '8080'
   ? 'local'
   : import.meta.url.indexOf('https://cdn.jsdelivr.net/npm/juncture-digital') === 0
     ? 'prod'

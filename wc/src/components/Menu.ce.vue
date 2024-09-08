@@ -267,10 +267,11 @@
     else user.value = null
     console.log(user.value)
     console.log(location)
+    console.log(location.href)
     let searchParams = new URL(location.href).searchParams
     let code = searchParams.get('code')
     let source = searchParams.get('source')
-    console.log('code', code)
+    console.log('code', code, location.search.replace('^?', '').split('&').map(p => p.split('=')).reduce((acc, [k, v]) => { acc[k] = v; return acc }, {}))
     if (code) {
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
       // window.history.replaceState({}, '', href)

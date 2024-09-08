@@ -93,7 +93,7 @@
   })
 
   onMounted(async () => {
-    if (props.auth === 'github') setupGithubAuth()
+    // if (props.auth === 'github') setupGithubAuth()
   })
 
   const menuItems = ref<any[]>([])
@@ -284,6 +284,7 @@
   async function ghLogin() {
     let hostname = (new URL(window.location.href)).hostname
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
+    console.log(`ghLogin: hostname=${hostname} isDev=${isDev}`)
     if (isDev) {
       // let resp = await fetch('http://localhost:8088/gh-token?hostname=localhost&code=testing')
       let resp = await fetch('https:iiif.mdpress.io/gh-token?hostname=localhost&code=testing')

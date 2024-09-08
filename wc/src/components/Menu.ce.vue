@@ -262,8 +262,11 @@
 
   async function setupGithubAuth() {
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
+    console.log('setupGithubAuth', _user)
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
+    console.log(user.value)
+    console.log(location)
     let searchParams = new URL(window.location.href).searchParams
     let code = searchParams.get('code')
     let source = searchParams.get('source')

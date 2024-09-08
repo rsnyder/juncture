@@ -259,7 +259,6 @@
   }
 
   async function setupGithubAuth() {
-    console.log('setupGithubAuth')
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
@@ -299,7 +298,7 @@
       let href = clientIds[location.hostname] !== undefined
         ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${location.href}`
         : null
-      if (href) setTimeout(() => {window.location.href = href}, 5000)
+      if (href) window.location.href = href
     }
   }
 

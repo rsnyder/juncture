@@ -180,7 +180,7 @@
   })
 
   watch(githubClient, async (githubClient) => {
-    // console.log('githubClient', isLoggedIn.value, toRaw(requested.value))
+    console.log('githubClient', isLoggedIn.value, toRaw(requested.value))
     /*
     if (isLoggedIn.value) {
       getAccounts()
@@ -198,13 +198,13 @@
   const accts = ref<any[]>([])
   const acct = ref('')
   watch(accts, (accts) => {
-    // console.log('accts', toRaw(accts))
+    console.log('accts', toRaw(accts))
     if (!accts.length) return
     let selected = accts.find(acct => acct.login === requested.value?.acct)
     acct.value = selected?.login || requested.value?.acct || accts[0].login
   })
   async function getAccounts() {
-    // console.log('getAccounts')
+    console.log('getAccounts')
     Promise.all([githubClient.value.user(), githubClient.value.organizations()])
     .then(responses => accts.value = responses.flat())
   }
@@ -370,6 +370,7 @@
   }
 
   async function parseGhSource(ghSource:(string|undefined|null)=props.ghSource, _trigger='select') {
+    console.log(`parseGhSource: ghSource=${ghSource} isLoggedIn=${isLoggedIn.value}`)
     if (!ghSource) return
     trigger.value = _trigger
     reset()

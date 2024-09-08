@@ -93,7 +93,7 @@
   })
 
   onMounted(async () => {
-    // if (props.auth === 'github') setupGithubAuth()
+    if (props.auth === 'github') setupGithubAuth()
   })
 
   const menuItems = ref<any[]>([])

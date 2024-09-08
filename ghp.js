@@ -18,7 +18,7 @@ if (!hasWcCss) {
 }
 
 if (!hasWcJs) {
-  addScript({type: 'module', src: `${scriptBase}/${mode === 'locall' ? 'index.js' : 'main.ts'}`})
+  addScript({type: 'module', src: `${scriptBase}/${mode === 'local' ? 'index.js' : 'main.ts'}`})
   hasWcJs = true
 }
 

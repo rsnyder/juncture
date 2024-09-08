@@ -302,7 +302,7 @@
       })
     } else {
       // console.log(acct.value, repo.value, branch.value, toRaw(path.value))
-      let ghSource = `${acct.value}/${repo.value}/${branch.value}/${path.value.map((p:any) => p.selected.name).join('/')}`
+      let ghSource = `${acct.value}/${repo.value}/${branch.value}/${path.value.map((p:any) => p.selected?.name).join('/')}`
       // console.log(`ghSource=${ghSource}`)
       emit('fileSelected', {trigger: trigger.value, path: ghSource})
     }

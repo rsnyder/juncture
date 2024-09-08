@@ -2,25 +2,39 @@ import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
 
-const mode = location.hostname === 'localhost' && location.port === '8080'
+let scriptUrl = new URL(import.meta.url)
+
+const mode = scriptUrl.hostname === 'localhost'
   ? 'local'
-  : import.meta.url.indexOf('https://cdn.jsdelivr.net/npm/juncture-digital') === 0
+  : scriptUrl.hostname === 'cdn.jsdelivr.net'
     ? 'prod'
     : 'dev'
-    
+
+const scriptBase = mode === 'local'
+  ? 'http://localhost:5173'
+  : mode === 'prod'
+    ? scriptUrl.href.replace(/\/js\/ghp\.js$/, '')
+    : scriptUrl.href.replace(/\/ghp\.js$/, '/wc/dist')
+
+const cssBase = mode === 'local'
+    ? `${scriptUrl.origin}/wc/src`
+    : mode === 'prod'
+      ? scriptUrl.href.replace(/\/js\/ghp\.js$/, '')
+      : scriptUrl.href.replace(/\/ghp\.js$/, '/wc/dist')
+
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
 window.customEntityData = {}
 
 function addLink(attrs) {
-  // console.log('addLink', attrs)
+  // if (mode === 'local') console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  // console.log('addScript', attrs)
+  // if (mode === 'local') console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -1108,4 +1122,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, setConfig, structureContent }
+export { addLink, addScript, articleFromHtml, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent }

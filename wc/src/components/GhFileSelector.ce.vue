@@ -181,7 +181,6 @@
 
   watch(githubClient, async (githubClient) => {
     console.log('githubClient', isLoggedIn.value, toRaw(requested.value))
-    /*
     if (isLoggedIn.value) {
       getAccounts()
       username.value = await githubClient.user().then((userData:any) => userData.login)
@@ -191,7 +190,6 @@
     } else if (requested.value?.acct) {
       acct.value = requested.value.acct
     }
-    */
   })
 
   // Account

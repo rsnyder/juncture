@@ -228,6 +228,7 @@
       if (localStorage.getItem('gh-username')) localStorage.removeItem('gh-username')
     }
     console.log(`gh-auth-token=${localStorage.getItem('gh-auth-token')}`)
+    EventBus.emit('is-logged-in', { isLoggedIn: localStorage.getItem('gh-auth-token') !== undefined, user: user.value && toRaw(user.value) })
   })
 
   const isLoggedIn = computed(() => {
@@ -235,7 +236,6 @@
   })
   watch(isLoggedIn, () => {
     // if (!isLoggedIn.value) userCanUpdateRepo.value = false
-    EventBus.emit('is-logged-in', { isLoggedIn: isLoggedIn.value, user: toRaw(user.value) })
   })
 
   function titleCase(word:string) {

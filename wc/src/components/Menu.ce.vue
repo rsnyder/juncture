@@ -58,6 +58,8 @@
   // @ts-ignore
   import { HSOverlay } from '../lib/preline/components/hs-overlay'
 
+  import EventBus from './EventBus'
+
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
 
@@ -212,7 +214,7 @@
   const window = (self as any).window
   const config = ref<any>(window.config || {})
   const user = ref<any>(null)
-  const userCanUpdateRepo = ref(false)
+  // const userCanUpdateRepo = ref(false)
   // watch (userCanUpdateRepo, () => console.log('userCanUpdateRepo', userCanUpdateRepo.value))
 
   watch(user, () => {
@@ -229,10 +231,11 @@
   })
 
   const isLoggedIn = computed(() => {
-    return user.value?.token || user.value?.token || false
+    return (user.value?.token || user.value?.token) ? true : false
   })
   watch(isLoggedIn, () => {
-    if (!isLoggedIn.value) userCanUpdateRepo.value = false
+    // if (!isLoggedIn.value) userCanUpdateRepo.value = false
+    EventBus.emit('is-logged-in', { isLoggedIn: isLoggedIn.value, user: toRaw(user.value) })
   })
 
   function titleCase(word:string) {
@@ -278,9 +281,9 @@
         user.value = _user
       }
     }
-    if (user.value && config.value?.github) {
-      userCanUpdateRepo.value = await isCollaborator(config.value?.github.owner_name, config.value?.github.repository_name, user.value.username, user.value.token)
-    }
+    // if (user.value && user.value?.provider === 'github') {
+    //   userCanUpdateRepo.value = await isCollaborator(user.value?.github.owner_name, config.value?.github.repository_name, user.value.username, user.value.token)
+    // }
   }
 
   async function ghLogin() {
@@ -292,7 +295,7 @@
         let token = await resp.text()
         let _user = await getGhUserInfo(token)
         user.value = _user
-        userCanUpdateRepo.value = await isCollaborator(config.value?.github?.owner_name, config.value?.github?.repository_name, user.value.username, token)
+        // userCanUpdateRepo.value = await isCollaborator(config.value?.github?.owner_name, config.value?.github?.repository_name, user.value.username, token)
         location.reload()
       }
     } else {
@@ -325,7 +328,7 @@
   }
 
   async function isCollaborator(owner: string, repo: string, username: string, token: string) {
-    // console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
     let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
     let resp = await fetch(url, {
       headers: {

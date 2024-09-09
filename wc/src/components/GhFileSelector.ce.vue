@@ -120,6 +120,7 @@
   import type SLDropdown from '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js'
   import type SLMenu from '@shoelace-style/shoelace/dist/components/menu/menu.js'
   import { GithubClient } from '../gh-utils'
+  import EventBus from './EventBus'
 
   defineExpose({ GithubClient })
   
@@ -132,6 +133,7 @@
   onMounted(() => init() )
 
   function init() {
+    EventBus.on('is-logged-in', (evt) => { console.log('is-logged-in', evt); })
     getAuthToken()
     parseGhSource() 
   }
@@ -252,7 +254,7 @@
     repo.value = _repo.name
   }
   watch(userCanUpdateRepo, (userCanUpdateRepo) => {
-    // console.log(`userCanUpdateRepo=${userCanUpdateRepo}`)
+    console.log(`userCanUpdateRepo=${userCanUpdateRepo}`)
     emit('repoIsWritable', userCanUpdateRepo)
 
   })

@@ -135,7 +135,7 @@
   function init() {
     EventBus.on('is-logged-in', (evt) => { 
       console.log('is-logged-in', evt)
-      if (evt.isLoggedIn) getAccounts()
+      getAuthToken()
     })
     getAuthToken()
     parseGhSource() 

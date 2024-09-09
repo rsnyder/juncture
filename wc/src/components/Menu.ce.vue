@@ -226,7 +226,6 @@
       if (localStorage.getItem('gh-username')) localStorage.removeItem('gh-username')
     }
     console.log(`gh-auth-token=${localStorage.getItem('gh-auth-token')}`)
-    location.reload()
   })
 
   const isLoggedIn = computed(() => {

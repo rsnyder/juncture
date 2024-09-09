@@ -133,7 +133,10 @@
   onMounted(() => init() )
 
   function init() {
-    EventBus.on('is-logged-in', (evt) => { console.log('is-logged-in', evt); })
+    EventBus.on('is-logged-in', (evt) => { 
+      console.log('is-logged-in', evt)
+      if (evt.isLoggedIn) getAccounts()
+    })
     getAuthToken()
     parseGhSource() 
   }
@@ -256,7 +259,6 @@
   watch(userCanUpdateRepo, (userCanUpdateRepo) => {
     console.log(`userCanUpdateRepo=${userCanUpdateRepo}`)
     emit('repoIsWritable', userCanUpdateRepo)
-
   })
 
   // Branch

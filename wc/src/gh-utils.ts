@@ -23,7 +23,7 @@ export class GithubClient {
     }
 
     user() {
-      console.log(`GithubClient.user`, this.authToken)
+      // console.log(`GithubClient.user`, this.authToken)
       return fetch('https://api.github.com/user', {
         headers: {
           Accept: 'application/vnd.github+json',
@@ -45,7 +45,7 @@ export class GithubClient {
     }
   
     organizations() {
-      console.log(`GithubClient.organizations`, this.authToken)
+      // console.log(`GithubClient.organizations`, this.authToken)
       return fetch('https://api.github.com/user/orgs', {
         headers: {
           Accept: 'application/vnd.github+json',
@@ -70,7 +70,7 @@ export class GithubClient {
     }
     
     async userCanUpdateRepo(acct:string, repo:string) {
-      console.log(`GithubClient.userCanUpdateRepo: acct=${acct} repo=${repo}`)
+      // console.log(`GithubClient.userCanUpdateRepo: acct=${acct} repo=${repo}`)
       return this.user()
         .then((userData:any) => userData.login)
         .then((username:string) => repo ? this.isCollaborator(acct, repo, username) : false)
@@ -129,10 +129,10 @@ export class GithubClient {
       let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
       let shaKey = `${acct}/${repo}/${ref}/${path}`
       sha = sha || this._shas[shaKey] || await this.getSha(acct, repo, path, ref)
-      console.log(`putFile: acct=${acct} repo=${repo} path=${path} ref=${ref} sha=${sha} isBinaryString=${isBinaryString}`)
+      // console.log(`putFile: acct=${acct} repo=${repo} path=${path} ref=${ref} sha=${sha} isBinaryString=${isBinaryString}`)
       // let payload:any = { message: 'API commit', content: btoa(unescape(encodeURIComponent(content))) }
       let exists = !!sha
-      console.log(`putFile: exists=${exists}`)
+      // console.log(`putFile: exists=${exists}`)
       if (!exists || overwrite) {
         let payload:any = { 
           message: 'API commit', 
@@ -159,7 +159,6 @@ export class GithubClient {
       let payload = { message: 'API commit', sha }
       let resp = await fetch(url, { method: 'DELETE', body: JSON.stringify(payload), headers: {Authorization: `Token ${this.authToken}`} })
       resp = await resp.json()
-      console.log(resp)
       return {status:resp.status, statusText:resp.statusText}
     }
   

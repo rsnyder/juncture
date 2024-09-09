@@ -227,7 +227,7 @@
       if (localStorage.getItem('gh-auth-token')) localStorage.removeItem('gh-auth-token')
       if (localStorage.getItem('gh-username')) localStorage.removeItem('gh-username')
     }
-    console.log(`gh-auth-token=${localStorage.getItem('gh-auth-token')}`)
+    // console.log(`gh-auth-token=${localStorage.getItem('gh-auth-token')}`)
     EventBus.emit('is-logged-in', { isLoggedIn: localStorage.getItem('gh-auth-token') !== undefined, user: user.value && toRaw(user.value) })
   })
 
@@ -266,7 +266,6 @@
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
-    console.log(location.href)
     let searchParams = new URL(location.href).searchParams
     let code = searchParams.get('code')
     let source = searchParams.get('source')
@@ -328,7 +327,7 @@
   }
 
   async function isCollaborator(owner: string, repo: string, username: string, token: string) {
-    console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
+    // console.log(`GithubClient.isCollaborator: owner=${owner} repo=${repo} username=${username}`)
     let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
     let resp = await fetch(url, {
       headers: {

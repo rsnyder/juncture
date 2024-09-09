@@ -134,7 +134,7 @@
 
   function init() {
     EventBus.on('is-logged-in', (evt) => { 
-      console.log('is-logged-in', evt)
+      // ('is-logged-in', evt)
       getAuthToken()
     })
     getAuthToken()
@@ -178,14 +178,14 @@
   const requested = ref<any>()
   
   watch(authToken, () => {
-    console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
+    // console.log(`authToken=${authToken.value} acct=${acct.value} repo=${repo.value} username=${username.value} isLoggedIn=${isLoggedIn.value}`)
     isLoggedIn.value = window.localStorage.getItem('gh-auth-token') !== null
     githubClient.value = new GithubClient(authToken.value || '')
     if (acct.value) getRepositories()
   })
 
   watch(githubClient, async (githubClient) => {
-    console.log('githubClient', isLoggedIn.value, toRaw(requested.value))
+    // console.log('githubClient', isLoggedIn.value, toRaw(requested.value))
     if (isLoggedIn.value) {
       getAccounts()
       username.value = await githubClient.user().then((userData:any) => userData.login)
@@ -201,13 +201,13 @@
   const accts = ref<any[]>([])
   const acct = ref('')
   watch(accts, (accts) => {
-    console.log('accts', toRaw(accts))
+    // console.log('accts', toRaw(accts))
     if (!accts.length) return
     let selected = accts.find(acct => acct.login === requested.value?.acct)
     acct.value = selected?.login || requested.value?.acct || accts[0].login
   })
   async function getAccounts() {
-    console.log('getAccounts')
+    // console.log('getAccounts')
     Promise.all([githubClient.value.user(), githubClient.value.organizations()])
     .then(responses => accts.value = responses.flat())
   }
@@ -257,7 +257,7 @@
     repo.value = _repo.name
   }
   watch(userCanUpdateRepo, (userCanUpdateRepo) => {
-    console.log(`userCanUpdateRepo=${userCanUpdateRepo}`)
+    // console.log(`userCanUpdateRepo=${userCanUpdateRepo}`)
     emit('repoIsWritable', userCanUpdateRepo)
   })
 
@@ -372,7 +372,7 @@
   }
 
   async function parseGhSource(ghSource:(string|undefined|null)=props.ghSource, _trigger='select') {
-    console.log(`parseGhSource: ghSource=${ghSource} isLoggedIn=${isLoggedIn.value}`)
+    // console.log(`parseGhSource: ghSource=${ghSource} isLoggedIn=${isLoggedIn.value}`)
     if (!ghSource) return
     trigger.value = _trigger
     reset()
@@ -407,7 +407,7 @@
   }
 
   async function getAuthToken() {
-    console.log('getAuthToken')
+    // ('getAuthToken')
     if (!window.localStorage.getItem('gh-unscoped-token')) await getUnscopedToken()
     authToken.value = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
   }

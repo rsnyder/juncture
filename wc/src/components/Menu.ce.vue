@@ -129,7 +129,7 @@
   }
 
   function menuItemSelected(item: any, evt:Event) {
-    // console.log('menuItemSelected', toRaw(item))
+    console.log('menuItemSelected', toRaw(item))
     let action = item.href.split('/').filter((x:string) => x).pop().toLowerCase()
     action = location.host === action 
       ? 'home' 
@@ -151,7 +151,7 @@
           let [owner, repository, branch] = sourceArg.split('/').filter(pe => pe) || []
           href = `${location.origin}${location.pathname}?source=${owner}/${repository}/${branch}/`
         } else {
-          href = `${itemHref.origin}${config.baseurl || ''}${itemHref.pathname}`
+          href = `${itemHref.origin}${config.baseurl ? config.baseurl.slice(0,-1) : ''}${itemHref.pathname}`
         }
         console.log('href', href)
         location.href = href

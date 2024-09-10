@@ -121,10 +121,10 @@
 
       function setBrowserUrl() {
         if (ghSource !== localStorage.getItem('smde_ghsource')) {
-          let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
+          let browserUrl = location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
           setTimeout(() => {
-            // console.log('setBrowserUrl', browserUrl)
+            console.log('setBrowserUrl', browserUrl)
             window.history.replaceState({}, null, `${browserUrl}`)
           }, 100)
         }

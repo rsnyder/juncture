@@ -80,10 +80,10 @@
         if (acct && repo) {
           let baseUrl = location.origin + (location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`)
           if (branch) {
-            window.location.href = `${baseurl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+            window.location.href = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
           } else {
             getDefaultBranch(acct, repo).then(branch => {
-              window.location.href = `${baseurl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+              window.location.href = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
             })
           }
         }

@@ -68,8 +68,6 @@ template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CON
 html_template = open(template_path, 'r').read()
 
 if LOCAL_WC: 
-  html_template = re.sub(r'["\'].*/[-\w@]*juncture[-\w.@]+/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', html_template)
-  html_template = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/css\/index\.css', f'http://localhost:{PORT}/wc/src/index.css', html_template)
   html_template = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', html_template)
 html_template = html_template.replace('{{ site.baseurl }}', '')
 html_template = html_template.replace('{{ site.github.owner_name }}', GH_OWNER)
@@ -195,8 +193,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = re.sub(r'["\'].*/[-\w@]*juncture[-\w.@]+/js/index\.js["\']', f'"http://localhost:{LOCAL_WC_PORT}/main.ts"', content)
-      # content = re.sub(r'["\'].*/(index|ghp\.(css|js))["\']', f'"http://localhost:{PORT}/wc/src/\\1"', content)
+      content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
 
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:

@@ -24,6 +24,7 @@
       .editor-toolbar.disabled-for-preview button:not(.no-disable) { opacity: 0.3; }
       .editor-toolbar button.preview i { font-size: x-large; }
       .editor-toolbar button.preview.active { border: 2px solid #aaa; border-radius: 6px; background-color: #f0f0f0; }
+      ve-header { margin-bottom: 0 !important; }
       ve-header ul { display: none; }
       /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
     </style>
@@ -38,8 +39,8 @@
       height="100" 
       >
       <ul>
-        <li><a href="/">Juncture Home</a></li>
-        <li><a href="https://search.juncture-digital.org">Search Tool</a></li>
+        <!-- <li><a href="/">Juncture Home</a></li> -->
+        <!-- <li><a href="https://search.juncture-digital.org">Search Tool</a></li> -->
         <li><a href="https://docs.juncture-digital.org">Help</a></li>
       </ul>
     </ve-header>
@@ -58,8 +59,10 @@
     </script>
 
     <script type="module">
-      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
-
+      // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
+      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://v3.juncture-digital.org/ghp.js'
+      // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'http://localhost:8080/ghp.js'
+      
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
       const referrer = document.referrer && new URL(document.referrer)
@@ -70,34 +73,33 @@
 
       let easyMDE
 
-      console.log('referrer:', referrer.hostname )
+      // console.log('referrer:', referrer.hostname )
       if (!sourceArg && referrer?.hostname === 'github.com') {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
         if (acct && repo) {
           if (branch) {
-            window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+            window.location.href = `${window.location.origin}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
           } else {
             getDefaultBranch(acct, repo).then(branch => {
-              window.location.href = `${window.location.origin}/wb?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+              window.location.href = `${window.location.origin}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
             })
           }
         }
       } 
 
-      let ghSource, browserUrl
+      let ghUser = localStorage.getItem('gh-username')
+      // console.log('ghUser:', ghUser)
+
+      let ghSource
 
       if (sourceArg) {
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
         ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
-        browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
-        // if (ghSource !== localStorage.getItem('smde_ghsource')) localStorage.setItem('smde_juncture_content', '')
         document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
       } else {
-        ghSource = localStorage.getItem('smde_ghsource')
+        ghSource = localStorage.getItem('smde_ghsource') || ghUser || ''
         if (ghSource) {
-          browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
-          window.history.replaceState({}, null, browserUrl)
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
@@ -108,27 +110,47 @@
       const cancelButton = dialog.querySelector('.cancel')
       cancelButton.addEventListener('click', () => cancelFileLoad())
       const proceedButton = dialog.querySelector('.proceed')
-      proceedButton.addEventListener('click', () => loadMarkdown())
+      proceedButton.addEventListener('click', () => {
+        loadMarkdown()
+      })
 
       function cancelFileLoad() {
         dialog.hide()
         document.getElementById('gh-selector').setAttribute('gh-source', localStorage.getItem('smde_ghsource'))
       }
 
+      function setBrowserUrl() {
+        if (ghSource !== localStorage.getItem('smde_ghsource')) {
+          let browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}` : ``
+          if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
+          setTimeout(() => {
+            // console.log('setBrowserUrl', browserUrl)
+            window.history.replaceState({}, null, `${browserUrl}`)
+          }, 100)
+        }
+      }
+
       function loadMarkdown() {
         dialog.hide()
-        window.history.replaceState({}, null, browserUrl)
 
-        let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
-        getGhFile(acct, repo, branch, path.join('/')).then(resp => {
-          if (resp.status === 200) {
-            localStorage.setItem('smde_ghsource', ghSource)
-            localStorage.setItem('smde_juncture_saved_hash', resp.content.trim().hashCode())
-            easyMDE.value(resp.content)
-            // styleJunctureElements()
-          }
-        })
-
+        if (ghSource) {
+          let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
+          getGhFile(acct, repo, branch, path.join('/')).then(resp => {
+            if (resp.status === 200) {
+              setBrowserUrl()
+              localStorage.setItem('smde_ghsource', ghSource)
+              localStorage.setItem('smde_juncture_saved_hash', resp.content.trim().hashCode())
+              easyMDE.value(resp.content)
+              // styleJunctureElements()
+            }
+          })
+        } else {
+          localStorage.removeItem('smde_ghsource')
+          localStorage.removeItem('smde_juncture_content')
+          localStorage.removeItem('smde_juncture_saved_hash')
+          easyMDE.value('')
+          setBrowserUrl()
+        }
       }
 
       async function getDefaultBranch(acct, repo) {
@@ -155,18 +177,21 @@
         
         ghSelector.addEventListener('file-selected', e => {
           let evt = e.detail[0]
-          // console.log(evt)
-          document.getElementById('gh-selector').setAttribute('gh-source', '')
+          // console.log('file-selected:', evt)
+
+          // document.getElementById('gh-selector').setAttribute('gh-source', '')
           ghSource = evt.path
+
+
           if (ghSource === localStorage.getItem('smde_ghsource')) {
             let markdown = localStorage.getItem('smde_juncture_content')
-            easyMDE.value(markdown)
-            // styleJunctureElements()
+            if (markdown) easyMDE.value(markdown)
           } else {
-            if (markdownIsUpdated && evt.trigger !== 'delete') dialog.show()
-            else loadMarkdown()
+            if (localStorage.getItem('smde_juncture_content') && markdownIsUpdated && evt.trigger !== 'delete') dialog.show() // confirm loss of unsaved changes
+            else {
+              loadMarkdown()
+            }
           }
-          browserUrl = location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/wb?source=${ghSource}` : `/wb?source=${ghSource}`
         })
 
         ghSelector.addEventListener('repo-is-writable', e => {
@@ -238,20 +263,17 @@
       }
 
       function open() {
-        // window.open(`${location.origin}?source=${ghSource.replace(/\/\w+\.md$/,'')}/`, '_blank')
         let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
         path = path.join('/').replace(/\/?README\.md$/, '').replace(/\.md$/, '')
-        let href = `https://${acct}.github.io/${repo}/${path}`
-        console.log('Opening:', href)
+        // let href = `https://${acct}.github.io/${repo}/${path}`
+        let href = `https://v3.juncture-digital.org?source=${acct}/${repo}/${branch}/${path}`
         window.open(href, '_blank') 
       }
 
       function togglePreview(md, preview) {
         setTimeout(() => {
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
-          window.history.replaceState({}, null, `${browserUrl}&mode=${mode}`)
           setSaveButtonState()
-          // styleJunctureElements()
         }, 100)
         let resp = mdToHtml(md)
         return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource.replace(/\/\w+\.md$/, '')}" class=${resp.classes}>${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
@@ -268,7 +290,6 @@
           p.removeAttribute('id')
           p.removeAttribute('class')
         }))
-        console.log(el)
         let html = el.innerHTML
         let classes = el.className  
         return {html, classes}

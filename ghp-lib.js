@@ -863,8 +863,6 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
   let topMargin = offset + Array.from(rootEl.querySelectorAll('VE-HEADER'))
   .map(stickyEl => (parseInt(stickyEl.style.top.replace(/px/,'')) || 0) + stickyEl.getBoundingClientRect().height)?.[0] || 0
 
-  isJunctureV1 = true
-
   const visible = {}
   const observer = new IntersectionObserver((entries, observer) => {
     
@@ -889,11 +887,9 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
     if (currentActiveParagraph !== priorActiveParagraph) {
 
       let priorViewers, currentViewers
-      if (isJunctureV1) {
-        priorViewers = priorActiveParagraph?.nextElementSibling
-        currentViewers = currentActiveParagraph?.nextElementSibling
-        if (priorViewers) priorViewers.classList.remove('active')
-      }
+      priorViewers = priorActiveParagraph?.nextElementSibling
+      currentViewers = currentActiveParagraph?.nextElementSibling
+      if (priorViewers) priorViewers.classList.remove('active')
 
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 

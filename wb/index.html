@@ -125,7 +125,7 @@
           let browserUrl = location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
           setTimeout(() => {
-            console.log('setBrowserUrl', browserUrl)
+            // console.log('setBrowserUrl', browserUrl)
             window.history.replaceState({}, null, `${browserUrl}`)
           }, 100)
         }

@@ -13,7 +13,7 @@
       >
         <sl-carousel-item v-for="img, idx in scaledImages" :key="`img-${idx}`" style="display: flex; flex-direction: column;">
           <img alt="" :src="img.src" :style="{objectFit: img.fit}"/>
-          <div style="height:50px;">Caption</div>
+          <div v-if="img.caption" style="height:50px;" v-html="img.caption"></div>
         </sl-carousel-item>
       </sl-carousel>
 
@@ -105,7 +105,7 @@
   const scaledImages = computed(() => manifests.value.length ? scaleImages() : [] )
   watch (scaledImages, (scaledImages) => { console.log(toRaw(scaledImages)) })
 
-  const caption = computed(() => props.caption || imageDefs.value.filter(def => def.caption).map(def => def.caption).join(' ') )
+  const caption = computed(() => props.caption )
 
   function parseImageDefStr(s:String): Object {
     let tokens: string[] = []

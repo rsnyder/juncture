@@ -206,7 +206,7 @@
 
   function getHTML() {
     let rawHTML = markdownToHtml(markdown.value)
-    console.log(rawHTML)
+    // console.log(rawHTML)
     // let structuredHTML = structureContent(rawHTML)
     // console.log(structuredHTML)
     // let el = elFromHtml(structuredHTML);

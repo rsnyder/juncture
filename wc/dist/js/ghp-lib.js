@@ -52,7 +52,7 @@ const components = {
   },
   've-breadcrumbs': {},
   've-carousel': {
-    booleans: 'autoplay loop navigation pagination',
+    booleans: 'autoplay gallery loop navigation pagination scroll-hint',
     positional: 'caption'
   },
   've-compare': {
@@ -352,7 +352,6 @@ function convertTags(rootEl) {
 
 // Restructure the content to have hierarchical sections and segments
 function restructure(rootEl) {
-  console.log('restructure')
   let styleSheet = rootEl.querySelector('style')
   deleteAllComments(rootEl)
 
@@ -512,7 +511,6 @@ function restructure(rootEl) {
   let header, footer
   let article = document.createElement('article')
 
-  console.log('isJunctureV1', isJunctureV1(rootEl))
   if (isJunctureV1(rootEl)) {
     article.classList.add('j1')
     let veConfig = main.querySelector('param[ve-config]')

@@ -730,10 +730,11 @@ function restructureForJ1(article) {
     }
 
     function makeViewerEl(tagName, slotName, tagProps) {
+      console.log(`makeViewer: slotName=${slotName}, props=${Object.keys(tagProps[0] || {})}`)
       let viewerEl = document.createElement(tagName)
       viewerEl.setAttribute('slot', slotName)
       if (slotName === 've-carousel') {
-        setElProps(viewerEl, tagProps[0], {autoplay:'', caption:'', loop:'', navigation:'', pagination:''})
+        setElProps(viewerEl, tagProps[0], {autoplay:'', caption:'', fit:'', gallery:'', loop:'', navigation:'', pagination:''})
         viewerEl.appendChild(propsList(tagProps))
       } else if (slotName === 've-compare') {
         setElProps(viewerEl, tagProps[0], {caption:''})
@@ -742,7 +743,7 @@ function restructureForJ1(article) {
         setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', caption:'', frameborder:'', loading:'', name:'', src:''})
       } else if (slotName === 've-image' || slotName === 've-gallery') {
         if (tagProps.length === 1) {
-          setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', 'fit':'', label:'', license:'', manifest:'', refresh:'', region:'', rotate:'', rotation:'', seq:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
+          setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', fit:'', gallery:'', label:'', license:'', manifest:'', refresh:'', region:'', rotate:'', rotation:'', seq:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
         } else {
           setElProps(viewerEl, tagProps[0], {'zoom-on-scroll':''})
           viewerEl.appendChild(propsList(tagProps))

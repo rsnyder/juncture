@@ -50,6 +50,7 @@ import KnightlabTimeline from './components/KnightlabTimeline.ce.vue'
 import Manifest from './components/Manifest.ce.vue'
 import ManifestPopup from './components/ManifestPopup.ce.vue'
 import Map from './components/Map.ce.vue'
+import Markup from './components/Markup.ce.vue'
 import Menu from './components/Menu.ce.vue'
 import Mermaid from './components/Mermaid.ce.vue'
 import Meta from './components/Meta.ce.vue'
@@ -92,6 +93,7 @@ function defineCustomElements() {
 	customElements.define('ve-manifest', defineCustomElement(Manifest))
 	customElements.define('ve-manifest-popup', defineCustomElement(ManifestPopup))
 	customElements.define('ve-map', defineCustomElement(Map))
+	customElements.define('ve-markup', defineCustomElement(Markup))
 	customElements.define('ve-menu', defineCustomElement(Menu))
 	customElements.define('ve-mermaid', defineCustomElement(Mermaid))
 	customElements.define('ve-meta', defineCustomElement(Meta))

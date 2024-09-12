@@ -2,4 +2,5 @@
 
 - [Maps](maps)
 - [IFrame](iframe)
+- [Carousel](carousel)
 - [Maize](maize)

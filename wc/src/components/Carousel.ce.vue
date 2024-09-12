@@ -347,14 +347,14 @@
     padding: 0.5em;
     width: 100%;
     font-size: 1.2em;
-    font-weight: bold;
+    font-weight: 500;
     text-align: left;
-    line-height: 1.3;
+    line-height: 1.1;
     border-top: 1px solid #ddd;
   }
 
   .image-caption {
-    height: 100%;
+    /* height: 100%; */
     margin: 0.5em;
     font-size: 1.1em;
     font-weight: 500;

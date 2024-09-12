@@ -13,13 +13,13 @@ const mode = scriptUrl.hostname === 'localhost'
 const scriptBase = mode === 'local'
   ? 'http://localhost:5173'
   : mode === 'prod'
-    ? `${scriptUrl}/js`
+    ? `${scriptUrl.origin}/${scriptUrl.pathname.split('/').slice(1,3).join('/')}/js`
     : `${scriptUrl.origin}/wc/dist/js`
 
 const cssBase = mode === 'local'
     ? `${scriptUrl.origin}/wc/src`
     : mode === 'prod'
-      ? `${scriptUrl}/css`
+      ? `${scriptUrl.origin}/${scriptUrl.pathname.split('/').slice(1,3).join('/')}/css`
       : `${scriptUrl.origin}/wc/dist/css`
 
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )

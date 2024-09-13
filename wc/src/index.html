@@ -7,9 +7,6 @@
     <title>Juncture</title>
     <link href="index.css" rel="stylesheet">
     <style>
-      ve-snippet {
-        border: 1px solid red;
-      }
     </style>
   </head>
   <body>
@@ -26,9 +23,41 @@
     </article>
     -->
 
-    <div style="width:500px; margin:auto; margin-top:100px;">
-      <ve-snippet label="Basic image">
-        `image wc:Sunflower_sky_backdrop.jpg "Default image viewer" .left`
+    <div style="width:500px; margin:auto; margin-top:50px;">
+      <ve-snippet label="Basic image - J1">
+        <param ve-image manifest="wc:Sunflower_sky_backdrop.jpg" caption="Default image viewer">
+        
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        - list item 1
+        - list item 2
+
+      </ve-snippet>
+    </div>
+
+    <div style="width:500px; margin:auto; margin-top:50px;">
+      <ve-snippet label="Basic image - J2">
+        .ve-image wc:Sunflower_sky_backdrop.jpg "Default image viewer" left
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        - list item 1
+        - list item 2
+      </ve-snippet>
+    </div>
+
+    <div style="width:500px; margin:auto; margin-top:50px;">
+      <ve-snippet label="Basic image - J3">
+        ```
+        image "Default image viewer" .left
+        wc:Sunflower_sky_backdrop.jpg
+        wc:Sunflower_sky_backdrop.jpg 
+        ```
+
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+        - list item 1
+        - list item 2
       </ve-snippet>
     </div>
 

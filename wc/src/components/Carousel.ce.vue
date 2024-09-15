@@ -101,7 +101,7 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    console.log(toRaw(imageDefs))
+    // console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       def.src || def.manifest
         ? getManifest(def.src || def.manifest)
@@ -125,7 +125,7 @@
 
   const scaledImages = computed(() => manifests.value.length ? scaleImages() : [] )
   watch (scaledImages, (scaledImages) => {
-    console.log(toRaw(scaledImages))
+    // console.log(toRaw(scaledImages))
     if (props.gallery) nextTick(() => initGallery())
   })
 

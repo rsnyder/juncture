@@ -53,7 +53,10 @@ const components = {
   've-breadcrumbs': {},
   've-carousel': {
     booleans: 'autoplay gallery loop navigation pagination scroll-hint',
-    positional: 'caption'
+    positional: 'caption',
+    argsPositional: 'src caption',
+    root: 'autoplay gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
+    aliases: {caption: ['viewer-caption'], fit: ['viewer-fit']}
   },
   've-compare': {
     positional: 'src'
@@ -111,8 +114,12 @@ let tagMap = {}
 Object.entries(components).forEach(([tag, attrs]) => {
   let tagObj = { 
     booleans : new Set((attrs.booleans || '').split(' ').filter(s => s)),
-    positional: (attrs.positional || '').split(' ').filter(s => s)
+    positional: (attrs.positional || '').split(' ').filter(s => s),
+    argsPositional: (attrs.argsPositional || '').split(' ').filter(s => s),
+    root: new Set((attrs.root || '').split(' ').filter(s => s)),
+    aliases: {}
   }
+  if (attrs.aliases) Object.entries(attrs.aliases).forEach(([alias, names]) => { names.forEach(name => tagObj.aliases[name] = alias) })
   tagMap[tag] = tagObj
   tagMap[tag.slice(3)] = tagObj
 })
@@ -218,12 +225,13 @@ function parseCodeEl(codeEl) {
 }
 
 function makeEl(parsed) {
+  let tagDef = tagMap[parsed.tag] || {}
   let el = document.createElement(parsed.tag)
   if (parsed.id) el.id = parsed.id
   if (parsed.class) parsed.class.split(' ').forEach(c => el.classList.add(c))
   if (parsed.style) el.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
   if (parsed.entities) el.setAttribute('entities', parsed.entities.join(' '))
-  if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) el.setAttribute(k, v === true ? '' : v)
+  if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) el.setAttribute(tagDef.aliases[k] || k, v === true ? '' : v)
   if (parsed.booleans) parsed.booleans.forEach(b => el.setAttribute(b, '') )
   if (parsed.args) {
     let ul = document.createElement('ul')
@@ -231,7 +239,7 @@ function makeEl(parsed) {
     for (const arg of parsed.args) {
       let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
       let li = document.createElement('li')
-      li.innerHTML = argEl.innerHTML.indexOf('wc:') === 0 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
+      li.innerHTML = argEl.innerHTML.indexOf('wc:') > -1 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
       ul.appendChild(li)
     }
   }
@@ -258,6 +266,47 @@ function computeDataId(el) {
   return dataId.reverse().join('.')
 }
 
+function elAttrsToObj(el, tag, ignore) {
+  tag = tag || el.tagName.toLowerCase()
+  let ignoreSet = new Set(ignore?.split(' ') || [])
+  ignoreSet.add(tag)
+  ignoreSet.add('data-ignore')
+  let obj = {tag, booleans: [], classes: [], kwargs: {}}
+  let tagDef = tagMap[obj.tag] || {}
+  Array.from(el.attributes).forEach(attr => {
+    if (!ignoreSet.has(attr.name)) {
+      if (tagDef.booleans?.has(attr.name)) obj.booleans.push(attr.name)
+      else if (classes.has(attr.name)) obj.classes.push(attr.name)
+      else obj.kwargs[attr.name] = attr.value
+    }
+  })
+  return obj
+}
+
+function elAttrsToStr(el, tag, ignore) {
+  let attrsObj = elAttrsToObj(el, tag, ignore)
+  let tagDef = tagMap[attrsObj.tag] || {}
+  let attrsList = []
+  for (let idx = 0; idx < tagDef.positional.length; idx++) {
+    let positionalValue = attrsObj.kwargs[tagDef.positional[idx]]
+    if (positionalValue) {
+      attrsList.push(positionalValue.indexOf(' ') > -1 ? `"${positionalValue}"` : positionalValue)
+      delete attrsObj.kwargs[tagDef.positional[idx]]
+    }
+    else break
+  }
+  Object.entries(attrsObj.kwargs).forEach(([key, value]) => {
+    if (value .indexOf(' ') > -1) attrsList.push(`${key}="${value}"`)
+    else attrsList.push(`${key}=${value}`)
+  })
+  if (attrsObj.booleans.length) attrsList.push(attrsObj.booleans.join(' '))
+  return attrsList.join(' ')
+}
+
+function veAttr(el) {
+  return Array.from(el.attributes).find(attr => attr.name.indexOf('ve-') === 0)?.name
+}
+
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
   // remove "view as" buttons
@@ -280,32 +329,35 @@ function convertTags(rootEl) {
       codeEl.textContent = replacementText
       p.replaceWith(codeElWrapper)
     })
+
   Array.from(rootEl.querySelectorAll('param'))
   .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length)
   .filter(param => param.getAttribute('ve-config') === null)
   .forEach(param => {
+    if (param.getAttribute('data-ignore') !== null) return
     let tag = Array.from(param.attributes).find(attr => attr.name.indexOf('ve-') === 0).name
     if (tag) {
-      let tagObj = tagMap[tag] || {}
-      let parsed = { tag }
-      Array.from(param.attributes).forEach(attr => {
-        if (attr.name !== tag) {
-          if (tagObj.booleans?.has(attr.name)) {
-            if (!parsed.booleans) parsed.booleans = []
-            parsed.booleans.push(attr.name)
-          } else {
-            if (!parsed.kwargs) parsed.kwargs = {}
-            if (parsed.kwargs[attr.name]) parsed.kwargs[attr.name] += ` ${attr.value}`
-            else parsed.kwargs[attr.name] = attr.value
-          }
+      let paramAttrs = elAttrsToObj(param, tag)
+      let rootAttrs = Array.from((tagMap[tag]?.root) || []).join(' ')
+      let nextSibling = param.nextElementSibling
+      while(nextSibling?.tagName === 'PARAM' && veAttr(nextSibling) === tag) {
+        nextSibling.setAttribute('data-ignore', '')
+        if (!paramAttrs.args) {
+          paramAttrs.args = []
+          paramAttrs.args.push(elAttrsToStr(param, tag, rootAttrs))
+          let rootAttrsSet = new Set(rootAttrs.split(' '))
+          Object.keys(paramAttrs.kwargs).forEach(k => { if (!rootAttrsSet.has(k)) delete paramAttrs.kwargs[k] })
         }
-      })
-      if (!isJunctureV1(rootEl)) param.replaceWith(makeEl(parsed))
+        paramAttrs.args.push(elAttrsToStr(nextSibling, tag, rootAttrs))
+        nextSibling = nextSibling.nextElementSibling
+      }
+      // console.log(paramAttrs)
+      param.replaceWith(makeEl(paramAttrs))
     }
   })
+
   rootEl.querySelectorAll('code').forEach(codeEl => {
     let parsed = parseCodeEl(codeEl)
-    // console.log(parsed)
     if (parsed.tag) {
       if (codeEl.parentElement.tagName === 'PRE') {
         codeEl = codeEl.parentElement

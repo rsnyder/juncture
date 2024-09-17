@@ -27,14 +27,12 @@ const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(nav
 window.customEntityData = {}
 
 function addLink(attrs) {
-  // console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
 }
 
 function addScript(attrs) {
-  // console.log('addScript', attrs)
   let script = document.createElement('script')
   Object.entries(attrs).map(([key, value]) => script.setAttribute(key, value))
   document.head.appendChild(script)
@@ -67,7 +65,8 @@ const components = {
   've-footer': {
   },
   've-gallery': {
-    booleans: 'caption'
+    booleans: 'show-captions',
+    positional: 'src'
   },
   've-header': {
     booleans: 'breadcrumbs no-manifest-popover pdf-download-enabled',
@@ -225,6 +224,7 @@ function parseCodeEl(codeEl) {
 }
 
 function makeEl(parsed) {
+  // (parsed)
   let tagDef = tagMap[parsed.tag] || {}
   let el = document.createElement(parsed.tag)
   if (parsed.id) el.id = parsed.id
@@ -237,13 +237,17 @@ function makeEl(parsed) {
     let ul = document.createElement('ul')
     el.appendChild(ul)
     for (const arg of parsed.args) {
-      let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
+      // let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
+      // let argEl = new DOMParser().parseFromString(arg.replace(/^\s*-\s*/, ''), 'text/html').body
+      // li.innerHTML = argEl.innerHTML.indexOf('wc:') > -1 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
+      // console.log(arg)
       let li = document.createElement('li')
-      li.innerHTML = argEl.innerHTML.indexOf('wc:') > -1 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
+      li.innerText = arg
       ul.appendChild(li)
     }
   }
   if (parsed.raw) el.textContent = parsed.raw
+  // console.log(el)
   return el
 }
 
@@ -285,22 +289,31 @@ function elAttrsToObj(el, tag, ignore) {
 
 function elAttrsToStr(el, tag, ignore) {
   let attrsObj = elAttrsToObj(el, tag, ignore)
+  // console.log(attrsObj)
   let tagDef = tagMap[attrsObj.tag] || {}
   let attrsList = []
+  /*
+  let positionalAdded = new Set()
   for (let idx = 0; idx < tagDef.positional.length; idx++) {
     let positionalValue = attrsObj.kwargs[tagDef.positional[idx]]
     if (positionalValue) {
       attrsList.push(positionalValue.indexOf(' ') > -1 ? `"${positionalValue}"` : positionalValue)
-      delete attrsObj.kwargs[tagDef.positional[idx]]
+      positionalAdded.add(tagDef.positional[idx])
+      // delete attrsObj.kwargs[tagDef.positional[idx]]
     }
     else break
   }
+  */
   Object.entries(attrsObj.kwargs).forEach(([key, value]) => {
-    if (value .indexOf(' ') > -1) attrsList.push(`${key}="${value}"`)
-    else attrsList.push(`${key}=${value}`)
+    // if (!positionalAdded.has(key)) {
+      if (value .indexOf(' ') > -1) attrsList.push(`${key}="${value}"`)
+      else attrsList.push(`${key}=${value}`)
+    // }
   })
   if (attrsObj.booleans.length) attrsList.push(attrsObj.booleans.join(' '))
-  return attrsList.join(' ')
+  let asStr = attrsList.join(' ')
+  // console.log('asStr', asStr)
+  return asStr
 }
 
 function veAttr(el) {
@@ -314,20 +327,22 @@ function convertTags(rootEl) {
   .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
   .forEach(viewAsButton => viewAsButton?.parentElement?.parentElement?.remove())
 
-  Array.from(rootEl.querySelectorAll('p'))
+  // Juncture v2 tagging
+  Array.from(rootEl.querySelectorAll(':scope > p'))
     .filter(p => /^\.ve-\w+\S/.test(p.childNodes.item(0)?.nodeValue?.trim() || ''))
     .forEach(p => {
-      let codeElWrapper = document.createElement('div')
       let codeEl = document.createElement('code')
-      codeElWrapper.appendChild(codeEl)
       codeEl.setAttribute('class', 'language-juncture2')
-      let replacementText = p.innerHTML.trim().slice(1)
+      // console.log(p.innerHTML.trim().slice(1))
+      codeEl.innerHTML = p.innerHTML.trim().slice(1)
         .replace(/\n\s*-\s+/g, '\n')
         .replace(/<a href="/g, '')
         .replace(/">[^<]*<\/a>/g, '')
         .replace(/^ve-media/, 've-image')
-      codeEl.textContent = replacementText
-      p.replaceWith(codeElWrapper)
+        .split('\n')
+        .map(line => /^[\s-]*(src=)?wc:/.test(line) ? line.replace(/<\/?em>/g,'_') : line)
+        .join('\n')
+      p.replaceWith(codeEl)
     })
 
   Array.from(rootEl.querySelectorAll('param'))
@@ -344,19 +359,20 @@ function convertTags(rootEl) {
         nextSibling.setAttribute('data-ignore', '')
         if (!paramAttrs.args) {
           paramAttrs.args = []
-          paramAttrs.args.push(elAttrsToStr(param, tag, rootAttrs))
+          let asStr = elAttrsToStr(param, tag, rootAttrs)
+          paramAttrs.args.push(asStr)
           let rootAttrsSet = new Set(rootAttrs.split(' '))
           Object.keys(paramAttrs.kwargs).forEach(k => { if (!rootAttrsSet.has(k)) delete paramAttrs.kwargs[k] })
         }
         paramAttrs.args.push(elAttrsToStr(nextSibling, tag, rootAttrs))
         nextSibling = nextSibling.nextElementSibling
       }
-      // console.log(paramAttrs)
       param.replaceWith(makeEl(paramAttrs))
     }
   })
 
   rootEl.querySelectorAll('code').forEach(codeEl => {
+    // console.log(codeEl)
     let parsed = parseCodeEl(codeEl)
     if (parsed.tag) {
       if (codeEl.parentElement.tagName === 'PRE') {
@@ -961,7 +977,6 @@ async function getMarkdown(ghSource) {
   let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   path = path.join('/')
   let extension = ghSource.slice(-3)
-  // console.log(`getMarkdown: ghSource=${ghSource} owner=${owner} repo=${repo} branch=${branch} path=${path} extension=${extension}`)
   if (extension === '.md') {
     let resp = await getGhFile(owner, repo, branch, path)
     return resp.content
@@ -1074,7 +1089,6 @@ function setConfig() {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = window.config.content || document.body.innerHTML
   window.config.isJunctureV1 = isJunctureV1(contentEl)
-  // console.log(window.config)
 }
 
 function readMoreSetup() {
@@ -1104,7 +1118,6 @@ function elFromHtml(html) {
 }
 
 async function getGhFile(acct, repo, branch, path) {
-  // console.log(`getFile: acct=${acct} repo=${repo} branch=${branch} path=${path}`)
   let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
   let resp = await fetch(url, {cache: 'no-cache'})
   if (resp.ok) {
@@ -1127,6 +1140,17 @@ async function getGhFile(acct, repo, branch, path) {
 
 function markdownToHtml(markdown) {
   return marked.use(window.markedFootnote()).parse(markdown)
+  .split('\n')
+  .map(line => {
+    if (/wc:.*/.test(line)) {
+      let start = line.indexOf('wc:')
+      let end = line.indexOf(' ', start)
+      end = end < 0 ? line.length : end
+      line = `${line.slice(0, start)}${line.slice(start, end).replace(/<\/?em>/g, '_')}${line.slice(end)}`
+    }
+    return line
+  })
+  .join('\n')
 }
 
 function structureContent(html) {

@@ -91,13 +91,14 @@ section {
   margin-bottom: 12px;
 }
 
-ve-snippet,
+ve-carousel ul,
 ve-footer ul,
 ve-header ul,
 ve-image ul,
 ve-map ul,
 ve-menu ul,
 ve-navbar ul,
+ve-snippet,
 ve-snippet pre {
   display: none;
 }

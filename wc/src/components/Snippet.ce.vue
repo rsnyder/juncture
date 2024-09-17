@@ -241,8 +241,9 @@
   }
 
   function onDrag(evt:DragEvent) {
+    console.log('dragging')
     let text = markdown.value
-    if (text) evt.dataTransfer?.setData('text/plain', text)
+    // if (text) evt.dataTransfer?.setData('text/plain', text)
   }
 
 </script>

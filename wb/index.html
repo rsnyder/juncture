@@ -284,14 +284,14 @@
         let rawHTML = markdownToHtml(md)
         
         // let el = structureContent(rawHTML);
-        let el =articleFromHtml(rawHTML);
+        let el = articleFromHtml(rawHTML);
 
         (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {
           p.removeAttribute('data-id')
           p.removeAttribute('id')
           p.removeAttribute('class')
         }))
-        let html = el.innerHTML
+        let html = el.innerHTML.trim()
         let classes = el.className  
         return {html, classes}
       }
@@ -433,7 +433,7 @@
       function drop(e) {
         easyMDE.codemirror.setSelection(easyMDE.codemirror.coordsChar({left:e.pageX, top:e.pageY}))
         let inputText = ''
-        if (e.dataTransfer) inputText = e.dataTransfer.getData('Text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
+        if (e.dataTransfer) inputText = e.dataTransfer.getData('text') || e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text/uri-list')
         if (inputText) insertText(inputText)
       }
 

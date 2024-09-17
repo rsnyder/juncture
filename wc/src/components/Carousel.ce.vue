@@ -18,7 +18,7 @@
       >
         <sl-carousel-item v-for="img, idx in scaledImages" :key="`img-${idx}`" style="height: calc(100% - 4em); display: flex; flex-direction: column;">
           <img alt="" :src="img.src" :style="{objectFit: img.fit, flex: 1}"/>
-          <div v-if="img.caption" class="image-caption" v-html="img.caption"></div>
+          <div v-if="img.caption" class="image-caption" v-html="marked.parse(img.caption)"></div>
         </sl-carousel-item>
       </sl-carousel>
 
@@ -35,14 +35,16 @@
    
   <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, h, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
   import { iiifServer, getManifest } from '../utils'
   import type SlCarousel from '@shoelace-style/shoelace/dist/components/carousel/carousel.js'
+  import { marked } from 'marked'
 
   const main = ref<HTMLElement | null>(null)
   const host = computed(() => (main.value?.getRootNode() as any)?.host)
-  watch(host, (host) => { new ResizeObserver(() => setDimensions()).observe(host) })
+  // watch(host, (host) => { new ResizeObserver(() => setDimensions()).observe(host) })
+  watch(main, (main) => { if (main) new ResizeObserver(() => setDimensions()).observe(main) })
   
   const carousel = ref<SlCarousel | null>(null)
   const thumbnails = ref<HTMLElement | null>(null)
@@ -83,7 +85,6 @@
 
   function setDimensions() {
     // console.log('setDimensions', props.width, main.value?.style.width, main.value?.clientWidth, props.height, main.value?.style.height, main.value?.clientHeight)
-    // console.log(main.value)
     definedWidth.value = props.width || (main.value?.style.width && main.value.clientWidth)
     definedHeight.value = props.height || (main.value?.style.height && main.value.clientHeight)
     width.value = definedWidth.value || main.value?.clientWidth
@@ -123,7 +124,7 @@
   })
   // const aspectRatio = computed(() => Number(((imageSize.value?.width || 1)/(imageSize.value?.height || 1)).toFixed(4)) )
 
-  const scaledImages = computed(() => manifests.value.length ? scaleImages() : [] )
+  const scaledImages = computed(() => manifests.value.length && height.value ? scaleImages() : [] )
   watch (scaledImages, (scaledImages) => {
     // console.log(toRaw(scaledImages))
     if (props.gallery) nextTick(() => initGallery())
@@ -134,29 +135,29 @@
   function parseImageDefStr(s:String): Object {
     let tokens: string[] = []
     // s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
-    s = s.replace(/”/g,'"').replace(/”/g,'"')
+    s = s.replace(/^\s*-s*/,'').replace(/”/g,'"').replace(/”/g,'"')
     s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
       if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
       else tokens.push(token)
     })
     let parsed:any = {}
     let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotate', 'seq' ]
-    tokens.filter(t => t !== 'image').forEach((token, idx) => {
-      if (token.indexOf('=') > 0) {
-        let i = token.indexOf('=')
-        let key = token.slice(0, i)
-        let value = token.slice(i+1)
-        parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
-
-      } else {
-        parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
-      }
+    tokens
+      // .filter(t => t !== 'carousel')
+      .forEach((token, idx) => {
+        if (token.indexOf('=') > 0 && (token[0] !== '"' || token[token.length-1] !== '"')) {
+          let i = token.indexOf('=')
+          let key = token.slice(0, i)
+          let value = token.slice(i+1)
+          parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
+        } else {
+          parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
+        }
     })
     return parsed
   }
 
   function getImageDefs () {
-    
     if (host.value) imageDefs.value = Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
       .map((li:HTMLLIElement) => parseImageDefStr(li.textContent || ''))
       .filter((def:any) => def.src || def.manifest || def.url)
@@ -206,7 +207,7 @@
     // let targetAspectRatio = aspectRatio.value
     let targetAspectRatio = width.value / height.value
 
-    console.log(`scaleImages: targetWidth=${targetWidth} targetHeight=${targetHeight} targetAspectRatio=${targetAspectRatio}`)
+    // console.log(`scaleImages: targetWidth=${targetWidth} targetHeight=${targetHeight} targetAspectRatio=${targetAspectRatio}`)
 
     return imageDefs.value.map((img, idx) => {
 
@@ -323,7 +324,6 @@
     width: 100%;
     box-shadow: 0 2px 4px rgb(0, 0, 0, 0.5) !important;
     background-color: #f8f8f8 !important;
-
   }
 
   sl-carousel {

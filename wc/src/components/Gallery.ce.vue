@@ -13,7 +13,7 @@
         @click="imageSelected(idx)"
         @dragstart="onDragStart(idx, $event)"
         draggable>
-      <div v-if="caption" style="height:32px;display:flex;align-items:center;margin-left:0.25em" v-html="images[idx].label"></div>
+      <div v-if="showCaptions" class="image-caption" v-html="images[idx].label"></div>
     </div>
     
   </div>
@@ -51,7 +51,7 @@
   const props = defineProps({
     active: { type: Boolean },
     base: { type: String },
-    caption: { type: Boolean, default: false },
+    showCaptions: { type: Boolean, default: false },
     class: { type: String },
     data: { type: String },
     dialogWidth: { type: String, default: '100vw' },
@@ -225,7 +225,7 @@
     // console.log(`doLayout: width=${width.value} images=${images.value.length}`)
     if (images.value.length === 0) return
 
-    let captionHeight = props.caption ? 32 : 0
+    let captionHeight = props.showCaptions ? 32 : 0
 
     let numImages = images.value.length
     const minAspectRatio = width.value <= 640 ? 2
@@ -521,5 +521,13 @@
     height: 40px;
   }
 
+  .image-caption {
+    height: 32px;
+    margin-left: 0.25em;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+  }
 
 </style>

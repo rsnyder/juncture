@@ -367,7 +367,8 @@ function convertTags(rootEl) {
         paramAttrs.args.push(elAttrsToStr(nextSibling, tag, rootAttrs))
         nextSibling = nextSibling.nextElementSibling
       }
-      param.replaceWith(makeEl(paramAttrs))
+      if (!isJunctureV1(rootEl)) param.replaceWith(makeEl(paramAttrs))
+
     }
   })
 

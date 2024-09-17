@@ -231,7 +231,7 @@ function makeEl(parsed) {
   if (parsed.class) parsed.class.split(' ').forEach(c => el.classList.add(c))
   if (parsed.style) el.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
   if (parsed.entities) el.setAttribute('entities', parsed.entities.join(' '))
-  if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) el.setAttribute(tagDef.aliases[k] || k, v === true ? '' : v)
+  if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) el.setAttribute(tagDef.aliases?.[k] || k, v === true ? '' : v)
   if (parsed.booleans) parsed.booleans.forEach(b => el.setAttribute(b, '') )
   if (parsed.args) {
     let ul = document.createElement('ul')
@@ -367,7 +367,8 @@ function convertTags(rootEl) {
         paramAttrs.args.push(elAttrsToStr(nextSibling, tag, rootAttrs))
         nextSibling = nextSibling.nextElementSibling
       }
-      param.replaceWith(makeEl(paramAttrs))
+      if (!isJunctureV1(rootEl)) param.replaceWith(makeEl(paramAttrs))
+
     }
   })
 

@@ -73,16 +73,21 @@
 
       let easyMDE
 
-      // console.log('referrer:', referrer.hostname )
+      console.log('referrer:', referrer )
       if (!sourceArg && referrer?.hostname === 'github.com') {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+        console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path.join('/')}`)
         if (acct && repo) {
           let baseUrl = location.origin + (location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`)
           if (branch) {
+            let redirectUrl = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+            console.log(`redirecting to ${redirectUrl}`)
             window.location.href = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
           } else {
             getDefaultBranch(acct, repo).then(branch => {
+              let redirectUrl = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
+              console.log(`redirecting to ${redirectUrl}`)
               window.location.href = `${baseUrl}?source=${`${acct}/${repo}/${branch}/${path.join('/')}`}`
             })
           }
@@ -90,7 +95,8 @@
       } 
 
       let ghUser = localStorage.getItem('gh-username')
-      // console.log('ghUser:', ghUser)
+      
+      console.log(`source: ${sourceArg}, ghUser: ${ghUser}`)
 
       let ghSource
 
@@ -104,6 +110,7 @@
           document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
         }
       }
+      if (ghSource) setBrowserUrl()
 
       let repoIsWritable = false
       let dialog = document.querySelector('.unsaved-changes-dialog')

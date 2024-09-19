@@ -61,7 +61,6 @@
     <script type="module">
       // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
       import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://v3.juncture-digital.org/ghp.js'
-      // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'http://localhost:8080/ghp.js'
       
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
@@ -73,7 +72,6 @@
 
       let easyMDE
 
-      console.log('referrer:', referrer )
       if (!sourceArg && referrer?.hostname === 'github.com') {
         // redirect to editor with source query if referrer is a markdown file
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
@@ -132,7 +130,6 @@
           let browserUrl = location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
           setTimeout(() => {
-            // console.log('setBrowserUrl', browserUrl)
             window.history.replaceState({}, null, `${browserUrl}`)
           }, 100)
         }
@@ -188,8 +185,7 @@
           // console.log('file-selected:', evt)
 
           // document.getElementById('gh-selector').setAttribute('gh-source', '')
-          ghSource = evt.path
-
+          if (evt.path) ghSource = evt.path
 
           if (ghSource === localStorage.getItem('smde_ghsource')) {
             let markdown = localStorage.getItem('smde_juncture_content')
@@ -215,6 +211,7 @@
             uniqueId: 'juncture_content'
           },
           spellChecker: false,
+          tabSize: 4,
           toolbar: [
             ...[
               ...['undo', 'redo', '|','bold', 'italic', 'heading', 'quote'],

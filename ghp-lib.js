@@ -224,7 +224,7 @@ function parseCodeEl(codeEl) {
 }
 
 function makeEl(parsed) {
-  // (parsed)
+  // console.log(parsed)
   let tagDef = tagMap[parsed.tag] || {}
   let el = document.createElement(parsed.tag)
   if (parsed.id) el.id = parsed.id
@@ -272,6 +272,7 @@ function computeDataId(el) {
 
 function elAttrsToObj(el, tag, ignore) {
   tag = tag || el.tagName.toLowerCase()
+  if (tag === 've-vis-network') tag = 've-visjs'
   let ignoreSet = new Set(ignore?.split(' ') || [])
   ignoreSet.add(tag)
   ignoreSet.add('data-ignore')
@@ -368,7 +369,6 @@ function convertTags(rootEl) {
         nextSibling = nextSibling.nextElementSibling
       }
       if (!isJunctureV1(rootEl)) param.replaceWith(makeEl(paramAttrs))
-
     }
   })
 
@@ -759,7 +759,7 @@ function restructureForJ1(article) {
       if (!tag) {
         tag = 've-entity'
         p[tag] = ''
-      } else if (tag === 've-d3plus-ring-network') {
+      } else if (tag === 've-d3plus-ring-network' || tag === 've-vis-network') {
         tag = 've-visjs'
       }
       if (!veTags[tag]) veTags[tag] = []

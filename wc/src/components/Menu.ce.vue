@@ -21,7 +21,7 @@
 
       <!-- Auth -->
       <sl-menu-item v-if="props.auth && isLoggedIn" @click="logout">
-        <span class="font-medium">({{user?.name || user?.email}})</span>
+        <span class="font-medium">({{user?.name || user?.username || user?.email}})</span>
         <span class="font-medium"> Logout</span>
         <svg slot="prefix" v-html="icons.user"></svg>
       </sl-menu-item>
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { marked } from 'marked'
 
   // @ts-ignore
   import { HSOverlay } from '../lib/preline/components/hs-overlay'
@@ -105,7 +106,8 @@
     function parseSlot() {
       let items = Array.from(host.value.querySelectorAll('li'))
         .map((li: any) => {
-          const a = li.querySelector('a') as HTMLAnchorElement
+          const a = new DOMParser().parseFromString(marked.parse(li.innerHTML).replace(/^\s*-\s*/, ''), 'text/html').querySelector('a') as HTMLAnchorElement
+          console.log(a)
           let label = a?.innerText.trim()
           let icon = (li.querySelector('svg') as SVGElement)?.outerHTML
           if (!icon) {

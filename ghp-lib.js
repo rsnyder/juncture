@@ -240,8 +240,8 @@ function makeEl(parsed) {
       // let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
       // let argEl = new DOMParser().parseFromString(arg.replace(/^\s*-\s*/, ''), 'text/html').body
       // li.innerHTML = argEl.innerHTML.indexOf('wc:') > -1 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
-      // console.log(arg)
       let li = document.createElement('li')
+      // li.innerText = arg.replace(/^\s*-\s*/, '')
       li.innerText = arg
       ul.appendChild(li)
     }

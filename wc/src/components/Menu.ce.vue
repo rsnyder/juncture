@@ -107,7 +107,6 @@
       let items = Array.from(host.value.querySelectorAll('li'))
         .map((li: any) => {
           const a = new DOMParser().parseFromString(marked.parse(li.innerHTML).replace(/^\s*-\s*/, ''), 'text/html').querySelector('a') as HTMLAnchorElement
-          console.log(a)
           let label = a?.innerText.trim()
           let icon = (li.querySelector('svg') as SVGElement)?.outerHTML
           if (!icon) {

@@ -281,7 +281,9 @@
           setSaveButtonState()
         }, 100)
         let resp = mdToHtml(md)
-        return `<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource.replace(/\/\w+\.md$/, '')}" class=${resp.classes}>${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
+        let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
+        console.log(html)
+        return html
       }
 
       function mdToHtml(md) {
@@ -443,7 +445,7 @@
 
       function paste(e) {
         let inputText = e.clipboardData?.getData('Text') || ''
-        inputText = inputText.replace(/\[\d+\]/g,'')
+        inputText = inputText.replace(/\[\d+\]/g,'').replace(/[“”]/g,'"')
         if (inputText && easyMDE.codemirror.getCursor().ch === 0) insertText(inputText)
         else easyMDE.codemirror.replaceSelection(inputText)
       }

@@ -109,7 +109,6 @@
   
   const markupEl = computed(() => {
     let rootEl = rawText.value && new DOMParser().parseFromString(marked.parse(rawText.value), 'text/html').body as HTMLElement
-    console.log(rootEl)
     return rootEl && convertTags(rootEl)
   })
   watch(markupEl, (markupEl) => {
@@ -519,9 +518,7 @@
     .forEach(param => param.remove())
 
     rootEl.querySelectorAll('code').forEach(codeEl => {
-      // console.log(codeEl)
       let parsed = parseCodeEl(codeEl)
-      // console.log(parsed)
       if (parsed.tag) {
         if (codeEl.parentElement.tagName === 'PRE') {
           codeEl = codeEl.parentElement
@@ -532,26 +529,22 @@
           if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
             codeEl.parentElement.replaceWith(codeEl)
           }
-        } else if (codeEl.parentElement.tagName === 'P') {
-          codeEl = codeEl.parentElement
         }
         codeEl.replaceWith(makeEl(parsed))
-
       } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
         let codeWrapper = codeEl.parentElement
-        let target
         let priorEl = codeWrapper.previousElementSibling
+        let parentEl = codeWrapper.parentElement
+        let target
         if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
           target = document.createElement('span')
           target.innerHTML = priorEl.innerHTML
           priorEl.replaceWith(target)
-        /*
-        } else if (parent?.tagName === 'TD') {
-          target = parent?.parentElement?.parentElement?.parentElement // table
-          parent?.parentElement?.remove() // row
-        } else if (parent?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
+        } else if (codeWrapper?.tagName === 'TD') {
+          target = codeWrapper?.parentElement?.parentElement?.parentElement // table
+          codeWrapper?.parentElement?.remove() // row
+        } else if (codeWrapper?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
           target = priorEl
-        */
         } else {
           target = priorEl?.children.length === 1 && priorEl.children[0]?.tagName === 'VE-HEADER'
             ? codeWrapper.parentElement

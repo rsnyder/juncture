@@ -253,7 +253,7 @@ p span.headline {
 }
 
 table[id] {
-  /* display: none; */
+  display: none;
 }
 
 /*********** resume ***********/
@@ -507,6 +507,11 @@ article.j1 > * {
 
 
 @media (min-width: 800px) { /* wide screens */
+
+  .editor-preview.j1 .viewers {
+    width: min(580px, calc(50% - 1rem));
+    left: 50dvw
+  }
 
   .j1 .viewers {
     visibility: hidden;

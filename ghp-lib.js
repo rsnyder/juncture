@@ -53,8 +53,11 @@ const components = {
     booleans: 'autoplay gallery loop navigation pagination scroll-hint',
     positional: 'caption',
     argsPositional: 'src caption',
-    root: 'autoplay gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
-    aliases: {caption: ['viewer-caption'], fit: ['viewer-fit']}
+    root: 'autoplay fit gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
+    aliases: {
+      'viewer-caption': 'caption', 
+      'viewer-fit': 'fit'
+    }
   },
   've-compare': {
     positional: 'src'
@@ -66,7 +69,8 @@ const components = {
   },
   've-gallery': {
     booleans: 'show-captions',
-    positional: 'src'
+    positional: 'src',
+    root: 'show-captions',
   },
   've-header': {
     booleans: 'breadcrumbs no-manifest-popover pdf-download-enabled',
@@ -78,14 +82,23 @@ const components = {
   },
   've-image': {
     booleans: 'no-caption grid static repo-is-writable zoom-on-scroll',
-    positional: 'src caption'
+    positional: 'src caption',
+    argsPositional: 'src caption',
+    root: 'viewer-caption viewer-fit',
+    aliases: {
+      'viewer-caption': 'caption', 
+      'viewer-fit': 'fit'
+    }
   },
   've-knightlab-timeline': {
     booleans: 'has-bookmark'
   },
   've-map': {
     booleans: 'cards full left marker prefer-geojson popup-on-hover zoom-on-scroll zoom-on-click',
-    positional: 'center caption'
+    positional: 'center caption',
+    aliases: {
+      'basemap': 'basemaps'
+    }
   },
   've-media': {
     // booleans: 'no-caption static repo-is-writable zoom-on-scroll',
@@ -115,10 +128,10 @@ Object.entries(components).forEach(([tag, attrs]) => {
     booleans : new Set((attrs.booleans || '').split(' ').filter(s => s)),
     positional: (attrs.positional || '').split(' ').filter(s => s),
     argsPositional: (attrs.argsPositional || '').split(' ').filter(s => s),
-    root: new Set((attrs.root || '').split(' ').filter(s => s)),
-    aliases: {}
+    aliases: attrs.aliases || {}
   }
-  if (attrs.aliases) Object.entries(attrs.aliases).forEach(([alias, names]) => { names.forEach(name => tagObj.aliases[name] = alias) })
+  if (attrs.root) tagObj.root = new Set((attrs.root || '').split(' ').filter(s => s))
+  // if (attrs.aliases) Object.entries(attrs.aliases).forEach(([alias, names]) => { names.forEach(name => tagObj.aliases[name] = alias) })
   tagMap[tag] = tagObj
   tagMap[tag.slice(3)] = tagObj
 })
@@ -346,34 +359,35 @@ function convertTags(rootEl) {
       p.replaceWith(codeEl)
     })
 
-  Array.from(rootEl.querySelectorAll('param'))
-  .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length)
-  .filter(param => param.getAttribute('ve-config') === null)
-  .forEach(param => {
-    if (param.getAttribute('data-ignore') !== null) return
-    let tag = Array.from(param.attributes).find(attr => attr.name.indexOf('ve-') === 0).name
-    if (tag) {
-      let paramAttrs = elAttrsToObj(param, tag)
-      let rootAttrs = Array.from((tagMap[tag]?.root) || []).join(' ')
-      let nextSibling = param.nextElementSibling
-      while(nextSibling?.tagName === 'PARAM' && veAttr(nextSibling) === tag) {
-        nextSibling.setAttribute('data-ignore', '')
-        if (!paramAttrs.args) {
-          paramAttrs.args = []
-          let asStr = elAttrsToStr(param, tag, rootAttrs)
-          paramAttrs.args.push(asStr)
-          let rootAttrsSet = new Set(rootAttrs.split(' '))
-          Object.keys(paramAttrs.kwargs).forEach(k => { if (!rootAttrsSet.has(k)) delete paramAttrs.kwargs[k] })
+  if (!isJunctureV1(rootEl)) { // Juncture v1 tag conversion performed in restructureForJ1
+    Array.from(rootEl.querySelectorAll('param'))
+    .filter(param => Array.from(param.attributes).filter(attr => attr.name.indexOf('ve-') === 0).length)
+    .filter(param => param.getAttribute('ve-config') === null)
+    .forEach(param => {
+      if (param.getAttribute('data-ignore') !== null) return
+      let tag = Array.from(param.attributes).find(attr => attr.name.indexOf('ve-') === 0).name
+      if (tag) {
+        let paramAttrs = elAttrsToObj(param, tag)
+        let rootAttrs = Array.from((tagMap[tag]?.root) || []).join(' ')
+        let nextSibling = param.nextElementSibling
+        while(nextSibling?.tagName === 'PARAM' && veAttr(nextSibling) === tag) {
+          nextSibling.setAttribute('data-ignore', '')
+          if (!paramAttrs.args) {
+            paramAttrs.args = []
+            let asStr = elAttrsToStr(param, tag, rootAttrs)
+            paramAttrs.args.push(asStr)
+            let rootAttrsSet = new Set(rootAttrs.split(' '))
+            Object.keys(paramAttrs.kwargs).forEach(k => { if (!rootAttrsSet.has(k)) delete paramAttrs.kwargs[k] })
+          }
+          paramAttrs.args.push(elAttrsToStr(nextSibling, tag, rootAttrs))
+          nextSibling = nextSibling.nextElementSibling
         }
-        paramAttrs.args.push(elAttrsToStr(nextSibling, tag, rootAttrs))
-        nextSibling = nextSibling.nextElementSibling
+        param.replaceWith(makeEl(paramAttrs))
       }
-      if (!isJunctureV1(rootEl)) param.replaceWith(makeEl(paramAttrs))
-    }
-  })
+    })
+  }
 
   rootEl.querySelectorAll('code').forEach(codeEl => {
-    // console.log(codeEl)
     let parsed = parseCodeEl(codeEl)
     if (parsed.tag) {
       if (codeEl.parentElement.tagName === 'PRE') {
@@ -385,20 +399,22 @@ function convertTags(rootEl) {
         if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
           codeEl.parentElement.replaceWith(codeEl)
         }
+      } else if (codeEl.parentElement.tagName === 'P' && codeEl.parentElement.children.length === 1) {
+        codeEl.parentElement.replaceWith(codeEl)
       }
       codeEl.replaceWith(makeEl(parsed))
     } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
       let codeWrapper = codeEl.parentElement
-      let target
       let priorEl = codeWrapper.previousElementSibling
+      let target
       if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
         target = document.createElement('span')
         target.innerHTML = priorEl.innerHTML
         priorEl.replaceWith(target)
-      } else if (parent?.tagName === 'TD') {
-        target = parent?.parentElement?.parentElement?.parentElement // table
-        parent?.parentElement?.remove() // row
-      } else if (parent?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
+      } else if (codeWrapper?.tagName === 'TD') {
+        target = codeWrapper?.parentElement?.parentElement?.parentElement // table
+        codeWrapper?.parentElement?.remove() // row
+      } else if (codeWrapper?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
         target = priorEl
       } else {
         target = priorEl?.children.length === 1 && priorEl.children[0]?.tagName === 'VE-HEADER'
@@ -453,7 +469,7 @@ function restructure(rootEl) {
     p.replaceWith(heading)
     if (codeEl) {
       let codeWrapper = document.createElement('p')
-      codeWrapper.appendChild(codeEl)
+      //codeWrapper.appendChild(codeEl)
       heading.parentElement?.insertBefore(codeWrapper, heading.nextSibling)
     }
   })
@@ -536,7 +552,9 @@ function restructure(rootEl) {
       currentSection.setAttribute('data-id', computeDataId(currentSection))
 
     } else  {
-      if (el.tagName !== 'PARAM') {
+      // if (el.tagName !== 'PARAM') {
+      if (el.tagName === 'DIV' || el.tagName === 'P' || el.tagName === 'UL' || el.tagName === 'OL') {
+
         let segId = `${currentSection.getAttribute('data-id') || 0}.${currentSection.children.length}`
         el.setAttribute('data-id', segId)
         el.id = segId
@@ -730,7 +748,6 @@ function restructureForJ1(article) {
     }
     params.forEach(p => viewersDiv.appendChild(p))
     wrapper.appendChild(viewersDiv)
-
     seg.replaceWith(wrapper)
   })
 
@@ -790,11 +807,16 @@ function restructureForJ1(article) {
       return ul
     }
 
-    function setElProps(el, props, nameMap) {
-      Object.entries(props)
-        .filter(([key, value]) => nameMap[key] !== undefined)
+    function setElProps(el, propsList) {
+      let tagDef = tagMap[el.tagName.toLowerCase()]
+      let hasArgsList = propsList.length > 1
+      Object.entries(propsList[0])
         .forEach(([key, value]) => {
-          el.setAttribute(nameMap[key] || key, value === 'false' ? '' : value === 'true' ? null : value)
+          if (!hasArgsList || !tagDef.root || tagDef.root.has(key)) {
+            key = tagDef.aliases?.[key] || key
+            if (tagDef.booleans.has(key)) el.setAttribute(key, '')
+            else el.setAttribute(key, value)
+          }
         })
     }
 
@@ -802,31 +824,31 @@ function restructureForJ1(article) {
       let viewerEl = document.createElement(tagName)
       viewerEl.setAttribute('slot', slotName)
       if (slotName === 've-carousel') {
-        setElProps(viewerEl, tagProps[0], {autoplay:'', caption:'', fit:'', gallery:'', loop:'', navigation:'', pagination:''})
+        setElProps(viewerEl, tagProps)
         viewerEl.appendChild(propsList(tagProps))
       } else if (slotName === 've-compare') {
-        setElProps(viewerEl, tagProps[0], {caption:''})
+        setElProps(viewerEl, tagProps)
         viewerEl.appendChild(propsList(tagProps))
       } else if (slotName === 've-iframe') {
-        setElProps(viewerEl, tagProps[0], {allow:'', allowfullscreen:'', allowtransparency:'', caption:'', frameborder:'', loading:'', name:'', src:''})
+        setElProps(viewerEl, tagProps)
       } else if (slotName === 've-image' || slotName === 've-gallery') {
         if (tagProps.length === 1) {
-          setElProps(viewerEl, tagProps[0], {attribution:'', caption:'', data:'', 'data-id':'', description:'', fit:'', label:'', license:'', manifest:'', refresh:'', region:'', rotate:'', rotation:'', seq:'', src:'', title:'', url:'', 'zoom-on-scroll':''})
+          setElProps(viewerEl, tagProps)
         } else {
-          setElProps(viewerEl, tagProps[0], {'zoom-on-scroll':''})
+          setElProps(viewerEl, tagProps)
           viewerEl.appendChild(propsList(tagProps))
         }
       } else if (slotName === 've-knightlab-timeline') {
-        setElProps(viewerEl, tagProps[0], {caption:'', 'hash-bookmark':'', 'initial-zoom':'', source:'', 'timenav-position':''})
+        setElProps(viewerEl, tagProps)
       } else if (slotName === 've-map') {
-        setElProps(viewerEl, tagProps[0], {basemap:'basemaps', caption:'', center:'', data:'', 'data-id':'', entities:'', 'gesture-handling':'', 'gh-dir':'', marker:'', overlay:'', 'prefer-geojson':'', 'scroll-wheel-zoom':'', title:'', zoom:'', 'zoom-on-click':''})
+        setElProps(viewerEl, tagProps)
         viewerEl.appendChild(propsList(tagProps.slice(1)))
       } else if (slotName === 've-plant-specimen') {
-        setElProps(viewerEl, tagProps[0], {caption:'', eid:'', jpid:'', max:'', qid:'', 'taxon-name':'', wdid:''})
+        setElProps(viewerEl, tagProps)
       } else if (slotName === 've-video') {
-        setElProps(viewerEl, tagProps[0], {alt:'', autoplay:'', caption:'', 'data-id':'', end:'', fit:'', id:'', muted:'', 'no-caption':'', poster:'', src:'', start:'', sync:'', vid:''})
+        setElProps(viewerEl, tagProps)
       } else if (slotName === 've-visjs') {
-        setElProps(viewerEl, tagProps[0], {caption:'', edges:'', hierarchical:'', nodes:'', title:'caption', url:''})
+        setElProps(viewerEl, tagProps)
       } else if (slotName === 'data') {
         viewerEl.appendChild(propsList(tagProps))
       } else {
@@ -838,10 +860,6 @@ function restructureForJ1(article) {
     let j1Viewers = document.createElement('ve-j1-viewers-slots')
     j1Viewers.dataset.id = id
     viewersDiv.appendChild(j1Viewers)
-    j1Viewers.setAttribute('viewers', [
-      ...Object.keys(veTags).filter(tag => tag !== 've-map-marker' && tag !== 've-map-layer'),
-      ...(mode === 'dev' ? ['data'] : [])
-    ].join(' '))
 
     Object.entries(veTags).forEach(([tag, tagProps]) => {
       if (tag === 've-map-marker' || tag === 've-map-layer') return
@@ -857,6 +875,19 @@ function restructureForJ1(article) {
         j1Viewers.appendChild(makeViewerEl(tag, tag, tagProps))
       }
     })
+
+    Array.from(para.children).forEach(child => {
+      if (child.tagName.indexOf('VE-') === 0) {
+        child.setAttribute('slot', child.tagName.toLowerCase())
+        j1Viewers.appendChild(child)
+      }
+    })
+
+    j1Viewers.setAttribute('viewers', [
+      ...Array.from(j1Viewers.children).map(c => c.attributes.slot.value),
+      ...(mode === 'dev' ? ['data'] : [])
+    ].join(' '))
+
     j1Viewers.appendChild(makeViewerEl('div', 'data', params))
 
   })

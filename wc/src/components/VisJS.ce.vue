@@ -1,6 +1,6 @@
 <template>
 
-  <div ref="root" class="content">
+  <div ref="main" class="content">
     <div ref="diagramEl" class="diagram"></div>
     <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
   </div>
@@ -13,24 +13,22 @@
   import { Network } from 'vis-network'
   import { DataSet } from 'vis-data/peer'
   import { Timeline as visTimeline } from 'vis-timeline/peer'
+import { onMounted } from 'vue';
 
   const props = defineProps({
     base: { type: String },
     caption: { type: String },
     height: { type: Number },
+    hierarchical: { type: Boolean, default: false },
     timeline: { type: String },
     edges: { type: String },
     nodes: { type: String },
     url: { type: String },
-    hierarchical: { type: Boolean, default: false }
+    width: { type: Number }
   })
 
-  watch(props, () => {
-    setHeight()
-  })
-
-  const root = ref<HTMLElement | null>(null)
-  const host = computed(() => (root.value?.getRootNode() as any)?.host)
+  const main = ref<HTMLElement | null>(null)
+  const host = computed(() => (main.value?.getRootNode() as any)?.host)
   const diagramEl = ref<HTMLElement | null>(null)
   const captionEl = ref<HTMLElement | null>(null)
 
@@ -45,10 +43,37 @@
     return null
   })
 
+  watch(main, (main) => { if (main) new ResizeObserver(() => setDimensions()).observe(main) })
+  watch(props, () => { setDimensions() })
+
   const caption = computed(() => props.caption )
 
+  const definedWidth = ref(props.width || (host.value?.style.width && host.value.clientWidth))
+  const definedHeight = ref(props.height || (host.value?.style.height && host.value.clientHeight))
+  // watch(definedWidth, () => { if (definedWidth.value || definedHeight.value) console.log(`definedDimensions: ${definedWidth.value}x${definedHeight.value}`) })
+  // watch(definedHeight, () => { if (definedWidth.value || definedHeight.value) console.log(`definedDimensions: ${definedWidth.value}x${definedHeight.value}`) })
+
+  const width = ref(definedWidth.value || host.value?.clientWidth)
+  const height = ref(definedHeight.value || width.value)
+  // watch(width, () => { if (width.value || height.value) console.log(`dimensions: ${width.value}x${height.value}`) })
+  // watch(height, () => { if (width.value || height.value) console.log(`dimensions: ${width.value}x${height.value}`) })
+  watch(width, () => { width.value && height.value && init() })
+  watch(height, () => { width.value && height.value && init() })
+
+  function setDimensions() {
+    // console.log('setDimensions', props.width, main.value?.style.width, main.value?.clientWidth, props.height, main.value?.style.height, main.value?.clientHeight)
+    definedWidth.value = props.width || (main.value?.style.width && main.value.clientWidth)
+    definedHeight.value = props.height || (main.value?.style.height && main.value.clientHeight)
+    width.value = definedWidth.value || main.value?.clientWidth
+    height.value  = (definedHeight.value || Math.min(width.value, 500))
+    if (definedWidth.value && main.value) main.value.style.width = `${definedWidth.value}px`
+    if (definedHeight.value && main.value) main.value.style.height = `${definedHeight.value}px`
+  }
+
   function tableToObjs(tableId:string) {
-    let table = document.getElementById(tableId) || host.value.parentElement.querySelector(`#${tableId}`)
+    let article = host.value?.parentElement
+    while (article?.tagName !== 'ARTICLE' && article?.parentElement)  article = article.parentElement
+    let table = document.getElementById(tableId) || article.querySelector(`#${tableId}`)
     let keys = Array.from(table?.querySelectorAll('th') || []).map((th:any) => th.textContent?.trim())
     return Array.from(table?.querySelectorAll('tbody > tr') || [])
       .map((row:any) =>
@@ -104,20 +129,13 @@
   const timeline = ref<any>()
 
   const networkData = computed(() => ({nodes: nodes.value, edges: edges.value}))
-  watch(networkData, (data) => nextTick(() => new Network(diagramEl.value as HTMLElement, data, {layout: {hierarchical: props.hierarchical}})))  
-
   const timelineData = computed(() => timeline.value )
-  watch(timelineData, (data) => { new visTimeline(diagramEl.value as HTMLElement, data, {}) })  
 
-  function setHeight() {
-    let height = (props.height || root.value?.clientHeight || 0) -6
-    if (diagramEl.value) diagramEl.value.style.height = `${height - (captionEl.value?.clientHeight || 40)}px`
-    if (root.value) root.value.style.height = `${height}px`
-  }
+  const networkDiagram = ref<any>()
+  const timelineDiagram = ref<any>()
 
   function getDataFromUrl(url:string) {
     if (url.indexOf('http') !== 0) url = `https://raw.githubusercontent.com/${source.value.owner}/${source.value.repository}/${source.value.branch}${source.value.dir}${url}`
-    // console.log('getDataFromUrl', url)
     fetch(url)
       .then(response => response.text())
       .then(text => {
@@ -127,20 +145,30 @@
           if (!_nodes[obj.source.id]) _nodes[obj.source.id] = {id: obj.source.id, label: obj.source.label}
           if (!_nodes[obj.target.id]) _nodes[obj.target.id] = {id: obj.target.id, label: obj.target.label}
         })
-        nodes.value = new DataSet(Object.values(_nodes))
-        edges.value = new DataSet(objs.map(obj => ({ from: obj.source.id, to: obj.target.id })))
+        nodes.value = new DataSet(Object.values(_nodes) as any)
+        edges.value = new DataSet(objs.map(obj => ({ from: obj.source.id, to: obj.target.id })) as any)
       })
   }
 
-  watch(diagramEl, (diagramEl) => {
-    if (!diagramEl) return
-    setHeight()
+  function init() {
+    if (!networkDiagram.value && networkData.value) {
+      networkDiagram.value = new Network(diagramEl.value as HTMLElement, networkData.value, {
+        height: `${height.value - (captionEl.value?.clientHeight || 0)}px`,
+        layout: {hierarchical: props.hierarchical}
+      })
+    } else if (timelineDiagram && timelineData.value) {
+      timelineDiagram.value = new visTimeline(diagramEl.value as HTMLElement, timelineData.value, {
+        height: `${height.value - (captionEl.value?.clientHeight || 0)}px`
+      })
+    }
+  }
+
+  onMounted(() => {
     if (props.timeline) timeline.value = new DataSet(tableToObjs(props.timeline))
     if (props.edges) edges.value = new DataSet(tableToObjs(props.edges))
     if (props.nodes) nodes.value = new DataSet(tableToObjs(props.nodes))
     if (props.url) getDataFromUrl(props.url)
   })
-
 
 </script>
 

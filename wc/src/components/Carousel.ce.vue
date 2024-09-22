@@ -13,12 +13,13 @@
         :sides-per-move="slidesPerMove"
         :sides-per-page="slidesPerPage"
         :style="{
-          '--aspect-ratio': aspectRatio
+          '--aspect-ratio': aspectRatio,
+          width: '100%',
         }"
       >
-        <sl-carousel-item v-for="img, idx in scaledImages" :key="`img-${idx}`" style="height: calc(100% - 4em); display: flex; flex-direction: column;">
+        <sl-carousel-item v-for="img, idx in scaledImages" :key="`img-${idx}`" style="height: calc(100% - 1em); display: flex; flex-direction: column;">
           <img alt="" :src="img.src" :style="{objectFit: img.fit, flex: 1}"/>
-          <div v-if="img.caption" class="image-caption" v-html="marked.parse(img.caption)"></div>
+          <div v-if="img.caption" class="image-caption" v-html="mdToHTML(img.caption)"></div>
         </sl-carousel-item>
       </sl-carousel>
 
@@ -28,7 +29,7 @@
         </div>
       </div>
 
-      <div v-if="caption" ref="captionEl" class="caption">{{ caption }}</div>
+      <div v-if="caption" ref="captionEl" class="caption" v-html="mdToHTML(caption)"></div>
     </div>
 
   </template>
@@ -87,6 +88,7 @@
     // console.log('setDimensions', props.width, main.value?.style.width, main.value?.clientWidth, props.height, main.value?.style.height, main.value?.clientHeight)
     definedWidth.value = props.width || (main.value?.style.width && main.value.clientWidth)
     definedHeight.value = props.height || (main.value?.style.height && main.value.clientHeight)
+    console.log(`definedWidth=${definedWidth.value} definedHeight=${definedHeight.value}`)
     width.value = definedWidth.value || main.value?.clientWidth
     height.value  = (definedHeight.value || width.value)
     if (definedWidth.value && main.value) main.value.style.width = `${definedWidth.value}px`
@@ -102,7 +104,6 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    // console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       def.src || def.manifest
         ? getManifest(def.src || def.manifest)
@@ -307,6 +308,13 @@
     })
   }
 
+  function mdToHTML(md: string) {
+    console.log(md)
+    let el = new DOMParser().parseFromString(marked.parse(md), 'text/html').querySelector('body')?.firstChild as HTMLElement
+    console.log(el?.innerHTML)
+    return el?.innerHTML
+  }
+
 </script>
 
 <style>
@@ -323,7 +331,7 @@
     background-color: white;
     width: 100%;
     box-shadow: 0 2px 4px rgb(0, 0, 0, 0.5) !important;
-    background-color: #f8f8f8 !important;
+    /* background-color: #f8f8f8 !important; */
   }
 
   sl-carousel {
@@ -351,6 +359,9 @@
     text-align: left;
     line-height: 1.1;
     border-top: 1px solid #ddd;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;  
   }
 
   .image-caption {
@@ -358,6 +369,10 @@
     margin: 0.5em;
     font-size: 1.1em;
     font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
   }
 
   /* Gallery Thumbnails */

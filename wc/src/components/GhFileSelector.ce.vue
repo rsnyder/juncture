@@ -241,7 +241,8 @@
     // console.log('repos', toRaw(repos))
     if (repos.length) {
       // console.log('repos', toRaw(repos))
-      let selected = repos.find(repo => repo.name === requested.value?.repo) || repos.find(repo => repo.name === 'essays') || repos[0]
+      let selected = repos
+        .find(repo => repo.name === requested.value?.repo) || repos.find(repo => repo.name === 'essays') || repos[0]
       repo.value = selected.name
     } else {
       repo.value = ''
@@ -249,7 +250,10 @@
   })
   function getRepositories() {
     // console.log('getRepositories', acct.value)
-    if (acct.value) githubClient.value?.repos(acct.value).then((_repos:any[]) => repos.value = _repos)
+    if (acct.value) githubClient.value?.repos(acct.value)
+      .then((_repos:any[]) => {
+        repos.value = _repos.filter((repo:any) => repo.name[0] !== '_' && repo.name[0] !== '.')
+    })
     else repos.value = []
   }
   function repoSelected(_repo:any) {
@@ -356,7 +360,7 @@
 
   async function getDirList(_path:string) {
     let _dirList = await githubClient.value.dirlist(acct.value, repo.value, _path, branch.value)
-    let dirs = _dirList.filter(item => item.type === 'dir')
+    let dirs = _dirList.filter(item => item.type === 'dir').filter(item => item.name[0] !== '.' && item.name[0] !== '_')
     let files = _dirList.filter(item => item.type === 'file')
     return [...dirs, ...files]
   }

@@ -15,6 +15,7 @@
   const props = defineProps({
     caption: { type: String },
     height: { type: String },
+    slot: { type: String },
     width: { type: String }
   })
   watch(props, () => {

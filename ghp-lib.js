@@ -113,7 +113,10 @@ const components = {
     booleans: 'full left right sticky',
     positional: 'qid max'
   },
-  've-snippet': {},
+  've-snippet': {
+    booleans: 'collapsible',
+    positional: 'label'
+  },
   've-video': {
     booleans: 'autoplay muted no-caption sync',
     positional: 'src caption'
@@ -223,6 +226,7 @@ function parseCodeEl(codeEl) {
     .map(l => l.trim())
     // .map(l => l.replace(/<em>/g, '_').replace(/<\/em>/g, '_'))
     .filter(x => x) || []
+  
   let parsed = parseHeadline(codeElems?.[0]) || {}
   if (parsed.tag === 've-mermaid') {
     parsed.raw = codeEl.textContent.split('\n').slice(1).join('\n')
@@ -389,7 +393,8 @@ function convertTags(rootEl) {
 
   rootEl.querySelectorAll('code').forEach(codeEl => {
     let parsed = parseCodeEl(codeEl)
-    if (parsed.tag) {
+    parsed.inline = codeEl.parentElement.childNodes.item(0).nodeValue !== null
+    if (parsed.tag && !parsed.inline) {
       if (codeEl.parentElement.tagName === 'PRE') {
         codeEl = codeEl.parentElement
         codeEl.parentElement.removeAttribute('id')

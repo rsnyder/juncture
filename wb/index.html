@@ -282,7 +282,6 @@
         }, 100)
         let resp = mdToHtml(md)
         let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
-        console.log(html)
         return html
       }
 

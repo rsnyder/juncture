@@ -103,6 +103,10 @@ ve-snippet pre {
   display: none;
 }
 
+ve-snippet {
+  margin-bottom: 1em;
+}
+
 ve-image,
 ve-map {
   margin-bottom: 2em;

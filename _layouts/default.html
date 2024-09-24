@@ -32,8 +32,9 @@
 
 <script type="module">
 
-  import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
-  
+  // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
+  import { mount, getMarkdown, markdownToHtml } from 'https:/v3.juncture-digital.org/ghp.js'
+
   let referrer = document.referrer ? new URL(document.referrer) : null
 
   if (window.location.search.includes('source')) {

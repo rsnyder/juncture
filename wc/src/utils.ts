@@ -383,7 +383,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
     let manifests = await Promise.all(responses.map((resp:any) => resp?.json()))
     requests = manifests
       .filter(manifest => manifest && manifest['@context'])
-      .filter(manifest => !Array.isArray(manifest['@context']) && parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
+      .filter(manifest => !Array.isArray(manifest['@context']) && manifest['@context'].indexOf('shared-canvas.org') > 0 || parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
       .map(manifest => fetch(`https://${iiifServer}/prezi2to3/`, {
         method: 'POST', 
         body: JSON.stringify(manifest)

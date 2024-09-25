@@ -17,8 +17,22 @@
           width: '100%',
         }"
       >
-        <sl-carousel-item v-for="img, idx in scaledImages" :key="`img-${idx}`" style="height: calc(100% - 1em); display: flex; flex-direction: column;">
-          <img alt="" :src="img.src" :style="{objectFit: img.fit, flex: 1}"/>
+        <sl-carousel-item v-for="img, idx in scaledImages" :key="`img-${idx}`" 
+          :style="{
+            // height: 'calc(100% - 4em)',
+            height: '110%',
+            display: 'flex',
+            flexDirection: 'column'
+          }"
+        >
+          <img alt="" :src="img.src" 
+            width="100px"
+            :style="{
+              height: '200px',
+              objectFit: img.fit, 
+              flex: 1
+            }"
+          />
           <div v-if="img.caption" class="image-caption" v-html="mdToHTML(img.caption)"></div>
         </sl-carousel-item>
       </sl-carousel>
@@ -54,7 +68,7 @@
   const captionEl = ref<HTMLElement | null>(null)
   
   const props = defineProps({
-    aspectRatio: { type: String, default: '16/9' }, // 16/9, 3/2, 1/1
+    aspectRatio: { type: String, default: '3/2' }, // 16/9, 3/2, 1/1
     autoplay: { type: Boolean, default: false },
     caption: { type: String },
     fit: { type: String, default: 'contain' },
@@ -365,14 +379,14 @@
   }
 
   .image-caption {
-    /* height: 100%; */
-    margin: 0.5em;
+    height: 32px !important;
     font-size: 1.1em;
     font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;  
     overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Gallery Thumbnails */

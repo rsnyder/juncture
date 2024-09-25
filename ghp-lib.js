@@ -393,7 +393,7 @@ function convertTags(rootEl) {
 
   rootEl.querySelectorAll('code').forEach(codeEl => {
     let parsed = parseCodeEl(codeEl)
-    parsed.inline = codeEl.parentElement.childNodes.item(0).nodeValue !== null
+    parsed.inline = codeEl.parentElement.childNodes.item(0).nodeValue !== null || codeEl.parentElement.tagName === 'LI'
     if (parsed.tag && !parsed.inline) {
       if (codeEl.parentElement.tagName === 'PRE') {
         codeEl = codeEl.parentElement

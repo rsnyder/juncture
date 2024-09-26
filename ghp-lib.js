@@ -1212,6 +1212,8 @@ function articleFromHtml(html) {
 // mount the content
 function mount(mountPoint, html) {
   html = html || getContent()
+  console.log(elFromHtml(html))
+  
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
   if (!mountPoint) {
     mountPoint = document.createElement('article')

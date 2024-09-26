@@ -359,6 +359,11 @@ export function parseImageOptions(str: string) {
   return options
 }
 
+function isV3Manifest(manifest: any) {
+  let contexts = Array.isArray(manifest['@context']) ? manifest['@context'] : [manifest['@context']]
+  return contexts.find(ctx => ctx.indexOf('shared-canvas.org') > 0 || parseFloat(ctx.split('/').slice(-2,-1).pop()) < 3) ? false : true
+}
+
 const _manifestCache:any = {}
 export async function loadManifests(manifestUrls: string[], refresh: boolean=false) {
   let _manifestUrls = manifestUrls
@@ -383,7 +388,7 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
     let manifests = await Promise.all(responses.map((resp:any) => resp?.json()))
     requests = manifests
       .filter(manifest => manifest && manifest['@context'])
-      .filter(manifest => !Array.isArray(manifest['@context']) && manifest['@context'].indexOf('shared-canvas.org') > 0 || parseFloat(manifest['@context'].split('/').slice(-2,-1).pop()) < 3)
+      .filter(manifest => !isV3Manifest(manifest))
       .map(manifest => fetch(`https://${iiifServer}/prezi2to3/`, {
         method: 'POST', 
         body: JSON.stringify(manifest)

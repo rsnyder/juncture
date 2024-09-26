@@ -139,6 +139,15 @@ Object.entries(components).forEach(([tag, attrs]) => {
   tagMap[tag.slice(3)] = tagObj
 })
 
+function  v(str) {
+  str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing white space
+  str = str.toLowerCase(); // convert string to lowercase
+  str = str.replace(/[^a-z0-9 -]/g, '') // remove any non-alphanumeric characters
+           .replace(/\s+/g, '-') // replace spaces with hyphens
+           .replace(/-+/g, '-'); // remove consecutive hyphens
+  return str
+}
+
 function parseHeadline(s) {
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
@@ -538,10 +547,8 @@ function restructure(rootEl) {
       currentSection.classList.add(`section${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
       heading.className = ''
-      if (heading.id) {
-        currentSection.id = heading.id
-        heading.removeAttribute('id')
-      }
+      currentSection.id = heading.id || slugify(heading.textContent)
+      if (heading.id) heading.removeAttribute('id')
 
       currentSection.innerHTML += heading.outerHTML
 

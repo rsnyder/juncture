@@ -1101,6 +1101,7 @@ function isJunctureV1(contentEl) {
 }
 
 function getContent() {
+  console.log('getContent')
   console.log(elFromHtml(document.body.children[0].innerHTML))
   console.log(elFromHtml(window.config.content))
   return window.config.content || document.body.children[0].innerHTML
@@ -1213,6 +1214,7 @@ function articleFromHtml(html) {
 
 // mount the content
 function mount(mountPoint, html) {
+  console.log('mount')
   html = html || getContent()
   
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 

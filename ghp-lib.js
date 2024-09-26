@@ -148,6 +148,13 @@ function slugify(str) {
   return str
 }
 
+let ids = {}
+function makeId(str) {
+  let slug = slugify(str)
+  ids[slug] = ids[slug] ? ids[slug] + 1 : 1
+  return ids[slug] > 1 ? `${slug}-${ids[slug]-1}` : slug
+}
+
 function parseHeadline(s) {
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
@@ -547,7 +554,7 @@ function restructure(rootEl) {
       currentSection.classList.add(`section${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
       heading.className = ''
-      currentSection.id = heading.id || slugify(heading.textContent)
+      currentSection.id = heading.id || makeId(heading.textContent)
       if (heading.id) heading.removeAttribute('id')
 
       currentSection.innerHTML += heading.outerHTML
@@ -1108,9 +1115,6 @@ function isJunctureV1(contentEl) {
 }
 
 function getContent() {
-  console.log('getContent')
-  console.log(elFromHtml(document.body.children[0].innerHTML))
-  console.log(elFromHtml(window.config.content))
   return window.config.content || document.body.children[0].innerHTML
 }
 
@@ -1221,8 +1225,8 @@ function articleFromHtml(html) {
 
 // mount the content
 function mount(mountPoint, html) {
-  console.log('mount')
   html = html || getContent()
+  console.log(elFromHtml(html))
   
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
   if (!mountPoint) {

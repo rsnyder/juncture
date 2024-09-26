@@ -139,7 +139,7 @@ Object.entries(components).forEach(([tag, attrs]) => {
   tagMap[tag.slice(3)] = tagObj
 })
 
-function  v(str) {
+function slugify(str) {
   str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing white space
   str = str.toLowerCase(); // convert string to lowercase
   str = str.replace(/[^a-z0-9 -]/g, '') // remove any non-alphanumeric characters

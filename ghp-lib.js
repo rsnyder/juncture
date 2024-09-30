@@ -465,6 +465,17 @@ function convertTags(rootEl) {
 // Restructure the content to have hierarchical sections and segments
 function restructure(rootEl) {
   let styleSheet = rootEl.querySelector('style')
+  if (styleSheet) {
+    Array.from(rootEl.querySelectorAll('p'))
+      .filter(p => /^\s*<style/.test(p.innerHTML))
+      .map(p => p.innerHTML.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, ''))
+      .forEach(styleStr => {
+        console.log('styleStr', styleStr)
+        styleSheet = document.createElement('style')
+        styleSheet.innerHTML = styleStr
+      })
+  }
+
   console.log('styleSheet', styleSheet)
   deleteAllComments(rootEl)
 

@@ -158,7 +158,7 @@
       } else if (c.tagName.indexOf('VE-') === 0) {
         let isCodeBlock = c.querySelector('ul') !== null
         let tagDef = tagMap[c.tagName.toLowerCase()]
-        // console.log('tagDef', tagDef)
+        console.log('tagDef', tagDef)
         
         if (version === 'j1') {
           if (isCodeBlock) {
@@ -169,7 +169,7 @@
                   let booleans: string[] = []
                   let kwAttrs = {}
                   Array.from(c.attributes).forEach(attr => {
-                    if (tagDef.root.has(attr.name)) {
+                    if (tagDef.root?.has(attr.name)) {
                       let name = tagDef.reverseAliases[attr.name] || attr.name
                       let value = c.getAttribute(attr.name)
                       if (value && value.indexOf(' ') > -1) value = `"${value}"`
@@ -192,7 +192,7 @@
             Array.from(c.attributes).forEach(attr => {
               if (booleans.has(attr.name)) tag += ` ${attr.value}` // add positional attributes
               else { // add keyword attributes
-                let value = attr.value.indexOf(' ') > -1 ? `"${attr.value}"` : attr.value
+                let value = attr.value
                 tag += ` ${attr.name}="${value}"`
               }
             })
@@ -357,7 +357,8 @@
          alias: 'punctuation',
       },
       tag: [{ 
-        pattern: /\.?ve-\w+[\w-]*/
+        // pattern: /\.?ve-\w+[\w-]*/
+        pattern: /\n[\w-]+/
       }],
       kvp: {
         pattern: /[\w-_]+=\s*(?:"[^"]*"|'[^']*'|[^\s'">=]+)/,

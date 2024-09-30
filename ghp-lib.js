@@ -60,7 +60,8 @@ const components = {
     }
   },
   've-compare': {
-    positional: 'src'
+    root: 'caption',
+    argsPositional: 'src caption',
   },
   've-entities': {
     booleans: 'cards'
@@ -88,7 +89,8 @@ const components = {
     aliases: {
       'viewer-caption': 'caption',
       'viewer-cover': 'cover', 
-      'viewer-fit': 'fit'
+      'viewer-fit': 'fit',
+      'rotate': 'rotation'
     }
   },
   've-knightlab-timeline': {

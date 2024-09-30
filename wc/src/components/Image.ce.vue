@@ -68,8 +68,7 @@
     region: { type: String },
     repoIsWritable: { type: Boolean, default: false },
     quality: { type: String },
-    rotate: { type: Number },
-    rotation: { type: String },
+    rotation: { type: Number },
     seq: { type: Number, default: 1},
     size: { type: String },
     slot: { type: String },
@@ -229,13 +228,13 @@
     function parseImageDefStr(s:String): Object {
       let tokens: string[] = []
       // s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
-      s = s.replace(/”/g,'"').replace(/”/g,'"')
+      s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/^\s*-\s+/g,'')
       s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
         if (tokens.length > 0 && tokens[tokens.length-1].indexOf('=') === tokens[tokens.length-1].length-1) tokens[tokens.length-1] = `${tokens[tokens.length-1]}${token}`
         else tokens.push(token)
       })
       let parsed:any = {}
-      let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotate', 'seq' ]
+      let positionalArgs = ['src', 'caption', 'options', 'fit', 'rotation', 'seq' ]
       tokens.filter(t => t !== 'image').forEach((token, idx) => {
         if (token.indexOf('=') > 0) {
           let i = token.indexOf('=')
@@ -251,7 +250,7 @@
     }
 
     function getImageDefs () {
-      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'region', 'rotate', 'seq', 'src', 'summary', 'title', 'url'])
+      let imageProps = new Set(['attribution', 'caption', 'description', 'fit', 'label', 'license', 'manifest', 'noCaption', 'region', 'rotation', 'seq', 'src', 'summary', 'title', 'url'])
       let imageDefFromProps = (props.src || props.url || props.manifest) ? Object.fromEntries(Object.entries(props).filter(([k,v]) => imageProps.has(k) && v)) : null
       let _imageDefs: any[] = imageDefFromProps ? [imageDefFromProps] : []
       Array.from(host.value.querySelectorAll('li') as HTMLLIElement[])
@@ -385,7 +384,7 @@
     osd.value.addHandler('page', (e) => { selected.value = e.page })
     osd.value.world.addHandler('add-item', (e) => {
       let currentItem = imageDefs.value[selected.value]
-      if (currentItem?.rotate) e.item.setRotation(parseInt(currentItem.rotate), true)
+      if (currentItem?.rotation) e.item.setRotation(parseInt(currentItem.rotation), true)
       // console.log('add-item', toRaw(currentItem))
 
       if (currentItem?.region && osd.value) {

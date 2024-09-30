@@ -53,14 +53,15 @@ const components = {
     booleans: 'autoplay gallery loop navigation pagination scroll-hint',
     positional: 'caption',
     argsPositional: 'src caption',
-    root: 'autoplay fit gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
+    root: 'autoplay caption fit gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
     aliases: {
       'viewer-caption': 'caption', 
       'viewer-fit': 'fit'
     }
   },
   've-compare': {
-    positional: 'src'
+    root: 'caption',
+    argsPositional: 'src caption',
   },
   've-entities': {
     booleans: 'cards'
@@ -81,13 +82,15 @@ const components = {
     positional: 'src caption'
   },
   've-image': {
-    booleans: 'no-caption grid static repo-is-writable zoom-on-scroll',
+    booleans: 'cover grid no-caption repo-is-writable static zoom-on-scroll',
     positional: 'src caption',
     argsPositional: 'src caption',
-    root: 'viewer-caption viewer-fit',
+    root: 'viewer-cover viewer-caption viewer-fit',
     aliases: {
-      'viewer-caption': 'caption', 
-      'viewer-fit': 'fit'
+      'viewer-caption': 'caption',
+      'viewer-cover': 'cover', 
+      'viewer-fit': 'fit',
+      'rotate': 'rotation'
     }
   },
   've-knightlab-timeline': {
@@ -125,19 +128,36 @@ const components = {
     booleans: 'hierarchical'
   }
 }
-let tagMap = {}
+const tagMap = {}
 Object.entries(components).forEach(([tag, attrs]) => {
   let tagObj = { 
     booleans : new Set((attrs.booleans || '').split(' ').filter(s => s)),
     positional: (attrs.positional || '').split(' ').filter(s => s),
     argsPositional: (attrs.argsPositional || '').split(' ').filter(s => s),
-    aliases: attrs.aliases || {}
+    aliases: attrs.aliases || {},
+    reverseAliases: {}
   }
   if (attrs.root) tagObj.root = new Set((attrs.root || '').split(' ').filter(s => s))
-  // if (attrs.aliases) Object.entries(attrs.aliases).forEach(([alias, names]) => { names.forEach(name => tagObj.aliases[name] = alias) })
+  Object.entries(tagObj.aliases).forEach(([alias, name]) => tagObj.reverseAliases[name] = alias)
   tagMap[tag] = tagObj
   tagMap[tag.slice(3)] = tagObj
 })
+
+function slugify(str) {
+  str = str.replace(/^\s+|\s+$/g, ''); // trim leading/trailing white space
+  str = str.toLowerCase(); // convert string to lowercase
+  str = str.replace(/[^a-z0-9 -]/g, '') // remove any non-alphanumeric characters
+           .replace(/\s+/g, '-') // replace spaces with hyphens
+           .replace(/-+/g, '-'); // remove consecutive hyphens
+  return str
+}
+
+let ids = {}
+function makeId(str) {
+  let slug = slugify(str)
+  ids[slug] = ids[slug] ? ids[slug] + 1 : 1
+  return ids[slug] > 1 ? `${slug}-${ids[slug]-1}` : slug
+}
 
 function parseHeadline(s) {
   let tokens = []
@@ -340,6 +360,7 @@ function veAttr(el) {
 
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
+  // console.log('convertTags')
   // remove "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
   .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
@@ -438,6 +459,7 @@ function convertTags(rootEl) {
       codeWrapper.remove()
     }
   })
+  return rootEl
 }
 
 // Restructure the content to have hierarchical sections and segments
@@ -538,10 +560,8 @@ function restructure(rootEl) {
       currentSection.classList.add(`section${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
       heading.className = ''
-      if (heading.id) {
-        currentSection.id = heading.id
-        heading.removeAttribute('id')
-      }
+      currentSection.id = heading.id || makeId(heading.textContent)
+      if (heading.id) heading.removeAttribute('id')
 
       currentSection.innerHTML += heading.outerHTML
 
@@ -1212,6 +1232,8 @@ function articleFromHtml(html) {
 // mount the content
 function mount(mountPoint, html) {
   html = html || getContent()
+  console.log(elFromHtml(html))
+  
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
   if (!mountPoint) {
     mountPoint = document.createElement('article')
@@ -1231,4 +1253,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent }
+export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent, tagMap }

@@ -875,6 +875,7 @@
         if (manifest.label) obj.label = manifest.label.en || manifest.label.none
         if (manifest.summary) obj.description = manifest.summary?.en?.[0] || manifest.summary?.none?.[0]
         if (manifest.thumbnail) obj.image = manifest.thumbnail[0].id
+        console.log(obj)
         return obj
       }
     

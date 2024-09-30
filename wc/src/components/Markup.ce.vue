@@ -393,6 +393,22 @@
       },
       boolean: { 
         pattern: /\s+(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, 
+      },
+      string: {
+        pattern: /.+/,
+        inside: {
+          'attr-value': [
+            {
+              pattern: /^["']|["']$/,
+              alias: 'punctuation attr-quote'
+            },
+            {
+              pattern: /.+/,
+              // lookbehind: true,
+              alias: 'attr-value'
+            }
+          ]
+        }
       }
     }
   },
@@ -442,6 +458,22 @@
       },
       boolean: { 
         pattern: /\s+(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll|)/, 
+      },
+      string: {
+        pattern: /.+/,
+        inside: {
+          'attr-value': [
+            {
+              pattern: /^["']|["']$/,
+              alias: 'punctuation attr-quote'
+            },
+            {
+              pattern: /.+/,
+              // lookbehind: true,
+              alias: 'attr-value'
+            }
+          ]
+        }
       }
     }
   },

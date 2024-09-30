@@ -467,7 +467,10 @@ function restructure(rootEl) {
   let styleSheet = rootEl.querySelector('style')
   if (styleSheet) {
     Array.from(rootEl.querySelectorAll('p'))
-      .filter(p => /^\s*<style/.test(p.innerHTML))
+      .filter(p => {
+        console.log('p.innerHTML', p.innerHTML)
+        return /^\s*<style/.test(p.innerHTML)
+      })
       .map(p => p.innerHTML.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, ''))
       .forEach(styleStr => {
         console.log('styleStr', styleStr)

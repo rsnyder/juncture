@@ -464,16 +464,13 @@ function convertTags(rootEl) {
 
 // Restructure the content to have hierarchical sections and segments
 function restructure(rootEl) {
+  console.log('restructure', rootEl)
   let styleSheet = rootEl.querySelector('style')
   if (!styleSheet) {
     Array.from(rootEl.querySelectorAll('p'))
-      .filter(p => {
-        console.log('p.innerHTML', p.innerHTML)
-        return /^\s*<style/.test(p.innerHTML)
-      })
+      .filter(p => /^\s*<style/.test(p.innerHTML))
       .map(p => p.innerHTML.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, ''))
       .forEach(styleStr => {
-        console.log('styleStr', styleStr)
         styleSheet = document.createElement('style')
         styleSheet.innerHTML = styleStr
       })
@@ -1238,7 +1235,9 @@ function structureContent(html) {
 function articleFromHtml(html) {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
+  console.log('contentEl', contentEl.cloneNode(true))
   convertTags(contentEl)
+  console.log('contentEl', contentEl.cloneNode(true))
   let article = restructure(contentEl)
   if (isJunctureV1(contentEl)) article = restructureForJ1(article)
   return article

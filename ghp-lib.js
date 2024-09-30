@@ -465,6 +465,7 @@ function convertTags(rootEl) {
 // Restructure the content to have hierarchical sections and segments
 function restructure(rootEl) {
   let styleSheet = rootEl.querySelector('style')
+  console.log('styleSheet', styleSheet)
   deleteAllComments(rootEl)
 
   // Move child params to be siblings with parent element

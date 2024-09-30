@@ -163,6 +163,7 @@ The following attributes are passed through to the native `iframe` element.  The
 - **credentialless** (_string_):  Set to true to make the iframe credentialless, meaning that its content will be loaded in a new, ephemeral context. It doesn't have access to the network, cookies, and storage data associated with its origin. It uses a new context local to the top-level document lifetime. In return, the [Cross-Origin-Embedder-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy) (COEP) embedding rules can be lifted, so documents with COEP set can embed third-party documents that do not. See [IFrame credentialless](https://developer.mozilla.org/en-US/docs/Web/Security/IFrame_credentialless) for more details.
 - **csp** (_string_):  A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) enforced for the embedded resource. See [HTMLIFrameElement.csp](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/csp) for details.
 - **fetchpriority** (_string_):  Provides a hint of the relative priority to use when fetching the iframe document. Allowed values:
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | high | Signals a high-priority fetch relative to other iframe documents. |
@@ -173,6 +174,7 @@ The following attributes are passed through to the native `iframe` element.  The
 | -------- | ---------------------------------------- |
 | eager | Load the iframe immediately, regardless if it is outside the visible viewport (this is the default value) |
 | lazy  | Defer loading of the iframe until it reaches a calculated distance from the viewport, as defined by the browser. |
+
 - **name** (_string_):  A targetable name for the embedded browsing context. This can be used in the target attribute of the `a`, `form`, or `base` elements; the formtarget attribute of the `input` or `button` elements; or the windowName parameter in the [window.open()](https://developer.mozilla.org/en-US/docs/Web/API/Window/open) method.
 - **referrerpolicy** (_string_):  Indicates which referrer to send when fetching the frame's resource:
 | Value | Description |

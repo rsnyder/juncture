@@ -102,7 +102,7 @@
     // console.log('setDimensions', props.width, main.value?.style.width, main.value?.clientWidth, props.height, main.value?.style.height, main.value?.clientHeight)
     definedWidth.value = props.width || (main.value?.style.width && main.value.clientWidth)
     definedHeight.value = props.height || (main.value?.style.height && main.value.clientHeight)
-    console.log(`definedWidth=${definedWidth.value} definedHeight=${definedHeight.value}`)
+    // console.log(`definedWidth=${definedWidth.value} definedHeight=${definedHeight.value}`)
     width.value = definedWidth.value || main.value?.clientWidth
     height.value  = (definedHeight.value || width.value)
     if (definedWidth.value && main.value) main.value.style.width = `${definedWidth.value}px`
@@ -323,9 +323,9 @@
   }
 
   function mdToHTML(md: string) {
-    console.log(md)
+    // console.log(md)
     let el = new DOMParser().parseFromString(marked.parse(md), 'text/html').querySelector('body')?.firstChild as HTMLElement
-    console.log(el?.innerHTML)
+    // console.log(el?.innerHTML)
     return el?.innerHTML
   }
 

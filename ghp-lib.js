@@ -53,7 +53,7 @@ const components = {
     booleans: 'autoplay gallery loop navigation pagination scroll-hint',
     positional: 'caption',
     argsPositional: 'src caption',
-    root: 'autoplay fit gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
+    root: 'autoplay caption fit gallery loop navigation pagination scroll-hint viewer-caption viewer-fit',
     aliases: {
       'viewer-caption': 'caption', 
       'viewer-fit': 'fit'
@@ -81,12 +81,13 @@ const components = {
     positional: 'src caption'
   },
   've-image': {
-    booleans: 'no-caption grid static repo-is-writable zoom-on-scroll',
+    booleans: 'cover grid no-caption repo-is-writable static zoom-on-scroll',
     positional: 'src caption',
     argsPositional: 'src caption',
-    root: 'viewer-caption viewer-fit',
+    root: 'viewer-cover viewer-caption viewer-fit',
     aliases: {
-      'viewer-caption': 'caption', 
+      'viewer-caption': 'caption',
+      'viewer-cover': 'cover', 
       'viewer-fit': 'fit'
     }
   },
@@ -125,16 +126,17 @@ const components = {
     booleans: 'hierarchical'
   }
 }
-let tagMap = {}
+const tagMap = {}
 Object.entries(components).forEach(([tag, attrs]) => {
   let tagObj = { 
     booleans : new Set((attrs.booleans || '').split(' ').filter(s => s)),
     positional: (attrs.positional || '').split(' ').filter(s => s),
     argsPositional: (attrs.argsPositional || '').split(' ').filter(s => s),
-    aliases: attrs.aliases || {}
+    aliases: attrs.aliases || {},
+    reverseAliases: {}
   }
   if (attrs.root) tagObj.root = new Set((attrs.root || '').split(' ').filter(s => s))
-  // if (attrs.aliases) Object.entries(attrs.aliases).forEach(([alias, names]) => { names.forEach(name => tagObj.aliases[name] = alias) })
+  Object.entries(tagObj.aliases).forEach(([alias, name]) => tagObj.reverseAliases[name] = alias)
   tagMap[tag] = tagObj
   tagMap[tag.slice(3)] = tagObj
 })
@@ -356,6 +358,7 @@ function veAttr(el) {
 
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
+  // console.log('convertTags')
   // remove "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
   .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
@@ -454,6 +457,7 @@ function convertTags(rootEl) {
       codeWrapper.remove()
     }
   })
+  return rootEl
 }
 
 // Restructure the content to have hierarchical sections and segments
@@ -1247,4 +1251,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent }
+export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent, tagMap }

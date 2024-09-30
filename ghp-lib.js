@@ -465,7 +465,7 @@ function convertTags(rootEl) {
 // Restructure the content to have hierarchical sections and segments
 function restructure(rootEl) {
   let styleSheet = rootEl.querySelector('style')
-  if (styleSheet) {
+  if (!styleSheet) {
     Array.from(rootEl.querySelectorAll('p'))
       .filter(p => {
         console.log('p.innerHTML', p.innerHTML)

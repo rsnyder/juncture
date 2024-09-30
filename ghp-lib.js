@@ -467,13 +467,20 @@ function restructure(rootEl) {
   console.log('restructure', rootEl)
   let styleSheet = rootEl.querySelector('style')
   if (!styleSheet) {
-    Array.from(rootEl.querySelectorAll('p'))
-      .filter(p => /^\s*<style/.test(p.innerHTML))
-      .map(p => p.innerHTML.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, ''))
-      .forEach(styleStr => {
-        styleSheet = document.createElement('style')
-        styleSheet.innerHTML = styleStr
-      })
+    let ptext = rootEl.childNodes.item(0).nodeValue?.trim()
+    console.log('ptext', ptext)
+    if (/^\s*<style/.test(ptext)) {
+      styleSheet = document.createElement('style')
+      styleSheet.innerHTML = ptext.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, '')
+    } else {
+      Array.from(rootEl.querySelectorAll('p'))
+        .filter(p => /^\s*<style/.test(p.innerHTML))
+        .map(p => p.innerHTML.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, ''))
+        .forEach(styleStr => {
+          styleSheet = document.createElement('style')
+          styleSheet.innerHTML = styleStr
+        })
+    }
   }
 
   console.log('styleSheet', styleSheet)

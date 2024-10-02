@@ -96,10 +96,10 @@ The `carousel` tag displays an arbitrary number of images along a horizontal or 
 - **autoplay** (_boolean_) :  The carousel will automatically advance when the `autoplay` attribute is used. To change how long a slide is shown before advancing, set autoplay-interval to the desired number of milliseconds. For best results, use the loop attribute when autoplay is enabled. Note that autoplay will pause while the user interacts with the carousel.
 - **fit** (_string_) :  The `fit` attribute is used to define how an image should be resized to fit its container.
 
-	| Value | Description |
-	| -------- | ---------------------------------------- |
-	| *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
-	| *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
+| Value | Description |
+| -------- | ---------------------------------------- |
+| *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
+| *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
 - **gallery** (_boolean_) :  The `gallery` attribute syncs the active slide with a set of thumbnails, creating a gallery-style carousel.
 - **loop** (_boolean_) :  By default, the carousel will not advanced beyond the first and last slides. You can change this behavior and force the carousel to "wrap" with the `loop` attribute.
 - **navigation** (_boolean_) :  Use the `navigation` attribute to show previous and next buttons.
@@ -170,7 +170,9 @@ The following attributes are passed through to the native `iframe` element.  The
 | high | Signals a high-priority fetch relative to other iframe documents. |
 | low  | Signals a low-priority fetch relative to other iframe documents. |
 | auto | Default: Signals automatic determination of fetch priority relative to other iframe documents. |
+
 - **loading** (_string_):  Indicates how the browser should load the iframe:
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | eager | Load the iframe immediately, regardless if it is outside the visible viewport (this is the default value) |
@@ -178,6 +180,7 @@ The following attributes are passed through to the native `iframe` element.  The
 
 - **name** (_string_):  A targetable name for the embedded browsing context. This can be used in the target attribute of the `a`, `form`, or `base` elements; the formtarget attribute of the `input` or `button` elements; or the windowName parameter in the [window.open()](https://developer.mozilla.org/en-US/docs/Web/API/Window/open) method.
 - **referrerpolicy** (_string_):  Indicates which referrer to send when fetching the frame's resource:
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | no-referrer                     | The [Referer](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) header will not be sent. |
@@ -189,7 +192,9 @@ The following attributes are passed through to the native `iframe` element.  The
 | strict-origin                   | Only send the origin of the document as the referrer when the protocol security level stays the same (HTTPS→HTTPS), but don't send it to a less secure destination (HTTPS→HTTP). |
 | strict-origin-when-cross-origin | (default): Send a full URL when performing a same-origin request, only send the origin when the protocol security level stays the same (HTTPS→HTTPS), and send no header to a less secure destination (HTTPS→HTTP). |
 | unsafe-url                      | The referrer will include the origin and the path (but not the [fragment](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/hash), [password](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/password), or [username](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/username)). This value is unsafe, because it leaks origins and paths from TLS-protected resources to insecure origins. |
+
 - **sandbox** (_string_):  Applies extra restrictions to the content in the frame. The value of the attribute can either be empty to apply all restrictions, or space-separated tokens to lift particular restrictions:
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | allow-downloads-without-user-activation | Allows for downloads to occur without a gesture from the user. |
@@ -206,6 +211,7 @@ The following attributes are passed through to the native `iframe` element.  The
 | allow-storage-access-by-user-activation | Lets the resource request access to the parent's storage capabilities with the [Storage Access API](https://developer.mozilla.org/en-US/docs/Web/API/Storage_Access_API). |
 | allow-top-navigation | Lets the resource navigate the top-level browsing context (the one named _top). |
 | allow-top-navigation-by-user-activation | Lets the resource navigate the top-level browsing context, but only if initiated by a user gesture. |
+
 - **srcdoc** (_string_):  Inline HTML to embed, overriding the src attribute. If a browser does not support the srcdoc attribute, it will fall back to the URL in the src attribute.
 
 #####
@@ -312,6 +318,7 @@ Many of the image-specific attributes used in the ve-image viewer are based on t
 - **static** (_boolean_):  A static image is returned instead of an interactive image with deep-zoom and panning.  `static` mode provides a number of image formatting options not available in the default interactive viewer (with deep zoom and panning).  More information on options available in static mode are found [below](#static-image-attributes).
 - **seq** (_number_):  A number defining the image to use in a multi-image manifest.  If not specified the default value is _1_.
 - **fit** (_string_):  The _fit_ attribute controls the display of an image in the viewer viewport.  In the default mode (_contain_) the entire image is shown with letter boxing applied to the top and bottom or left and right when the image aspect ratio differs from the viewer.  When the value _cover_ is used the entire viewport is filled and the displayed portion of the image is cropped as needed to fit.
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |

@@ -51,7 +51,9 @@ The `animated-image` tag creates a viewer that is able to play animated GIFs.
 `animated-image https://upload.wikimedia.org/wikipedia/commons/e/e3/Animhorse.gif`
 </ve-snippet>
 
-For more examples visit the [animated-image documentation page](https://docs.juncture-digital.org/components/animated-image-viewer).
+####
+
+For more information and examples visit the [animated-image documentation page](https://docs.juncture-digital.org/components/animated-image-viewer).
 
 ### Audio Player
 
@@ -80,8 +82,10 @@ The `audio` tag creates a viewer that is able to play audio content.
 `audio wc:Interview_with_Warren_Hanson_regarding_Hundred_Flowers.ogg "Interview with Warren Hanson regarding Hundred Flowers"`
  </ve-snippet>
  
-For more examples visit the [audio documentation page](https://docs.juncture-digital.org/components/audio-player).
+ ####
 
+For more information and examples visit the [audio documentation page](https://docs.juncture-digital.org/components/audio-player).
+ 
 ### Image Carousel
 
 The `carousel` tag displays an arbitrary number of images along a horizontal or vertical axis.  The carousel is a Juncture wrapper for the [Shoelace](https://shoelace.style/) [sl-carousel](https://shoelace.style/components/carousel) component.
@@ -140,7 +144,9 @@ carousel navigation caption="Wikimedia Commons Picture of the Year"
 ```
 </ve-snippet>
 
-For more examples visit the [carousel documentation page](https://docs.juncture-digital.org/components/image-carousel).
+####
+
+For more information and examples visit the [carousel documentation page](https://docs.juncture-digital.org/components/image-carousel).
 
 ### IFrame Viewer
 
@@ -162,6 +168,8 @@ The `iframe` tag allows arbitrary web pages to be embedded in an essay. The Junc
 <ve-snippet collapsible label="Click to view example">
 `iframe https://archive.org/embed/slaveryinunit00ballcha/page/172/mode/1up`
 </ve-snippet>
+
+####
 
 For more examples visit the [iframe documentation page](https://docs.juncture-digital.org/components/iframe-viewer).
 
@@ -197,7 +205,9 @@ wc:Vincent_van_Gogh’s_famous_painting,_digitally_enhanced_by_rawpixel-com_49.j
 ```
 </ve-snippet>
 
-For more examples visit the [image-compare documentation page](https://docs.juncture-digital.org/components/image-compare-viewer).
+####
+
+For more information and examples visit the [image-compare documentation page](https://docs.juncture-digital.org/components/image-compare-viewer).
 
 ### Image Gallery
 
@@ -239,7 +249,9 @@ gallery
 ```
 </ve-snippet>
 
-For more examples visit the [gallery documentation page](https://docs.juncture-digital.org/components/image-gallery).
+####
+
+For more information and examples visit the [gallery documentation page](https://docs.juncture-digital.org/components/image-gallery).
 
 ### Image Viewer
 
@@ -366,7 +378,9 @@ image
 	`image wc:Mud_Cow_Racing_-_Pacu_Jawi_-_West_Sumatra,_Indonesia.jpg rotation=90`
 </ve-snippet>
 
-For more examples visit the [image documentation page](https://docs.juncture-digital.org/components/image-viewer).
+####
+
+For more information and examples visit the [image documentation page](https://docs.juncture-digital.org/components/image-viewer).
   
 ### Map Viewer
 
@@ -460,9 +474,9 @@ map 51.39257,0.50752,14
 ```
 </ve-snippet>
 
-Click on the marker or click here to see the image.
+####
 
-For more examples visit the [map documentation page](https://docs.juncture-digital.org/components/map-viewer).
+For more information and examples visit the [map documentation page](https://docs.juncture-digital.org/components/map-viewer).
 
 ### Mermaid Diagram Viewer
 
@@ -504,7 +518,9 @@ mindmap
 ```
 </ve-snippet>
 
-For more examples visit the [mermaid documentation page](https://docs.juncture-digital.org/components/mermaid-diagram-viewer).
+####
+
+For more information and examples visit the [mermaid documentation page](https://docs.juncture-digital.org/components/mermaid-diagram-viewer).
 
 ### Plant Specimen Viewer
 
@@ -529,6 +545,8 @@ The `plant-specimen` tag is used to display one or more plant specimens obtained
 <ve-snippet collapsible label="Click to view example">
 `plant-specimen Q11575`
 </ve-snippet>
+
+####
 
 For more examples visit the [plant-specimen documentation page](https://docs.juncture-digital.org/components/plant-specimen-viewer).
 
@@ -561,7 +579,7 @@ The `video` tag creates a viewer that is able to play video content, including s
 `video Zy3K2Lcw7hQ`
 </ve-snippet>
 
-For more examples visit the [video documentation page](https://docs.juncture-digital.org/components/video-player).
+For more information and examples visit the [video documentation page](https://docs.juncture-digital.org/components/video-player).
 
 ### VisJS Diagram Viewer
 
@@ -598,4 +616,6 @@ The `visjs` tag uses the [vis.js](https://visjs.org/) JavaScript library to crea
 `#edges`
 </ve-snippet>
 
-For more examples visit the [visjs documentation page](https://docs.juncture-digital.org/components/visjs-diagram-viewer).
+####
+
+For more information and examples visit the [visjs documentation page](https://docs.juncture-digital.org/components/visjs-diagram-viewer).

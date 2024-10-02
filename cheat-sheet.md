@@ -323,9 +323,11 @@ Many of the image-specific attributes used in the ve-image viewer are based on t
 | -------- | ---------------------------------------- |
 | *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
 | *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
+
 - **no-caption** (_boolean_):  This attribute inhibits the display of the caption at the bottom of the viewer.
 - **no-info-icon** (_boolean_):  This attribute inhibits the display of the icon used to trigger the display of the information popup.  By default, the icon is displayed in the top-right region of the viewer when hovering over the viewing area.
 - **region** (_string_):  The region attribute defines the rectangular portion of the full image to be returned. The region can be specified by pixel coordinates, percentage, or by the value "full", which specifies that the entire image should be returned.
+
 | Form | Description |
 | -------- | ---------------------------------------- |
 | full        | The complete image is returned, without any cropping. |
@@ -340,13 +342,16 @@ Many of the image-specific attributes used in the ve-image viewer are based on t
 The following attributes are only applicable for single images when `static` mode is enabled.
 
 - **region** (_string_):  The region attribute defines the rectangular portion of the full image to be returned. The region can be specified by pixel coordinates, percentage, or by the value "full", which specifies that the entire image should be returned.
+
 | Form | Description |
 | -------- | ---------------------------------------- |
 | full        | The complete image is returned, without any cropping. |
 | square      | The region is defined as an area where the width and height are both equal to the length of the shorter dimension of the complete image. The region may be positioned anywhere in the longer dimension of the image content at the server’s discretion, and centered is often a reasonable default. |
 | x,y,w,h     | The region of the full image to be returned is specified in terms of absolute pixel values. The value of x represents the number of pixels from the 0 position on the horizontal axis. The value of y represents the number of pixels from the 0 position on the vertical axis. Thus the x,y position 0,0 is the upper left-most pixel of the image. w represents the width of the region and h represents the height of the region in pixels. |
 | pct:x,y,w,h | The region to be returned is specified as a sequence of percentages of the full image’s dimensions, as reported in the image information document. Thus, x represents the number of pixels from the 0 position on the horizontal axis, calculated as a percentage of the reported width. w represents the width of the region, also calculated as a percentage of the reported width. The same applies to y and h respectively. These may be floating point numbers. |
+
 - **size** (_string_):  The size parameter determines the dimensions to which the extracted region is to be scaled.
+
 | Form | Description |
 | -------- | ---------------------------------------- |
 | full  | The image or region is not scaled, and is returned at its full size. |
@@ -356,7 +361,9 @@ The following attributes are only applicable for single images when `static` mod
 | pct:n |   The width and height of the returned image is scaled to n% of the width and height of the extracted region. The aspect ratio of the returned image is the same as that of the extracted region. |
 | w,h   |The width and height of the returned image are exactly w and h. The aspect ratio of the returned image may be different than the extracted region, resulting in a distorted image. |
 | !w,h  | The image content is scaled for the best fit such that the resulting width and height are less than or equal to the requested width and height. The exact scaling may be determined by the service provider, based on characteristics including image quality and system performance. The dimensions of the returned image content are calculated to maintain the aspect ratio of the extracted region. |
+
 - **quality** (_string_):  The quality attribute determines whether the image is delivered in color, grayscale or black and white.  Recognized values for this attribute are `color`, `gray`, `bitonal`, `default`.  The default value used by the Juncture IIIF image server is `color`.
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | color   | The image is returned in full color. |
@@ -372,10 +379,12 @@ When multiple images are to be displayed an image definition for each image foll
 - **src** (_string_) :  URL for image IIIF manifest.
 - **caption** (_string_) :  Image-specific caption.  Overrides the default caption generated from the `label` property in the IIIF manifest for the image.
 - **fit** (_string_) :  The `fit` attribute is used to define how an image should be resized to fit its container.  This image-specific attribute overrides the `fit` attribute defined in the carousel headline.
+
 | Value | Description |
 | -------- | ---------------------------------------- |
 | *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
 | *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
+
 - **seq** (_number_):  A number defining the image to use in a multi-image manifest.  If not specified the default value is _1_.
 
 #####

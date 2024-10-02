@@ -106,7 +106,6 @@ The `carousel` tag displays an arbitrary number of images along a horizontal or 
 	| -------- | ---------------------------------------- |
 	| *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
 	| *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
-
 - **loop** (_boolean_) :  By default, the carousel will not advanced beyond the first and last slides. You can change this behavior and force the carousel to "wrap" with the `loop` attribute.
 - **navigation** (_boolean_) :  Use the `navigation` attribute to show previous and next buttons.
 - **orientation** (_string_) :  Setting the `orientation` attribute to **vertical** will render the carousel in a vertical layout. If the content of your slides vary in height, you will need to set amn explicit height or max-height on the carousel using CSS.

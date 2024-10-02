@@ -3,6 +3,8 @@
 <style>
 	h3 { font-size: 2em !important; color: #5A162E; }
 	.section3 ul strong { color: red; }
+	.section3:nth-of-type(odd) { background:#eee; }
+	.section3:nth-of-type(even) { background:#fff; }
 </style>
 
 # Juncture Cheat Sheat

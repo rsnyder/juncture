@@ -48,12 +48,15 @@
     <textarea id="md-text"></textarea>
     
     <sl-dialog label="Warning" class="unsaved-changes-dialog" style="display:none;">
-      You have unsaved changes. Select <b>Cancel</b> to continue editing or <b>Proceed</b> to load the selected file and lose your changes.
+      <div class="message">
+        You have unsaved changes in. Select <b>Cancel</b> to continue editing or <b>Proceed</b> to load the selected file and lose your changes.
+      </div>
       <div slot="footer">
         <sl-button variant="primary" class="cancel">Cancel</sl-button>
         <sl-button variant="primary" class="proceed">Proceed</sl-button>
       </div>
     </sl-dialog>
+
     <script>
       document.querySelector('base').setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : `/`)
     </script>
@@ -65,15 +68,9 @@
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
       const referrer = document.referrer && new URL(document.referrer)
-      let mode = searchParams.get('mode') || 'edit'
-      let markdownIsUpdated = false
-      
-      let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
-
-      let easyMDE
 
       if (!sourceArg && referrer?.hostname === 'github.com') {
-        // redirect to editor with source query if referrer is a markdown file
+        // redirect to editor with source query if referrer is github
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
         console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path.join('/')}`)
         if (acct && repo) {
@@ -92,41 +89,81 @@
         }
       } 
 
+
+      let mode = searchParams.get('mode') || 'edit'
+      let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
+
+      let easyMDE
       let ghUser = localStorage.getItem('gh-username')
-      
+      let markdownIsUpdated = false
+      let repoIsWritable = false
+      let ghSource
+      const ghSelector = document.getElementById('gh-selector')
+      let debounce = null
+
       console.log(`source: ${sourceArg}, ghUser: ${ghUser}`)
 
-      let ghSource
+      String.prototype.hashCode = function() {
+        var hash = 0, i, chr
+        if (this.length === 0) return hash
+        for (i = 0; i < this.length; i++) {
+          chr = this.charCodeAt(i)
+          hash = ((hash << 5) - hash) + chr
+          hash |= 0; // Convert to 32bit integer
+        }
+        return hash
+      }
+
+      // setup unsaved changes dialog
+      let selectedFile
+      let dialog = document.querySelector('.unsaved-changes-dialog')
+      dialog.style.display = 'block'
+      dialog.querySelector('.cancel').addEventListener('click', () => {
+        dialog.hide()
+        ghSelector.setAttribute('gh-source', localStorage.getItem('smde_ghsource'))
+        setBrowserUrl()
+      })
+      dialog.querySelector('.proceed').addEventListener('click', () => {
+        dialog.hide()
+        ghSource = selectedFile
+        loadMarkdownFromGH()
+      })
+
+      initMDE()
+
+      ghSelector.addEventListener('file-selected', e => {
+        let evt = e.detail[0]
+        selectedFile = evt.path
+        console.log(`file-selected event: selectedFile=${selectedFile} ghSource=${ghSource} isUpdated=${markdownIsUpdated}`)
+        if (selectedFile) {
+          if (ghSource && selectedFile !== ghSource) {
+            if (markdownIsUpdated) {
+              ghSelector.setAttribute('gh-source', '')
+              dialog.querySelector('.message').innerHTML = `You have unsaved changes in <b>${ghSource}</b>. Select <b>Cancel</b> to continue editing or <b>Proceed</b> to load <b>${selectedFile}</b> and lose your changes.`
+              dialog.show() // confirm loss of unsaved changes
+            }  else {
+              ghSource = selectedFile
+              loadMarkdownFromGH()
+            }
+          }
+        }
+      })
+
+      ghSelector.addEventListener('repo-is-writable', e => {
+        repoIsWritable = e.detail[0]
+        setSaveButtonState()
+      })
 
       if (sourceArg) {
         let [acct, repo, branch, ...path] = sourceArg.split('/').filter(pe => pe)
-        ghSource = `${acct}/${repo}/${branch}/${path.join('/')}`
-        document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
-      } else {
-        ghSource = localStorage.getItem('smde_ghsource') || ghUser || ''
-        if (ghSource) {
-          document.getElementById('gh-selector').setAttribute('gh-source', ghSource)
-        }
+        ghSelector.setAttribute('gh-source', `${acct}/${repo}/${branch}/${path.join('/')}`)
       }
-      if (ghSource) setBrowserUrl()
-
-      let repoIsWritable = false
-      let dialog = document.querySelector('.unsaved-changes-dialog')
-      dialog.style.display = 'block'
-      const cancelButton = dialog.querySelector('.cancel')
-      cancelButton.addEventListener('click', () => cancelFileLoad())
-      const proceedButton = dialog.querySelector('.proceed')
-      proceedButton.addEventListener('click', () => {
-        loadMarkdown()
-      })
-
-      function cancelFileLoad() {
-        dialog.hide()
-        document.getElementById('gh-selector').setAttribute('gh-source', localStorage.getItem('smde_ghsource'))
-      }
+      else if (localStorage.getItem('smde_ghsource')) ghSelector.setAttribute('gh-source', localStorage.getItem('smde_ghsource'))
+      else if (ghUser) ghSelector.setAttribute('gh-source', ghUser)
 
       function setBrowserUrl() {
-        if (ghSource !== localStorage.getItem('smde_ghsource')) {
+        let sourceArg = new URLSearchParams(location.search).get('source')
+        if (ghSource && ghSource !== sourceArg) {
           let browserUrl = location.hostname === 'editor.juncture-digital.org' ? '' : `/${location.pathname.split('/')[1]}`
           if (ghSource) browserUrl = `${browserUrl}?source=${ghSource}`
           setTimeout(() => {
@@ -135,9 +172,8 @@
         }
       }
 
-      function loadMarkdown() {
-        dialog.hide()
-
+      function loadMarkdownFromGH() {
+        console.log('loadMarkdownFromGH', ghSource)
         if (ghSource) {
           let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
           getGhFile(acct, repo, branch, path.join('/')).then(resp => {
@@ -146,16 +182,18 @@
               localStorage.setItem('smde_ghsource', ghSource)
               localStorage.setItem('smde_juncture_saved_hash', resp.content.trim().hashCode())
               easyMDE.value(resp.content)
-              // styleJunctureElements()
             }
           })
-        } else {
-          localStorage.removeItem('smde_ghsource')
-          localStorage.removeItem('smde_juncture_content')
-          localStorage.removeItem('smde_juncture_saved_hash')
-          easyMDE.value('')
-          setBrowserUrl()
-        }
+        } 
+        else clearContent()
+      }
+
+      function clearContent() {
+        localStorage.removeItem('smde_ghsource')
+        localStorage.removeItem('smde_juncture_content')
+        localStorage.removeItem('smde_juncture_saved_hash')
+        easyMDE.value('')
+        setBrowserUrl()
       }
 
       async function getDefaultBranch(acct, repo) {
@@ -171,37 +209,22 @@
         return defaultBranch
       }
 
-      init()
+      function watchContent(evt) {
+        if (debounce !== null) {
+          clearTimeout(debounce)
+          debounce = null
+        }
+        debounce = window.setTimeout(() => {
+          markdownIsUpdated = contentIsUpdated()
+          setSaveButtonState()
+          // styleJunctureElements()
+        }, 100)
+      }
 
-      function init() {
+      function initMDE() {
 
         document.body.addEventListener('drop', drop)
         document.body.addEventListener('paste', paste)
-
-        let ghSelector = document.getElementById('gh-selector')
-        
-        ghSelector.addEventListener('file-selected', e => {
-          let evt = e.detail[0]
-          // console.log('file-selected:', evt)
-
-          // document.getElementById('gh-selector').setAttribute('gh-source', '')
-          if (evt.path) ghSource = evt.path
-
-          if (ghSource === localStorage.getItem('smde_ghsource')) {
-            let markdown = localStorage.getItem('smde_juncture_content')
-            if (markdown) easyMDE.value(markdown)
-          } else {
-            if (localStorage.getItem('smde_juncture_content') && markdownIsUpdated && evt.trigger !== 'delete') dialog.show() // confirm loss of unsaved changes
-            else {
-              loadMarkdown()
-            }
-          }
-        })
-
-        ghSelector.addEventListener('repo-is-writable', e => {
-          repoIsWritable = e.detail[0]
-          setSaveButtonState()
-        })
 
         easyMDE = new EasyMDE({
           element: document.getElementById('md-text'),
@@ -246,9 +269,20 @@
         easyMDE.codemirror.on('change', watchContent)
         easyMDE.codemirror.on('paste', (_, evt) => evt.preventDefault())
         easyMDE.codemirror.on('drop', (_, evt) => evt.preventDefault())
-
         setSaveButtonState()
+
+        let content = localStorage.getItem('smde_juncture_content')
+        let contentHash = content?.hashCode()
+
+        console.log(`initMDE: smde_ghsource=${localStorage.getItem('smde_ghsource')} hash=${contentHash} smde_juncture_saved_hash=${localStorage.getItem('smde_juncture_saved_hash')}`)
+
+        if (content && localStorage.getItem('smde_ghsource')) {
+          ghSource = localStorage.getItem('smde_ghsource')
+          easyMDE.value(content)
+          markdownIsUpdated = contentIsUpdated()
+        }
         if (mode === 'view') easyMDE.togglePreview()
+
       }
 
       function saveFile() {
@@ -322,34 +356,11 @@
         ), 100)
       }
 
-      String.prototype.hashCode = function() {
-        var hash = 0, i, chr
-        if (this.length === 0) return hash
-        for (i = 0; i < this.length; i++) {
-          chr = this.charCodeAt(i)
-          hash = ((hash << 5) - hash) + chr
-          hash |= 0; // Convert to 32bit integer
-        }
-        return hash
-      }
-
       function contentIsUpdated() {
         let savedHash = localStorage.getItem('smde_juncture_saved_hash')
         let currentHash = `${easyMDE.value().trim().hashCode()}`
-        return savedHash !== currentHash
-      }
-
-      let debounce = null
-      function watchContent(evt) {
-        if (debounce !== null) {
-          clearTimeout(debounce)
-          debounce = null
-        }
-        debounce = window.setTimeout(() => {
-          markdownIsUpdated = contentIsUpdated()
-          setSaveButtonState()
-          // styleJunctureElements()
-        }, 100)
+        let isUpdated = savedHash !== currentHash
+        return isUpdated
       }
     
       // Encoding UTF8 ⇢ base64

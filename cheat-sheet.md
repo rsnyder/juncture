@@ -153,66 +153,6 @@ The `iframe` tag allows arbitrary web pages to be embedded in an essay. The Junc
 
 - **src** (_string_):  The URL of the page to embed. Use a value of about:blank to embed an empty page that conforms to the [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#inherited_origins). Also note that programmatically removing an iframe's src attribute (e.g. via [Element.removeAttribute()](https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute)) causes about:blank to be loaded in the frame in Firefox (from version 65), Chromium-based browsers, and Safari/iOS.
 
-***Expert attributes***
-
-The following attributes are passed through to the native `iframe` element.  These attributes should not normally be needed.
-
-- **allow** (_string_):  Specifies a [Permissions Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Permissions_Policy) for the iframe. The policy defines what features are available to the iframe (for example, access to the microphone, camera, battery, web-share, etc.) based on the origin of the request.
-- **allowfullscreen** (_boolean_):  Set to true if the **[allow](#expert)** (_string_):  Specifies a [Permissions Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Permissions_Policy) for the iframe. The policy defines what features are available to the iframe (for example, access to the microphone, camera, battery, web-share, etc.) based on the origin of the request.
- can activate fullscreen mode by calling the requestFullscreen() method.
-- **credentialless** (_string_):  Set to true to make the iframe credentialless, meaning that its content will be loaded in a new, ephemeral context. It doesn't have access to the network, cookies, and storage data associated with its origin. It uses a new context local to the top-level document lifetime. In return, the [Cross-Origin-Embedder-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy) (COEP) embedding rules can be lifted, so documents with COEP set can embed third-party documents that do not. See [IFrame credentialless](https://developer.mozilla.org/en-US/docs/Web/Security/IFrame_credentialless) for more details.
-- **csp** (_string_):  A [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) enforced for the embedded resource. See [HTMLIFrameElement.csp](https://developer.mozilla.org/en-US/docs/Web/API/HTMLIFrameElement/csp) for details.
-- **fetchpriority** (_string_):  Provides a hint of the relative priority to use when fetching the iframe document. Allowed values:
-
-	| Value | Description |
-	| -------- | ---------------------------------------- |
-	| high | Signals a high-priority fetch relative to other iframe documents. |
-	| low  | Signals a low-priority fetch relative to other iframe documents. |
-	| auto | Default: Signals automatic determination of fetch priority relative to other iframe documents. |
-
-- **loading** (_string_):  Indicates how the browser should load the iframe:
-
-	| Value | Description |
-	| -------- | ---------------------------------------- |
-	| eager | Load the iframe immediately, regardless if it is outside the visible viewport (this is the default value) |
-	| lazy  | Defer loading of the iframe until it reaches a calculated distance from the viewport, as defined by the browser. |
-
-- **name** (_string_):  A targetable name for the embedded browsing context. This can be used in the target attribute of the `a`, `form`, or `base` elements; the formtarget attribute of the `input` or `button` elements; or the windowName parameter in the [window.open()](https://developer.mozilla.org/en-US/docs/Web/API/Window/open) method.
-- **referrerpolicy** (_string_):  Indicates which referrer to send when fetching the frame's resource:
-
-	| Value | Description |
-	| -------- | ---------------------------------------- |
-	| no-referrer                     | The [Referer](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) header will not be sent. |
-	| no-referrer-when-downgrade      | The [Referer](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referer) header will not be sent to [origins](https://developer.mozilla.org/en-US/docs/Glossary/Origin) without [TLS](https://developer.mozilla.org/en-US/docs/Glossary/TLS) ([HTTPS](https://developer.mozilla.org/en-US/docs/Glossary/HTTPS)). |
-	| origin                          | The sent referrer will be limited to the origin of the referring page: its [scheme](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/What_is_a_URL), [host](https://developer.mozilla.org/en-US/docs/Glossary/Host), and [port](https://developer.mozilla.org/en-US/docs/Glossary/Port). |
-	| origin-when-cross-origin        | The referrer sent to other origins will be limited to the scheme, the host, and the port. Navigations on the same origin will still include the path.
-	 |
-	| same-origin                     | A referrer will be sent for [same origin](https://developer.mozilla.org/en-US/docs/Glossary/Same-origin_policy), but cross-origin requests will contain no referrer information. |
-	| strict-origin                   | Only send the origin of the document as the referrer when the protocol security level stays the same (HTTPS→HTTPS), but don't send it to a less secure destination (HTTPS→HTTP). |
-	| strict-origin-when-cross-origin | (default): Send a full URL when performing a same-origin request, only send the origin when the protocol security level stays the same (HTTPS→HTTPS), and send no header to a less secure destination (HTTPS→HTTP). |
-	| unsafe-url                      | The referrer will include the origin and the path (but not the [fragment](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/hash), [password](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/password), or [username](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement/username)). This value is unsafe, because it leaks origins and paths from TLS-protected resources to insecure origins. |
-
-- **sandbox** (_string_):  Applies extra restrictions to the content in the frame. The value of the attribute can either be empty to apply all restrictions, or space-separated tokens to lift particular restrictions:
-
-	| Value | Description |
-	| -------- | ---------------------------------------- |
-	| allow-downloads-without-user-activation | Allows for downloads to occur without a gesture from the user. |
-	| allow-downloads | Allows for downloads to occur with a gesture from the user. |
-	| allow-forms | Allows the resource to submit forms. If this keyword is not used, form submission is blocked. |
-	| allow-modals | Lets the resource [open modal windows](https://html.spec.whatwg.org/multipage/browsers.html#sandboxed-modals-flag) |
-	| allow-orientation-lock | Lets the resource [lock the screen orientation](https://developer.mozilla.org/en-US/docs/Web/API/Screen/lockOrientation). |
-	| allow-pointer-lock | Lets the resource use the [Pointer Lock API.](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API) |
-	| allow-popups | Allows popups (such as window.open(), target="_blank", or showModalDialog()). If this keyword is not used, the popup will silently fail to open. |
-	| allow-popups-to-escape-sandbox | Lets the sandboxed document open new windows without those windows inheriting the sandboxing. For example, this can safely sandbox an advertisement without forcing the same restrictions upon the page the ad links to. |
-	| allow-presentation | Lets the resource start a [presentation session](https://developer.mozilla.org/en-US/docs/Web/API/PresentationRequest). |
-	| allow-same-origin | If this token is not used, the resource is treated as being from a special origin that always fails the [same-origin policy](https://developer.mozilla.org/en-US/docs/Glossary/Same-origin_policy) (potentially preventing access to [data storage/cookies](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy#cross-origin_data_storage_access) and some JavaScript APIs). |
-	| allow-scripts | Lets the resource run scripts (but not create popup windows). |
-	| allow-storage-access-by-user-activation | Lets the resource request access to the parent's storage capabilities with the [Storage Access API](https://developer.mozilla.org/en-US/docs/Web/API/Storage_Access_API). |
-	| allow-top-navigation | Lets the resource navigate the top-level browsing context (the one named _top). |
-	| allow-top-navigation-by-user-activation | Lets the resource navigate the top-level browsing context, but only if initiated by a user gesture. |
-
-- **srcdoc** (_string_):  Inline HTML to embed, overriding the src attribute. If a browser does not support the srcdoc attribute, it will fall back to the URL in the src attribute.
-
 #####
 
 **Examples**
@@ -317,23 +257,19 @@ Many of the image-specific attributes used in the ve-image viewer are based on t
 - **static** (_boolean_):  A static image is returned instead of an interactive image with deep-zoom and panning.  `static` mode provides a number of image formatting options not available in the default interactive viewer (with deep zoom and panning).  More information on options available in static mode are found [below](#static-image-attributes).
 - **seq** (_number_):  A number defining the image to use in a multi-image manifest.  If not specified the default value is _1_.
 - **fit** (_string_):  The _fit_ attribute controls the display of an image in the viewer viewport.  In the default mode (_contain_) the entire image is shown with letter boxing applied to the top and bottom or left and right when the image aspect ratio differs from the viewer.  When the value _cover_ is used the entire viewport is filled and the displayed portion of the image is cropped as needed to fit.
-
 	| Value | Description |
 	| -------- | ---------------------------------------- |
 	| *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
 	| *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
-
 - **no-caption** (_boolean_):  This attribute inhibits the display of the caption at the bottom of the viewer.
 - **no-info-icon** (_boolean_):  This attribute inhibits the display of the icon used to trigger the display of the information popup.  By default, the icon is displayed in the top-right region of the viewer when hovering over the viewing area.
 - **region** (_string_):  The region attribute defines the rectangular portion of the full image to be returned. The region can be specified by pixel coordinates, percentage, or by the value "full", which specifies that the entire image should be returned.
-
 	| Form | Description |
 	| -------- | ---------------------------------------- |
 	| full        | The complete image is returned, without any cropping. |
 	| square      | The region is defined as an area where the width and height are both equal to the length of the shorter dimension of the complete image. The region may be positioned anywhere in the longer dimension of the image content at the server’s discretion, and centered is often a reasonable default. |
 	| x,y,w,h     | The region of the full image to be returned is specified in terms of absolute pixel values. The value of x represents the number of pixels from the 0 position on the horizontal axis. The value of y represents the number of pixels from the 0 position on the vertical axis. Thus the x,y position 0,0 is the upper left-most pixel of the image. w represents the width of the region and h represents the height of the region in pixels. |
 	| pct:x,y,w,h | The region to be returned is specified as a sequence of percentages of the full image’s dimensions, as reported in the image information document. Thus, x represents the number of pixels from the 0 position on the horizontal axis, calculated as a percentage of the reported width. w represents the width of the region, also calculated as a percentage of the reported width. The same applies to y and h respectively. These may be floating point numbers. |
-
 - **rotation** (_number_):  The rotation attribute specifies mirroring and rotation. A leading exclamation mark ("!") indicates that the image should be mirrored by reflection on the vertical axis before any rotation is applied. The numerical value represents the number of degrees of clockwise rotation, and may be any floating point number from 0 to 360.
 - **zoom-on-scroll** (_boolean_):  Specifies whether the viewer will zoom the image when a scroll gesture is performed in the image viewer.  This is inhibited by default.
 
@@ -342,16 +278,13 @@ Many of the image-specific attributes used in the ve-image viewer are based on t
 The following attributes are only applicable for single images when `static` mode is enabled.
 
 - **region** (_string_):  The region attribute defines the rectangular portion of the full image to be returned. The region can be specified by pixel coordinates, percentage, or by the value "full", which specifies that the entire image should be returned.
-
 	| Form | Description |
 	| -------- | ---------------------------------------- |
 	| full        | The complete image is returned, without any cropping. |
 	| square      | The region is defined as an area where the width and height are both equal to the length of the shorter dimension of the complete image. The region may be positioned anywhere in the longer dimension of the image content at the server’s discretion, and centered is often a reasonable default. |
 	| x,y,w,h     | The region of the full image to be returned is specified in terms of absolute pixel values. The value of x represents the number of pixels from the 0 position on the horizontal axis. The value of y represents the number of pixels from the 0 position on the vertical axis. Thus the x,y position 0,0 is the upper left-most pixel of the image. w represents the width of the region and h represents the height of the region in pixels. |
 	| pct:x,y,w,h | The region to be returned is specified as a sequence of percentages of the full image’s dimensions, as reported in the image information document. Thus, x represents the number of pixels from the 0 position on the horizontal axis, calculated as a percentage of the reported width. w represents the width of the region, also calculated as a percentage of the reported width. The same applies to y and h respectively. These may be floating point numbers. |
-
 - **size** (_string_):  The size parameter determines the dimensions to which the extracted region is to be scaled.
-
 	| Form | Description |
 	| -------- | ---------------------------------------- |
 	| full  | The image or region is not scaled, and is returned at its full size. |
@@ -361,16 +294,13 @@ The following attributes are only applicable for single images when `static` mod
 	| pct:n |   The width and height of the returned image is scaled to n% of the width and height of the extracted region. The aspect ratio of the returned image is the same as that of the extracted region. |
 	| w,h   |The width and height of the returned image are exactly w and h. The aspect ratio of the returned image may be different than the extracted region, resulting in a distorted image. |
 	| !w,h  | The image content is scaled for the best fit such that the resulting width and height are less than or equal to the requested width and height. The exact scaling may be determined by the service provider, based on characteristics including image quality and system performance. The dimensions of the returned image content are calculated to maintain the aspect ratio of the extracted region. |
-
 - **quality** (_string_):  The quality attribute determines whether the image is delivered in color, grayscale or black and white.  Recognized values for this attribute are `color`, `gray`, `bitonal`, `default`.  The default value used by the Juncture IIIF image server is `color`.
-
 	| Value | Description |
 	| -------- | ---------------------------------------- |
 	| color   | The image is returned in full color. |
 	| gray    | The image is returned in grayscale, where each pixel is black, white or any shade of gray in between. |
 	| bitonal | The image returned is bitonal, where each pixel is either black or white. |
 	| default | The image is returned using the server’s default quality (e.g. color, gray or bitonal) for the image. |
-
 - **options** (_string_):  The _options_ attribute combines the `region`, `size`, `rotation`, `quality`, and `format` attributes into a single value.  
 
 **Images List**
@@ -380,12 +310,10 @@ When multiple images are to be displayed an image definition for each image foll
 - **src** (_string_) :  URL for image IIIF manifest.
 - **caption** (_string_) :  Image-specific caption.  Overrides the default caption generated from the `label` property in the IIIF manifest for the image.
 - **fit** (_string_) :  The `fit` attribute is used to define how an image should be resized to fit its container.  This image-specific attribute overrides the `fit` attribute defined in the carousel headline.
-
 	| Value | Description |
 	| -------- | ---------------------------------------- |
 	| *contain*  (_default_)  | The image keeps its aspect ratio, but is resized to fit within the available space |
 	| *cover*  | The image keeps its aspect ratio and fills the the available space. The image will be clipped to fit  |
-
 - **seq** (_number_):  A number defining the image to use in a multi-image manifest.  If not specified the default value is _1_.
 
 #####

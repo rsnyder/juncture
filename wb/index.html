@@ -69,6 +69,17 @@
       const sourceArg = searchParams.get('source')
       const referrer = document.referrer && new URL(document.referrer)
 
+      let mode = searchParams.get('mode') || 'edit'
+      let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
+
+      let easyMDE
+      let ghUser = localStorage.getItem('gh-username')
+      let markdownIsUpdated = false
+      let repoIsWritable = false
+      let ghSource
+      const ghSelector = document.getElementById('gh-selector')
+      let debounce = null
+
       if (!sourceArg && referrer?.hostname === 'github.com') {
         // redirect to editor with source query if referrer is github
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
@@ -88,18 +99,6 @@
           }
         }
       } 
-
-
-      let mode = searchParams.get('mode') || 'edit'
-      let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
-
-      let easyMDE
-      let ghUser = localStorage.getItem('gh-username')
-      let markdownIsUpdated = false
-      let repoIsWritable = false
-      let ghSource
-      const ghSelector = document.getElementById('gh-selector')
-      let debounce = null
 
       console.log(`source: ${sourceArg}, ghUser: ${ghUser}`)
 

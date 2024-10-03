@@ -11,7 +11,13 @@
 
 ## Juncture tagging
 
-Juncture extends the Markdown language with tags for adding viewer components to the generated web page.
+Juncture extends the [Markdown](https://www.markdownguide.org/) language with tags for adding viewer components to the generated web page.
+
+Markdown is a simple, user-friendly way to format text using plain symbols and characters. It was designed to be easy to read and write, even for those who aren't familiar with coding. With Markdown, you can create lists, headings, bold or italic text, links, and more by using basic symbols like asterisks (*) and hashtags (#). For example, you can make text bold by surrounding it with double asterisks (e.g., bold).
+
+One of the key advantages of Markdown is that it allows you to focus on writing content without worrying about complex formatting tools. It's commonly used for creating documents, web content, and even formatting text in emails. Because of its simplicity, Markdown is widely used on platforms like GitHub, Reddit, and in many writing and note-taking apps.
+
+Juncture extends the Markdown text formatting with the ability to easily add interactive components to a generated page.  Commonly used Juncture components include a high-resolution image viewer with zoom and panning, a map viewer, and streaming video player.  A complete list of Juncture componnents can be found below.
 
 ## Juncture components
 
@@ -30,7 +36,7 @@ Juncture extends the Markdown language with tags for adding viewer components to
 
 ### Animated Image Viewer 
 
-The `animated-image` tag creates a viewer that is able to play animated GIFs.
+The `animated-image` tag creates a viewer that displays animated GIFs and WEBPs that play and pause on interaction.  This is a Juncture wrapper for the [Animated Image](https://shoelace.style/components/animated-image) component from the [Shoelace Style](https://shoelace.style/) web components library.
 
 ####
 `.mcol`
@@ -57,7 +63,7 @@ For more information and examples visit the [animated-image documentation page](
 
 ### Audio Player
 
-The `audio` tag creates a viewer that is able to play audio content.
+The `audio` tag creates a viewer that is able to play audio content.  The Juncture audio player is a light wrapper around the standard  [HTML audio element](https://www.w3schools.com/html/html5_audio.asp).
 
 ####
 `.mcol`
@@ -88,7 +94,7 @@ For more information and examples visit the [audio documentation page](https://d
  
 ### Image Carousel
 
-The `carousel` tag displays an arbitrary number of images along a horizontal or vertical axis.  The carousel is a Juncture wrapper for the [Shoelace](https://shoelace.style/) [sl-carousel](https://shoelace.style/components/carousel) component.
+The `carousel` tag displays an arbitrary number of images along a horizontal or vertical axis.  The carousel is a Juncture wrapper for the [Shoelace Style](https://shoelace.style/) [sl-carousel](https://shoelace.style/components/carousel) component.
 
 ####
 `.mcol`
@@ -150,7 +156,7 @@ For more information and examples visit the [carousel documentation page](https:
 
 ### IFrame Viewer
 
-The `iframe` tag allows arbitrary web pages to be embedded in an essay. The Juncture iframe viewer is a light wrapper around the standard HTML iframe that is used to embed another document within the current HTML document.
+The `iframe` tag allows arbitrary web pages to be embedded in an essay. The Juncture iframe viewer is a light wrapper around the standard [HTML iframe](https://www.w3schools.com/tags/tag_iframe.ASP) that is used to embed another document within the current HTML document.
 
 ####
 `.mcol`
@@ -171,7 +177,7 @@ The `iframe` tag allows arbitrary web pages to be embedded in an essay. The Junc
 
 ####
 
-For more examples visit the [iframe documentation page](https://docs.juncture-digital.org/components/iframe-viewer).
+For more information and examples visit the [iframe documentation page](https://docs.juncture-digital.org/components/iframe-viewer).
 
 ### Image Compare Viewer
 

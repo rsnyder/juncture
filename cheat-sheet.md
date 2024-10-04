@@ -1,10 +1,10 @@
 [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
 <style>
-	h3 { font-size: 2em !important; color: #5A162E; }
-	.section3 ul strong { color: red; }
-	.section3:nth-of-type(odd) { background:#eee; }
-	.section3:nth-of-type(even) { background:#fff; }
+	#components h3 { font-size: 2em !important; color: #5A162E; }
+	#components .section3 ul strong { color: red; }
+	#components .section3:nth-of-type(odd) { background:#eee; }
+	#components .section3:nth-of-type(even) { background:#fff; }
 </style>
 
 # Juncture Cheat Sheat
@@ -19,7 +19,44 @@ One of the key advantages of Markdown is that it allows you to focus on writing 
 
 Juncture extends the Markdown text formatting with the ability to easily add interactive components to a generated page.  Commonly used Juncture components include a high-resolution image viewer with zoom and panning, a map viewer, and streaming video player.  A complete list of Juncture componnents can be found below.
 
+## Styling
+
+### Tabs
+
+####
+`.tabs`
+
+##### First Tab
+
+adfafasfaf
+
+##### Second Tab
+
+afdafafafsfsfasf
+
+### Cards
+
+####
+`.cards`
+
+##### First Card
+
+[]()
+
+`image wc:Yellowstone_National_Park_%28WY%2C_USA%29%2C_Grand_Prismatic_Spring_--_2022_--_2519.jpg cover`
+
+afdafafafsfsfasf
+
+##### Second Card
+
+[]()
+
+`image wc:Glühwendel_brennt_durch.jpg`
+
+afdafafafsfsfasf
+
 ## Juncture components
+`#components`
 
 - [Animated Image Viewer](#animated-image-viewer)
 - [Audio Player](#audio-player)

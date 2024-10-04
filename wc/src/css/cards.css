@@ -19,19 +19,25 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto 1fr 0px;
     padding: 0;
+    /* border: 1px solid #eee; */
   }
   
   .card p {
     border: none
   }
   
-  .card > img {
+  .card > img,
+  .card > ve-image {
     grid-area: 1 / 1 / 2 / 2;
     width: 100%;
     height: 300px;
     object-fit: cover;
   }
   
+  .card > ve-image {
+    margin-bottom: 0;
+  }
+
   .card > a {
     grid-area: 2 / 1 / 3 / 2;
     font-weight: 700;

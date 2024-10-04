@@ -62,8 +62,8 @@
     </script>
 
     <script type="module">
-      // import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
-      import { articleFromHtml, getGhFile, markdownToHtml, structureContent } from 'https://v3.juncture-digital.org/ghp.js'
+      // import { articleFromHtml, getGhFile, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
+      import { articleFromHtml, getGhFile, markdownToHtml } from 'https://v3.juncture-digital.org/ghp.js'
       
       const searchParams = new URL(location.href).searchParams
       const sourceArg = searchParams.get('source')
@@ -100,8 +100,6 @@
         }
       } 
 
-      console.log(`source: ${sourceArg}, ghUser: ${ghUser}`)
-
       String.prototype.hashCode = function() {
         var hash = 0, i, chr
         if (this.length === 0) return hash
@@ -133,8 +131,8 @@
       ghSelector.addEventListener('file-selected', e => {
         let evt = e.detail[0]
         selectedFile = evt.path
-        console.log(`file-selected event: selectedFile=${selectedFile} ghSource=${ghSource} isUpdated=${markdownIsUpdated}`)
         if (selectedFile) {
+          console.log(`file-selected event: selectedFile=${selectedFile} ghSource=${ghSource} isUpdated=${markdownIsUpdated}`)
           if (ghSource && selectedFile !== ghSource) {
             if (markdownIsUpdated) {
               ghSelector.setAttribute('gh-source', '')
@@ -321,7 +319,6 @@
       function mdToHtml(md) {
         let rawHTML = markdownToHtml(md)
         
-        // let el = structureContent(rawHTML);
         let el = articleFromHtml(rawHTML);
 
         (Array.from(el?.querySelectorAll('article > main > p') || []).forEach(p => {

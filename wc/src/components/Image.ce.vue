@@ -2,7 +2,14 @@
 
   <div ref="root" class="image">
 
-    <img v-if="static && staticImage" :src="staticImage" style="width:100%;"/>
+    <img v-if="static && staticImage" 
+      :src="staticImage" 
+      :style="{
+        width: width ? `${width}px` : '100%',
+        height: height ? `${height}px` : 'auto',
+        objectFit: props.cover && 'cover' || fit
+      }"
+    />
     <div v-else-if="tileSources" ref="osdEl" 
       :class="annotationsEditable ? 'osd edit' : 'osd view'" 
       id="osd" role="img" :aria-label="caption" :alt="caption">
@@ -13,7 +20,7 @@
       </div>
     </div>
 
-    <div class="status">
+    <div v-if="manifests.length && !noCaption" class="status">
       <div v-if="annotations.length === 0 && repoIsWritable" class="annotations-indicator" @click="toggleAnnotations">
         <svg v-if="annotationsVisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/></svg>
         <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152V424c0 48.6 39.4 88 88 88H360c48.6 0 88-39.4 88-88V312c0-13.3-10.7-24-24-24s-24 10.7-24 24V424c0 22.1-17.9 40-40 40H88c-22.1 0-40-17.9-40-40V152c0-22.1 17.9-40 40-40H200c13.3 0 24-10.7 24-24s-10.7-24-24-24H88z"/></svg>
@@ -26,7 +33,7 @@
         <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg>
         <sl-badge variant="primary" pill>{{annotations.length}}</sl-badge>
       </div>
-      <ve-caption v-if="manifests.length && !noCaption" 
+      <ve-caption
         :manifest="manifests[selected]" 
         :caption="caption"
         :description="src && description"
@@ -57,6 +64,7 @@
     active: { type: Boolean, default: false },
     base: { type: String },
     caption: { type: String },
+    cover: { type: Boolean, default: false },
     data: { type: String },
     fit: { type: String, default: 'contain' },
     format: { type: String },
@@ -106,7 +114,22 @@
 
   const annotator = ref<any>()
 
-  // watch(host, (host) => { if (host) init() })
+  const definedWidth = ref<number>()
+  const definedHeight = ref<number>()
+
+  const width = computed(() => definedWidth.value || host.value?.clientWidth)
+  const height = computed(() => definedHeight.value || host.value?.clientHeight)
+
+  // watch(width, () => { if (width.value && height.value) console.log(`${width.value}x${height.value}`) })
+  // watch(height, () => { if (width.value && height.value) console.log(`${width.value}x${height.value}`) })
+
+  watch(host, (host) => {
+    if (host) {
+      let computedStyle = window.getComputedStyle(host)
+      definedWidth.value  = props.width || computedStyle.width.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).width.slice(0,-2)) || 0
+      definedHeight.value  = props.height || computedStyle.height.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).height.slice(0,-2)) || 0
+    }
+  })
 
   const staticImage = computed(() => {
     let itemInfo = manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
@@ -126,11 +149,12 @@
           : height.value
             ? `,${height.value}`
             : '400,'
-    rotation = props.rotation || rotation || '0'
+    let rotationDegrees = props.rotation || parseInt(rotation) || 0
     quality = props.quality || quality || 'default'
     format = props.format || format || 'jpg'
-    // console.log(`region=${region} size=${size} rotation=${rotation} quality=${quality} format=${format}`)
-    url =`${itemInfo.service[0].id || itemInfo.service[0]['@id']}/${region}/${size}/${rotation}/${quality}.${format}`
+    // console.log(`region=${region} size=${size} rotation=${rotationDegrees} quality=${quality} format=${format}`)
+    url =`${itemInfo.service[0].id || itemInfo.service[0]['@id']}/${region}/${size}/${rotationDegrees}/${quality}.${format}`
+    // console.log(url)
     return url
   })
 
@@ -283,13 +307,13 @@
     }
   })
 
-  const width = ref<number>(0)
+  // const width = ref<number>(0)
   watch(width, (width) => {
     root.value?.setAttribute('style', `width: ${props.width}px; margin: auto;`)
     osdWidth.value = width
    })
 
-  const height = ref<number>(0)
+  // const height = ref<number>(0)
   watch(height, (height) => { 
     host.value.style.height = height ? `${height}px` : 'unset'
     setOsdHeight()
@@ -310,8 +334,8 @@
       // addInteractionHandlers()
       interactionsHandlersInitialized.value = true
     }
-    width.value = props.width || 0
-    height.value = props.height || 0
+    // width.value = props.width || 0
+    // height.value = props.height || 0
   }
 
   onMounted(() => {
@@ -360,7 +384,7 @@
       element: osdEl.value,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
       // tileSources: tileSources.value,
-      homeFillsViewer: props.fit === 'cover',
+      homeFillsViewer: props.cover || props.fit === 'cover',
       // showNavigationControl: true,
       // minZoomImageRatio: 1,
       maxZoomPixelRatio: 10,
@@ -575,7 +599,7 @@ function copyTextToClipboard(text: string) {
   .image {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 2px 4px rgb(0,0,0,0.5) !important;
+    /* box-shadow: 0 2px 4px rgb(0,0,0,0.5) !important; */
   }
 
   .osd {

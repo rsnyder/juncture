@@ -473,7 +473,6 @@ function restructure(rootEl) {
     } 
   }
 
-  console.log('styleSheet', styleSheet)
   deleteAllComments(rootEl)
 
   // Move child params to be siblings with parent element
@@ -486,7 +485,9 @@ function restructure(rootEl) {
   })
 
   let main = document.createElement('main')
-  if (styleSheet) main.appendChild(styleSheet.cloneNode(true))
+  if (styleSheet) {
+    main.appendChild(styleSheet.cloneNode(true))
+  }
   
   main.className = 'page-content markdown-body'
   main.setAttribute('aria-label', 'Content')
@@ -680,11 +681,22 @@ function configCustomClasses(rootEl) {
         wrapper.appendChild(card)
         card.classList.add('card')
         let heading = card.querySelector('h1, h2, h3, h4, h5, h6')
-        if (heading) heading.remove()
         let img = card.querySelector('p > img')
-        if (img) img.parentElement?.replaceWith(img)
+        if (img) {
+          img.parentElement?.replaceWith(img)
+        } else {
+          let veImage = card.querySelector('ve-image')
+          if (veImage) {
+            veImage.setAttribute('static', '')
+            veImage.setAttribute('no-caption', '')
+          }
+        }
         let link = card.querySelector('p > a')
-        if (link) link.parentElement?.replaceWith(link)
+        if (link) {
+          link.textContent = heading?.textContent || link.textContent
+          link.parentElement?.replaceWith(link)
+        }
+        heading.remove()
         card.querySelectorAll('p').forEach(p => {
           ++cardCtr
           let readMoreWrapper = document.createElement('div')
@@ -716,6 +728,7 @@ function configCustomClasses(rootEl) {
         let tab = document.createElement('sl-tab')
         tab.setAttribute('slot', 'nav')
         tab.setAttribute('panel', `tab${idx+1}`)
+        if (idx === 0) tab.setAttribute('active', '')
         tab.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML || ''
         tabGroup.appendChild(tab)      
       })
@@ -723,6 +736,7 @@ function configCustomClasses(rootEl) {
       .forEach((tabSection, idx) => {
         let tabPanel = document.createElement('sl-tab-panel')
         tabPanel.setAttribute('name', `tab${idx+1}`)
+        if (idx === 0) tabPanel.setAttribute('active', '')
         let tabContent = Array.from(tabSection.children).slice(1).map(el => el.outerHTML).join(' ')
         tabPanel.innerHTML = tabContent
         tabGroup.appendChild(tabPanel)

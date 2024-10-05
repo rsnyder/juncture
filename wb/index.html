@@ -27,6 +27,7 @@
       ve-header { margin-bottom: 0 !important; }
       ve-header ul { display: none; }
       /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
+      .cm-ve-tag { color: #905; }
     </style>
   </head>
   <body>
@@ -60,6 +61,9 @@
     <script>
       document.querySelector('base').setAttribute('href', location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : `/`)
     </script>
+
+    <!-- Include CodeMirror for code highlighting in the editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
 
     <script type="module">
       // import { articleFromHtml, getGhFile, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
@@ -220,6 +224,23 @@
 
       function initMDE() {
 
+        CodeMirror.defineMode('juncture', () => {
+          return {
+            token: function (stream, state) {
+              if (stream.sol()) {
+                if (stream.match(/\s*[.`][\w-]+\s+.+`?/)) return 've-tag'
+                // else if (stream.match(/\.ve\-\S+/)) return 've-tag'
+                else stream.next()
+              } else if (stream.match(/==[^=]+=={[0-9,a-f:]+}/)) {
+                return 'mark'
+              } else {
+                stream.next()
+                return null
+              }
+            }
+          }
+        })
+
         document.body.addEventListener('drop', drop)
         document.body.addEventListener('paste', paste)
 
@@ -229,6 +250,10 @@
           autosave: {
             enabled: true,
             uniqueId: 'juncture_content'
+          },
+          overlayMode: {
+            mode: CodeMirror.getMode({}, 'juncture'),
+            combine: true
           },
           spellChecker: false,
           tabSize: 4,
@@ -263,6 +288,7 @@
             ]
           ]
         })
+
         easyMDE.codemirror.on('change', watchContent)
         easyMDE.codemirror.on('paste', (_, evt) => evt.preventDefault())
         easyMDE.codemirror.on('drop', (_, evt) => evt.preventDefault())
@@ -313,7 +339,18 @@
         }, 100)
         let resp = mdToHtml(md)
         let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
-        return html
+        // return html
+
+        // Create a temporary DOM element to parse the HTML
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = html;
+
+        // Apply syntax highlighting to all code blocks
+        tempElement.querySelectorAll('pre code').forEach((block) => {
+            Prism.highlightElement(block);  // Use Prism to highlight code
+        });
+
+        return tempElement.innerHTML;
       }
 
       function mdToHtml(md) {

@@ -28,6 +28,17 @@
       ve-header ul { display: none; }
       /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
       .cm-ve-tag { color: #905; }
+      .cm-ve-boolean { color: green; }
+      .cm-ve-keyword { color: pink; }
+      .cm-ve-arg { color: red; }
+      .cm-ve-punctuation { color: black; }
+      
+      .cm-ve-test { color: teal; }
+      .cm-ve-j2 { color: blue; }
+      .cm-ve-j3-inline { color: green; }
+      .cm-ve-j3-block { color: red; }
+      .cm-ve-headline { color: blue; }
+      .cm-ve-list-item { color: orange; }
     </style>
   </head>
   <body>
@@ -64,6 +75,7 @@
 
     <!-- Include CodeMirror for code highlighting in the editor -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/mode/simple.js"></script>
 
     <script type="module">
       // import { articleFromHtml, getGhFile, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
@@ -224,21 +236,104 @@
 
       function initMDE() {
 
-        CodeMirror.defineMode('juncture', () => {
-          return {
-            token: function (stream, state) {
-              if (stream.sol()) {
-                if (stream.match(/\s*[.`][\w-]+\s+.+`?/)) return 've-tag'
-                // else if (stream.match(/\.ve\-\S+/)) return 've-tag'
-                else stream.next()
-              } else if (stream.match(/==[^=]+=={[0-9,a-f:]+}/)) {
-                return 'mark'
-              } else {
-                stream.next()
-                return null
-              }
-            }
-          }
+        CodeMirror.defineSimpleMode('juncture', {
+          // https://codemirror.net/5/demo/simplemode.html
+          start: [
+            {regex: /^\s*`{1,3}/, token: "ve-punctuation", next: 'headline'},
+          ],
+
+          quotedArg: [
+            {regex:  /["']/, token: 've-punctuation', next: 'headline'},
+            {regex:  /./, token: 've-arg'},
+          ],
+
+          arg: [
+            {regex:  /["']/, token: 've-punctuation', next: 'quotedArg'},
+            {regex:  /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex:  /[\s`]/, token: 've-arg', next: 'headline'},
+            {regex:  /./, token: 've-arg'},
+          ],
+
+          headline: [
+            {regex: /^\s*[\w-]+\s/, token: "ve-tag"},
+            {regex:  /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'},
+            {regex:  /([\w-_]+)(=)/, token: ['ve-keyword', 've-punctuation'], next: 'arg'},
+            {regex:  /["']/, token: 've-punctuation', next: 'quotedArg'},
+            {regex: /^\s*```\s*$/, token: 've-punctuation', next: 'start'},
+            {regex:  /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex:  /\S/, token: 've-arg', next: 'arg'},
+          ]
+        })
+
+        CodeMirror.defineSimpleMode('juncture-test', {
+          // https://codemirror.net/5/demo/simplemode.html
+          start: [
+            {regex: /(\.)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'},
+            {regex: /```/, token: 've-punctuation', sol: true, next: 'j3Block'},
+            {regex: /(`)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'}
+          ],
+
+          j2: [
+            {regex: /\s*-\s+.*/, token: 've-list-item', sol: true},
+            {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
+            {regex: /./, token: 've-j2'}
+          ],
+
+          j3Inline: [
+            {regex: /`\s*$/, token: 've-j3-inline', next: 'start'},
+            {regex: /./, token: 've-j3-inline'}
+          ],
+
+          j3Block: [
+            {regex: /[\w-]+/, token: 've-tag', next: 'headline'},
+          ],
+
+          headline: [
+            {regex: /\s*-\s+.*/, token: 've-list-item', sol: true},
+            {regex: /```/, token: 've-punctuation', next: 'start'},
+            {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
+            {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex: /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'},
+            {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
+            {regex: /([\w-_]+)(=)/, token: ['ve-keyword', 've-punctuation'], next: 'arg'},
+            {regex: /./, token: 've-arg', next: 'arg'}
+          ],
+
+          arg: [
+          {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
+          {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
+          {regex: /[\s`]/, token: 've-arg', next: 'headline'},
+          {regex: /./, token: 've-arg'},
+        ],
+
+        quotedArg: [
+          {regex: /["']/, token: 've-punctuation', next: 'headline'},
+          {regex: /./, token: 've-arg'},
+        ],
+
+          /*
+          quotedArg: [
+            {regex: /["']/, token: 've-punctuation', next: 'headline'},
+            {regex: /./, token: 've-arg'},
+          ],
+
+          arg: [
+            {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
+            {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex: /[\s`]/, token: 've-arg', next: 'headline'},
+            {regex: /./, token: 've-arg'},
+          ],
+
+          headline: [
+            {regex: /^\s*[\w-]+\s/, token: "ve-tag"},
+            {regex: /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'},
+            {regex: /([\w-_]+)(=)/, token: ['ve-keyword', 've-punctuation'], next: 'arg'},
+            {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
+            {regex: /^\s*```\s*$/, token: 've-punctuation', next: 'start'},
+            {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex:  /\S/, token: 've-arg', next: 'arg'},
+          ]
+          */
         })
 
         document.body.addEventListener('drop', drop)
@@ -252,7 +347,7 @@
             uniqueId: 'juncture_content'
           },
           overlayMode: {
-            mode: CodeMirror.getMode({}, 'juncture'),
+            mode: CodeMirror.getMode({}, 'juncture-test'),
             combine: true
           },
           spellChecker: false,

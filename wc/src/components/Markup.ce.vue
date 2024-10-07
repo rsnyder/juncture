@@ -604,7 +604,7 @@ sl-tab-panel:hover ~ sl-tooltip > .copy-button,
 }
 
 .language-juncture .list-item {
-  color: gray;
+  color: #7f8c8d;
 }
 
 </style>

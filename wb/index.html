@@ -236,18 +236,8 @@
             {regex: /(\.)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'},
             {regex: /```/, token: 've-punctuation', sol: true, next: 'j3Block'},
             {regex: /(`)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'},
-            {regex: /`/, token: 've-punctuation', sol: true, next: 'headline'}
-          ],
-
-          j2: [
-            {regex: /\s*-\s+.*/, token: 've-list-item', sol: true},
-            {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
-            {regex: /./, token: 've-j2'}
-          ],
-
-          j3Inline: [
-            {regex: /`\s*$/, token: 've-j3-inline', next: 'start'},
-            {regex: /./, token: 've-j3-inline'}
+            {regex: /`/, token: 've-punctuation', sol: true, next: 'headline'},
+            {regex: /(<)(param)(\s+)(\w+-[\w-]+)/, token: ['ve-punctuation', 'tag', 've-punctuation', 've-tag'], sol: true, next: 'headline'}
           ],
 
           j3Block: [
@@ -255,10 +245,12 @@
           ],
 
           headline: [
-            {regex: /\s*-\s+.*/, token: 've-list-item', sol: true},
+            // {regex: /\s*-\s+.*/, token: 've-list-item', sol: true},
+            {regex: /(\s*-\s+)/, token: 've-punctuation', sol: true},
             {regex: /```/, token: 've-punctuation', next: 'start'},
             {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
             {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex: />\s*$/, token: 've-punctuation', next: 'start'},
             {regex: /(\.)(\w+)/, token: ['ve-punctuation', 've-class'] },
             {regex: /(#)([\w+-_]+)/, token: ['ve-punctuation', 've-id'] },
             {regex: /(:)([\w-_]+)(=)/, token: ['ve-punctuation', 've-style-name', 've-punctuation'], next: 'styleArg'},
@@ -268,52 +260,29 @@
             {regex: /\S/, token: 've-arg-value', next: 'arg'}
           ],
 
-        arg: [
-          {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
-          {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-          {regex: /[\s`]/, token: 've-arg-value', next: 'headline'},
-          {regex: /./, token: 've-arg-value'},
-        ],
-
-        quotedArg: [
-          {regex: /["']/, token: 've-punctuation', next: 'headline'},
-          {regex: /./, token: 've-arg-value'},
-        ],
-
-        styleArg: [
-          {regex: /["']/, token: 've-punctuation', next: 'quotedStyleArg'},
-          {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-          {regex: /[\s`]/, token: 've-style-value', next: 'headline'},
-          {regex: /./, token: 've-style-value'},
-        ],
-
-        quotedStyleArg: [
-          {regex: /["']/, token: 've-punctuation', next: 'headline'},
-          {regex: /./, token: 've-style-value'},
-        ],
-          /*
-          quotedArg: [
-            {regex: /["']/, token: 've-punctuation', next: 'headline'},
-            {regex: /./, token: 've-arg'},
-          ],
-
           arg: [
             {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
-            {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-            {regex: /[\s`]/, token: 've-arg', next: 'headline'},
-            {regex: /./, token: 've-arg'},
+            {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
+            {regex: /[\s`]/, token: 've-arg-value', next: 'headline'},
+            {regex: /./, token: 've-arg-value'},
           ],
 
-          headline: [
-            {regex: /^\s*[\w-]+\s/, token: "ve-tag"},
-            {regex: /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'},
-            {regex: /([\w-_]+)(=)/, token: ['ve-keyword', 've-punctuation'], next: 'arg'},
-            {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
-            {regex: /^\s*```\s*$/, token: 've-punctuation', next: 'start'},
+          quotedArg: [
+            {regex: /["']/, token: 've-punctuation', next: 'headline'},
+            {regex: /./, token: 've-arg-value'},
+          ],
+
+          styleArg: [
+            {regex: /["']/, token: 've-punctuation', next: 'quotedStyleArg'},
             {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-            {regex:  /\S/, token: 've-arg', next: 'arg'},
+            {regex: /[\s`]/, token: 've-style-value', next: 'headline'},
+            {regex: /./, token: 've-style-value'},
+          ],
+
+          quotedStyleArg: [
+            {regex: /["']/, token: 've-punctuation', next: 'headline'},
+            {regex: /./, token: 've-style-value'},
           ]
-          */
         })
 
         document.body.addEventListener('drop', drop)

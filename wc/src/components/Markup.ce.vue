@@ -587,11 +587,8 @@ sl-tab-panel:hover ~ sl-tooltip > .copy-button,
   color: #905;
 }
 
+.language-juncture .attr-name,
 .language-juncture .boolean {
-  color: #DB4437;
-}
-
-.language-juncture .attr-name {
   color: #690;
 }
 
@@ -600,7 +597,7 @@ sl-tab-panel:hover ~ sl-tooltip > .copy-button,
 }
 
 .language-juncture .manifest-prefix {
-  color: #34A853;
+  color: #07a;
 }
 
 .language-juncture .list-item {

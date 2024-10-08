@@ -28,22 +28,11 @@
       ve-header ul { display: none; }
       /* span.cm-formatting-code, span.cm-formatting-code + span.cm-comment { color: red; background-color: inherit !important;} */
       
-      .cm-ve-tag { color: #905; }
-      .cm-ve-boolean { color: #DB4437; }
-      .cm-ve-keyword { color: #690; }
-      .cm-ve-arg { color: #07a; }
-      .cm-ve-punctuation { color: #7f8c8d; }
-      .cm-ve-list-item { color: #7f8c8d; }
-      
-      .cm-ve-class { color: purple; }
-      .cm-ve-id { color: red; }  
-      .cm-ve-style-name { color: coral; }
-      .cm-ve-style-value { color: lightcoral; }
+      .cm-ve-punctuation, .cm-ve-list-item { color: #7f8c8d ; }
+      .cm-ve-tag, .cm-ve-id { color: #905; }
+      .cm-ve-arg-name, .cm-ve-style-name, .cm-ve-boolean, .cm-ve-class { color: #690; }
+      .cm-ve-arg-value, .cm-ve-style-value { color: #07a; }
 
-      .cm-ve-j2 { color: blue; }
-      .cm-ve-j3-inline { color: green; }
-      .cm-ve-j3-block { color: red; }
-      .cm-ve-headline { color: blue; }
     </style>
   </head>
   <body>
@@ -271,30 +260,30 @@
             {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
             {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
             {regex: /(\.)(\w+)/, token: ['ve-punctuation', 've-class'] },
-            {regex: /(#)\w+-_/, token: ['ve-punctuation', 've-id'] },
+            {regex: /(#)([\w+-_]+)/, token: ['ve-punctuation', 've-id'] },
             {regex: /(:)([\w-_]+)(=)/, token: ['ve-punctuation', 've-style-name', 've-punctuation'], next: 'styleArg'},
             {regex: /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'}, 
             {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
-            {regex: /([\w-_]+)(=)/, token: ['ve-keyword', 've-punctuation'], next: 'arg'},
-            {regex: /\S/, token: 've-arg', next: 'arg'}
+            {regex: /([\w-_]+)(=)/, token: ['ve-arg-name', 've-punctuation'], next: 'arg'},
+            {regex: /\S/, token: 've-arg-value', next: 'arg'}
           ],
 
         arg: [
           {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
           {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-          {regex: /[\s`]/, token: 've-arg', next: 'headline'},
-          {regex: /./, token: 've-arg'},
+          {regex: /[\s`]/, token: 've-arg-value', next: 'headline'},
+          {regex: /./, token: 've-arg-value'},
         ],
 
         quotedArg: [
           {regex: /["']/, token: 've-punctuation', next: 'headline'},
-          {regex: /./, token: 've-arg'},
+          {regex: /./, token: 've-arg-value'},
         ],
 
         styleArg: [
           {regex: /["']/, token: 've-punctuation', next: 'quotedStyleArg'},
           {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-          {regex: /[\s`]/, token: 've-arg', next: 'headline'},
+          {regex: /[\s`]/, token: 've-style-value', next: 'headline'},
           {regex: /./, token: 've-style-value'},
         ],
 

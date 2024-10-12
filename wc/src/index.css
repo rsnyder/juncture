@@ -26,6 +26,10 @@ article {
   background-color: #fff;
 }
 
+h1:empty, h2:empty, h3:empty, h4:empty, h5:empty, h6:empty {
+  display: none;
+}
+
 article > * + * {
   /* margin-top: 1em; */
 }
@@ -36,8 +40,10 @@ article .markdown-body h2 {
   padding-bottom: 0;
 }
 
+article.markdown-body p,
 article .markdown-body li > p {
   margin: 0;
+  padding: .25em .5em;
 }
 
 article .markdown-body {

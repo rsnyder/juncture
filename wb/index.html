@@ -237,7 +237,17 @@
             {regex: /```/, token: 've-punctuation', sol: true, next: 'j3Block'},
             {regex: /(`)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'},
             {regex: /`/, token: 've-punctuation', sol: true, next: 'headline'},
-            {regex: /(<)(param)(\s+)(\w+-[\w-]+)/, token: ['ve-punctuation', 'tag', 've-punctuation', 've-tag'], sol: true, next: 'headline'}
+            {regex: /(<)(param)(\s+)(\w+-[\w-]+)/, token: ['ve-punctuation', 'tag', 've-punctuation', 've-tag'], sol: true, next: 'headline'},
+            
+            {regex: /(`)(\.[\w-_]+)/, token: ['ve-punctuation', 've-class'], next: 'headline'},
+            {regex: /(`)(#[\w-_]+)/, token: ['ve-punctuation', 've-id'], next: 'headline'},
+            {regex: /(`)(:[\w-_]+)/, token: ['ve-punctuation', 've-style-name'], next: 'headline'}
+
+          ],
+
+          inlineCode: [
+            {regex: /`/, token: 've-punctuation', next: 'start'},
+            {regex: /./, token: 've-tag'}
           ],
 
           j3Block: [
@@ -249,12 +259,12 @@
             {regex: /(\s*-\s+)/, token: 've-punctuation', sol: true},
             {regex: /```/, token: 've-punctuation', next: 'start'},
             {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
-            {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
-            {regex: />\s*$/, token: 've-punctuation', next: 'start'},
+            {regex: /`/, token: 've-punctuation', next: 'start'},
+            {regex: />\s*/, token: 've-punctuation', next: 'start'},
             {regex: /(\.)(\w+)/, token: ['ve-punctuation', 've-class'] },
             {regex: /(#)([\w+-_]+)/, token: ['ve-punctuation', 've-id'] },
             {regex: /(:)([\w-_]+)(=)/, token: ['ve-punctuation', 've-style-name', 've-punctuation'], next: 'styleArg'},
-            {regex: /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'}, 
+            {regex: /(autoplay|allow-full-screen|allow-transparency|breadcrumbs|cards|collapsible|cover|full|gallery|grid|hierarchical|left|loop|marker|muted|navigation|no-caption|no-manifest-popover|pagination|parent|pdf-download-enabled|popup-on-hover|prefer-geojson|repo-is-writable|right|scroll-hint|show-captions|static|sticky|sync|zoom-on-click|zoom-on-scroll)/, token: 've-boolean'}, 
             {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
             {regex: /([\w-_]+)(=)/, token: ['ve-arg-name', 've-punctuation'], next: 'arg'},
             {regex: /\S/, token: 've-arg-value', next: 'arg'}
@@ -262,19 +272,23 @@
 
           arg: [
             {regex: /["']/, token: 've-punctuation', next: 'quotedArg'},
-            {regex: /\s*/, token: 've-punctuation', sol: true, next: 'start'},
+            {regex: /`/, token: 've-punctuation', next: 'start'},
+            {regex: /\s*/, token: 've-punctuation', sol: true, next: 'headline'},
             {regex: /[\s`]/, token: 've-arg-value', next: 'headline'},
+            {regex: /https?:\/\/\S+/, token: 'link', next: 'headline'},
+            {regex: /\w+:\S+/, token: 'link', next: 'headline'},
             {regex: /./, token: 've-arg-value'},
           ],
 
           quotedArg: [
             {regex: /["']/, token: 've-punctuation', next: 'headline'},
+            {regex: /https?:\/\/\S+/, token: 'link', next: 'headline'},
             {regex: /./, token: 've-arg-value'},
           ],
 
           styleArg: [
             {regex: /["']/, token: 've-punctuation', next: 'quotedStyleArg'},
-            {regex: /`\s*$/, token: 've-punctuation', next: 'start'},
+            {regex: /`\s*/, token: 've-punctuation', next: 'start'},
             {regex: /[\s`]/, token: 've-style-value', next: 'headline'},
             {regex: /./, token: 've-style-value'},
           ],

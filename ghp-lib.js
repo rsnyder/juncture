@@ -39,6 +39,7 @@ function addScript(attrs) {
 }
 
 const classes = new Set('left right full sticky'.split(' '))
+const globalBooleans = new Set('parent'.split(' '))
 const components = {
   've-animated-image': {
     booleans: 'autoplay',
@@ -208,7 +209,7 @@ function parseHeadline(s) {
       else if (parsed.tag === 'link' && !parsed.href) parsed.href= token
       else {
         let tagObj = tagMap[parsed.tag]
-        if (tagObj?.booleans.has(token)) {
+        if (tagObj?.booleans.has(token) || globalBooleans.has(token)) {
           if (!parsed.booleans) parsed.booleans = []
           parsed.booleans.push(token)
         } else {
@@ -358,6 +359,13 @@ function veAttr(el) {
   return Array.from(el.attributes).find(attr => attr.name.indexOf('ve-') === 0)?.name
 }
 
+function priorSibling(el) {
+  let sibs = Array.from(el.parentElement?.childNodes || [])?.filter(c => c.tagName?.[0] === 'H' || c.textContent.trim())
+  let prior = sibs[sibs.indexOf(el) - 1]
+  // console.log('priorSibling', el, el.parentElement, sibs, prior)
+  return ['EM', 'STRONG', 'A', 'MARK'].includes(prior?.tagName) || prior?.tagName?.[0] === 'H' ? prior : null
+}
+
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
   // console.log('convertTags')
@@ -413,53 +421,85 @@ function convertTags(rootEl) {
   }
 
   rootEl.querySelectorAll('code').forEach(codeEl => {
+
+    if (codeEl.parentElement.tagName === 'P' && codeEl.parentElement?.childNodes.length === 1 && codeEl.parentElement.childNodes[0] === codeEl) {
+      codeEl.parentElement.replaceWith(codeEl)
+    }
+
+    let parent = codeEl.parentElement
+
     let parsed = parseCodeEl(codeEl)
-    parsed.inline = codeEl.parentElement.childNodes.item(0).nodeValue !== null || codeEl.parentElement.tagName === 'LI'
+    parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
+
+    let priorEl = priorSibling(codeEl)
+
     if (parsed.tag && !parsed.inline) {
-      if (codeEl.parentElement.tagName === 'PRE') {
-        codeEl = codeEl.parentElement
-        codeEl.parentElement.removeAttribute('id')
-        codeEl.parentElement.removeAttribute('data-id')
-        codeEl.parentElement.removeAttribute('class')
+      if (parent.tagName === 'PRE') {
+        codeEl = parent
+        codeEl.removeAttribute('id')
+        codeEl.removeAttribute('data-id')
+        codeEl.removeAttribute('class')
         if (codeEl.parentElement.parentElement) codeEl.parentElement.parentElement.className = 'segment'
         if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
           codeEl.parentElement.replaceWith(codeEl)
         }
-      } else if (codeEl.parentElement.tagName === 'P' && codeEl.parentElement.children.length === 1) {
-        codeEl.parentElement.replaceWith(codeEl)
+      } else if (parent.tagName === 'P' && parent.children.length === 1) {
+        parent.replaceWith(codeEl)
       }
       codeEl.replaceWith(makeEl(parsed))
     } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
-      let codeWrapper = codeEl.parentElement
-      let priorEl = codeWrapper.previousElementSibling
       let target
-      if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG') {
-        target = document.createElement('span')
+      // if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG' || priorEl?.tagName === 'MARK') {
+      if (priorEl?.tagName === 'MARK') {
+        target = document.createElement('SPAN')
         target.innerHTML = priorEl.innerHTML
         priorEl.replaceWith(target)
-      } else if (codeWrapper?.tagName === 'TD') {
-        target = codeWrapper?.parentElement?.parentElement?.parentElement // table
-        codeWrapper?.parentElement?.remove() // row
-      } else if (codeWrapper?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
+      } else if (parent?.tagName === 'TD') {
+        let nonEmptyCellsInRow = Array.from(parent.parentElement.children)
+          .filter(c => 
+            Array.from(c.childNodes)
+              .filter(ch => ch.tagName !== 'CODE')
+              .map(ch => ch.textContent.trim())
+              .join('')
+          )
+          .map(c => c.textContent.trim())
+        // console.log('nonEmptyCellsInRow', nonEmptyCellsInRow)
+        if (nonEmptyCellsInRow.length === 0) {
+          target = parent.parentElement.parentElement.parentElement // table
+          parent.parentElement?.remove() // remove empty row with code element
+        } else {
+          target = parent
+        }
+      } else if (codeEl?.tagName !== 'UL' && (priorEl?.tagName === 'A' || priorEl?.tagName === 'IMG')) {
         target = priorEl
       } else {
+        target = priorEl || codeEl.parentElement
+        /*
         target = priorEl?.children.length === 1 && priorEl.children[0]?.tagName === 'VE-HEADER'
           ? codeWrapper.parentElement
           : priorEl
+        */
       }
+      // console.log('target', target)
       if (target) {
         if (parsed.id) target.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
-        if (parsed.style) target.setAttribute('style', Object.entries(parsed.style).map(([k,v]) => `${k}:${v}`).join(';'))
+        if (parsed.style) applyStyle(parsed.booleans?.includes('parent') ? target.parentElement : target, parsed.style)
         if (parsed.entities) target.setAttribute('data-entities', parsed.entities.join(' '))
         if (parsed.kwargs) for (const [k,v] of Object.entries(parsed.kwargs)) target.setAttribute(k, v === true ? '' : v)
       } else {
         console.log('no target for', parsed)
       }
-      codeWrapper.remove()
+      codeEl.remove()
     }
   })
   return rootEl
+}
+
+function applyStyle(el, styleObj) {
+  let styles = (el.getAttribute('style') || '').split(';').filter(s => s)
+  styles = [...styles, ...Object.entries(styleObj).map(([k,v]) => `${k}:${v}`)]
+  el.setAttribute('style', styles.join(';'))
 }
 
 // Restructure the content to have hierarchical sections and segments
@@ -559,10 +599,12 @@ function restructure(rootEl) {
           .filter(child => !/STYLE/.test(child.tagName))
           .filter(child => !/^VE--/.test(child.tagName))
           .forEach((child, idx) => { 
-            let segId = `${currentSection.getAttribute('data-id') || 0}.${idx+1}`
-            child.setAttribute('data-id', segId)
-            child.id = segId
-            child.classList.add('segment')
+            if (['DIV', 'P', 'UL', 'OL'].includes(child.tagName)) {
+              let segId = `${currentSection.getAttribute('data-id') || 0}.${idx+1}`
+              child.setAttribute('data-id', '1-' + segId)
+              child.id = child.id || segId
+              child.classList.add('segment')
+            }
           })
       }
 
@@ -584,15 +626,14 @@ function restructure(rootEl) {
         ? main 
         : headings.pop()?.parentElement
       parent?.appendChild(currentSection)
-      currentSection.setAttribute('data-id', computeDataId(currentSection))
+      currentSection.setAttribute('data-id', '2-' + computeDataId(currentSection))
 
     } else  {
       // if (el.tagName !== 'PARAM') {
-      if (el.tagName === 'DIV' || el.tagName === 'P' || el.tagName === 'UL' || el.tagName === 'OL') {
-
+      if (['DIV', 'P', 'UL', 'OL'].includes(el.tagName)) {
         let segId = `${currentSection.getAttribute('data-id') || 0}.${currentSection.children.length}`
-        el.setAttribute('data-id', segId)
-        el.id = segId
+        el.setAttribute('data-id', '3-' + segId)
+        el.id = el.id || segId
         el.classList.add('segment')
       }
       if (el !== sectionParam) {
@@ -723,6 +764,7 @@ function configCustomClasses(rootEl) {
       let tabGroup = document.createElement('sl-tab-group');
       Array.from(section.classList).forEach(cls => tabGroup.classList.add(cls))
       Array.from(section.attributes).forEach(attr => tabGroup.setAttribute(attr.name, attr.value))
+      
       Array.from(section.querySelectorAll(':scope > section'))
       .forEach((tabSection, idx) => {
         let tab = document.createElement('sl-tab')
@@ -732,6 +774,7 @@ function configCustomClasses(rootEl) {
         tab.innerHTML = tabSection.querySelector('h1, h2, h3, h4, h5, h6')?.innerHTML || ''
         tabGroup.appendChild(tab)      
       })
+
       Array.from(section.querySelectorAll(':scope > section'))
       .forEach((tabSection, idx) => {
         let tabPanel = document.createElement('sl-tab-panel')
@@ -741,6 +784,7 @@ function configCustomClasses(rootEl) {
         tabPanel.innerHTML = tabContent
         tabGroup.appendChild(tabPanel)
       })
+
       section.replaceWith(tabGroup)
     }
 
@@ -1244,6 +1288,7 @@ function structureContent(html) {
 }
 
 function articleFromHtml(html) {
+  html = html.replace(/==(.+)==/g, '<mark>$1</mark>')
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
   convertTags(contentEl)

@@ -1188,8 +1188,10 @@ function isJunctureV1(contentEl) {
 }
 
 function getContent() {
-  console.log(document.body, Array.from(document.body.children))
-  return window.config.content || document.body.children[0].innerHTML
+  let contentEls = Array.from(document.body.children).filter(c => ['MAIN', 'ARTICLE', 'SECTION', 'DIV'].includes(c.tagName))
+  console.log(contentEls)
+  let contentRoot = contentEls.length === 1 ? contentEls[0] : document.body
+  return window.config.content || contentRoot.innerHTML
 }
 
 // set the configuration

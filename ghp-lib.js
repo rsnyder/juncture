@@ -1189,7 +1189,6 @@ function isJunctureV1(contentEl) {
 
 function getContent() {
   let contentEls = Array.from(document.body.children).filter(c => ['MAIN', 'ARTICLE', 'SECTION', 'DIV'].includes(c.tagName))
-  console.log(contentEls)
   let contentRoot = contentEls.length === 1 && contentEls[0]
   if (!contentRoot) {
     contentRoot = document.createElement('main')
@@ -1308,7 +1307,6 @@ function articleFromHtml(html) {
 // mount the content
 function mount(mountPoint, html) {
   html = html || getContent()
-  console.log(html)
   console.log(elFromHtml(html))
   
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 

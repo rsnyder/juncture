@@ -1193,7 +1193,7 @@ function getContent() {
   let contentRoot = contentEls.length === 1 && contentEls[0]
   if (contentRoot) {
     contentRoot = document.createElement('main')
-    main.innerHTML = document.body.innerHTML
+    contentRoot.innerHTML = document.body.innerHTML
     content.body.innerHTML = contentRoot.outerHTML
   }
   return window.config.content || contentRoot.innerHTML

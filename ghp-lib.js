@@ -1197,6 +1197,7 @@ function getContent() {
     content.body.innerHTML = contentRoot.outerHTML
   }
   return window.config.content || main.innerHTML
+}
 
 // set the configuration
 function setConfig() {

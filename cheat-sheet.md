@@ -13,8 +13,6 @@
 
 Juncture extends the [Markdown](https://www.markdownguide.org/) language with tags for adding viewer components to the generated web page.
 
-.ve-image src=https://iiif.harvardartmuseums.org/manifests/object/299843
-
 Markdown is a simple, user-friendly way to format text using plain symbols and characters. It was designed to be easy to read and write, even for those who aren't familiar with coding. With Markdown, you can create lists, headings, bold or italic text, links, and more by using basic symbols like asterisks (*) and hashtags (#). For example, you can make text bold by surrounding it with double asterisks (e.g., bold).
 
 One of the key advantages of Markdown is that it allows you to focus on writing content without worrying about complex formatting tools. It's commonly used for creating documents, web content, and even formatting text in emails. Because of its simplicity, Markdown is widely used on platforms like GitHub, Reddit, and in many writing and note-taking apps.

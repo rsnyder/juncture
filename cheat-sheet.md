@@ -11,9 +11,7 @@
 
 ## Juncture tagging
 
-.ve-image afadfafdasd
-
-Juncture extends the [Markdown](https://www.markdownguide.org/) language with tags for adding viewer components to the generated web page. example 
+Juncture extends the [Markdown](https://www.markdownguide.org/) language with tags for adding viewer components to the generated web page.
 
 Markdown is a simple, user-friendly way to format text using plain symbols and characters. It was designed to be easy to read and write, even for those who aren't familiar with coding. With Markdown, you can create lists, headings, bold or italic text, links, and more by using basic symbols like asterisks (*) and hashtags (#). For example, you can make text bold by surrounding it with double asterisks (e.g., bold).
 
@@ -39,7 +37,7 @@ afdafafafsfsfasf
 ### Cards
 
 ####
-`.cards`
+`.cards :width=100% :border="1px solid #000" #an-id`
 
 ##### First Card
 

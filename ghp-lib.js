@@ -1194,7 +1194,7 @@ function getContent() {
   if (!contentRoot) {
     contentRoot = document.createElement('main')
     contentRoot.innerHTML = document.body.innerHTML
-    content.body.innerHTML = contentRoot.outerHTML
+    document.body.innerHTML = contentRoot.outerHTML
   }
   return window.config.content || contentRoot.innerHTML
 }

@@ -1191,7 +1191,7 @@ function getContent() {
   let contentEls = Array.from(document.body.children).filter(c => ['MAIN', 'ARTICLE', 'SECTION', 'DIV'].includes(c.tagName))
   console.log(contentEls)
   let contentRoot = contentEls.length === 1 && contentEls[0]
-  if (contentRoot) {
+  if (!contentRoot) {
     contentRoot = document.createElement('main')
     contentRoot.innerHTML = document.body.innerHTML
     content.body.innerHTML = contentRoot.outerHTML

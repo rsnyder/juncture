@@ -1188,6 +1188,7 @@ function isJunctureV1(contentEl) {
 }
 
 function getContent() {
+  console.log(document.body, Array.from(document.body.children))
   return window.config.content || document.body.children[0].innerHTML
 }
 

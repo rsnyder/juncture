@@ -126,7 +126,7 @@
 
   watch(host, (host) => {
     if (host) {
-      console.log('add component getter functions')
+      // add component getter functions
       host.getManifest = () => manifests.value[selected.value]
       host.getLabel = () => manifests.value[selected.value]?.label?.en?.[0]
 
@@ -228,14 +228,8 @@
 
   const selected = ref<number>(0)
   
-  watch(manifests, () => {
-    console.log('set manifest attribute - manifests.watch')
-    host.value?.setAttribute('manifest', JSON.stringify(manifests.value[selected.value]))
-  })
-  watch(selected, () => {
-    console.log('set manifest attribute - selected.watch')
-    host.value?.setAttribute('manifest', JSON.stringify(manifests.value[selected.value]))
-  })
+  watch(manifests, () => { host.value?.setAttribute('manifest', JSON.stringify(manifests.value[selected.value])) })
+  watch(selected, () => { host.value?.setAttribute('manifest', JSON.stringify(manifests.value[selected.value])) })
 
   const selectedItemInfo = computed(() => 
     manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body

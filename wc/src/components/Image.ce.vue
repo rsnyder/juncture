@@ -57,9 +57,10 @@
   const root = ref<HTMLElement>()
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
 
-  const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
-  watch(shadowRoot, (shadowRoot) => { shadowRoot.children[1].classList.remove('sticky') })
-  
+  const shadowRoot = computed(() => (root.value?.getRootNode() as ShadowRoot | null))
+  // const shadowRoot = computed(() => root?.value?.parentNode as HTMLElement)
+  watch(shadowRoot, (shadowRoot) => { shadowRoot?.children[1].classList.remove('sticky') })
+
   const props = defineProps({
     active: { type: Boolean, default: false },
     base: { type: String },
@@ -125,6 +126,9 @@
 
   watch(host, (host) => {
     if (host) {
+      host.getManifest = () => manifests.value[selected.value]
+      host.getLabel = () => manifests.value[selected.value]?.label?.en?.[0]
+
       let computedStyle = window.getComputedStyle(host)
       definedWidth.value  = props.width || computedStyle.width.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).width.slice(0,-2)) || 0
       definedHeight.value  = props.height || computedStyle.height.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).height.slice(0,-2)) || 0
@@ -223,6 +227,9 @@
 
   const selected = ref<number>(0)
   
+  watch(manifests, () => { host.value?.setAttribute('manifest', JSON.stringify(manifests.value[selected.value])) })
+  watch(selected, () => { host.value?.setAttribute('manifest', JSON.stringify(manifests.value[selected.value])) })
+
   const selectedItemInfo = computed(() => 
     manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
   )

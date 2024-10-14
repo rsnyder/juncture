@@ -612,6 +612,11 @@ function restructure(rootEl) {
       currentSection.classList.add(`section${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
       heading.className = ''
+      let headingStyle = heading.getAttribute('style')
+      if (headingStyle) {
+        currentSection.setAttribute('style', headingStyle)
+        heading.removeAttribute('style')
+      }
       currentSection.id = heading.id || makeId(heading.textContent)
       if (heading.id) heading.removeAttribute('id')
 

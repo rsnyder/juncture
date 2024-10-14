@@ -798,11 +798,11 @@ function configCustomClasses(rootEl) {
       wrapper.className = 'columns wrapper'
       section.classList.remove('columns')
       section.classList.remove('mcol')
-      Array.from(section.children)
-        .filter(child => child.tagName === 'SECTION')
+      Array.from(section.childNodes)
+        .filter(c => c.tagName[0] !== 'H')
         .forEach((col, idz) => {
-        wrapper.appendChild(col)
-        col.classList.add(`col-${idz+1}`)
+          wrapper.appendChild(col)
+          col.classList.add(`col-${idz+1}`)
       })
       section.appendChild(wrapper)
     }

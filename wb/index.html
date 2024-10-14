@@ -396,7 +396,7 @@
           setSaveButtonState()
         }, 100)
         let resp = mdToHtml(md)
-        let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
+        let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource?.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
         // return html
 
         // Create a temporary DOM element to parse the HTML

@@ -143,7 +143,7 @@
         selectedFile = evt.path
         if (selectedFile) {
           console.log(`file-selected event: selectedFile=${selectedFile} ghSource=${ghSource} isUpdated=${markdownIsUpdated}`)
-          if (ghSource && selectedFile !== ghSource) {
+          if (selectedFile !== ghSource) {
             if (markdownIsUpdated) {
               ghSelector.setAttribute('gh-source', '')
               dialog.querySelector('.message').innerHTML = `You have unsaved changes in <b>${ghSource}</b>. Select <b>Cancel</b> to continue editing or <b>Proceed</b> to load <b>${selectedFile}</b> and lose your changes.`
@@ -235,7 +235,7 @@
           start: [
             {regex: /(\.)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'},
             {regex: /```/, token: 've-punctuation', sol: true, next: 'j3Block'},
-            {regex: /(`)([\w-]+)/, token: ['ve-punctuation', 've-tag'], sol: true, next: 'headline'},
+            {regex: /(`)([\w-]+)(\s+)/, token: ['ve-punctuation', 've-tag', 've-punctuation'], sol: true, next: 'headline'},
             {regex: /`/, token: 've-punctuation', sol: true, next: 'headline'},
             {regex: /(<)(param)(\s+)(\w+-[\w-]+)/, token: ['ve-punctuation', 'tag', 've-punctuation', 've-tag'], sol: true, next: 'headline'},
             
@@ -276,7 +276,7 @@
             {regex: /\s*/, token: 've-punctuation', sol: true, next: 'headline'},
             {regex: /[\s`]/, token: 've-arg-value', next: 'headline'},
             {regex: /https?:\/\/\S+/, token: 'link', next: 'headline'},
-            {regex: /\w+:\S+/, token: 'link', next: 'headline'},
+            //{regex: /^\w+:\S+/, token: 'link', next: 'headline'},
             {regex: /./, token: 've-arg-value'},
           ],
 

@@ -1,6 +1,7 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import 'https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js'
 import * as yaml from 'https://cdn.jsdelivr.net/npm/yaml@2.3.4/browser/index.min.js'
+import 'https://cdn.jsdelivr.net/npm/js-md5@0.8.3/src/md5.min.js'
 
 let scriptUrl = new URL(import.meta.url)
 
@@ -176,10 +177,19 @@ function parseHeadline(s) {
       let key = token.slice(0, idx)
       let value = token.slice(idx+1)
       value = value[0] === '"' && value[value.length-1] === '"' ? value.slice(1, -1) : value
-      if (key[0] === ':') { // style
+      if (key[0] === ':') { // single style
         key = camelToKebab(key.slice(1))
         if (!parsed.style) parsed.style = {}
         parsed.style[key] = value
+      } else if (key === 'style') { // multiple styles
+        if (!parsed.style) parsed.style = {}
+        value.split(';').forEach(style => {
+          if (!style) return
+          let separatorIdx = style.indexOf(':')
+          let k = camelToKebab(style.slice(0,separatorIdx).trim())
+          let v = style.slice(separatorIdx+1).trim()
+          parsed.style[k] = v
+        })
       } else { // kwargs
         if (!parsed.kwargs) parsed.kwargs = {}
         if (parsed.kwargs[key]) parsed.kwargs[key] += ` ${value}`
@@ -430,6 +440,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
+    // console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -496,9 +507,42 @@ function convertTags(rootEl) {
   return rootEl
 }
 
+export function mwImageUrl(mwImg, width) {
+  // Converts Wikimedia commons image URL to a thumbnail link
+  mwImg = (Array.isArray(mwImg) ? mwImg[0] : mwImg).replace(/Special:FilePath\//, 'File:').split('File:').pop()
+  mwImg = decodeURIComponent(mwImg).replace(/ /g,'_')
+  const _md5 = md5(mwImg)
+  const extension = mwImg.split('.').pop()
+  let url = `https://upload.wikimedia.org/wikipedia/commons${width ? '/thumb' : ''}`
+  url += `/${_md5.slice(0,1)}/${_md5.slice(0,2)}/${mwImg}`
+  if (width > 0) {
+    url += `/${width}px-${mwImg}`
+    if (extension === 'svg') url += '.png'
+    else if (extension === 'tif' || extension === 'tiff') url += '.jpg'
+  }
+  return url
+}
+
+function expandShorthandUrl(url) {
+  if (url.indexOf('wc:') === 0) {
+    return mwImageUrl(url.slice(3))
+  } else if (url.indexOf('gh:') === 0) {
+    let [acct, repo, path] = url.slice(3).split('/')
+    let branch = 'main' // TODO: get default branch from GitHub API
+    return `https://raw.githubusercontent.com/${acct}/${repo}/${branch}/${path}`
+  }
+}
+
 function applyStyle(el, styleObj) {
-  let styles = (el.getAttribute('style') || '').split(';').filter(s => s)
-  styles = [...styles, ...Object.entries(styleObj).map(([k,v]) => `${k}:${v}`)]
+  let styles = [
+    ...(el.getAttribute('style') || '').split(';').filter(s => s), 
+    ...Object.entries(styleObj).map(([k,v]) => {
+      if (k == 'background-image') {
+        v = `url('${expandShorthandUrl(v)}')`
+      }
+      return `${k}:${v}`
+    })
+  ]
   el.setAttribute('style', styles.join(';'))
 }
 
@@ -612,6 +656,11 @@ function restructure(rootEl) {
       currentSection.classList.add(`section${sectionLevel}`)
       Array.from(heading.classList).forEach(c => currentSection.classList.add(c))
       heading.className = ''
+      let headingStyle = heading.getAttribute('style')
+      if (headingStyle) {
+        currentSection.setAttribute('style', headingStyle)
+        heading.removeAttribute('style')
+      }
       currentSection.id = heading.id || makeId(heading.textContent)
       if (heading.id) heading.removeAttribute('id')
 
@@ -793,11 +842,11 @@ function configCustomClasses(rootEl) {
       wrapper.className = 'columns wrapper'
       section.classList.remove('columns')
       section.classList.remove('mcol')
-      Array.from(section.children)
-        .filter(child => child.tagName === 'SECTION')
+      Array.from(section.childNodes)
+        .filter(c => c.tagName[0] !== 'H')
         .forEach((col, idz) => {
-        wrapper.appendChild(col)
-        col.classList.add(`col-${idz+1}`)
+          wrapper.appendChild(col)
+          col.classList.add(`col-${idz+1}`)
       })
       section.appendChild(wrapper)
     }

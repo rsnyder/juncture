@@ -342,8 +342,8 @@
       // addInteractionHandlers()
       interactionsHandlersInitialized.value = true
     }
-    // width.value = props.width || 0
-    // height.value = props.height || 0
+    definedWidth.value = props.width || 0
+    definedHeight.value = props.height || 0
   }
 
   onMounted(() => {

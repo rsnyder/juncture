@@ -1,4 +1,5 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+
+`image [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
 <style>
 	#components h3 { font-size: 2em !important; color: #5A162E; }
@@ -22,38 +23,51 @@ Juncture extends the Markdown text formatting with the ability to easily add int
 ## Styling
 
 ### Tabs
+`.mcol`
+
+####
+
+A tabbed section can be added using the **tabs** class.
 
 ####
 `.tabs`
 
-##### First Tab
+##### Tab 1
 
-adfafasfaf
+The content for Tab 1
 
-##### Second Tab
+##### Tab 2
 
-afdafafafsfsfasf
+`image wc:Mud_Cow_Racing_-_Pacu_Jawi_-_West_Sumatra,_Indonesia.jpg`
 
 ### Cards
+`.mcol`
+
+####
+
+A section with cards (tiles) can be added using the **cards** class.
 
 ####
 `.cards :width=100% :border="1px solid #000" #an-id`
 
-##### First Card
+##### Card 1
 
 []()
 
 `image wc:Yellowstone_National_Park_%28WY%2C_USA%29%2C_Grand_Prismatic_Spring_--_2022_--_2519.jpg cover`
 
-afdafafafsfsfasf
+- list item 1
+- list item 2
 
-##### Second Card
+Text for card 1
+
+##### Card 2
 
 []()
 
 `image wc:Glühwendel_brennt_durch.jpg`
 
-afdafafafsfsfasf
+Text for card 1
 
 ## Juncture components
 `#components`
@@ -382,7 +396,7 @@ When multiple images are to be displayed an image definition for each image foll
 </ve-snippet>
 
 <ve-snippet collapsible label="Single image using Wikimedia Commons hosted IIIF image">
- `image https://iiif.mdpress.io/https://upload.wikimedia.org/wikipedia/commons/3/37/Mud_Cow_Racing_-_Pacu_Jawi_-_West_Sumatra,_Indonesia.jpg/manifest.json`
+ `image https://upload.wikimedia.org/wikipedia/commons/3/37/Mud_Cow_Racing_-_Pacu_Jawi_-_West_Sumatra,_Indonesia.jpg`
 </ve-snippet>
 
 <ve-snippet collapsible label="Single image using Wikimedia Commons shorthand URL notation">
@@ -662,3 +676,4 @@ The `visjs` tag uses the [vis.js](https://visjs.org/) JavaScript library to crea
 ####
 
 For more information and examples visit the [visjs documentation page](https://docs.juncture-digital.org/components/visjs-diagram-viewer).
+`

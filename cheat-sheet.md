@@ -1,5 +1,4 @@
-
-`image [![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
 
 <style>
 	#components h3 { font-size: 2em !important; color: #5A162E; }
@@ -27,7 +26,7 @@ Juncture extends the Markdown text formatting with the ability to easily add int
 
 ####
 
-A tabbed section can be added using the **tabs** class.
+A tabbed section can be added using the **tabs** class.  This is done by appending ``.tabs`` to a section heading.
 
 ####
 `.tabs`
@@ -45,7 +44,7 @@ The content for Tab 1
 
 ####
 
-A section with cards (tiles) can be added using the **cards** class.
+A section with cards (tiles) can be added using the **cards** class.  This is done by appending ``.cards`` to a section heading.
 
 ####
 `.cards :width=100% :border="1px solid #000" #an-id`

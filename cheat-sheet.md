@@ -26,34 +26,37 @@ Juncture extends the Markdown text formatting with the ability to easily add int
 ####
 `.tabs`
 
-##### First Tab
+##### Tab 1
 
-adfafasfaf
+The content for Tab 1
 
-##### Second Tab
+##### Tab 2
 
-afdafafafsfsfasf
+The content for Tab 2
 
 ### Cards
 
 ####
 `.cards :width=100% :border="1px solid #000" #an-id`
 
-##### First Card
+##### Card 1
 
 []()
 
 `image wc:Yellowstone_National_Park_%28WY%2C_USA%29%2C_Grand_Prismatic_Spring_--_2022_--_2519.jpg cover`
 
-afdafafafsfsfasf
+- list item 1
+- list item 2
 
-##### Second Card
+Text for card 1
+
+##### Card 2
 
 []()
 
 `image wc:Glühwendel_brennt_durch.jpg`
 
-afdafafafsfsfasf
+Text for card 1
 
 ## Juncture components
 `#components`

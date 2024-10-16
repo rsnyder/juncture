@@ -440,7 +440,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    // console.log(parsed)
+    console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -458,7 +458,7 @@ function convertTags(rootEl) {
         parent.replaceWith(codeEl)
       }
       codeEl.replaceWith(makeEl(parsed))
-    } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
+    } else if ((parsed.class || parsed.style || parsed.id || parsed.kwargs) && !parsed.inline) {
       let target
       // if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG' || priorEl?.tagName === 'MARK') {
       if (priorEl?.tagName === 'MARK') {

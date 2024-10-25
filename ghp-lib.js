@@ -1299,7 +1299,7 @@ function elFromHtml(html) {
 }
 
 async function pathDir(acct, repo, branch, path) {
-  let pathParts = path.split('/').filter(pe => pe)
+  let pathParts = path.filter(pe => pe)
   if (pathParts.length === 0) return '/'
   if (/\.md$/.test(pathParts[pathParts.length-1])) {
     pathParts.pop()

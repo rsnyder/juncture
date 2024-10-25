@@ -1256,10 +1256,10 @@ function setConfig() {
     ...{
       baseurl: window.jekyll?.site.baseurl || location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/',
       source: {
-        owner: window.jekyll?.site.github.owner_name,
-        repository: window.jekyll?.site.github.repository_name,
-        branch: window.jekyll?.site.github.source.branch,
-        dir: window.jekyll?.page.dir,
+        owner: window.jekyll?.source?.owner || window.jekyll?.site.github.owner_name,
+        repository: window.jekyll?.source?.repository || window.jekyll?.site.github.repository_name,
+        branch: window.jekyll?.source?.branch || window.jekyll?.site.github.source.branch,
+        dir: window.jekyll?.source?.dir || window.jekyll?.page.dir,
         path: window.jekyll?.page.path,
         name: window.jekyll?.page.name
       }
@@ -1269,6 +1269,7 @@ function setConfig() {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = window.config.content || document.body.innerHTML
   window.config.isJunctureV1 = isJunctureV1(contentEl)
+  console.log(window.config)
 }
 
 function readMoreSetup() {

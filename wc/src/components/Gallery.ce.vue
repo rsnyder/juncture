@@ -161,7 +161,6 @@
       ? `${imgSource}:${imagePathParts.join('/')}`
       : `gh:${source.value?.owner}/${source.value?.repository}${source.value?.dir}/${imagePathParts.join('/')}`
     let url = `https://iiif.mdpress.io/${imageId}/manifest.json`
-    console.log('imageIdtoUrl', imageId, toRaw(source.value), url)
     return url
   }
 

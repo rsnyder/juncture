@@ -1233,6 +1233,7 @@ function setMeta() {
 }
 
 function isJunctureV1(contentEl) {
+  console.log('isJunctureV1', contentEl)
   return contentEl.querySelector('param[ve-config]') ? true : false
 }
 
@@ -1267,9 +1268,8 @@ function setConfig() {
     ...setMeta()
   }
   let contentEl = document.createElement('main')
-  contentEl.innerHTML = window.config.content || document.body.innerHTML
+  contentEl.innerHTML = getContent()
   window.config.isJunctureV1 = isJunctureV1(contentEl)
-  console.log(window.config)
 }
 
 function readMoreSetup() {
@@ -1306,7 +1306,6 @@ async function pathDir(acct, repo, branch, path) {
     return pathParts.length ? `/${pathParts.join('/')}/` : '/'
   }
   let url = `https://api.github.com/repos/${acct}/${repo}/contents/${pathParts.join('/')}.md?ref=${branch}`
-  console.log(url)
   let resp = await fetch(url, {cache: 'no-cache'})
   if (resp.ok) pathParts.pop()
   return pathParts.length ? `/${pathParts.join('/')}/` : '/'
@@ -1371,6 +1370,8 @@ function articleFromHtml(html) {
 // mount the content
 function mount(mountPoint, html) {
   html = html || getContent()
+
+  console.log(window.config)
   console.log(elFromHtml(html))
   
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 

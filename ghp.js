@@ -1,4 +1,4 @@
-import { addLink, addScript, articleFromHtml, cssBase, getGhFile, getMarkdown, markdownToHtml, mode, mount, scriptBase, setConfig, structureContent } from './ghp-lib.js'
+import { addLink, addScript, articleFromHtml, cssBase, getGhFile, getMarkdown, markdownToHtml, mode, mount, pathDir, scriptBase, setConfig, structureContent } from './ghp-lib.js'
 
 console.log(`mode=${mode} scriptBase=${scriptBase} cssBase=${cssBase}`)
   

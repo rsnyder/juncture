@@ -145,6 +145,7 @@
   watch(showDialog, () => { dialog.open = showDialog.value })
 
   function imageIdtoUrl(imageId: string) {
+    console.log('imageIdtoUrl', imageId, toRaw(source.value))
     if (imageId.indexOf('http') === 0) return imageId
     let imgSource, imgPath
     if (imageId.indexOf(':') > 0) {

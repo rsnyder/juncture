@@ -9,12 +9,21 @@
         <div v-if="caption" class="caption">{{ caption }}</div>
       </div>
 
-      <sl-dialog class="dialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
+      <sl-dialog class="imageDialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
         <ve-image v-if="selectedImage" no-caption :src="selectedImage" fit="cover"></ve-image>
         <div slot="footer" class="footer">
           <ve-caption :src="selectedImage"></ve-caption>
           <div class="push">
             <sl-button variant="primary" @click="selectedImage = null">Close</sl-button>
+          </div>
+        </div>
+      </sl-dialog>
+
+      <sl-dialog no-header class="clipboardDialog">
+        <span v-html="latLngZoom"></span> copied to clipboard
+        <div slot="footer" class="footer">
+          <div class="push">
+            <sl-button variant="primary" @click="showClipboardDialog = false">Close</sl-button>
           </div>
         </div>
       </sl-dialog>
@@ -44,20 +53,25 @@
       const window = (self as any).window
       const turf:any = window.turf
 
-      let dialog: any
+      let imageDialog: any
       const showDialog = ref(false)
-      watch(showDialog, () => { dialog.open = showDialog.value })
+      watch(showDialog, () => { imageDialog.open = showDialog.value })
       const dialogWidth = ref('100vw')
-
       const selectedImage = ref()
 
+      let clipboardDialog: any
+      const showClipboardDialog = ref(false)
+      watch(showClipboardDialog, () => { clipboardDialog.open = showClipboardDialog.value })
+
       onMounted(() => {
-        dialog = shadowRoot.value?.querySelector('.dialog')
-        dialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
+        imageDialog = shadowRoot.value?.querySelector('.imageDialog')
+        imageDialog.addEventListener('sl-hide', (evt:CustomEvent) => showDialog.value = false )
         EventBus.on('imageSelected', (evt) => { 
           selectedImage.value = evt.src 
           showDialog.value = true
         })
+        clipboardDialog = shadowRoot.value?.querySelector('.clipboardDialog')
+        clipboardDialog.addEventListener('sl-hide', (evt:CustomEvent) => showClipboardDialog.value = false )
       })
     
       const markerIconTemplate = {
@@ -508,7 +522,7 @@
         layerControl.value = L.control.layers(Object.fromEntries(_basemaps), {}).addTo(map.value)
         map.value.on('click', (e) => {
           getLatLngZoom(e)
-          if (latLngZoom.value) copyTextToClipboard(latLngZoom.value?.split(',').slice(0,2).join(','))
+          if (latLngZoom.value) copyTextToClipboard(latLngZoom.value?.split(',').join(','))
           if (props.zoomOnClick) flytoPriorLoc()
         })
         map.value.on('zoomend', (e) => {
@@ -535,6 +549,7 @@
       }
     
       function getLatLngZoom(e:L.LeafletMouseEvent) {
+        console.log(e)
         let point = e.type === 'click' ? e.latlng : e.target.getCenter()
         let zoom = e.target.getZoom()
         let resp = [point.lat, point.lng, zoom]
@@ -815,7 +830,7 @@
         let _layerObjs = Array.from(dataEl?.querySelectorAll('li') || [])
           .map((item:any) => {
             Array.from(item.querySelectorAll('a') as HTMLAnchorElement[]).forEach((a:HTMLAnchorElement) => a.replaceWith(a.href))
-            return toObj(item.innerHTML)
+            return toObj(item.innerHTML.replace(/^\s*-\s+/, ''))
         })
         if (props.marker && props.center) {
           let split = props.center.split(',')
@@ -951,8 +966,11 @@
       }
     
       function copyTextToClipboard(text: string) {
-        console.log('copyTextToClipboard', text)
-        if (navigator.clipboard) navigator.clipboard.writeText(text)
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text)
+          // showClipboardDialog.value = true
+          // setTimeout(() => showClipboardDialog.value = false, 2000)
+        }
       }
     
       const flytoRegex = RegExp(/^((?<lat>[-?\d.]+),(?<lng>[-?\d.]+)|(?<qid>Q[0-9]+)),?(?<zoom>[\d.]+)?$/)
@@ -1293,20 +1311,20 @@
         background-image: url(https://unpkg.com/leaflet@1.9.3/dist/images/layers-2x.png)
       }
     
-      sl-dialog::part(panel) {
+      sl-dialog.imageDialog::part(panel) {
         max-width: unset;
         max-height: unset;
         height: 100dvh;
       }
 
-      sl-dialog::part(overlay) {
+      sl-dialog.imageDialog::part(overlay) {
         --sl-overlay-background-color: rgba(100, 100, 100, 0.8);
       }
 
-      sl-dialog::part(footer) {
+      sl-dialog.imageDialog::part(footer) {
         background-color: rgba(100, 100, 100, 0.5);
       }
-
+    
       .leaflet-top, .leaflet-bottom {
         z-index: unset;
       }

@@ -1267,9 +1267,6 @@ function setConfig() {
     },
     ...setMeta()
   }
-  let contentEl = document.createElement('main')
-  contentEl.innerHTML = getContent()
-  window.config.isJunctureV1 = isJunctureV1(contentEl)
 }
 
 function readMoreSetup() {
@@ -1350,6 +1347,7 @@ function markdownToHtml(markdown) {
 function structureContent(html) {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
+  window.config.isJunctureV1 = isJunctureV1(contentEl)
   convertTags(contentEl)
 
   let article = restructure(contentEl)
@@ -1361,9 +1359,10 @@ function articleFromHtml(html) {
   html = html.replace(/==(.+)==/g, '<mark>$1</mark>')
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
+  window.config.isJunctureV1 = isJunctureV1(contentEl)
   convertTags(contentEl)
   let article = restructure(contentEl)
-  if (isJunctureV1(contentEl)) article = restructureForJ1(article)
+  if (window.config.isJunctureV1) article = restructureForJ1(article)
   return article
 }
 

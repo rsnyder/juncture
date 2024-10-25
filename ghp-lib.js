@@ -1233,7 +1233,6 @@ function setMeta() {
 }
 
 function isJunctureV1(contentEl) {
-  console.log('isJunctureV1', contentEl)
   return contentEl.querySelector('param[ve-config]') ? true : false
 }
 

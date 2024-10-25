@@ -1266,10 +1266,6 @@ function setConfig() {
     },
     ...setMeta()
   }
-  let contentEl = document.createElement('main')
-  contentEl.innerHTML = window.config.content || document.body.innerHTML
-  window.config.isJunctureV1 = isJunctureV1(contentEl)
-  console.log(window.config)
 }
 
 function readMoreSetup() {
@@ -1296,6 +1292,19 @@ function setViewersPosition() {
 
 function elFromHtml(html) {
   return new DOMParser().parseFromString(html, 'text/html').querySelector('body')
+}
+
+async function pathDir(acct, repo, branch, path) {
+  let pathParts = path.filter(pe => pe)
+  if (pathParts.length === 0) return '/'
+  if (/\.md$/.test(pathParts[pathParts.length-1])) {
+    pathParts.pop()
+    return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  }
+  let url = `https://api.github.com/repos/${acct}/${repo}/contents/${pathParts.join('/')}.md?ref=${branch}`
+  let resp = await fetch(url, {cache: 'no-cache'})
+  if (resp.ok) pathParts.pop()
+  return pathParts.length ? `/${pathParts.join('/')}/` : '/'
 }
 
 async function getGhFile(acct, repo, branch, path) {
@@ -1337,6 +1346,7 @@ function markdownToHtml(markdown) {
 function structureContent(html) {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
+  window.config.isJunctureV1 = isJunctureV1(contentEl)
   convertTags(contentEl)
 
   let article = restructure(contentEl)
@@ -1348,15 +1358,18 @@ function articleFromHtml(html) {
   html = html.replace(/==(.+)==/g, '<mark>$1</mark>')
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
+  window.config.isJunctureV1 = isJunctureV1(contentEl)
   convertTags(contentEl)
   let article = restructure(contentEl)
-  if (isJunctureV1(contentEl)) article = restructureForJ1(article)
+  if (window.config.isJunctureV1) article = restructureForJ1(article)
   return article
 }
 
 // mount the content
 function mount(mountPoint, html) {
   html = html || getContent()
+
+  console.log(window.config)
   console.log(elFromHtml(html))
   
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
@@ -1378,4 +1391,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent, tagMap }
+export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, pathDir, scriptBase, setConfig, structureContent, tagMap }

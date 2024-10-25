@@ -31,4 +31,4 @@ docReady(function() {
   if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 
-export { articleFromHtml, mount, getGhFile, getMarkdown, markdownToHtml, setConfig, structureContent }
+export { articleFromHtml, mount, getGhFile, getMarkdown, markdownToHtml, pathDir, setConfig, structureContent }

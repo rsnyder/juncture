@@ -1298,6 +1298,20 @@ function elFromHtml(html) {
   return new DOMParser().parseFromString(html, 'text/html').querySelector('body')
 }
 
+async function pathDir(acct, repo, branch, path) {
+  let pathParts = path.split('/').filter(pe => pe)
+  if (pathParts.length === 0) return '/'
+  if (/\.md$/.test(pathParts[pathParts.length-1])) {
+    pathParts.pop()
+    return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  }
+  let url = `https://api.github.com/repos/${acct}/${repo}/contents/${pathParts.join('/').md}?ref=${branch}`
+  console.log(url)
+  let resp = await fetch(url, {cache: 'no-cache'})
+  if (!resp.ok) pathParts.pop()
+  return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+}
+
 async function getGhFile(acct, repo, branch, path) {
   let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
   let resp = await fetch(url, {cache: 'no-cache'})
@@ -1378,4 +1392,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, scriptBase, setConfig, structureContent, tagMap }
+export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, pathDir, scriptBase, setConfig, structureContent, tagMap }

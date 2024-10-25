@@ -2,6 +2,7 @@ import { addLink, addScript, articleFromHtml, cssBase, getGhFile, getMarkdown, m
 
 console.log(`mode=${mode} scriptBase=${scriptBase} cssBase=${cssBase}`)
   
+if (!window.config) setConfig()
 
 let scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src).map(script => script.src)
 let stylesheets = Array.from(document.getElementsByTagName('link')).filter(link => link.type == 'text/css'&& link.href).map(link => link.href)
@@ -27,8 +28,7 @@ function docReady(fn) {
 }
 
 docReady(function() {
-  if (!window.config) setConfig()
   if (hasGhpJs && hasWcJs && hasWcCss && !isMounted) mount()
 })
 
-export { articleFromHtml, mount, getGhFile, getMarkdown, markdownToHtml, structureContent }
+export { articleFromHtml, mount, getGhFile, getMarkdown, markdownToHtml, setConfig, structureContent }

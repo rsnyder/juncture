@@ -145,7 +145,6 @@
   watch(showDialog, () => { dialog.open = showDialog.value })
 
   function imageIdtoUrl(imageId: string) {
-    console.log('imageIdtoUrl', imageId, toRaw(source.value))
     if (imageId.indexOf('http') === 0) return imageId
     let imgSource, imgPath
     if (imageId.indexOf(':') > 0) {
@@ -161,7 +160,9 @@
     imageId = imgSource 
       ? `${imgSource}:${imagePathParts.join('/')}`
       : `gh:${source.value?.owner}/${source.value?.repository}${source.value?.dir}/${imagePathParts.join('/')}`
-    return `https://iiif.mdpress.io/${imageId}/manifest.json`
+    let url = `https://iiif.mdpress.io/${imageId}/manifest.json`
+    console.log('imageIdtoUrl', imageId, toRaw(source.value), url)
+    return url
   }
 
   function parseImageDefStr(s:String): Object {

@@ -104,7 +104,7 @@
         scrollWheelZoom: { type: Boolean, default: false },
         slot: { type: String },
         title: { type: String },
-        zoom: { type: Number, default: 2 },
+        zoom: { type: Number },
         zoomOnClick: { type: Boolean }
       })
       watch(props, () => { evalProps() })
@@ -337,7 +337,7 @@
     
       watch(layerObjs, async () => {
         let _layerObjs = await Promise.all(layerObjs.value)
-        // if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
+        if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
           //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
@@ -462,7 +462,7 @@
       }
     
       async function initMap() {
-        zoom.value = props.zoom
+        zoom.value = props.zoom || 2
 
         let center: L.LatLng
 
@@ -471,7 +471,7 @@
           if (isQid(split[0])) {
             let entity = await getEntity(split[0])
             center = latLng(entity.coords)
-            zoom.value = split.length > 1 ? Number(split[1]) : props.zoom
+            zoom.value = split.length > 1 ? Number(split[1]) : props.zoom || 9
           } else {
             let [lat, lng, z] = split.map(Number)
             center = new L.LatLng(lat, lng)
@@ -907,7 +907,7 @@
     
       async function toObj(s:string) {
         let tokens = tokenize(s)
-        let geoJsonRegex = /\.(geo)?json$/i
+        let geoJsonRegex = /\.?(geo)?json$/i
         let iiifRegex = /^[a-z0-9\-]+:.+/
         let obj:any = {}
         let booleans = new Set(['disabled', 'prefer-geojson'])

@@ -106,7 +106,7 @@
   })
   const isYouTube = computed(() => {
     // console.log(props.src, /^[A-Za-z0-9-]+$/.test(props.src || ''))
-    return props.src?.includes('youtube.com') || /^[A-Za-z0-9-]+$/.test(props.src || '') || props.id || props.vid
+    return props.src?.includes('youtube.com') || /^[A-Za-z0-9-_]+$/.test(props.src || '') || props.id || props.vid
   })
   const showPoster = ref(false)
 
@@ -123,7 +123,7 @@
     return isYouTube.value 
       ? props.src?.includes('youtube.com')
         ? new URL(props.src).searchParams.get('v')
-        : /^[A-Za-z0-9-]+$/.test(props.src || '')
+        : /^[A-Za-z0-9-_]+$/.test(props.src || '')
           ? props.src
           : props.vid || props.id
       : null

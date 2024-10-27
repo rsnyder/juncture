@@ -450,7 +450,7 @@ The `map` tag creates a map viewer that displays a base map with optional map la
 **Tag attributes**
 
 - **location** (_string_):  Comma-separated values for latitude, longitude and an optional zoom level.  A Wikidata QID may be used in place of the latitude and longitude coordinates.
-- **basemaps** (_string_):  The names of optional base maps to be used.  Multiple base map names are comma separated.  A list of supported base maps can be seen [here](/components/basemaps)
+- **basemaps** (_string_):  The names of optional base maps to be used.  Multiple base map names are comma separated.  A list of supported base maps can be seen [here](https://docs.juncture-digital.org/components/basemaps)
 - **caption** (_string_):  A caption to use in the viewer caption bar.
 - **center** (_string_):  Defines the initial center of the rendered map.  This can be defined using latitude and longitude coordinates or with a Wikidata QID.
 - **marker** (_boolean_):  If true a Marker will be added to the map center point.

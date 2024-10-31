@@ -22,8 +22,15 @@
     path = path.join('/')
 
     console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path}`)
-    getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
-      console.log(markdown)
+
+    pathDir(acct, repo, branch, path).then(dir => {
+      window.jekyll.source = { owner: acct, repository: repo, branch, dir }
+      setConfig()
+      console.log(window.config)
+      getMarkdown(`${acct}/${repo}/${branch}/${path}`).then(markdown => {
+        // console.log(markdown)
+        mount(document.body.firstChild, markdownToHtml(markdown))
+      })
     })
 
   </script>

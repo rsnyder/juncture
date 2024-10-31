@@ -9,8 +9,6 @@
     // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
     import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https:/v3.juncture-digital.org/ghp.js'
 
-    console.log(location)
-
     let acct, repo, branch, path
 
     let referrer = document.referrer ? new URL(document.referrer) : null
@@ -23,8 +21,6 @@
     }
     acct = acct || 'juncture-digital'
     repo = repo || '.github'
-
-    console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path.join('/')}`)
 
     pathDir(acct, repo, branch, path).then(resp => {
       let baseurl = `/${acct}/${repo}${resp.dir}`

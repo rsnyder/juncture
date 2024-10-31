@@ -28,7 +28,6 @@ const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(nav
 window.customEntityData = {}
 
 function addLink(attrs) {
-  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
@@ -1379,11 +1378,11 @@ function mount(mountPoint, html) {
   console.log(window.config)
   
   mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section')
-  console.log('mountPoint', mountPoint)
   if (!mountPoint) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
+  console.log(mountPoint)
   mountPoint.setAttribute('style', 'visibility: hidden;')
 
   let article = articleFromHtml(html)

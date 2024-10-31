@@ -21,7 +21,7 @@ const cssBase = mode === 'local'
     ? `${scriptUrl.origin}/wc/src`
     : mode === 'prod'
       ? `${scriptUrl.origin}/${scriptUrl.pathname.split('/').slice(1,3).join('/')}/css`
-      : `${scriptUrl.origin}/wc/dist/css`
+      : `${scriptUrl.origin}/wc/src`
 
 const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
 
@@ -440,7 +440,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    console.log(parsed)
+    // console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -711,7 +711,7 @@ function restructure(rootEl) {
         mdpEntityInfobox.innerHTML = anchorElem.innerHTML
         if (qid) mdpEntityInfobox.setAttribute('qid', qid)
         else {
-          let pathIdx = (window.config?.baseurl && link.pathname.indexOf(window.config?.baseurl) === 0) ? 1 : 0
+          let pathIdx = (window.config?.baseurl && (link.pathname.indexOf(window.config?.baseurl) === 0) ? 1 : 0)
           mdpEntityInfobox.setAttribute('file', path.slice(pathIdx).map(pe => pe.replace(/~/,'')).filter(pe => pe).join('/'))
         }
         anchorElem.replaceWith(mdpEntityInfobox)
@@ -1254,14 +1254,14 @@ function setConfig() {
     ...(window.jekyll || {}), 
     ...(window.config || {}),
     ...{
-      baseurl: window.jekyll?.site.baseurl || location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/',
+      baseurl: window.jekyll?.site?.baseurl || (location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/'),
       source: {
         owner: window.jekyll?.source?.owner || window.jekyll?.site.github.owner_name,
         repository: window.jekyll?.source?.repository || window.jekyll?.site.github.repository_name,
         branch: window.jekyll?.source?.branch || window.jekyll?.site.github.source.branch,
         dir: window.jekyll?.source?.dir || window.jekyll?.page.dir,
-        path: window.jekyll?.page.path,
-        name: window.jekyll?.page.name
+        path: window.jekyll?.page?.path,
+        name: window.jekyll?.page?.name
       }
     },
     ...setMeta()
@@ -1295,16 +1295,22 @@ function elFromHtml(html) {
 }
 
 async function pathDir(acct, repo, branch, path) {
+  let dir, name
   let pathParts = path.filter(pe => pe)
-  if (pathParts.length === 0) return '/'
-  if (/\.md$/.test(pathParts[pathParts.length-1])) {
-    pathParts.pop()
-    return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  if (pathParts.length && /\.md$/.test(pathParts[pathParts.length-1])) {
+    name = pathParts.pop()
+    dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  } else {
+    name = pathParts.length ? `${pathParts.pop()}.md` : 'README.md'
+    dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
+    let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
+    let resp = await fetch(url, {cache: 'no-cache'})
+    if (resp.ok) {
+      name = 'index.md'
+    }
   }
-  let url = `https://api.github.com/repos/${acct}/${repo}/contents/${pathParts.join('/')}.md?ref=${branch}`
-  let resp = await fetch(url, {cache: 'no-cache'})
-  if (resp.ok) pathParts.pop()
-  return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  path = dir === '/' ? name : `${dir.slice(1)}${name}`
+  return {path, dir, name}
 }
 
 async function getGhFile(acct, repo, branch, path) {
@@ -1370,24 +1376,31 @@ function mount(mountPoint, html) {
   html = html || getContent()
 
   console.log(window.config)
-  console.log(elFromHtml(html))
   
-  mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
+  mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section')
   if (!mountPoint) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
+  mountPoint.setAttribute('style', 'visibility: hidden;')
 
   let article = articleFromHtml(html)
+  article.setAttribute('style', 'visibility: hidden; opacity: 0;')
+  console.log(article)
 
-  mountPoint.replaceWith(article)
-  if (window.config.isJunctureV1 && !isMobile) {
-    document.addEventListener('scroll', () => setViewersPosition())
-    setTimeout(() => setViewersPosition(), 100)
-  }
+  setTimeout(() => {
+    mountPoint.replaceWith(article)
+    article.style.visibility = 'visible'
+    article.style.opacity = 1
+    if (window.config.isJunctureV1 && !isMobile) {
+      document.addEventListener('scroll', () => setViewersPosition())
+      setTimeout(() => setViewersPosition(), 100)
+    }
+  
+    observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
+    readMoreSetup()
+  }, 1000)
 
-  observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
-  readMoreSetup()
   return article
 }
 

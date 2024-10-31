@@ -9,25 +9,23 @@
 
     console.log(location)
 
-    let source
-    let ref
+    let acct, repo, branch, path
 
     let referrer = document.referrer ? new URL(document.referrer) : null
     if (referrer?.host === 'github.com') {
       console.log('Referrer:', referrer)
-      let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-      source = `${acct}/${repo}/${path.join('/')}`
+      [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
       ref = branch
       // window.location.search = `source=${source}`
     } else {
-      source = location.pathname.slice(1)
-      ref = location.searchParams.get('ref')
+      [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe)
+      branch = new URL(location.href).searchParams.get('ref') || 'main'
     }
+    path = path.join('/')
 
-    let [acct, repo, ...path] = source.split('/').filter(pe => pe)
     console.log(`acct=${acct}, repo=${repo}, ref=${ref}, path=${path.join('/')}`)
 
-    getMarkdown(`${acct}/${repo}/${ref || 'main'}/${path.join('/')}`).then(markdown => {
+    getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
       console.log(markdown)
     })
 

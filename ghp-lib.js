@@ -726,6 +726,7 @@ function restructure(rootEl) {
 
   if (isJunctureV1(rootEl)) {
     article.classList.add('j1')
+    article.setAttribute('style', 'opacity: 0;')
     let veConfig = main.querySelector('param[ve-config]')
     header = document.createElement('ve-header')
     header.className = 'sticky'
@@ -1390,6 +1391,7 @@ function mount(mountPoint, html) {
 
   setTimeout(() => {
     mountPoint.replaceWith(article)
+    mountPoint.setAttribute('style', 'opacity: 1; transition: opacity 5s;')
     if (window.config.isJunctureV1 && !isMobile) {
       document.addEventListener('scroll', () => setViewersPosition())
       setTimeout(() => setViewersPosition(), 100)

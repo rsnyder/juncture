@@ -1387,14 +1387,17 @@ function mount(mountPoint, html) {
   let article = articleFromHtml(html)
   console.log(article)
 
-  mountPoint.replaceWith(article)
-  if (window.config.isJunctureV1 && !isMobile) {
-    document.addEventListener('scroll', () => setViewersPosition())
-    setTimeout(() => setViewersPosition(), 100)
-  }
+  setTimeout(() => {
+    mountPoint.replaceWith(article)
+    if (window.config.isJunctureV1 && !isMobile) {
+      document.addEventListener('scroll', () => setViewersPosition())
+      setTimeout(() => setViewersPosition(), 100)
+    }
+  
+    observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
+    readMoreSetup()
+  }, 1000)
 
-  observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
-  readMoreSetup()
   return article
 }
 

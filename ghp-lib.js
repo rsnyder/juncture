@@ -379,10 +379,12 @@ function priorSibling(el) {
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
   // console.log('convertTags')
-  // remove "view as" buttons
+  // remove "editor" and "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
-  .filter(img => img.src.indexOf('ve-button.png') > -1 || img.src.indexOf('wb.svg') > -1)
-  .forEach(viewAsButton => viewAsButton?.parentElement?.parentElement?.remove())
+  .map(img => img.parentElement)
+  .find(link => link.src.indexOf('juncture-digital.org') > 0)
+  ?.map(link => link.parentElement)
+  ?.remove()
 
   // Juncture v2 tagging
   Array.from(rootEl.querySelectorAll(':scope > p'))

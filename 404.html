@@ -28,7 +28,7 @@
       console.log(window.config)
       getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
         console.log(markdown)
-        // mount(document.body.firstChild, markdownToHtml(markdown))
+        mount(document.body.firstChild, markdownToHtml(markdown))
       })
     })
 

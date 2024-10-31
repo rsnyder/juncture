@@ -1254,14 +1254,14 @@ function setConfig() {
     ...(window.jekyll || {}), 
     ...(window.config || {}),
     ...{
-      baseurl: window.jekyll?.site.baseurl || location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/',
+      baseurl: window.jekyll?.site?.baseurl || location.hostname.indexOf('github.io') > 0 ? `/${location.pathname.split('/')[1]}/` : '/',
       source: {
         owner: window.jekyll?.source?.owner || window.jekyll?.site.github.owner_name,
         repository: window.jekyll?.source?.repository || window.jekyll?.site.github.repository_name,
         branch: window.jekyll?.source?.branch || window.jekyll?.site.github.source.branch,
         dir: window.jekyll?.source?.dir || window.jekyll?.page.dir,
-        path: window.jekyll?.page.path,
-        name: window.jekyll?.page.name
+        path: window.jekyll?.page?.path,
+        name: window.jekyll?.page?.name
       }
     },
     ...setMeta()

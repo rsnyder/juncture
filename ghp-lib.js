@@ -1376,17 +1376,18 @@ function mount(mountPoint, html) {
   html = html || getContent()
 
   console.log(window.config)
-  console.log(elFromHtml(html))
   
-  mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section') 
+  mountPoint = mountPoint || document.querySelector('body > article, body > main, body > section')
+  console.log('mountPoint', mountPoint)
   if (!mountPoint) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
 
   let article = articleFromHtml(html)
+  console.log(article)
 
-  mountPoint.replaceWith(article)
+  // mountPoint.replaceWith(article)
   if (window.config.isJunctureV1 && !isMobile) {
     document.addEventListener('scroll', () => setViewersPosition())
     setTimeout(() => setViewersPosition(), 100)

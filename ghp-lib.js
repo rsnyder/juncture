@@ -1384,16 +1384,16 @@ function mount(mountPoint, html) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
-  mountPoint.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
+  mountPoint.setAttribute('style', 'visibility: hidden;')
 
   let article = articleFromHtml(html)
-  // article.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
+  article.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
   console.log(article)
 
   setTimeout(() => {
     mountPoint.replaceWith(article)
-    mountPoint.style.opacity = 1
     mountPoint.style.visibility = 'visible'
+    mountPoint.style.opacity = 1
     if (window.config.isJunctureV1 && !isMobile) {
       document.addEventListener('scroll', () => setViewersPosition())
       setTimeout(() => setViewersPosition(), 100)
@@ -1401,7 +1401,7 @@ function mount(mountPoint, html) {
   
     observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
     readMoreSetup()
-  }, 100)
+  }, 2000)
 
   return article
 }

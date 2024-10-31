@@ -1384,10 +1384,10 @@ function mount(mountPoint, html) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
-  mountPoint.setAttribute('style', 'opacity: 0; transition: opacity 5s;')
+  mountPoint.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
 
   let article = articleFromHtml(html)
-  article.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
+  // article.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
   console.log(article)
 
   setTimeout(() => {

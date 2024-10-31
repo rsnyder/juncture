@@ -1382,7 +1382,6 @@ function mount(mountPoint, html) {
     mountPoint = document.createElement('article')
     document.body.innerHTML = mountPoint.outerHTML
   }
-  console.log(mountPoint)
   mountPoint.setAttribute('style', 'visibility: hidden;')
 
   let article = articleFromHtml(html)

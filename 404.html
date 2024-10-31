@@ -4,6 +4,7 @@
   <base href="/">
 </head>
 <body>
+  <main></main>
   <script type="module">
 
     // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
@@ -28,7 +29,7 @@
       window.jekyll = { site: { baseurl }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
       setConfig()
       getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
-        mount(document.body.firstChild, markdownToHtml(markdown))
+        mount(null, markdownToHtml(markdown))
       })
     })
 

@@ -1387,13 +1387,13 @@ function mount(mountPoint, html) {
   mountPoint.setAttribute('style', 'visibility: hidden;')
 
   let article = articleFromHtml(html)
-  article.setAttribute('style', 'visibility: hidden; opacity: 0; transition: opacity 5s;')
+  article.setAttribute('style', 'visibility: hidden; opacity: 0;')
   console.log(article)
 
   setTimeout(() => {
     mountPoint.replaceWith(article)
     article.style.visibility = 'visible'
-    // article.style.opacity = 1
+    article.style.opacity = 1
     if (window.config.isJunctureV1 && !isMobile) {
       document.addEventListener('scroll', () => setViewersPosition())
       setTimeout(() => setViewersPosition(), 100)

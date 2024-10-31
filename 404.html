@@ -21,7 +21,7 @@
     }
     path = path.join('/')
 
-    console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path.join('/')}`)
+    console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path}`)
     getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
       console.log(markdown)
     })

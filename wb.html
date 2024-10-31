@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juncture Editor</title>
-    <meta http-equiv="refresh" content="0; url=editor.juncture-digital.org/" />
+    <title>wb Redirect</title>
 </head>
 <body>
-    <p><a href="https://editor.juncture-digital.org/">Redirect</a></p>
+    <script>
+        console.log(location)
+        let redirect = `https://editor.juncture-digital.org/${location.search ? location.search : ''}`
+        console.log(`Redirecting to ${redirect}`)
+        // window.location.href = redirect
+    </script>
 </body>
 </html>

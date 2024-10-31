@@ -26,6 +26,9 @@
 
     pathDir(acct, repo, branch, path).then(resp => {
       let baseurl = `/${acct}/${repo}${resp.dir}`
+      let baseEl = document.createElement('base')
+      baseEl.href = baseurl
+      document.head.appendChild(baseEl)
       window.jekyll = { site: { baseurl }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
       setConfig()
       console.log(window.config)

@@ -691,7 +691,6 @@ function restructure(rootEl) {
     }
   })
 
-  console.log('restructured', main, window.config?.baseurl)
   Array.from(main.querySelectorAll('a'))
     .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
     .forEach(anchorElem => {

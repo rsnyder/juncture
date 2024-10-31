@@ -49,7 +49,8 @@
   } else if (referrer?.host === 'github.com') {
     let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
     let source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
-    window.location.search = `source=${source}`
+    window.location.pathname = `${acct}/${repo}/${path.join('/')}`
+    if (branch !== 'main') window.location.search = `ref=${branch}`
   } else {
     mount()
   }

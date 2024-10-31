@@ -1249,7 +1249,7 @@ function getContent() {
 
 // set the configuration
 function setConfig() {
-  console.log(window.jekyll.site)
+  console.log(window.jekyll)
   window.config = {
     ...yaml.parse(window.options || ''), 
     ...(window.jekyll || {}), 

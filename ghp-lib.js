@@ -726,7 +726,6 @@ function restructure(rootEl) {
 
   if (isJunctureV1(rootEl)) {
     article.classList.add('j1')
-    article.setAttribute('style', 'opacity: 0;')
     let veConfig = main.querySelector('param[ve-config]')
     header = document.createElement('ve-header')
     header.className = 'sticky'
@@ -1388,6 +1387,7 @@ function mount(mountPoint, html) {
   mountPoint.setAttribute('style', 'opacity: 0; transition: opacity 5s;')
 
   let article = articleFromHtml(html)
+  article.setAttribute('style', 'opacity: 0; transition: opacity 5s;')
   console.log(article)
 
   setTimeout(() => {

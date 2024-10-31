@@ -25,7 +25,8 @@
     console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path.join('/')}`)
 
     pathDir(acct, repo, branch, path).then(resp => {
-      window.jekyll = {baseurl: '/rsnyder/essays/', source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
+      let baseurl = `${acct}/${repo}${resp.dir}`
+      window.jekyll = { site: { baseurl }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
       setConfig()
       console.log(window.config)
       getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {

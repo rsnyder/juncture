@@ -28,7 +28,7 @@ const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(nav
 window.customEntityData = {}
 
 function addLink(attrs) {
-  console.log('addLink', attrs)
+  // console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)
@@ -1397,7 +1397,7 @@ function mount(mountPoint, html) {
   
     observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
     readMoreSetup()
-  }, 1000)
+  }, 100)
 
   return article
 }

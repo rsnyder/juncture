@@ -1295,16 +1295,34 @@ function elFromHtml(html) {
 }
 
 async function pathDir(acct, repo, branch, path) {
+  let dir, name
   let pathParts = path.filter(pe => pe)
-  if (pathParts.length === 0) return '/'
-  if (/\.md$/.test(pathParts[pathParts.length-1])) {
-    pathParts.pop()
-    return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  if (pathParts.length && /\.md$/.test(pathParts[pathParts.length-1])) {
+    name = pathParts.pop()
+    dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
+    path = `${dir}${name.replace(/\.md$/, '')}`
+  } else {
+    name = partParts.length ? `${pathParts,pop()}.md` : 'README.md'
+    dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
+    let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
+    let resp = await fetch(url, {cache: 'no-cache'})
+    if (resp.ok) {
+      path = name === 'README.md' 
+        ? dir === '/' 
+          ? dir 
+          : dir.slice(0,-1) 
+        : `${dir}${name.replace(/\.md$/, '')}`
+    } else {
+      name = 'index.md'
+    }
+    path = name === 'README.md' || name === 'index.md'
+      ? dir === '/' 
+        ? dir 
+        : dir.slice(0,-1) 
+      : `${dir}${name.replace(/\.md$/, '')}`
   }
-  let url = `https://api.github.com/repos/${acct}/${repo}/contents/${pathParts.join('/')}.md?ref=${branch}`
-  let resp = await fetch(url, {cache: 'no-cache'})
-  if (resp.ok) pathParts.pop()
-  return pathParts.length ? `/${pathParts.join('/')}/` : '/'
+  console.log({path, dir, name})
+  return {path, dir, name}
 }
 
 async function getGhFile(acct, repo, branch, path) {

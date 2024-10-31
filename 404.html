@@ -19,16 +19,15 @@
       [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe)
       branch = new URL(location.href).searchParams.get('ref') || 'main'
     }
-    path = path.join('/')
 
-    console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path}`)
+    console.log(`acct=${acct}, repo=${repo}, branch=${branch}, path=${path.join('/')}`)
 
     pathDir(acct, repo, branch, path).then(dir => {
       window.jekyll.source = { owner: acct, repository: repo, branch, dir }
       setConfig()
       console.log(window.config)
-      getMarkdown(`${acct}/${repo}/${branch}/${path}`).then(markdown => {
-        // console.log(markdown)
+      getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
+        console.log(markdown)
         mount(document.body.firstChild, markdownToHtml(markdown))
       })
     })

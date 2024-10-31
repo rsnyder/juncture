@@ -1302,7 +1302,7 @@ async function pathDir(acct, repo, branch, path) {
     dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
     path = `${dir}${name.replace(/\.md$/, '')}`
   } else {
-    name = partParts.length ? `${pathParts,pop()}.md` : 'README.md'
+    name = pathParts.length ? `${pathParts,pop()}.md` : 'README.md'
     dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
     let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
     let resp = await fetch(url, {cache: 'no-cache'})

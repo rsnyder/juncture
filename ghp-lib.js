@@ -1397,7 +1397,7 @@ function mount(mountPoint, html) {
   
     observeVisible(article, article.querySelector('ve-video[sync]') ? false : true)
     readMoreSetup()
-  }, 100)
+  }, 1)
 
   return article
 }

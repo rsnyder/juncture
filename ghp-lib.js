@@ -1387,7 +1387,7 @@ function mount(mountPoint, html) {
   let article = articleFromHtml(html)
   console.log(article)
 
-  // mountPoint.replaceWith(article)
+  mountPoint.replaceWith(article)
   if (window.config.isJunctureV1 && !isMobile) {
     document.addEventListener('scroll', () => setViewersPosition())
     setTimeout(() => setViewersPosition(), 100)

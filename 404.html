@@ -27,7 +27,6 @@
       document.head.querySelector('base').href = baseurl
       window.jekyll = { site: { baseurl }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
       setConfig()
-      console.log(window.config)
       getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
         mount(document.body.firstChild, markdownToHtml(markdown))
       })

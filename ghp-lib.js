@@ -440,7 +440,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    console.log(parsed)
+    // console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -1249,7 +1249,6 @@ function getContent() {
 
 // set the configuration
 function setConfig() {
-  console.log(window.jekyll)
   window.config = {
     ...yaml.parse(window.options || ''), 
     ...(window.jekyll || {}), 
@@ -1311,7 +1310,6 @@ async function pathDir(acct, repo, branch, path) {
     }
   }
   path = dir === '/' ? name : `${dir.slice(1)}${name}`
-  console.log({path, dir, name})
   return {path, dir, name}
 }
 

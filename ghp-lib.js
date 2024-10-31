@@ -15,7 +15,7 @@ const scriptBase = mode === 'local'
   ? 'http://localhost:5173'
   : mode === 'prod'
     ? `${scriptUrl.origin}/${scriptUrl.pathname.split('/').slice(1,3).join('/')}/js`
-    : `${scriptUrl.origin}/wc/dist/js`
+    : scriptUrl.origin
 
 const cssBase = mode === 'local'
     ? `${scriptUrl.origin}/wc/src`
@@ -28,7 +28,7 @@ const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(nav
 window.customEntityData = {}
 
 function addLink(attrs) {
-  // console.log('addLink', attrs)
+  console.log('addLink', attrs)
   let stylesheet = document.createElement('link')
   Object.entries(attrs).map(([key, value]) => stylesheet.setAttribute(key, value))
   document.head.appendChild(stylesheet)

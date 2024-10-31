@@ -1393,7 +1393,7 @@ function mount(mountPoint, html) {
   setTimeout(() => {
     mountPoint.replaceWith(article)
     article.style.visibility = 'visible'
-    article.style.opacity = 1
+    // article.style.opacity = 1
     if (window.config.isJunctureV1 && !isMobile) {
       document.addEventListener('scroll', () => setViewersPosition())
       setTimeout(() => setViewersPosition(), 100)

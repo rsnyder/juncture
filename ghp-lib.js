@@ -691,8 +691,8 @@ function restructure(rootEl) {
     }
   })
 
+  console.log('restructured', main, window.config?.baseurl)
   Array.from(main.querySelectorAll('a'))
-  console.log('restructure', main)
     .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
     .forEach(anchorElem => {
       let link
@@ -712,7 +712,7 @@ function restructure(rootEl) {
         mdpEntityInfobox.innerHTML = anchorElem.innerHTML
         if (qid) mdpEntityInfobox.setAttribute('qid', qid)
         else {
-          let pathIdx = (window.config?.baseurl && link.pathname.indexOf(window.config?.baseurl) === 0) ? 1 : 0
+          let pathIdx = (window.config?.baseurl && (link.pathname.indexOf(window.config?.baseurl) === 0) ? 1 : 0)
           mdpEntityInfobox.setAttribute('file', path.slice(pathIdx).map(pe => pe.replace(/~/,'')).filter(pe => pe).join('/'))
         }
         anchorElem.replaceWith(mdpEntityInfobox)

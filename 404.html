@@ -2,16 +2,46 @@
 <html lang="en">
 <head></head>
 <body>
+  <script type="module">
+
+    // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
+    import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https:/v3.juncture-digital.org/ghp.js'
+
+    console.log(location)
+
+    let source
+    let referrer = document.referrer ? new URL(document.referrer) : null
+    if (referrer?.host === 'github.com') {
+      console.log('Referrer:', referrer)
+      let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+      source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
+      // window.location.search = `source=${source}`
+    } else {
+      source = location.pathname.slice(1)
+    }
+    console.log('Source:', source)
+
+    let [acct, repo, branch, ...path] = source.split('/').filter(pe => pe)
+    getMarkdown(`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`).then(markdown => {
+      console.log(markdown)
+    })
+
+  </script>
+
+  <!--
   <script>
     let referrer = document.referrer && new URL(document.referrer)    
     let source = location.pathname.slice(1)
 
     if (referrer) source = `${referrer.searchParams.get('source') || ''}${location.pathname.slice(1)}`
+    else source = location.pathname.slice(1)
     source = source.replace(/\/README\.md$/, '').replace(/\/index\.md$/, '').replace(/\.md\/?$/, '')
 
     let href = `${location.origin}/?source=${source}/`
     console.log('Redirecting to:', href)
     location.href = href
+
   </script>
+  -->
 </body>
 </html>

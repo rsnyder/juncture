@@ -1300,27 +1300,13 @@ async function pathDir(acct, repo, branch, path) {
   if (pathParts.length && /\.md$/.test(pathParts[pathParts.length-1])) {
     name = pathParts.pop()
     dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
-    path = `${dir}${name.replace(/\.md$/, '')}`
   } else {
     name = pathParts.length ? `${pathParts,pop()}.md` : 'README.md'
-    dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
     let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
     let resp = await fetch(url, {cache: 'no-cache'})
-    if (resp.ok) {
-      path = name === 'README.md' 
-        ? dir === '/' 
-          ? dir 
-          : dir.slice(0,-1) 
-        : `${dir}${name.replace(/\.md$/, '')}`
-    } else {
-      name = 'index.md'
-    }
-    path = name === 'README.md' || name === 'index.md'
-      ? dir === '/' 
-        ? dir 
-        : dir.slice(0,-1) 
-      : `${dir}${name.replace(/\.md$/, '')}`
+    if (!resp.ok) name = 'index.md'
   }
+  path = dir === '/' ? name : `${dir.slice(1)}${name}`
   console.log({path, dir, name})
   return {path, dir, name}
 }

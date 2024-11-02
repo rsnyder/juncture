@@ -705,7 +705,6 @@ function restructure(rootEl) {
   })
 
   let hrefBase = document.head.querySelector('base')?.getAttribute('href')
-  console.log('hrefBase', hrefBase)
   Array.from(main.querySelectorAll('a'))
     .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
     .forEach(anchorElem => {
@@ -716,10 +715,9 @@ function restructure(rootEl) {
         console.log(e, anchorElem.href)
         return
       }
-      console.log(anchorElem.textContent, link)
       if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
-        let newHref = `${hrefBase}${anchorElem.href.slice(1)}`
-        console.log('newHref', newHref)
+        let newHref = `${link.origin}/${baseHref}${link.pathname.slice(1)}`
+        console.log('update root href:', newHref)
         anchorElem.href = newHref
       }
       let path = link.pathname.split('/').filter(p => p)

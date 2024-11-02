@@ -181,7 +181,6 @@
   watch(imageInfo, async (val: any, priorVal: any) => {
     if (val !== priorVal) {
       setTimeout(async() => {
-        console.log('imageInfo', toRaw(val))
         if (!val.service)
           imageDataUrl(imageInfo.value.id, imageOptions.value.region, {width: host.value.clientWidth, height: props.height}).then(dataUrl => console.log(dataUrl))
         else 
@@ -191,7 +190,6 @@
   })
 
   watch(imgUrl, () => {
-    console.log(imgUrl.value)
     if (background.value) {
       background.value.style.backgroundImage = `url("${imgUrl.value}")`
       background.value.style.backgroundPosition = props.position || (props.top && 'top') || (props.bottom && 'bottom') || (props.left && 'left') || (props.right && 'right') || (props.center && 'center') || 'center'

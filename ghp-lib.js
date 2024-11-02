@@ -253,7 +253,6 @@ function parseHeadline(s) {
 }
 
 function parseCodeEl(codeEl) {
-  console.log(codeEl)
   let codeElems = codeEl.innerHTML?.replace(/\s+\|\s+/g,'\n')
     .split('\n')
     .map(l => l.trim())
@@ -270,7 +269,6 @@ function parseCodeEl(codeEl) {
   } else if (codeElems.length > 1) {
     parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   }
-  // console.log(parsed)
   return parsed
 }
 
@@ -287,17 +285,12 @@ function makeEl(parsed) {
     let ul = document.createElement('ul')
     el.appendChild(ul)
     for (const arg of parsed.args) {
-      // let argEl = new DOMParser().parseFromString(marked.parse(arg.replace(/^\s*-\s*/, '')), 'text/html').body.firstChild
-      // let argEl = new DOMParser().parseFromString(arg.replace(/^\s*-\s*/, ''), 'text/html').body
-      // li.innerHTML = argEl.innerHTML.indexOf('wc:') > -1 ? argEl.innerHTML.replace(/<em>([^<]+)<\/em>/g, '_$1_') : argEl.innerHTML
       let li = document.createElement('li')
-      // li.innerText = arg.replace(/^\s*-\s*/, '')
       li.innerText = arg
       ul.appendChild(li)
     }
   }
   if (parsed.raw) el.textContent = parsed.raw
-  // console.log(el)
   return el
 }
 
@@ -340,30 +333,13 @@ function elAttrsToObj(el, tag, ignore) {
 
 function elAttrsToStr(el, tag, ignore) {
   let attrsObj = elAttrsToObj(el, tag, ignore)
-  // console.log(attrsObj)
-  let tagDef = tagMap[attrsObj.tag] || {}
   let attrsList = []
-  /*
-  let positionalAdded = new Set()
-  for (let idx = 0; idx < tagDef.positional.length; idx++) {
-    let positionalValue = attrsObj.kwargs[tagDef.positional[idx]]
-    if (positionalValue) {
-      attrsList.push(positionalValue.indexOf(' ') > -1 ? `"${positionalValue}"` : positionalValue)
-      positionalAdded.add(tagDef.positional[idx])
-      // delete attrsObj.kwargs[tagDef.positional[idx]]
-    }
-    else break
-  }
-  */
   Object.entries(attrsObj.kwargs).forEach(([key, value]) => {
-    // if (!positionalAdded.has(key)) {
-      if (value .indexOf(' ') > -1) attrsList.push(`${key}="${value}"`)
-      else attrsList.push(`${key}=${value}`)
-    // }
+    if (value .indexOf(' ') > -1) attrsList.push(`${key}="${value}"`)
+    else attrsList.push(`${key}=${value}`)
   })
   if (attrsObj.booleans.length) attrsList.push(attrsObj.booleans.join(' '))
   let asStr = attrsList.join(' ')
-  // console.log('asStr', asStr)
   return asStr
 }
 
@@ -374,14 +350,11 @@ function veAttr(el) {
 function priorSibling(el) {
   let sibs = Array.from(el.parentElement?.childNodes || [])?.filter(c => c.tagName?.[0] === 'H' || c.textContent.trim())
   let prior = sibs[sibs.indexOf(el) - 1]
-  // console.log('priorSibling', el, el.parentElement, sibs, prior)
   return ['EM', 'STRONG', 'A', 'MARK'].includes(prior?.tagName) || prior?.tagName?.[0] === 'H' ? prior : null
 }
 
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
-  console.log(rootEl.cloneNode(true))
-  // console.log('convertTags')
   // remove "editor" and "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
   .map(img => img.parentElement)
@@ -426,7 +399,6 @@ function convertTags(rootEl) {
   Array.from(rootEl.querySelectorAll(':scope > p'))
     .filter(p => /^\.ve-\w+\S/.test(p.childNodes.item(0)?.nodeValue?.trim() || ''))
     .forEach(p => {
-      console.log(p.innerHTML)
       let codeEl = document.createElement('code')
       codeEl.setAttribute('class', 'language-juncture2')
       let html = p.innerHTML.trim().slice(1)
@@ -483,23 +455,25 @@ function convertTags(rootEl) {
 
     let priorEl = priorSibling(codeEl)
 
-    if (parsed.tag && !parsed.inline) {
-      if (parent.tagName === 'PRE') {
-        codeEl = parent
-        codeEl.removeAttribute('id')
-        codeEl.removeAttribute('data-id')
-        codeEl.removeAttribute('class')
-        if (codeEl.parentElement.parentElement) codeEl.parentElement.parentElement.className = 'segment'
-        if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
-          codeEl.parentElement.replaceWith(codeEl)
+    if (parsed.tag) {
+      if (parsed.inline) {
+      } else {  // block elements
+        if (parent.tagName === 'PRE') {
+          codeEl = parent
+          codeEl.removeAttribute('id')
+          codeEl.removeAttribute('data-id')
+          codeEl.removeAttribute('class')
+          if (codeEl.parentElement.parentElement) codeEl.parentElement.parentElement.className = 'segment'
+          if (codeEl.parentElement.tagName === 'DIV' && codeEl.parentElement.children.length === 1) {
+            codeEl.parentElement.replaceWith(codeEl)
+          }
+        } else if (parent.tagName === 'P' && parent.children.length === 1) {
+          parent.replaceWith(codeEl)
         }
-      } else if (parent.tagName === 'P' && parent.children.length === 1) {
-        parent.replaceWith(codeEl)
+        codeEl.replaceWith(makeEl(parsed))
       }
-      codeEl.replaceWith(makeEl(parsed))
-    } else if ((parsed.class || parsed.style || parsed.id || parsed.kwargs) && parsed.inline) {
+    } else if (parsed.class || parsed.style || parsed.id || parsed.kwargs) {
       let target
-      // if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG' || priorEl?.tagName === 'MARK') {
       if (priorEl?.tagName === 'MARK') {
         target = document.createElement('SPAN')
         target.innerHTML = priorEl.innerHTML
@@ -513,7 +487,6 @@ function convertTags(rootEl) {
               .join('')
           )
           .map(c => c.textContent.trim())
-        // console.log('nonEmptyCellsInRow', nonEmptyCellsInRow)
         if (nonEmptyCellsInRow.length === 0) {
           target = parent.parentElement.parentElement.parentElement // table
           parent.parentElement?.remove() // remove empty row with code element
@@ -524,13 +497,7 @@ function convertTags(rootEl) {
         target = priorEl
       } else {
         target = priorEl || codeEl.parentElement
-        /*
-        target = priorEl?.children.length === 1 && priorEl.children[0]?.tagName === 'VE-HEADER'
-          ? codeWrapper.parentElement
-          : priorEl
-        */
       }
-      // console.log('target', target)
       if (target) {
         if (parsed.id) target.id = parsed.id
         if (parsed.class) parsed.class.split(' ').forEach(c => target.classList.add(c))
@@ -542,6 +509,7 @@ function convertTags(rootEl) {
       }
       codeEl.remove()
     }
+
   })
   return rootEl
 }
@@ -642,30 +610,9 @@ function restructure(rootEl) {
     p.replaceWith(heading)
     if (codeEl) {
       let codeWrapper = document.createElement('p')
-      //codeWrapper.appendChild(codeEl)
       heading.parentElement?.insertBefore(codeWrapper, heading.nextSibling)
     }
   })
-
-  /*
-  Array.from(rootEl?.querySelectorAll('p, li'))
-  .filter(el => /==.+=={.+}/.test(el.textContent?.trim() || ''))
-  .forEach(el => {
-    console.log(el.textContent)
-    let replHtml = []
-    let matches = Array.from(el.innerHTML.matchAll(/==(?<text>[^=]+)=={(?<attrs>[^}]+)}/g))
-    matches.forEach((match, idx) => {
-      console.log(match)
-      if (idx === 0) replHtml.push(el.innerHTML.slice(0, match.index))
-      if (match.groups) {
-        let {text, attrs} = match.groups
-        replHtml.push(`<a href="${parseMarkArg(attrs)}">${text}</a>`)
-        replHtml.push(el.innerHTML.slice(match.index + match[0].length, matches[idx+1]?.index || el.innerHTML.length))
-      }
-    })
-    el.innerHTML = replHtml.join('')
-  })
-  */
 
   // For compatibility with Juncture V1
   Array.from(rootEl?.querySelectorAll('param'))
@@ -685,6 +632,13 @@ function restructure(rootEl) {
   Array.from(rootEl?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
+      let sectionAttrs
+      let attrsMatch = heading.textContent.match(/[`{](?<attrs>.*)[`}]/)
+      if (attrsMatch) {
+        sectionAttrs = parseHeadline(attrsMatch.groups.attrs)
+        heading.innerHTML = heading.textContent.replace(/\s*[`*{].*[`}]/, '')
+      }
+
       let sectionLevel = parseInt(heading.tagName.slice(1))
       if (currentSection) {
         (Array.from(currentSection.children))
@@ -713,6 +667,15 @@ function restructure(rootEl) {
       }
       currentSection.id = heading.id || makeId(heading.textContent)
       if (heading.id) heading.removeAttribute('id')
+
+      if (sectionAttrs) {
+        if (sectionAttrs.id) currentSection.id = sectionAttrs.id
+        if (sectionAttrs.class) sectionAttrs.class.split(' ').forEach(c => currentSection.classList.add(c))
+        if (sectionAttrs.style) currentSection.setAttribute('style', Object.entries(sectionAttrs.style).map(([k,v]) => `${k}:${v}`).join(';'))
+        if (sectionAttrs.kwargs) for (const [k,v] of Object.entries(sectionAttrs.kwargs)) currentSection.setAttribute(k, v === true ? '' : v)
+        if (sectionAttrs.args) {
+        }
+      }
 
       currentSection.innerHTML += heading.outerHTML
 
@@ -748,8 +711,7 @@ function restructure(rootEl) {
       try {
         link = new URL(anchorElem.href)
       } catch (e) {
-        console.log(e)
-        console.log(anchorElem.href)
+        console.log(e, anchorElem.href)
         return
       }
       let path = link.pathname.split('/').filter(p => p)
@@ -822,6 +784,14 @@ function configCustomClasses(rootEl) {
         card.classList.add('card')
         let heading = card.querySelector('h1, h2, h3, h4, h5, h6')
         let img = card.querySelector('p > img')
+        let link
+        if (card.getAttribute('href')) {
+          link = document.createElement('a')
+          link.href = card.getAttribute('href')
+          link.textContent = heading?.textContent
+          card.appendChild(link)
+          card.removeAttribute('href')
+        }
         if (img) {
           img.parentElement?.replaceWith(img)
         } else {
@@ -831,10 +801,12 @@ function configCustomClasses(rootEl) {
             veImage.setAttribute('no-caption', '')
           }
         }
-        let link = card.querySelector('p > a')
-        if (link) {
-          link.textContent = heading?.textContent || link.textContent
-          link.parentElement?.replaceWith(link)
+        if (!link) {
+          link = card.querySelector('p > a')
+          if (link) {
+            link.textContent = heading?.textContent || link.textContent
+            link.parentElement?.replaceWith(link)
+          }
         }
         heading.remove()
         card.querySelectorAll('p').forEach(p => {

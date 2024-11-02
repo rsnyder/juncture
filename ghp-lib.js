@@ -715,13 +715,14 @@ function restructure(rootEl) {
         console.log(e, anchorElem.href)
         return
       }
-      if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
-        let newHref = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
-        console.log('update root href:', newHref)
-        anchorElem.href = newHref
-      }
       let path = link.pathname.split('/').filter(p => p)
       if (path.length === 0) return
+      
+      // adjust absolute links to be relative to the base URL
+      if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
+        anchorElem.href = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
+      }
+
       let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
       let isEntityPath = path.find(pe => pe[0] === '~')
       if (qid || isEntityPath) {

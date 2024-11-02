@@ -704,6 +704,8 @@ function restructure(rootEl) {
     }
   })
 
+  let hrefBase = document.head.querySelector('base')?.href || '/'
+  console.log('hrefBase', hrefBase)
   Array.from(main.querySelectorAll('a'))
     .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
     .forEach(anchorElem => {
@@ -714,6 +716,7 @@ function restructure(rootEl) {
         console.log(e, anchorElem.href)
         return
       }
+      console.log(link)
       let path = link.pathname.split('/').filter(p => p)
       if (path.length === 0) return
       let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null

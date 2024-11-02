@@ -274,12 +274,14 @@ export async function imageDataUrl(url: string, region: any, dest: any): Promise
   return new Promise((resolve) => {
     let {x, y, w, h} = region
     let {width, height} = dest
+
     let image = new Image()
     image.crossOrigin = 'anonymous'
     x = x ? x/100 : 0
     y = y ? y/100 : 0
     w = w ? w/100 : 0
     h = h ? h/100 : 0
+
     image.onload = () => {
       let sw = image.width
       let sh = image.height
@@ -299,6 +301,7 @@ export async function imageDataUrl(url: string, region: any, dest: any): Promise
       resolve(dataUrl)
     }
     image.src = url
+
   })
 }
 

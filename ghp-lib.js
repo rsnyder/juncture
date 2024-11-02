@@ -76,7 +76,7 @@ const components = {
     root: 'show-captions',
   },
   've-header': {
-    booleans: 'breadcrumbs no-manifest-popover pdf-download-enabled',
+    booleans: 'bottom center breadcrumbs left no-manifest-popover pdf-download-enabled right top',
     positional: 'title background subtitle options position'
   },
   've-iframe': {
@@ -162,6 +162,7 @@ function makeId(str) {
 }
 
 function parseHeadline(s) {
+  s = s.replace(/<a href="/g, '').replace(/">[^<]*<\/a>/g, '')
   let tokens = []
   s = s.replace(/”/g,'"').replace(/”/g,'"').replace(/’/g,"'")
   s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
@@ -252,7 +253,8 @@ function parseHeadline(s) {
 }
 
 function parseCodeEl(codeEl) {
-  let codeElems = codeEl.textContent?.replace(/\s+\|\s+/g,'\n')
+  console.log(codeEl)
+  let codeElems = codeEl.innerHTML?.replace(/\s+\|\s+/g,'\n')
     .split('\n')
     .map(l => l.trim())
     // .map(l => l.replace(/<em>/g, '_').replace(/<\/em>/g, '_'))
@@ -268,11 +270,11 @@ function parseCodeEl(codeEl) {
   } else if (codeElems.length > 1) {
     parsed.args = parsed.args ? [...parsed.args, ...codeElems.slice(1)] : codeElems.slice(1)
   }
+  // console.log(parsed)
   return parsed
 }
 
 function makeEl(parsed) {
-  // console.log(parsed)
   let tagDef = tagMap[parsed.tag] || {}
   let el = document.createElement(parsed.tag)
   if (parsed.id) el.id = parsed.id
@@ -378,6 +380,7 @@ function priorSibling(el) {
 
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
+  console.log(rootEl.cloneNode(true))
   // console.log('convertTags')
   // remove "editor" and "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
@@ -385,21 +388,56 @@ function convertTags(rootEl) {
   .find(link => link.href.indexOf('juncture-digital.org') > 0)
   ?.parentElement?.remove()
 
+  Array.from(rootEl?.querySelectorAll('p, li'))
+  .forEach(el => {
+    let matches = Array.from(el.innerHTML.matchAll(/==(?<text>[^=]+)=={(?<attrs>[^}]+)}/g))
+    if (matches.length) {
+      let replHtml = []
+      matches.forEach((match, idx) => {
+        if (idx === 0) replHtml.push(el.innerHTML.slice(0, match.index))
+        if (match.groups) {
+          let {text, attrs} = match.groups
+          replHtml.push(`<a href="${parseMarkArg(attrs)}">${text}</a>`)
+          replHtml.push(el.innerHTML.slice(match.index + match[0].length, matches[idx+1]?.index || el.innerHTML.length))
+        }
+      })
+      el.innerHTML = replHtml.join('')
+    }
+  })
+
+  Array.from(rootEl?.querySelectorAll('p, li'))
+  .forEach(el => {
+    let matches = Array.from(el.innerHTML.matchAll(/==(?<text>[^=}{]+)==/g))
+    if (matches.length) {
+      let replHtml = []
+      matches.forEach((match, idx) => {
+        if (idx === 0) replHtml.push(el.innerHTML.slice(0, match.index))
+        if (match.groups) {
+          let {text} = match.groups
+          replHtml.push(`<mark>${text}</mark>`)
+          replHtml.push(el.innerHTML.slice(match.index + match[0].length, matches[idx+1]?.index || el.innerHTML.length))
+        }
+      })
+      el.innerHTML = replHtml.join('')
+    }
+  })
+
   // Juncture v2 tagging
   Array.from(rootEl.querySelectorAll(':scope > p'))
     .filter(p => /^\.ve-\w+\S/.test(p.childNodes.item(0)?.nodeValue?.trim() || ''))
     .forEach(p => {
+      console.log(p.innerHTML)
       let codeEl = document.createElement('code')
       codeEl.setAttribute('class', 'language-juncture2')
-      // console.log(p.innerHTML.trim().slice(1))
-      codeEl.innerHTML = p.innerHTML.trim().slice(1)
+      let html = p.innerHTML.trim().slice(1)
         .replace(/\n\s*-\s+/g, '\n')
-        .replace(/<a href="/g, '')
-        .replace(/">[^<]*<\/a>/g, '')
-        .replace(/^ve-media/, 've-image')
+        // .replace(/<a href="/g, '')
+        // .replace(/">[^<]*<\/a>/g, '')
+        // .replace(/^ve-media/, 've-image')
         .split('\n')
         .map(line => /^[\s-]*(src=)?wc:/.test(line) ? line.replace(/<\/?em>/g,'_') : line)
         .join('\n')
+      codeEl.innerHTML = html
       p.replaceWith(codeEl)
     })
 
@@ -459,7 +497,7 @@ function convertTags(rootEl) {
         parent.replaceWith(codeEl)
       }
       codeEl.replaceWith(makeEl(parsed))
-    } else if ((parsed.class || parsed.style || parsed.id || parsed.kwargs) && !parsed.inline) {
+    } else if ((parsed.class || parsed.style || parsed.id || parsed.kwargs) && parsed.inline) {
       let target
       // if (priorEl?.tagName === 'EM' || priorEl?.tagName === 'STRONG' || priorEl?.tagName === 'MARK') {
       if (priorEl?.tagName === 'MARK') {
@@ -547,6 +585,19 @@ function applyStyle(el, styleObj) {
   el.setAttribute('style', styles.join(';'))
 }
 
+function parseMarkArg(arg) {
+  if (arg.indexOf('=') > 0) {
+    let [key, value] = arg.split('=')
+    return `${key}/${value}`
+  }
+  if (/^(pct:)?\d+,\d+,\d+,\d+(,[0-9a-f]{8})?$/.test(arg)) return `zoomto/${arg}`
+  if (/^[\-+]?[0-9\.]+,[\-+]?[0-9\.]+(,[0-9\.]+)?$/.test(arg)) return `flyto/${arg}`
+  if (/^[0-9:]+(,[0-9:]+)?$/.test(arg)) return `play/${arg}`
+  if (/^[0-9a-f]{8}$/.test(arg)) return `anno/${arg}`
+  if (/^Q[0-9]+$/.test(arg)) return arg
+  return arg
+}
+
 // Restructure the content to have hierarchical sections and segments
 function restructure(rootEl) {
   let styleSheet = rootEl.querySelector('style')
@@ -596,27 +647,25 @@ function restructure(rootEl) {
     }
   })
 
+  /*
   Array.from(rootEl?.querySelectorAll('p, li'))
-  .filter(p => /==.+=={.+}/.test(p.textContent?.trim() || ''))
+  .filter(el => /==.+=={.+}/.test(el.textContent?.trim() || ''))
   .forEach(el => {
+    console.log(el.textContent)
     let replHtml = []
     let matches = Array.from(el.innerHTML.matchAll(/==(?<text>[^=]+)=={(?<attrs>[^}]+)}/g))
     matches.forEach((match, idx) => {
+      console.log(match)
       if (idx === 0) replHtml.push(el.innerHTML.slice(0, match.index))
       if (match.groups) {
         let {text, attrs} = match.groups
-        if (/\s*Q\d+\s*/.test(attrs)) {
-          replHtml.push(`<a href="${attrs}">${text}</a>`)
-        } else if (attrs.indexOf('=') > 0) {
-          let [key, value] = attrs.split('=')
-          if (value[0] !== '"') attrs = `${key}="${value}"`
-          replHtml.push(`<mark ${attrs}>${text}</mark>`)
-        }
+        replHtml.push(`<a href="${parseMarkArg(attrs)}">${text}</a>`)
         replHtml.push(el.innerHTML.slice(match.index + match[0].length, matches[idx+1]?.index || el.innerHTML.length))
       }
     })
     el.innerHTML = replHtml.join('')
   })
+  */
 
   // For compatibility with Juncture V1
   Array.from(rootEl?.querySelectorAll('param'))
@@ -1362,7 +1411,6 @@ function structureContent(html) {
 }
 
 function articleFromHtml(html) {
-  html = html.replace(/==(.+)==/g, '<mark>$1</mark>')
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
   if (window.config) window.config.isJunctureV1 = isJunctureV1(contentEl)

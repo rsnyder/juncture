@@ -93,13 +93,19 @@
     noManifestPopover: { type: Boolean, default: false},
     options: { type: String },
     pdfDownloadEnabled: { type: Boolean, default: false },
-    position: { type: String, default: 'center' },
     subtitle: { type: String },
     searchDomain: { type: String },
     searchCx: { type: String },
     searchKey: { type: String },
     title: { type: String },
-    top: { type: Number, default: 0 }
+    offset: { type: Number, default: 0 },
+
+    position: { type: String },
+    top: { type: Boolean },
+    bottom: { type: Boolean },
+    left: { type: Boolean },
+    right: { type: Boolean },
+    center: { type: Boolean }
   })
 
   watch(host, (host) => {
@@ -115,8 +121,8 @@
     isSticky.value = host.classList.contains('sticky')
     if (isSticky.value) {
       let styleTop = parseInt(host.style.top.replace(/px/,''))
-      let top = props.top
-        ? props.top
+      let top = props.offset
+        ? props.offset
         : styleTop
           ? styleTop
           : backgroundImage.value
@@ -175,17 +181,20 @@
   watch(imageInfo, async (val: any, priorVal: any) => {
     if (val !== priorVal) {
       setTimeout(async() => {
-      imgUrl.value = val.service
-        ? iiifUrl(val.service[0].id || val.service[0]['@id'], imageOptions.value)
-        : await imageDataUrl(imageInfo.value.id, imageOptions.value.region, {width: host.value.clientWidth, height: props.height})
+        console.log('imageInfo', toRaw(val))
+        if (!val.service)
+          imageDataUrl(imageInfo.value.id, imageOptions.value.region, {width: host.value.clientWidth, height: props.height}).then(dataUrl => console.log(dataUrl))
+        else 
+          imgUrl.value = iiifUrl(val.service[0].id || val.service[0]['@id'], imageOptions.value)
       }, 100)
     }
   })
 
   watch(imgUrl, () => {
+    console.log(imgUrl.value)
     if (background.value) {
       background.value.style.backgroundImage = `url("${imgUrl.value}")`
-      background.value.style.backgroundPosition = props.position
+      background.value.style.backgroundPosition = props.position || (props.top && 'top') || (props.bottom && 'bottom') || (props.left && 'left') || (props.right && 'right') || (props.center && 'center') || 'center'
     }
   })
 

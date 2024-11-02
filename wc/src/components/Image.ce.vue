@@ -50,7 +50,7 @@
   import OpenSeadragon, { TileSource } from 'openseadragon'
   import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
-  import { iiifServer, getManifest, mwImage, sha256 } from '../utils'
+  import { iiifServer, getManifest, isNumeric, mwImage, sha256 } from '../utils'
 
   import { Annotator } from '../annotator'
 
@@ -69,7 +69,7 @@
     data: { type: String },
     fit: { type: String, default: 'contain' },
     format: { type: String },
-    height: { type: Number },
+    height: { type: String },
     manifest: { type: String },
     noCaption: { type: Boolean, default: false },
     options: { type: String },
@@ -83,7 +83,7 @@
     slot: { type: String },
     src: { type: String },
     static: { type: Boolean, default: false},
-    width: { type: Number },
+    width: { type: String },
     zoomOnScroll: { type: Boolean, default: false },
 
     // for ad-hoc manifest creation
@@ -131,8 +131,8 @@
       host.getLabel = () => manifests.value[selected.value]?.label?.en?.[0]
 
       let computedStyle = window.getComputedStyle(host)
-      definedWidth.value  = props.width || computedStyle.width.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).width.slice(0,-2)) || 0
-      definedHeight.value  = props.height || computedStyle.height.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).height.slice(0,-2)) || 0
+      definedWidth.value  = (isNumeric(props.width) && parseInt(props.width || '0')) || computedStyle.width.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).width.slice(0,-2)) || 0
+      definedHeight.value  = (isNumeric(props.height) && parseInt(props.height || '0')) || computedStyle.height.slice(-2) === 'px' && parseInt(window.getComputedStyle(host).height.slice(0,-2)) || 0
     }
   })
 
@@ -317,7 +317,8 @@
 
   // const width = ref<number>(0)
   watch(width, (width) => {
-    root.value?.setAttribute('style', `width: ${props.width}px; margin: auto;`)
+    let widthValue = isNumeric(props.width) ? `${props.width}px` : props.width
+    root.value?.setAttribute('style', `width: ${widthValue}; margin: auto;`)
     osdWidth.value = width
    })
 
@@ -342,8 +343,8 @@
       // addInteractionHandlers()
       interactionsHandlersInitialized.value = true
     }
-    definedWidth.value = props.width || 0
-    definedHeight.value = props.height || 0
+    definedWidth.value = (isNumeric(props.width) && parseInt(props.width || '0')) || 0
+    definedHeight.value = (isNumeric(props.width) && parseInt(props.width || '0')) || 0
   }
 
   onMounted(() => {
@@ -502,7 +503,7 @@
             if (!target) return
           }
 
-          target = findClosestPlayer(anchorElem, 've-image')
+          target = findClosestImageViewer(anchorElem, 've-image')
           if (target !== host.value) return
 
 
@@ -524,11 +525,26 @@
     }
   }
 
-  function findClosestPlayer(anchorElem: HTMLElement, playerTag) {
+  function findClosestImageViewer(anchorElem: HTMLElement, tag) {
     let found
     let scope = anchorElem.parentElement
     while (scope && !found) {
-      found = scope.querySelector(playerTag)
+      let matches = Array.from(scope.querySelectorAll(tag))
+      if (matches.length) {
+        if (scope === anchorElem.parentElement?.parentElement) {
+          let priorSib = anchorElem.parentElement.previousElementSibling
+          while (priorSib) {
+            if (matches.find(m => m === priorSib)) {
+              found = priorSib
+              break
+            } else {
+              priorSib = priorSib.previousElementSibling
+            }
+          }
+        } else {
+          found = matches[0]
+        }
+      }
       scope = scope.parentElement
     }
     return found

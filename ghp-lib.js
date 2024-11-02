@@ -716,7 +716,7 @@ function restructure(rootEl) {
         return
       }
       if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
-        let newHref = `${link.origin}/${baseHref}${link.pathname.slice(1)}`
+        let newHref = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
         console.log('update root href:', newHref)
         anchorElem.href = newHref
       }

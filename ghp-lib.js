@@ -451,7 +451,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    // console.log(parsed)
+    console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -717,10 +717,12 @@ function restructure(rootEl) {
       }
       let path = link.pathname.split('/').filter(p => p)
       if (path.length === 0) return
-      
+
       // adjust absolute links to be relative to the base URL
       if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
-        anchorElem.href = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
+        let newHref = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
+        console.log(anchorElem.textContent, newHref)
+        // anchorElem.href = newHref
       }
 
       let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null

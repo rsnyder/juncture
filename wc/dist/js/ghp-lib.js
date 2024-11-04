@@ -288,6 +288,7 @@ function makeEl(parsed) {
       let li = document.createElement('li')
       if (parsed.tag === 've-header') li.innerHTML = arg
       else li.innerText = arg
+      console.log(li)
       ul.appendChild(li)
     }
   }

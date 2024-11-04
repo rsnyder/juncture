@@ -286,7 +286,8 @@ function makeEl(parsed) {
     el.appendChild(ul)
     for (const arg of parsed.args) {
       let li = document.createElement('li')
-      li.innerText = arg
+      if (parsed.tag === 've-header') li.innerHTML = arg
+      else li.innerText = arg
       ul.appendChild(li)
     }
   }
@@ -451,7 +452,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    // console.log(parsed)
+    console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -704,6 +705,7 @@ function restructure(rootEl) {
     }
   })
 
+  let hrefBase = document.head.querySelector('base')?.getAttribute('href')
   Array.from(main.querySelectorAll('a'))
     .filter(anchorElem => anchorElem.href.indexOf('mailto:') < 0)
     .forEach(anchorElem => {
@@ -716,6 +718,14 @@ function restructure(rootEl) {
       }
       let path = link.pathname.split('/').filter(p => p)
       if (path.length === 0) return
+
+      // adjust absolute links to be relative to the base URL
+      if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
+        let newHref = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
+        console.log(anchorElem.textContent, newHref)
+        // anchorElem.href = newHref
+      }
+
       let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
       let isEntityPath = path.find(pe => pe[0] === '~')
       if (qid || isEntityPath) {

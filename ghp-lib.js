@@ -288,7 +288,6 @@ function makeEl(parsed) {
       let li = document.createElement('li')
       if (parsed.tag === 've-header') li.innerHTML = arg
       else li.innerText = arg
-      console.log(li)
       ul.appendChild(li)
     }
   }
@@ -453,7 +452,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    console.log(parsed)
+    // console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -723,8 +722,7 @@ function restructure(rootEl) {
       // adjust absolute links to be relative to the base URL
       if (hrefBase && link.hostname === window.location.hostname && link.pathname.indexOf(hrefBase) !== 0) {
         let newHref = `${link.origin}${hrefBase}${link.pathname.slice(1)}`
-        console.log(anchorElem.textContent, newHref)
-        // anchorElem.href = newHref
+        anchorElem.href = newHref
       }
 
       let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
@@ -1393,6 +1391,16 @@ function structureContent(html) {
   return article
 }
 
+function addDefaultFooter(article) {
+  let footer = document.createElement('ve-footer')
+    footer.innerHTML = `
+      <ul>
+        <li><a href="/about">About</a></li>
+      </ul>
+    `
+  article.appendChild(footer)
+}
+
 function articleFromHtml(html) {
   let contentEl = document.createElement('main')
   contentEl.innerHTML = html
@@ -1400,6 +1408,8 @@ function articleFromHtml(html) {
   convertTags(contentEl)
   let article = restructure(contentEl)
   if (window.config?.isJunctureV1 || isJunctureV1(contentEl)) article = restructureForJ1(article)
+  // else if (!article.querySelector('ve-footer')) addDefaultFooter(article)
+  console.log(article)
   return article
 }
 
@@ -1418,7 +1428,6 @@ function mount(mountPoint, html) {
 
   let article = articleFromHtml(html)
   article.setAttribute('style', 'visibility: hidden; opacity: 0;')
-  console.log(article)
 
   setTimeout(() => {
     mountPoint.replaceWith(article)

@@ -386,7 +386,7 @@
         let [acct, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
         path = path.join('/').replace(/\/?README\.md$/, '').replace(/\.md$/, '')
         // let href = `https://${acct}.github.io/${repo}/${path}`
-        let href = `https://v3.juncture-digital.org?source=${acct}/${repo}/${branch}/${path}`
+        let href = `https://v3.juncture-digital.org?{acct}/${repo}/${path}`
         window.open(href, '_blank') 
       }
 

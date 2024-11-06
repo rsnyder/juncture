@@ -375,6 +375,17 @@ export async function loadManifests(manifestUrls: string[], refresh: boolean=fal
       ? manifestId
       : `https://${iiifServer}/${manifestId}/manifest.json`
   )
+  .map(url => {
+    if (/ark:\/\w+\/\w+/.test(url)) {
+      let match = url.match(/^(?<before>.*)\/(?<arkid>ark:\/\w+\/\w+)\/(?<after>.*$)/)
+      if (match?.groups) {
+        let {before, arkid, after} = match.groups
+        url = `${before}/${encodeURIComponent(arkid).replace(/\//g,'%2F')}/${after}`
+      }
+    }
+    return url
+  })
+
   let toGet = _manifestUrls.filter(url => !_manifestCache[url])
   // console.log(`loadManifests: manifests=${_manifestUrls.length} cached=${_manifestUrls.length - toGet.length}`)
 

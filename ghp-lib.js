@@ -1403,7 +1403,23 @@ function addDefaultFooter(article) {
 
 function articleFromHtml(html) {
   let contentEl = document.createElement('main')
-  contentEl.innerHTML = html
+
+  contentEl.innerHTML = html.replace(/^<p>(?<headingTag>#+)(?<headingText>\S+)/, '/$<headingTag> $<headingText>')
+
+  Array.from(contentEl.querySelectorAll('p'))
+    .filter(p => /^#+\S+\b/.test(p.innerHTML))
+    .forEach(p => {
+      let lines = p.innerHTML.split('\n')
+      let {tag, text} = lines.shift().match(/(?<tag>#+)(?<text>\S+.*)/).groups
+      let heading = document.createElement(`H${tag.length}`)
+      heading.innerHTML = text
+      if (lines.length == 0) p.replaceWith(heading)
+      else {
+        p.innerHTML = lines.join('\n')
+        p.parentElement.insertBefore(heading, p)
+      }
+    })
+
   if (window.config) window.config.isJunctureV1 = isJunctureV1(contentEl)
   convertTags(contentEl)
   let article = restructure(contentEl)

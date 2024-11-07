@@ -20,7 +20,7 @@
 
       <div class="search-and-menu">
         <ve-site-search v-if="props.searchDomain" :search-domain="props.searchDomain" :search-cx="props.searchCx" :search-key="props.searchKey"></ve-site-search>
-        <ve-menu v-if="navEl !== undefined || auth" 
+        <ve-menu v-if="navEl !== undefined || auth || pdfDownloadEnabled" 
           :auth="auth" 
           :contact="contact" 
           :pdf-download-enabled="pdfDownloadEnabled ? '' : null" 

@@ -172,12 +172,13 @@
   }
 
   async function generatePDF() {
-    // console.log(`Generating PDF for ${location.href}`)
     modalText.value = 'Generating PDF...'
     isOpen.value = !isOpen.value
     let source = (window as any).config?.source
     let loc = new URL(location.href)
-    let url = loc.hostname == 'localhost' ? `https://v3.juncture-digital.org?source=${source.owner}/${source.repository}/${source.branch}/${source.path}` : loc.href
+    let url = loc.hostname == 'localhost'
+      ? `https://v3.juncture-digital.org/${source.owner}/${source.repository}/${source.branch}/${source.path}`.replace(/\/(README\.md|index\.md|\.md)$/g, '')
+      : loc.href
     console.log('generatePDF for url:', url)
     let landscape = document.querySelector('article.j1') ? true : false
     let resp = await fetch(`https://ezsitepdf-drnxe7pzjq-uc.a.run.app/pdf?url=${encodeURIComponent(url)}${landscape ? '&landscape=true' : ''}`)

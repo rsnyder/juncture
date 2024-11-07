@@ -69,6 +69,7 @@ const components = {
     booleans: 'cards'
   },
   've-footer': {
+    booleans: 'pdf-download-enabled show-code-enabled',
   },
   've-gallery': {
     booleans: 'show-captions',
@@ -256,6 +257,7 @@ function parseCodeEl(codeEl) {
   let codeElems = codeEl.innerHTML?.replace(/\s+\|\s+/g,'\n')
     .split('\n')
     .map(l => l.trim())
+    .map(l => l.replace(/^-\s+/, ''))
     // .map(l => l.replace(/<em>/g, '_').replace(/<\/em>/g, '_'))
     .filter(x => x) || []
   
@@ -1275,11 +1277,13 @@ function getContent() {
     contentRoot.innerHTML = document.body.innerHTML
     document.body.innerHTML = contentRoot.outerHTML
   }
-  return window.config.content || contentRoot.innerHTML
+  if (!window.config.content) window.config.content = contentRoot.innerHTML
+  return window.config.content
 }
 
 // set the configuration
 function setConfig() {
+  console.log('setConfig')
   window.config = {
     ...yaml.parse(window.options || ''), 
     ...(window.jekyll || {}), 

@@ -30,26 +30,12 @@
       window.jekyll = { site: { baseurl }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
       setConfig()
       getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
+        window.config.content = markdown
         mount(document.body.querySelector('main'), markdownToHtml(markdown))
       })
     })
 
   </script>
 
-  <!--
-  <script>
-    let referrer = document.referrer && new URL(document.referrer)    
-    let source = location.pathname.slice(1)
-
-    if (referrer) source = `${referrer.searchParams.get('source') || ''}${location.pathname.slice(1)}`
-    else source = location.pathname.slice(1)
-    source = source.replace(/\/README\.md$/, '').replace(/\/index\.md$/, '').replace(/\.md\/?$/, '')
-
-    let href = `${location.origin}/?source=${source}/`
-    console.log('Redirecting to:', href)
-    location.href = href
-
-  </script>
-  -->
 </body>
 </html>

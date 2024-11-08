@@ -1331,7 +1331,6 @@ function elFromHtml(html) {
 async function pathDir(acct, repo, branch, path) {
   let dir, name
   let pathParts = path.filter(pe => pe)
-  console.log(pathParts)
   if (pathParts.length && /\.md$/.test(pathParts[pathParts.length-1])) {
     name = pathParts.pop()
     dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
@@ -1345,7 +1344,7 @@ async function pathDir(acct, repo, branch, path) {
       dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
       let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
       let resp = await fetch(url, {cache: 'no-cache'})
-      console.log(url, resp.status)
+      // console.log(url, resp.status)
       if (resp.ok) break
     }
   }

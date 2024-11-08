@@ -1283,7 +1283,6 @@ function getContent() {
 
 // set the configuration
 function setConfig() {
-  console.log('setConfig')
   window.config = {
     ...yaml.parse(window.options || ''), 
     ...(window.jekyll || {}), 

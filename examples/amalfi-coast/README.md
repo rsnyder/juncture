@@ -6,11 +6,12 @@
 
 The Amalfi Coast, a stretch of coastline in southern Italy's Campania region, is renowned for its breathtaking beauty, cultural richness, and historical significance. Nestled between the Gulf of Naples and the Gulf of Salerno, this 50-kilometer-long coastline is a UNESCO World Heritage site, celebrated for its dramatic cliffs, colorful villages, and lush vegetation.
 
-`map 40.63754,14.55186,12 "The Amalfi Coast" .right`
-`Q81345`
-`Q80563`
-`Q81427`
-`Q33163826`
+```map 40.63754,14.55186,12 "The Amalfi Coast" .right
+Q81345
+Q80563
+Q81427
+Q33163826
+```
 
 The coast's allure begins with its landscape. `Rugged` cliffs plunge into the sparkling Tyrrhenian Sea, creating a dramatic interplay of land and water. The road that winds along the coast, known as the Amalfi Drive or SS163, is one of the most scenic routes in the world. It offers panoramic views of the azure sea, terraced vineyards, and citrus groves. The natural beauty is complemented by charming towns and villages, each with its unique character and history.
 

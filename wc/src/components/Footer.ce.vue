@@ -1,15 +1,20 @@
 <template>
 
   <ul ref="footer" id="footer" class="flex bg-slate-100 p-2 gap-3 mt-8 items-center w-full h-8">
+    
+    <li v-if="!footerElems.length"><a href="https://v3.juncture-digital.org">Powered by <b>Juncture</b></a></li>
+    
     <li v-for="li, idx in footerElems" :key="`li-${idx}`" v-html="li.innerHTML" :class="li.className" :style="li.getAttribute('style') || ''"></li>
-    <li v-if="pdfDownloadEnabled" class="push">
+    
+    <li v-if="pdfDownloadEnabled || !footerElems.length" class="push">
       <sl-tooltip placement="top" content="Generate PDF for page">
         <a href="javascript:;" @click="generatePDF">
           <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Noun_Project_PDF_icon_117327_cc.svg" alt="PDF Icon">
         </a>
       </sl-tooltip>
     </li>
-    <li v-if="showCodeEnabled">
+
+    <li v-if="showCodeEnabled || !footerElems.length">
       <sl-tooltip placement="top" content="Show page Markdown code">
         <a href="javascript:;" @click="showCode">
           <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#777" class="bi bi-markdown" viewBox="0 0 16 16">
@@ -21,6 +26,8 @@
         </a>
       </sl-tooltip>
     </li>
+
+    <!--
     <li>
       <sl-tooltip placement="top" content="Open Juncture Editor">
         <a href="javascript:;" @click="openEditor">
@@ -28,6 +35,7 @@
         </a>
       </sl-tooltip>
     </li>
+    -->
   </ul>
 
   <!-- Generating PDF dialog -->
@@ -54,6 +62,7 @@
     <ve-markup v-if="markdown" style="height:500px;">{{ markdown }}</ve-markup>
 
     <div slot="footer">
+      <sl-button variant="primary" class="edit hidden" style="margin-right:1em;">Open in Juncture Editor</sl-button>
       <sl-button variant="primary" class="close" style="margin-right:1em;">Close</sl-button>
     </div>
   </sl-dialog>
@@ -102,14 +111,26 @@
   })
 
   const markdown = ref<HTMLElement | null>(null)
+  const repoIsWritable = ref(false)
+  watch (repoIsWritable, (repoIsWritable) => {
+    console.log('repoIsWritable', repoIsWritable)
+    codeDialog.value?.querySelector('.edit')?.classList[repoIsWritable ? 'remove' : 'add']('hidden')
+  })
 
   const codeDialog = ref<SLDIalog | null>(null)
   const codeDialogWidth = ref(400)
   const codeDialogHeight = ref(400)
   watch(codeDialog, (codeDialog) => {
     codeDialog?.addEventListener('sl-overlay-dismiss', () => codeDialog.hide())
-    codeDialog?.addEventListener('sl-close', () => codeDialog.hide())
+    codeDialog?.addEventListener('sl-show', () => {
+      if (!repoIsWritable.value) canUpdateRepo().then(canUpdate => repoIsWritable.value = canUpdate)
+    })
+    codeDialog?.addEventListener('sl-hide', () => codeDialog.hide())
     codeDialog?.querySelector('.close')?.addEventListener('click', () => codeDialog.hide())
+    codeDialog?.querySelector('.edit')?.addEventListener('click', () => {
+      codeDialog.hide()
+      openEditor()
+    })
   })
 
   watch(host, () => { getFooterItems() })
@@ -233,6 +254,20 @@
     setTimeout(() => isOpen.value = false, 2000)
   }
 
+  async function canUpdateRepo() {
+    let source = (window as any).config?.source
+    let username = window.localStorage.getItem('gh-username')
+    if (!username) return false
+    if (source.owner === username) return true
+    // Not account owner, check if user is a collaborator
+    let url = `https://api.github.com/repos/${source.owner}/${source.repository}/collaborators/${username}`
+    let headers: any = { Accept: 'application/vnd.github+json' }
+    let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
+    if (authToken) headers.Authorization = `token ${authToken}`
+    let resp = await fetch(url, { headers })
+    return resp.ok && resp.status === 204
+  }
+
 </script>
 
 <style>
@@ -278,6 +313,10 @@ pre {
   white-space: pre;
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 </style>

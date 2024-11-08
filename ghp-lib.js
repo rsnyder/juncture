@@ -1373,6 +1373,19 @@ async function getGhFile(acct, repo, branch, path) {
   }
 }
 
+async function canUpdateRepo(acct, repo) {
+  let username = window.localStorage.getItem('gh-username')
+  if (!username) return false
+  if (acct === username) return true
+  // Not account owner, check if user is a collaborator
+  let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
+  let headers = { Accept: 'application/vnd.github+json' }
+  let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
+  if (authToken) headers.Authorization = `token ${authToken}`
+  let resp = await fetch(url, { headers })
+  return resp.ok && resp.status === 204
+}
+
 function markdownToHtml(markdown) {
   return marked.use(window.markedFootnote()).parse(markdown)
   .split('\n')
@@ -1400,13 +1413,7 @@ function structureContent(html) {
 }
 
 function addDefaultFooter(article) {
-  let footer = document.createElement('ve-footer')
-    footer.innerHTML = `
-      <ul>
-        <li><a href="/about">About</a></li>
-      </ul>
-    `
-  article.appendChild(footer)
+  article.appendChild(document.createElement('ve-footer'))
 }
 
 function articleFromHtml(html) {
@@ -1432,7 +1439,7 @@ function articleFromHtml(html) {
   convertTags(contentEl)
   let article = restructure(contentEl)
   if (window.config?.isJunctureV1 || isJunctureV1(contentEl)) article = restructureForJ1(article)
-  // else if (!article.querySelector('ve-footer')) addDefaultFooter(article)
+  else if (!article.querySelector('ve-footer') && location.hostname === 'localhost' || location.hostname.indexOf('juncture-digital.org') > -1) addDefaultFooter(article)
   console.log(article)
   return article
 }
@@ -1469,4 +1476,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, pathDir, scriptBase, setConfig, structureContent, tagMap }
+export { addLink, addScript, articleFromHtml, canUpdateRepo, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, pathDir, scriptBase, setConfig, structureContent, tagMap }

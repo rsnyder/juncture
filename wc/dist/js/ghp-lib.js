@@ -1335,12 +1335,17 @@ async function pathDir(acct, repo, branch, path) {
     name = pathParts.pop()
     dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
   } else {
-    name = pathParts.length ? `${pathParts.pop()}.md` : 'README.md'
-    dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
-    let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
-    let resp = await fetch(url, {cache: 'no-cache'})
-    if (resp.ok) {
-      name = 'index.md'
+    let toCheck = pathParts.length 
+      ? [pathParts[pathParts.length-1], `${pathParts[pathParts.length-1]}/README`, `${pathParts[pathParts.length-1]}/index}`]
+      : ['README', 'index']
+    for (let i = 0; i < toCheck.length; i++) {
+      let tc = toCheck[i]
+      name = `${tc.split('/').pop()}.md`
+      dir = pathParts.length ? `/${pathParts.join('/')}/` : '/'
+      let url = `https://api.github.com/repos/${acct}/${repo}/contents${dir}${name}?ref=${branch}`
+      let resp = await fetch(url, {cache: 'no-cache'})
+      // console.log(url, resp.status)
+      if (resp.ok) break
     }
   }
   path = dir === '/' ? name : `${dir.slice(1)}${name}`
@@ -1366,6 +1371,19 @@ async function getGhFile(acct, repo, branch, path) {
   } else {
     return {status: resp.status, content: null}
   }
+}
+
+async function canUpdateRepo(acct, repo) {
+  let username = window.localStorage.getItem('gh-username')
+  if (!username) return false
+  if (acct === username) return true
+  // Not account owner, check if user is a collaborator
+  let url = `https://api.github.com/repos/${owner}/${repo}/collaborators/${username}`
+  let headers = { Accept: 'application/vnd.github+json' }
+  let authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
+  if (authToken) headers.Authorization = `token ${authToken}`
+  let resp = await fetch(url, { headers })
+  return resp.ok && resp.status === 204
 }
 
 function markdownToHtml(markdown) {
@@ -1395,13 +1413,7 @@ function structureContent(html) {
 }
 
 function addDefaultFooter(article) {
-  let footer = document.createElement('ve-footer')
-    footer.innerHTML = `
-      <ul>
-        <li><a href="/about">About</a></li>
-      </ul>
-    `
-  article.appendChild(footer)
+  article.appendChild(document.createElement('ve-footer'))
 }
 
 function articleFromHtml(html) {
@@ -1427,7 +1439,7 @@ function articleFromHtml(html) {
   convertTags(contentEl)
   let article = restructure(contentEl)
   if (window.config?.isJunctureV1 || isJunctureV1(contentEl)) article = restructureForJ1(article)
-  // else if (!article.querySelector('ve-footer')) addDefaultFooter(article)
+  else if (!article.querySelector('ve-footer')) addDefaultFooter(article)
   console.log(article)
   return article
 }
@@ -1464,4 +1476,4 @@ function mount(mountPoint, html) {
   return article
 }
 
-export { addLink, addScript, articleFromHtml, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, pathDir, scriptBase, setConfig, structureContent, tagMap }
+export { addLink, addScript, articleFromHtml, canUpdateRepo, convertTags, cssBase, elFromHtml, getGhFile, getMarkdown, markdownToHtml, mode, mount, observeVisible, pathDir, scriptBase, setConfig, structureContent, tagMap }

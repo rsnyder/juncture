@@ -2,14 +2,18 @@
 
   <ul ref="footer" id="footer" class="flex bg-slate-100 p-2 gap-3 mt-8 items-center w-full h-8">
     
-    <li v-if="!footerElems.length"><a href="https://v3.juncture-digital.org">Powered by <b>Juncture</b></a></li>
+    <li v-if="!footerElems.length">
+      <a href="https://v3.juncture-digital.org">Powered by 
+        <img src="https://v3.juncture-digital.org/logo.png" alt="Juncture Logo" style="height:36px; vertical-align:middle;">
+      </a>
+    </li>
     
     <li v-for="li, idx in footerElems" :key="`li-${idx}`" v-html="li.innerHTML" :class="li.className" :style="li.getAttribute('style') || ''"></li>
     
     <li v-if="pdfDownloadEnabled || !footerElems.length" class="push">
       <sl-tooltip placement="top" content="Generate PDF for page">
         <a href="javascript:;" @click="generatePDF">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Noun_Project_PDF_icon_117327_cc.svg" alt="PDF Icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Noun_Project_PDF_icon_117327_cc.svg" alt="PDF Icon" style="height:30px;">
         </a>
       </sl-tooltip>
     </li>
@@ -17,7 +21,7 @@
     <li v-if="showCodeEnabled || !footerElems.length">
       <sl-tooltip placement="top" content="Show page Markdown code">
         <a href="javascript:;" @click="showCode">
-          <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#777" class="bi bi-markdown" viewBox="0 0 16 16">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#777" class="bi bi-markdown" viewBox="0 0 16 16">
             <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"></path>
             <path fill-rule="evenodd" d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"></path>
             <path fill-rule="evenodd" d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"></path>
@@ -272,6 +276,10 @@
 
 <style>
   @import '../tailwind.css';
+
+a {
+  color: #0969da;
+}
 
 img,
 svg {

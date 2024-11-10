@@ -39,7 +39,10 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 1. In the newly created repository, create a new markdown file for the Juncture essay by selecting **Create new file** from the **Add file** pull-down menu located on the repository home page.  
 2. In the file name input field enter "sunflower/README.md"
-3. In the editor field add the text `[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)`
+3. In the editor field add the text 
+  ```markdown
+  [![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
+  ```
 `
 4. Press the **Commit changes...** button located at the top-right of the page.
 
@@ -54,11 +57,17 @@ To access the workbench, press the two-toned "Juncture Workbench" button now dis
 Append the following text to your `sunflower/README.md` file, leaving a blank line between the workbench button text added in the previous step and this new text.
 
 ```
-# Common Sunflower
+# Hello, Juncture
 
-`image wc:Sunflower_sky_backdrop.jpg .right`
+## Juncture image
 
-The [common sunflower](Q171497) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.
+`image wc:Sunflower_sky_backdrop.jpg `
+
+In 
+
+## Juncture map
+
+`map`
 
 ```
 

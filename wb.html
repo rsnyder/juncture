@@ -10,7 +10,7 @@
     console.log(location)
 
     const searchParams = new URL(location.href).searchParams
-    const sourceArg = searchParams.get('source')
+    let sourceArg = searchParams.get('source')
     const referrer = document.referrer && new URL(document.referrer)
     console.log('Referrer:', referrer)
     if (!sourceArg && referrer?.hostname === 'github.com') {

@@ -406,7 +406,7 @@
           mode = preview.classList.contains('editor-preview-active') ? 'view' : 'edit'
           setSaveButtonState()
         }, 100)
-        window.config.content = md
+        window.config.markdown = md
         let resp = mdToHtml(md)
         let html =`<ve-article${repoIsWritable ? ' repo-is-writable' : ''} base="${ghSource?.replace(/\/\w+\.md$/, '')}" class="editor-preview ${resp.classes}">${resp.html.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</ve-article>`
         // return html

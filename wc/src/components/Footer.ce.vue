@@ -11,24 +11,24 @@
     <li v-for="li, idx in footerElems" :key="`li-${idx}`" v-html="li.innerHTML" :class="li.className" :style="li.getAttribute('style') || ''"></li>
     
     <li v-if="pdfDownloadEnabled || !footerElems.length" class="push">
-      <sl-tooltip placement="top" distance="25" content="Generate PDF for page">
-        <a href="javascript:;" @click="generatePDF">
+      <a href="javascript:;" @click="generatePDF">
+        <sl-tooltip placement="top" content="Generate PDF for page">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="#0969da"><path d="M64 464l48 0 0 48-48 0c-35.3 0-64-28.7-64-64L0 64C0 28.7 28.7 0 64 0L229.5 0c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3L384 304l-48 0 0-144-80 0c-17.7 0-32-14.3-32-32l0-80L64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"/></svg>
-          </a>
-      </sl-tooltip>
+        </sl-tooltip>
+      </a>
     </li>
 
     <li v-if="showCodeEnabled || !footerElems.length">
-      <sl-tooltip placement="top" distance="24" content="Show page Markdown code">
-        <a href="javascript:;" @click="showCode">
+      <a href="javascript:;" @click="showCode" style="height:24px;">
+        <sl-tooltip placement="top" content="Show page Markdown code">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#0969da" class="bi bi-markdown" viewBox="0 0 16 16">
             <path d="M14 3a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h12zM2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2z"></path>
             <path fill-rule="evenodd" d="M9.146 8.146a.5.5 0 0 1 .708 0L11.5 9.793l1.646-1.647a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 0-.708z"></path>
             <path fill-rule="evenodd" d="M11.5 5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 1 .5-.5z"></path>
             <path d="M3.56 11V7.01h.056l1.428 3.239h.774l1.42-3.24h.056V11h1.073V5.001h-1.2l-1.71 3.894h-.039l-1.71-3.894H2.5V11h1.06z"></path>
           </svg>
-        </a>
-      </sl-tooltip>
+        </sl-tooltip>
+      </a>
     </li>
 
     <!--
@@ -57,14 +57,8 @@
   </div>
 
   <!-- Source code dialog -->
-  <sl-dialog ref="codeDialog" label="Markdown Source Code" 
-    :style="{
-      '--width': `${codeDialogWidth}px`,
-    }"
-    >
-
-    <ve-markup v-if="markdown" style="height:500px;">{{ markdown }}</ve-markup>
-
+  <sl-dialog ref="codeDialog" label="Page Source Code" :style="{'--width': `${codeDialogWidth}px`}">
+    <ve-markup v-if="markdown" latest-only style="height:500px;">{{ markdown }}</ve-markup>
     <div slot="footer">
       <sl-button variant="primary" class="edit hidden" style="margin-right:1em;">Open in Juncture Editor</sl-button>
       <sl-button variant="primary" class="close" style="margin-right:1em;">Close</sl-button>
@@ -75,7 +69,7 @@
   
 <script setup lang="ts">
 
-  import { computed, onMounted, ref, watch } from 'vue'
+  import { computed, onMounted, ref, toRaw, watch } from 'vue'
   import { marked } from 'marked'
   import type SLDIalog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
   
@@ -92,6 +86,12 @@
 
   const footer = ref<HTMLElement | null>(null)
   const host = computed(() => (footer.value?.getRootNode() as any)?.host)
+
+  const window = (self as any).window
+  const config = ref<any>(window.config || {})
+  const source = computed(() => config.value.source)
+  const ghLink = computed(() => `https://github.com/${source.value.owner}/${source.value.repository}/blob/${source.value.branch}/${source.value.path}`)
+  const editorLink = computed(() => `https://editor.juncture-digital.org/?source=${source.value.owner}/${source.value.repository}/${source.value.branch}/${source.value.path}`)
 
   const pdfOverlayRef = ref<HTMLElement | null>(null)
   const pdfOverlayEl = computed(() => pdfOverlayRef?.value as HTMLElement)
@@ -117,7 +117,6 @@
   const markdown = ref<HTMLElement | null>(null)
   const repoIsWritable = ref(false)
   watch (repoIsWritable, (repoIsWritable) => {
-    console.log('repoIsWritable', repoIsWritable)
     codeDialog.value?.querySelector('.edit')?.classList[repoIsWritable ? 'remove' : 'add']('hidden')
   })
 
@@ -140,7 +139,6 @@
   watch(host, () => { getFooterItems() })
   onMounted(() => {
     setTimeout(() => {
-      // console.log(footer.value?.clientWidth, host.value?.parentElement?.clientHeight)
       codeDialogWidth.value = footer.value ? Math.round(footer.value.clientWidth * .9) : codeDialogWidth.value
       codeDialogHeight.value = footer.value ? Math.round(host.value?.parentElement?.clientHeight * .6) : codeDialogHeight.value
     }, 1)
@@ -224,12 +222,11 @@
 
   function showCode() {
     codeDialog.value?.show()
-    markdown.value = (window as any).config?.content
+    markdown.value = config.value?.markdown
   }
 
   function openEditor() {
-    let source = (window as any).config?.source
-    window.open(`https://editor.juncture-digital.org/?source=${source.owner}/${source.repository}/${source.branch}/${source.path}`, '_blank')
+    window.open(editorLink.value, '_blank')
   }
 
   async function generatePDF() {
@@ -287,6 +284,10 @@
   background-color: #eee;
   color: #444;
   gap: 1em;
+}
+
+sl-dialog::part(body) {
+  padding-top: 0;
 }
 
 a {

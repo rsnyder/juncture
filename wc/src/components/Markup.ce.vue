@@ -2,9 +2,9 @@
 
   <sl-tab-group ref="root">
 
-    <sl-tab slot="nav" panel="j3">Juncture v3</sl-tab>
-    <sl-tab slot="nav" panel="j2">Juncture v2</sl-tab>
-    <sl-tab slot="nav" panel="j1">Juncture v1</sl-tab>
+    <sl-tab slot="nav" panel="j3">Markdown</sl-tab>
+    <sl-tab slot="nav" v-if="!latestOnly" panel="j2">v2 syntax</sl-tab>
+    <sl-tab slot="nav" v-if="!latestOnly" panel="j1">v1 syntax</sl-tab>
     <sl-tab slot="nav" panel="html">HTML</sl-tab>
 
     <sl-tab-panel name="j3" :draggable="props.draggable" @dragstart="onDrag">
@@ -74,7 +74,7 @@
   
 <script setup lang="ts">
 
-  import { computed, nextTick, onMounted, ref, toRaw, watch } from 'vue'
+  import { computed, nextTick, ref, watch } from 'vue'
   import { convertTags, tagMap } from '../../../ghp-lib.js'
 
   import { marked } from 'marked'
@@ -101,22 +101,17 @@
   const version = ref('j3')
 
   const props = defineProps({
-    draggable: { type: Boolean, default: true }
+    draggable: { type: Boolean, default: true },
+    latestOnly: { type: Boolean, default: false }
   })
 
   const rawText = ref<string>()
   watch(rawText, () => {
-    // console.log(`${rawText.value}`)
-    nextTick(() => { if (j3MarkupEl.value) Prism.highlightElement(j3MarkupEl.value) })
-  })
-  
-  const markupEl = computed(() => {
-    let rootEl = rawText.value && new DOMParser().parseFromString(marked.parse(rawText.value), 'text/html').body as HTMLElement
-    return rootEl && convertTags(rootEl)
-  })
-  watch(markupEl, (markupEl) => {
-    // console.log('markupEl', markupEl)
-    html.value = styleHTML(markupEl.outerHTML)
+    if (rawText.value) {
+      let el = new DOMParser().parseFromString(marked.parse(rawText.value), 'text/html').body as HTMLElement
+      convertTags(el)
+      html.value = styleHTML(el.outerHTML)
+    }
   })
   
   const j1Markup = ref<string>()
@@ -133,7 +128,6 @@
     let rootEl = new DOMParser().parseFromString(html.value || '', 'text/html').body as HTMLElement
     rootEl.querySelectorAll('li').forEach(li => li.innerHTML = li.innerHTML.replace(/^\s*-\s*/, ''))
 
-    // console.log(`version: ${version.value}`)
     j1Markup.value = version.value === 'j1' ? rawText.value : elToMarkdown(rootEl, 'j1')
     j2Markup.value = version.value === 'j2' ? rawText.value : elToMarkdown(rootEl, 'j2')
     j3Markup.value = version.value === 'j3' ? rawText.value : elToMarkdown(rootEl, 'j3')
@@ -143,7 +137,6 @@
   })
 
   function elToMarkdown(el, version) {
-    // console.log('elToMarkdown', version, el)
     let lines: string[] = [];
     (Array.from(el?.querySelectorAll(':scope > *') || []) as HTMLElement[])
     // .filter(el => el.tagName.indexOf('VE-') === 0)
@@ -158,7 +151,6 @@
       } else if (c.tagName.indexOf('VE-') === 0) {
         let isCodeBlock = c.querySelector('ul') !== null
         let tagDef = tagMap[c.tagName.toLowerCase()]
-        console.log('tagDef', tagDef)
         
         if (version === 'j1') {
           if (isCodeBlock) {
@@ -249,7 +241,6 @@
         }
       }
     })
-    // console.log(lines.join('\n'))
     return lines.join('\n')
   }
 
@@ -326,15 +317,9 @@
   }
 
   function onDrag(evt:DragEvent) {
-    console.log('onDrag', evt)
-
-    console.log(evt.dataTransfer?.getData('text/plain'))
-    console.log(evt.dataTransfer?.getData('text'))
-    console.log(evt.dataTransfer?.getData('text/uri-list'))
 
     let text = root.value?.querySelector('sl-tab-panel[active]')?.textContent?.trim() || ''
     if (text) evt.dataTransfer?.setData('text', text)
-    console.log(evt.dataTransfer?.getData('text'))
   }
 
   Prism.languages.juncture = Prism.languages.extend('markup', {

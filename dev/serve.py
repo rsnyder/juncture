@@ -22,6 +22,8 @@ GH_OWNER = os.environ.get('GH_OWNER', '')
 GH_REPOSITORY = os.environ.get('GH_REPOSITORY', '')
 GH_BRANCH = os.environ.get('GH_BRANCH', 'main')
 
+logger.info(f'BASEDIR={BASEDIR} CONTENT_ROOT={CONTENT_ROOT} LOCAL_WC={LOCAL_WC} LOCAL_WC_PORT={LOCAL_WC_PORT} PORT={PORT} GH_OWNER={GH_OWNER} GH_REPOSITORY={GH_REPOSITORY} GH_BRANCH={GH_BRANCH}')
+
 from bs4 import BeautifulSoup
 import markdown
 import yaml
@@ -80,18 +82,20 @@ CONFIG = {
   'site': {
     'baseurl': '',
     'github': {
-      'owner_name': GH_OWNER or 'rsnyder',
-      'repository_name': GH_REPOSITORY or 'gh-test',
+      'owner_name': GH_OWNER or CONTENT_ROOT.split('/')[-2],
+      'repository_name': GH_REPOSITORY or CONTENT_ROOT.split('/')[-1],
       'source': {
         'branch': GH_BRANCH or 'main'
       }
     }
   },
   'page': {},
+  'markdown': '',
   'content': ''
 }
   
 def html_from_markdown(md, baseurl, dir, name, path):
+  CONFIG['markdown'] = md
   html = html_template.replace('{{ content }}', markdown.markdown(md, extensions=['extra', 'toc']))
   
   soup = BeautifulSoup(markdown.markdown(md, extensions=['extra', 'toc']), 'html5lib')
@@ -159,8 +163,10 @@ def html_from_markdown(md, baseurl, dir, name, path):
 async def serve(path: Optional[str] = None):
   path = [pe for pe in path.split('/') if pe != ''] if path else []
   ext = path[-1].split('.')[-1].lower() if len(path) > 0 and '.' in path[-1] else None
-  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'ghp-lib.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
-  # if len(path) > 0 and path[0] in ['ghp.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:
+
+  # logger.info(f'path: {path} ext: {ext}')
+
+  if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'ghp-lib.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:  
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
     # logger.info(f'local_file_path: {local_file_path}')
 
@@ -204,6 +210,10 @@ async def serve(path: Optional[str] = None):
       md_path = '/'.join(local_file_path)
       logger.debug(f'md_dir={md_dir} md_name={md_name} md_path={md_path}')
     content = html_from_markdown(content, baseurl=f'/{"/".join(path)}/' if len(path) > 0 else '/', dir=md_dir, name=md_name, path=md_path)
+    if LOCAL_WC:
+      content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
+      content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
+      
     content = content.replace('{{ page.dir }}', md_dir)
     content = content.replace('{{ page.name }}', md_name)
     content = content.replace('{{ page.path }}', md_path)

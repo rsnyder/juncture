@@ -50,7 +50,7 @@
   import OpenSeadragon, { TileSource } from 'openseadragon'
   import OpenSeadragonViewerInputHook from '@openseadragon-imaging/openseadragon-viewerinputhook'
 
-  import { iiifServer, getManifest, isNumeric, mwImage, sha256 } from '../utils'
+  import { iiifServer, getManifest, isMobile, isNumeric, mwImage, sha256 } from '../utils'
 
   import { Annotator } from '../annotator'
 
@@ -444,7 +444,7 @@
   }
 
   function configureImageViewerBehavior() {
-    console.log(`configureImageViewerBehavior: zoomOnScroll=${props.zoomOnScroll}`)
+    // console.log(`configureImageViewerBehavior: zoomOnScroll=${props.zoomOnScroll} isMobile=${isMobile()}`)
     /* This is intended to provide touch-based scrolling of OSD images in mobile mode.  Pan/zoom is
     disabled to permit scrolling.  The technique for doing this is as described in this
     OSD Github issue - https://github.com/openseadragon/openseadragon/issues/1791#issuecomment-1000045888
@@ -457,8 +457,6 @@
     canvas.style.touchAction = 'pan-y'
 
     if (!props.zoomOnScroll) {
-
-      console.log(osd.value)
 
       new OpenSeadragonViewerInputHook({ viewer: osd.value, hooks: [
         {tracker: 'viewer', handler: 'scrollHandler', hookHandler: (event:any) => {

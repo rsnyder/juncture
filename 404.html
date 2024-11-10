@@ -34,7 +34,7 @@
         window.jekyll = { site: { baseurl }, source: { owner: acct, repository: repo, branch, dir: resp.dir }, page: resp }
         setConfig()
         getMarkdown(`${acct}/${repo}/${branch}/${path.join('/')}`).then(markdown => {
-          window.config.content = markdown
+          window.config.markdown = markdown
           mount(document.body.querySelector('main'), markdownToHtml(markdown))
         })
       })

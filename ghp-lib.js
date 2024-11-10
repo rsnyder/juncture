@@ -1417,6 +1417,7 @@ function addDefaultFooter(article) {
 }
 
 function articleFromHtml(html) {
+  console.log(html)
   let contentEl = document.createElement('main')
 
   contentEl.innerHTML = html.replace(/^<p>(?<headingTag>#+)(?<headingText>\S+)/, '/$<headingTag> $<headingText>')

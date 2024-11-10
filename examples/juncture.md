@@ -1,3 +1,5 @@
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
+
 <style>
     th { background-color: #e9ecef; }
     td { width: 25% !important; }

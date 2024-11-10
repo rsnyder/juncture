@@ -1,3 +1,5 @@
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
+
 `ve-meta title="Import Test"`
 
 `script https://unpkg.com/@nfreear/my-map@1 type=module`

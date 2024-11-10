@@ -1422,6 +1422,11 @@ function articleFromHtml(html) {
   contentEl.innerHTML = html.replace(/^<p>(?<headingTag>#+)(?<headingText>\S+)/, '/$<headingTag> $<headingText>')
   console.log(contentEl.cloneNode(true))
 
+  contentEl.querySelectorAll('pre > code').forEach(code => {
+    let pre = code.parentElement
+    console.log(pre, pre.priorElementSibling, pre.priorSibling, Array.from(pre.parentElement.children), Array.from(pre.parentElement.childNodes))
+  })
+
   Array.from(contentEl.querySelectorAll('p'))
     .filter(p => /^#+\S+\b/.test(p.innerHTML))
     .forEach(p => {

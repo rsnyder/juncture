@@ -1422,7 +1422,9 @@ function articleFromHtml(html) {
   contentEl.innerHTML = html.replace(/^<p>(?<headingTag>#+)(?<headingText>\S+)/, '/$<headingTag> $<headingText>')
   console.log(contentEl.cloneNode(true))
 
-  console.log(Array.from(contentEl.childNodes).map(el => el.textContent))
+  console.log(Array.from(contentEl.childNodes).map(el => `${el.tagName}: ${el.textContent}` ))
+
+  console.log(Array.from(contentEl.childNodes).map(el => `${el.tagName}: ${el.innerHTML}` ))
 
   contentEl.querySelectorAll('pre > code').forEach(code => {
     let pre = code.parentElement

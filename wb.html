@@ -19,6 +19,7 @@
     }
 
     let redirect = `https://editor.juncture-digital.org/${sourceArg ? '?source=' + sourceArg : ''}`
+    document.body.innerHTML = `<p>Redirecting to <a href="${redirect}">${redirect}</a>...</p>`
     console.log(`Redirecting to ${redirect}`)
     // window.location.href = redirect
   </script>

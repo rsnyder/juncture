@@ -1417,20 +1417,8 @@ function addDefaultFooter(article) {
 }
 
 function articleFromHtml(html) {
-  console.log(html)
   let contentEl = document.createElement('main')
-
   contentEl.innerHTML = html.replace(/^<p>(?<headingTag>#+)(?<headingText>\S+)/, '/$<headingTag> $<headingText>')
-  console.log(contentEl.cloneNode(true))
-
-  console.log(Array.from(contentEl.childNodes).map(el => `${el.tagName}: ${el.textContent}` ))
-
-  console.log(Array.from(contentEl.childNodes).map(el => `${el.tagName}: ${el.innerHTML}` ))
-
-  contentEl.querySelectorAll('pre > code').forEach(code => {
-    let pre = code.parentElement
-    console.log(pre, pre.priorElementSibling, pre.priorSibling, Array.from(pre.parentElement.children), Array.from(pre.parentElement.childNodes))
-  })
 
   Array.from(contentEl.querySelectorAll('p'))
     .filter(p => /^#+\S+\b/.test(p.innerHTML))

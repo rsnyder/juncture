@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 # How to Use GitHub to Create and Manage Markdown Files
 

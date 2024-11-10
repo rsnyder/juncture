@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 ```
 header Juncture subtitle=Documentation auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover

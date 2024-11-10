@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 `iframe https://www.youtube.com/embed/pS589zKAlnY?si=oL9nLK7A29GhFO74 "A caption" :width=50%`
 

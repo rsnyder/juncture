@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 `header "The Amalfi Coast" wc:Costiera-amalfitana-_panorama_from_the_sea_133.jpg options=pct:15,25,70,50 .sticky`
 

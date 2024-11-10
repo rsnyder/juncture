@@ -440,7 +440,7 @@
         else newFilePathElems.push('README.md')
         let _path = newFilePathElems.join('/')
         essayName = toTitleCase(essayName.replace(/\.md$/,''))
-        let markdown = `[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)\n\n# ${essayName}\n\n`
+        let markdown = `[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)\n\n# ${essayName}\n\n`
         // console.log(`addFile: acct=${acct.value}, repo=${repo.value}, branch=${branch.value}, path=${_path}`)
         let resp = await githubClient.value.putFile(acct.value, repo.value, _path, markdown, branch.value)
         if (resp.status >= 200 && resp.status < 300) {

@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 ```
 header "Juncture Examples" subtitle="The Amalfi Coast" background=wc:AmalfiCoast11.jpg .sticky

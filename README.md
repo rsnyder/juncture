@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 ```
 header auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
@@ -39,7 +39,8 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 1. In the newly created repository, create a new markdown file for the Juncture essay by selecting **Create new file** from the **Add file** pull-down menu located on the repository home page.  
 2. In the file name input field enter "sunflower/README.md"
-3. In the editor field add the text `[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)`
+3. In the editor field add the text `[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)`
+`
 4. Press the **Commit changes...** button located at the top-right of the page.
 
 ### Add Markdown text for your essay

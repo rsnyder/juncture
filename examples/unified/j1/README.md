@@ -1,4 +1,4 @@
-[![](https://v3.juncture-digital.org/images/wb.svg)](https://v3.juncture-digital.org/wb)
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
 <param ve-config title="Juncture Examples" subtitle="The Amalfi Coast" banner="wc:AmalfiCoast11.jpg" layout="vtl">
 

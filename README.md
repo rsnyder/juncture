@@ -1,28 +1,16 @@
 [![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 
-```
-header auth=github background=wc:Box_of_type.jpg height=100 no-manifest-popover
-- [Docs](https://docs.juncture-digital.org)
-- [Editor](/editor)
-```
-
 # Juncture
 
-Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the [Markdown](Q1193600) language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses [GitHub](Q364) for storing the Markdown files.
+Juncture is a tool for creating and displaying interactive web pages.  Juncture web pages are created using an extended version of the Markdown language.  Markdown is a lightweight markup language that is widely used to add formatting elements to plain text.  Juncture extends Markdown with the addition of a few custom tags enabling interactive viewers to be easily added to a generated web page.  Juncture uses GitHub for storing the Markdown files.
 
-## Getting Started
+## Quick Start
 
 To begin using Juncture you will need a GitHub account and some basic familiarity with Markdown.
 
-**GitHub** is a free Internet hosting service commonly used for software development projects. It provides sophisticated features for version control and workflow management for distributed teams. Juncture primarily uses GitHub as a file hosting service, similar to how one might use Dropbox or Google Drive. The Markdown files that Juncture uses to render interactive web pages are stored in GitHub.
+**GitHub** is a free Internet hosting service commonly used for software development projects. It provides sophisticated features for version control and workflow management for distributed teams. Juncture primarily uses GitHub as a file hosting service, similar to how one might use Dropbox or Google Drive. The Markdown files that Juncture uses to render interactive web pages are stored in GitHub.  Go to https://github.com/signup to sign up for a free GithHub account.
 
-- [Signup for a free Github account](https://github.com/signup)
-
-**Markdown** is a simple language and a basic understanding of usage can be obtained in just a few minutes.  Below are some resuources for learning Markdown.
-
-- [Markdown Guide - Getting Started tutorial](https://www.markdownguide.org/getting-started)
-- [markdowntutorial.com](https://www.markdowntutorial.com)
-- [Markdown tutorial](https://www.youtube.com/watch?v=6A5EpqqDOdk)
+**Markdown** is a simple language and a basic understanding of usage can be obtained in just a few minutes.  The [Markdown Guide - Getting Started tutorial](https://www.markdownguide.org/getting-started) is a good resource for getting started with Markdown.
 
 ### Creating your first Juncture essay
 
@@ -35,50 +23,36 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 2. In the newly created repository, enable Github Pages by selecting **Pages** from the **Code and automation** section in the repository **Settings** page.  In the **Pages** form select **main** from the **Branch** pull-down menu and press **Save**.
 
-### Create a new Markdown file to use for the Juncture essay
+### Create a new Markdown file with some commonly used Juncture tags
 
 1. In the newly created repository, create a new markdown file for the Juncture essay by selecting **Create new file** from the **Add file** pull-down menu located on the repository home page.  
-2. In the file name input field enter "sunflower/README.md"
-3. In the editor field add the text 
-  ```markdown
-  [![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
-  ```
-`
+2. In the file name input field enter "example.md"
+3. In the editor field add the text found at this [link](https://raw.githubusercontent.com/juncture-digital/examples/main/monument-valley.md)
+
 4. Press the **Commit changes...** button located at the top-right of the page.
 
-### Add Markdown text for your essay
+### View your essay
 
-At this point you should have a new repository with a `README.md` file located in a folder named `sunflower`.
+To view your newly created Juncture essay use the link https://`<GitHub Username>`/github.io/`<GitHub Repository>`/example, replacing `<GitHub Username>` with your GitHub username, and `<GitHub Repository>` with the name of the new repository created (e.g,, "essays").
 
-To add Juncture Markdown text for the essay you may continue to use the Github editor or use the editor provided in the Juncture Workbench.  The Juncture Workbench editor is recommended as it provides a preview toggle for rapidly making and viewing changes.  The instructions in this Getting Started guide assume the Juncture editor is being used.
+Note that it may take a minute or so for the new essay link to become active.  If the link doesn't work immediately wait and try again.
 
-To access the workbench, press the two-toned "Juncture Workbench" button now displayed at the top of the Markdown file when viewing from the Github site.  The first time the Workbench editor is used you'll be asked to authorize Juncture to access your repository.
+## Editing Juncture Files
 
-Append the following text to your `sunflower/README.md` file, leaving a blank line between the workbench button text added in the previous step and this new text.
+Juncture source files may be created and edited using the GitHub editor or the Juncture web editor.  In both cases Markdown files are saved to a GithHub repository in your account.  The advantage of using the Juncture editor includes a preview feature and Juncture syntax highlighting.  When using the Juncture editor for the first time you will need to authenticate with GitHub and authorize Juncture to access to write to your repository.
 
-```
-# Hello, Juncture
+## Embedding a preview link in your essay
 
-## Juncture image
+When first creating a Juncture Markdown file in GitHub it is recommended that the code below be inserted at the beginning of the file.  This code will render a "View with Juncture" link at the top of the file when viewed from the GitHub site.  This provides a convenient way to view the rendered Juncture essay from the GitHub site.
 
-`image wc:Sunflower_sky_backdrop.jpg `
-
-In 
-
-## Juncture map
-
-`map`
-
+```markdown
+[![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 ```
 
-Alternately, use the following text for a side-by-side essay layout using the original Juncture tagging syntax.
+Note that when using this link with browsers other than Chrome some additional configuration may be needed.
 
-```
-<param ve-config title="Sunflower" banner="wc:Sunflower_sky_backdrop.jpg">
+## Juncture Resources
 
-The [common sunflower](Q171497) is a species of large annual forb of the daisy family Asteraceae. The common sunflower is harvested for its edible oily seeds which are used in the production of cooking oil.
-<param ve-image manifest="wc:Sunflower_sky_backdrop.jpg">
-
-```
-	
-After adding the new text, press the preview button located in the workbench toolbar.
+- [Documentation](https://docs.juncture-digital.org)
+- [Examples](https://juncture-digital.github.io/examples)
+- [Web Editor](https://editor.juncture-digital.org)

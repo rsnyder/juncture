@@ -41,11 +41,11 @@ Note that it may take a minute or so for the new essay link to become active.  I
 
 Juncture source files may be created and edited using the GitHub editor or the Juncture web editor.  In both cases Markdown files are saved to a GithHub repository in your account.  The advantage of using the Juncture editor includes a preview feature and Juncture syntax highlighting.  When using the Juncture editor for the first time you will need to authenticate with GitHub and authorize Juncture to access to write to your repository.
 
-## Embedding a preview link in your essay
+### Embedding a preview link in your essay
 
 When first creating a Juncture Markdown file in GitHub it is recommended that the code below be inserted at the beginning of the file.  This code will render a "View with Juncture" link at the top of the file when viewed from the GitHub site.  This provides a convenient way to view the rendered Juncture essay from the GitHub site.
 
-```markdown
+```
 [![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)
 ```
 

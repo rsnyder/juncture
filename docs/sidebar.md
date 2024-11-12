@@ -8,7 +8,9 @@
     - [Quick Start](/docs/quick-start)
     - [Examples](/docs/examples/)
       - [basic](/docs/examples/basic)
-
+      - [Amalfi Coast](/docs/examples/amalfi-coast)
+      - [Monument Valley](/docs/examples/monument-valley)
+      
   - Tools
     - [Editor](/docs/embedded-editor)
     - [Media Tool](/docs/embedded-media)

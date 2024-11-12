@@ -59,10 +59,12 @@
   const height = ref(definedHeight.value || width.value)
 
   function setDimensions() {
+    console.log(window.innerHeight - host.value.offsetTop)
     definedWidth.value = props.width || (host.value.style.width && host.value.clientWidth)
     definedHeight.value = props.height || (host.value.style.height && host.value.clientHeight)
     width.value = definedWidth.value || host.value.clientWidth
-    height.value  = (definedHeight.value || width.value)
+    // height.value  = (definedHeight.value || width.value)
+    height.value  = definedHeight.value || (window.innerHeight - host.value.offsetTop - 20)
   }
 
   function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }

@@ -6,7 +6,6 @@
   - Juncture
     - [Home](/)
     - [Quick Start](/quick-start)
-    - [Showcase](/showcase)
 
   - Tools
     - [Editor](/embedded-editor)
@@ -28,6 +27,7 @@
 - Juncture Tagging
   - [Overview](/components/overview)
   - [Viewer Tags](/components/overview?id=viewer-tags)
+    - [ve-image](/components/image)
     - [ve-media](/components/media)
     - [ve-map](/components/map)
     - [ve-iframe](/components/iframe)

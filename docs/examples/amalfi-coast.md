@@ -1,0 +1,1 @@
+<ve-iframe src="/examples/amalfi-coast"><ve-iframe>

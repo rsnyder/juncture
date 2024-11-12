@@ -6,7 +6,8 @@
   - Juncture
     - [Home](/)
     - [Quick Start](/docs/quick-start)
-    - [Examples](/examples)
+    - [Examples](/docs/examples/)
+      - [basic](/docs/examples/basic)
 
   - Tools
     - [Editor](/docs/embedded-editor)

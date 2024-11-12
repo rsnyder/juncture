@@ -1,114 +1,681 @@
-<style>
-a.cta {
-  background-color: #FFE55A;
-  border-radius: 50px;
-  font-family: Roboto, Helvetica, sans-serif;
-  font-weight: normal;
-  font-size: 1.6rem;
-  padding: 12px 60px;
-  margin: auto;
-  margin-top: 0;
+@import 'shoelace-light.css';
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: var(--sl-font-sans);
+  font-size: var(--sl-font-size-medium);
+  font-weight: var(--sl-font-weight-normal);
+  letter-spacing: var(--sl-letter-spacing-normal);
+  background-color: var(--sl-color-neutral-0);
+  color: var(--sl-color-neutral-900);
+  line-height: var(--sl-line-height-normal);
+}
+
+/*
+body.close .content {
+  transform: reset;
+}
+*/
+
+a {
+  color: var(--sl-color-primary-600);
+}
+
+a:hover {
+  color: var(--sl-color-primary-700);
+}
+
+strong {
+  font-weight: var(--sl-font-weight-bold);
+}
+
+.sidebar-toggle span { background-color:#5A162E; }
+
+/* Sidebar */
+.sidebar {
+  background-color: var(--sl-color-neutral-0);
+  border-right: solid 1px var(--sl-color-neutral-200);
+}
+
+/* Juncture Buttons at top of sidebar */
+.sidebar-nav > ul li:first-of-type > ul {
+  padding-left: 0;
+}
+
+.sidebar .app-name {
+  padding: 0 1.5rem;
+}
+
+.sidebar .app-name-link img {
+  width: 10rem;
+}
+
+.sidebar-version {
+  font-size: var(--sl-font-size-x-small);
+  font-weight: var(--sl-font-weight-normal);
+  color: var(--sl-color-neutral-500);
+  text-align: right;
+  padding: 0 var(--sl-spacing-small);
+  margin: -1.25rem 0 0.6rem 0;
+}
+
+.sidebar-buttons {
+  display: flex;
+  justify-content: space-between;
   text-align: center;
-  color: #0b0080;
-  text-decoration: None;
+  margin-top: 0;
 }
-.splash-end img, .splash-end a {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
+/* Sidebar toggle */
+.sidebar-toggle {
+  top: 0.25rem;
+  left: 0.25rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--sl-border-radius-medium);
+  background-color: var(--sl-color-neutral-0);
+  padding: 0.5rem;
 }
-.splash-start p {
+
+.sidebar-toggle:hover .sidebar-toggle-button {
+  opacity: 1;
+}
+
+.sidebar-toggle:active .sidebar-toggle-button span {
+  background-color: var(--sl-color-primary-600);
+}
+
+.sidebar-toggle:focus {
+  outline: var(--sl-focus-ring);
+  outline-offset: var(--sl-focus-ring-offset);
+}
+
+.sidebar-toggle span:last-child {
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 768px) {
+  body.close .sidebar-toggle {
+    width: 2rem;
+    background: none;
+    padding: 0.5rem;
+  }
+}
+
+/* Sidebar nav */
+.sidebar-nav {
+  padding: 0 1rem;
+}
+
+.sidebar-nav li {
+  line-height: 1;
+  padding: 0;
+}
+
+.sidebar-nav a {
+  color: inherit;
+  text-decoration: none;
+  line-height: 1.5em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+.sidebar-nav li.collapse > a,
+.sidebar-nav li.active > a {
+  color: var(--sl-color-primary-600);
+}
+
+.sidebar li > p {
+  font-weight: var(--sl-font-weight-bold);
+  border-bottom: solid 1px var(--sl-color-neutral-200);
+  margin: 0 0.75rem 0.5rem 0;
+}
+
+.sidebar ul li ul {
+  padding-left: 0.5rem;
+  margin: 0 0.75rem 1.5rem 0;
+}
+
+.sidebar ul ul ul {
+  padding: 0;
+  margin: 0 0 0 0.5rem;
+}
+
+.sidebar ul ul ul li {
+  list-style: disc;
+  margin-left: 1.5rem;
+}
+
+/* Splash */
+.splash {
+  display: flex;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.splash-start {
+  min-width: 420px;
+}
+
+.splash-end {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-.splash-start p img {
-  height: 30px;
-}
-p {
-  display: flow-root;
+  width: auto;
+  padding-left: 1rem;
 }
 
-</style>
+.splash-image {
+  width: 100%;
+  height: auto;
+}
 
-<div class="splash">
-<div class="splash-start">
+.splash-logo {
+  max-width: 22rem;
+}
 
-<div class="splash-logo" style="display:flex;align-items:center;">
-    <img src="https://juncture-digital.github.io/juncture/static/images/favicon.svg" style="margin:-12px 0 0 -12px;height:90px">
-    <div style="font-size:3rem;color:#455;margin-top:-10px;font-weight:bold;">Juncture</div>
-</div>
+.markdown-section .splash-start h1:first-of-type {
+  font-size: var(--sl-font-size-large);
+  margin: 0 0 0.5rem 0;
+}
 
-<h3 style="line-height:1.3;margin-top:1rem;"><i>Create and share rich, interactive essays in minutes!</i></h3>
+@media screen and (max-width: 1040px) {
+  .splash {
+    display: block;
+  }
 
-- Quickly create single essays or full web sites
-- Minimal setup and no ongoing administration
-- Easy-to-use drag-n-drop editor with preview
-- Flexible content viewers for displaying images, video, audio, maps, diagrams, and more
-- Use web-based resources and your own content
-- Image and text annotation tools
-- IIIF-enabled features for using high-quality, attributed digital objects
-- Open source and built on open tools and data formats
+  .splash-start {
+    min-width: 0;
+    padding-bottom: 1rem;
+  }
 
-</div>
-<div class="splash-end">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
-        <img class="splash-image" src="https://iiif-image.juncture-digital.org/iiif/2/e058046a1379d7dfc9a4daee11a9a6ca1b7ac9bafd78fd30d40ff92fef99ce86/full/500,/0/default.jpg" alt="Juncture graphic">
-        <div><a href="#/getting-started" class="cta">Get Started</a></div>
-    </div>
-</div>
-</div>
+  .splash-end {
+    padding: 0;
+  }
 
-# Welcome to Juncture
+  .splash-image {
+    display: block;
+    max-width: 400px;
+  }
 
-**Juncture** is a suite of tools and services that enable anyone to easily create engaging web pages with rich visualizations, including interactive images, videos, maps, and more.  
+  /* Shields */
+  .splash + p {
+    margin-top: 2rem;
+  }
+}
 
-The original version of Juncture was developed by the friendly folks at [JSTOR Labs](https://labs.jstor.org) and [grew out of a project](https://www.doaks.org/research/mellon-initiatives/plant-humanities-initiative) that used visual essays for a form of digital storytelling.  Visual essays are text narratives augmented with interactive visualizations providing depth and context.  
+/* Content */
+.content {
+  padding-top: 0;
+}
 
-This current version of Juncture represents a complete rewrite of the Juncture code base and documentation.  The rendering engine is backward compatible with visual essays written for version 1, so if you're an existing Juncture user, no worries, your Juncture essays will continue to work.  
+@media screen and (max-width: 768px) {
+  .markdown-section {
+    max-width: 1200px;
+  }
+}
 
-?> Documentation for Juncture version 1 can be found [here](https://github.com/jstor-labs/juncture/wiki).
+.anchor span {
+  color: var(--sl-color-neutral-1000);
+}
 
-In its current form, Juncture is still well-suited for the type of digital storytelling emphasized in version 1 but can now be more easily used for generating web pages that are less text-centric, such as an image exhibition.
+.markdown-section blockquote {
+  position: relative;
+  border-left: solid 4px var(--sl-color-neutral-200);
+  font-style: italic;
+  padding: 1rem 1.5rem;
+  margin: 0 0 1rem 0;
+}
 
-This [demo essay](/showcase/bedroom-in-arles) provides an example of what is possible in a Juncture essay.  This essay includes multiple high-res images, a YouTube video, an interactive map, and some text-to-viewer interactions.  The essay also includes many information popovers for entities (people, places, works, etc) mentioned in the text.  Other examples may be found in the [Juncture Showcase](/showcase).
+.markdown-section blockquote p:first-child {
+  margin-top: 0;
+}
 
-# What problem does this solve?
+.markdown-section blockquote p:last-child {
+  margin-bottom: 0;
+}
 
-Juncture's primary goal is to make the use of modern web technology (deep-zoom and panning for high-resolution images, interactive maps, etc) accessible to anyone with an interest in sharing something on the web, regardless of background or technical skills. In the [Quick Start guide](/quick-start), you can give it a try and see for yourself. All that is required for this quick start (and to use Juncture generally) is an active Github account. If you already have one, the "hard" part is done. If not, you'll need to take a couple of minutes to signup with Github. Signing up for a Github account is free and painless.
+.markdown-section ul {
+  padding: 0 0 0 1.5rem;
+  margin: 0 0 1rem 0;
+}
 
-If you're looking for a set of easy-to-use tools for quickly creating web pages with engaging and interactive content with minimal setup and zero ongoing administration, Juncture might be exactly what you need.
+.markdown-section ul ul {
+  margin-bottom: 0;
+}
 
-# Some Juncture uses
+.docsify-pagination-container {
+  border-top-color: var(--sl-color-neutral-200) !important;
+}
 
-1. **Education**. Juncture is able to support a range of teaching and learning use cases, including:
-    - Use by instructors in the development of resources for classroom or remote instruction.  The [Hypothes.is](https://web.hypothes.is/) annotation tool can be easily added to any essay for class discussion or other uses. 
-    - Use by students for individual or group projects.  Juncture can be used as tool for simple essay development or as tool for building broader skills in the use of digital technologies for information creation and sharing.
+.pagination-item-label,
+.pagination-item-subtitle,
+.pagination-item-title {
+  opacity: 1 !important;
+}
 
-2. **Simple blog or travelogue**.  The ability to quickly create a web page with text and images makes Juncture a convenient tool for blog style content authoring.  With the addition of interactive maps, connected with text and images, Juncture is well-suited for creating rich and engaging travelogues.  Images, with geolocation data when available, can easily be transferred from a smartphone into a Juncture essay.
+.markdown-section h1,
+.markdown-section h2,
+.markdown-section h3,
+.markdown-section h4,
+.markdown-section h5,
+.markdown-section h6 {
+  font-weight: var(--sl-font-weight-normal);
+  margin: 0;
+}
 
-3. **Creation of full website with themed essays**.  Multiple Juncture essays can be easily aggregated and linked to create full websites, with a custom domain if desired.  Examples of themed websites created with Juncture include [Plant Humanities Lab](https://lab.plant-humanities.org/) and [Kent Maps Online](https://kent-maps.online/).
+.markdown-section h1 {
+  font-size: var(--sl-font-size-2x-large);
+}
 
-4. **Many others**.  As a general-purpose tool there are any number of interesting ways in which Juncture could be applied. We'd love to hear how you use Juncture.  Please connect with us from our [Contact](/contact) page if you come up with some innovative or interesting use of Juncture that we could share with others.  You might also consider submitting essays for inclusion on the Juncture Showcase site.
+.markdown-section h2 {
+  font-size: var(--sl-font-size-x-large);
+  border-bottom: solid 1px var(--sl-color-neutral-200);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
 
-# About Juncture and IIIF
+.markdown-section h3 {
+  font-size: var(--sl-font-size-large);
+}
 
-Juncture is built using many great technologies and tools, many of which can be seen on the Juncture [attribution](/attribution) page.  A cornerstone in the Juncture design and value proposition is IIIF.  The [International Image Interoperability Framework](https://iiif.io/) (IIIF, spoken as 'triple-I-eff') defines several APIs (Application Programming Interfaces) that define a standardized method of describing and delivering media over the web.  IIIF is arguably the most important technology used by Juncture.  Understanding what IIIF is and how it is used will be useful background before diving into the creation of an essay, especially those incorporating images, audio, and video.  
+.markdown-section h4 {
+  font-size: var(--sl-font-size-medium);
+}
 
-The [IIIF Get Started](https://iiif.io/get-started/) page is the best place to start for good understanding of IIIF.  In this section a top-level overview is provided.  Much of the information provided consist of excerpts from the official IIIF site.  Users interested in learning more are encouraged to visit the IIIF site.
+.markdown-section h5 {
+  font-size: var(--sl-font-size-small);
+}
 
-## Why IIIF?
+.markdown-section h6 {
+  font-size: var(--sl-font-size-x-small);
+}
 
-The benefits of using IIIF include:
+.markdown-section pre {
+  font-family: var(--sl-font-mono);
+}
 
-- **Rich image delivery**.  Fast, rich zoom & pan delivery of images via the Internet, with options for size, scale, region of interest, rotation, quality and format.
-- **Plug and play software**.  Use any IIIF-compatible software for viewing, comparing and manipulating images from any IIIF-compatible image site, regardless of the back-end server. Swap parts of the stack at any time, or run multiple components in parallel at once.
--**Publish once, reuse often**.  Deliver images from your own site for many uses; host a single copy and embed in other sites. No need to transfer images to others for them to locally load and use them for one off analysis or republishing.
--**Remix content**.  Assemble and reuse IIIF resources from across the Web, regardless of source. Compare pages, import into tools, build exhibits, or view items served from different sites in one place.
--**Annotate**.  IIIF has native compatibility with the [W3C Web Annotation model](https://www.w3.org/TR/2017/REC-annotation-model-20170223/), which supports annotating content on the Web. Comment on, transcribe, and mark up resources using the Web’s inherent architecture–even for Audiovisual resources.
--**Cite and share**.  IIIF APIs give portable views onto images or any of its regions, and provide incentive for URIs that persist through image server migrations. Cite an image with a stable URI, or share it for reference by others–or yourself in a different environment.
--**Support for attribution and access control**.  Built in API calls support attribution and access control: the Authentication API (http://iiif.io/api/auth/), is integral and consistent with the IIIF conception.
+.markdown-section h1:first-of-type {
+  margin-bottom: 0;
+}
 
-## IIIF use in Juncture
+.markdown-section code {
+  font-family: var(--sl-font-mono);
+  font-size: 87.5%;
+  background-color: var(--sl-color-neutral-50);
+  border-radius: var(--sl-border-radius-small);
+  padding: 2px 4px;
+}
 
-The "Why IIIF?" list of benefits provides a compelling case for using IIIF over standard images, audio, and video.  The benefits provided by IIIF support for interoperability, annotation, and its ability to clearly articulate reuse rights and attribution are especially important capabilities leveraged by Juncture.
+kbd,
+.markdown-section kbd {
+  font-family: var(--sl-font-mono);
+  font-size: 87.5%;
+  background-color: var(--sl-color-neutral-50);
+  border-radius: var(--sl-border-radius-small);
+  border: solid 1px var(--sl-color-neutral-200);
+  box-shadow: inset 0 1px 0 var(--sl-color-neutral-0);
+  padding: 2px 5px;
+}
 
-It's hard to argue against the benefits of using IIIF.  Unfortunately, for most users the technology has been out of reach as the tools and infrastructure needed are often not available or are hard or confusing to use.  That's where Juncture comes in.  It can deliver the IIIF benefits with minimal effort.  If fact, using IIIF can often be as simple as dragging an image into the Juncture editor.  If the image is not a native IIIF image Juncture can often turn it into one automatically and transparently.
+/* Code blocks */
+.markdown-section pre {
+  position: relative;
+  background-color: var(--sl-color-neutral-50);
+  border-radius: var(--sl-border-radius-medium);
+}
+
+.markdown-section pre > code {
+  display: block;
+  background: none;
+  border-radius: 0;
+  color: var(--sl-color-neutral-900);
+  padding: var(--sl-spacing-medium);
+  overflow: auto;
+  hyphens: none;
+  tab-size: 2;
+}
+
+.markdown-section pre .token.comment {
+  color: var(--sl-color-neutral-500);
+}
+
+.markdown-section pre .token.prolog,
+.markdown-section pre .token.doctype,
+.markdown-section pre .token.cdata,
+.markdown-section pre .token.operator {
+  color: var(--sl-color-neutral-700);
+}
+
+.markdown-section pre .token.punctuation {
+  color: var(--sl-color-neutral-700);
+}
+
+.namespace {
+  opacity: 0.7;
+}
+
+.markdown-section pre .token.property,
+.markdown-section pre .token.keyword,
+.markdown-section pre .token.tag,
+.markdown-section pre .token.url {
+  color: var(--sl-color-sky-800);
+}
+
+.markdown-section pre .token.symbol,
+.markdown-section pre .token.deleted {
+  color: var(--sl-color-pink-700);
+}
+
+.markdown-section pre .token.boolean,
+.markdown-section pre .token.constant,
+.markdown-section pre .token.selector,
+.markdown-section pre .token.attr-name,
+.markdown-section pre .token.string,
+.markdown-section pre .token.char,
+.markdown-section pre .token.builtin,
+.markdown-section pre .token.inserted {
+  color: var(--sl-color-emerald-700);
+}
+
+.markdown-section pre .token.atrule,
+.markdown-section pre .token.attr-value,
+.markdown-section pre .token.number,
+.markdown-section pre .token.variable {
+  color: var(--sl-color-violet-700);
+}
+
+.markdown-section pre .token.function,
+.markdown-section pre .token.class-name,
+.markdown-section pre .token.regex {
+  color: var(--sl-color-orange-700);
+}
+
+.markdown-section pre .token.important {
+  color: var(--sl-color-red-700);
+}
+
+.markdown-section pre .token.important,
+.markdown-section pre .token.bold {
+  font-weight: bold;
+}
+
+.markdown-section pre .token.italic {
+  font-style: italic;
+}
+
+/* Tables */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 1200px) {
+  .table-wrapper table {
+    min-width: 800px;
+  }
+}
+
+.markdown-section table {
+  display: table;
+  margin-bottom: 1.5rem;
+}
+
+.markdown-section tr {
+  border: none;
+}
+
+.markdown-section tr:nth-child(2n) {
+  background: transparent;
+}
+
+.markdown-section th {
+  border: none;
+  font-weight: var(--sl-font-weight-semibold);
+  text-align: left;
+}
+
+.markdown-section td {
+  border-top: solid 1px var(--sl-color-neutral-200);
+  border-bottom: solid 1px var(--sl-color-neutral-200);
+  border-left: none;
+  border-right: none;
+  padding: 0.75rem 0.5rem;
+}
+
+.markdown-section table .nowrap {
+  white-space: nowrap;
+}
+
+.markdown-section table sl-tooltip code {
+  border-bottom: dashed 1px var(--sl-color-neutral-300);
+  cursor: help;
+}
+
+.markdown-section .metadata-table {
+  margin-bottom: 0rem;
+}
+
+/* Iframes */
+.markdown-section iframe {
+  border: none;
+}
+
+/* Tips & Warnings */
+.markdown-section p.tip,
+.markdown-section p.warn {
+  position: relative;
+  background-color: var(--sl-color-neutral-50);
+  border-left: solid 4px transparent;
+  border-radius: var(--sl-border-radius-medium);
+  padding-left: 1.5rem;
+}
+
+.markdown-section p.tip:before,
+.markdown-section p.warn:before {
+  content: '!';
+  border-radius: 100%;
+  color: var(--sl-color-neutral-0);
+  font-size: 14px;
+  font-weight: bold;
+  left: -12px;
+  line-height: 20px;
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  top: calc(50% - 10px);
+}
+
+.markdown-section p.warn {
+  border-left-color: var(--sl-color-primary-600);
+}
+
+.markdown-section p.warn:before {
+  background-color: var(--sl-color-primary-600);
+}
+
+.markdown-section p.tip {
+  border-left-color: var(--sl-color-danger-600);
+}
+
+.markdown-section p.tip:before {
+  background-color: var(--sl-color-danger-600);
+}
+
+.markdown-section p.tip code,
+.markdown-section p.warn code {
+  background-color: var(--sl-color-neutral-100);
+  white-space: nowrap;
+}
+
+/* Sponsorship callouts */
+.sponsor-callout {
+  background: var(--sl-color-warning-100);
+  border-left: solid 3px var(--sl-color-warning-300);
+  border-radius: var(--sl-border-radius-medium);
+  padding: 0.5rem 1.5rem;
+}
+
+@media screen and (max-width: 950px) {
+  .sponsor-callout__secondary-label {
+    display: none;
+  }
+}
+
+/* Component headers */
+.component-header {
+  margin-top: -1rem;
+}
+
+.component-header__tag {
+  border-bottom: none;
+  padding: 0;
+  margin: 0.75rem 0 0.25rem 0;
+}
+
+.component-header__summary {
+  font-size: var(--sl-font-size-large);
+  line-height: 1.6;
+  border-top: solid 1px var(--sl-color-neutral-200);
+  margin-top: 2rem;
+}
+
+.markdown-section .component-header__tag code {
+  background: none;
+  color: var(--sl-color-neutral-600);
+  font-size: var(--sl-font-size-large);
+  padding: 0;
+  margin: 0;
+}
+
+.component-header__info {
+  margin-bottom: 0.5rem;
+}
+
+/* Repo buttons */
+.repo-button--sponsor sl-icon {
+  color: var(--sl-color-pink-600);
+}
+
+.repo-button--github sl-icon {
+  color: var(--sl-color-neutral-700);
+}
+
+.repo-button--twitter sl-icon {
+  color: var(--sl-color-sky-500);
+}
+
+@media screen and (max-width: 400px) {
+  :not(.sidebar-buttons) > .repo-button {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+body[data-page^='/tokens/'] .table-wrapper td:first-child,
+body[data-page^='/tokens/'] .table-wrapper td:first-child code {
+  white-space: nowrap;
+}
+
+/* Border radius demo */
+.border-radius-demo {
+  width: 3rem;
+  height: 3rem;
+  background: var(--sl-color-primary-600);
+}
+
+/* Transition demo */
+.transition-demo {
+  position: relative;
+  background: var(--sl-color-neutral-200);
+  width: 8rem;
+  height: 2rem;
+}
+
+.transition-demo:after {
+  content: '';
+  position: absolute;
+  background-color: var(--sl-color-primary-600);
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  transition-duration: inherit;
+  transition-property: width;
+}
+
+.transition-demo:hover:after {
+  width: 100%;
+}
+
+/* Spacing demo */
+.spacing-demo {
+  width: 100px;
+  background: var(--sl-color-primary-600);
+}
+
+/* Elevation demo */
+.elevation-demo {
+  background: transparent;
+  border-radius: 3px;
+  width: 4rem;
+  height: 4rem;
+  margin: 1rem;
+}
+
+/* Color palettes */
+.color-palette {
+  display: grid;
+  grid-template-columns: 200px repeat(11, 1fr);
+  gap: 1rem var(--sl-spacing-2x-small);
+  margin: 2rem 0;
+}
+
+.color-palette__name {
+  font-size: var(--sl-font-size-medium);
+  font-weight: var(--sl-font-weight-semibold);
+  grid-template-columns: repeat(11, 1fr);
+}
+
+.color-palette__name code {
+  background: none;
+  font-size: var(--sl-font-size-x-small);
+}
+
+.color-palette__example {
+  font-size: var(--sl-font-size-x-small);
+  text-align: center;
+}
+
+.color-palette__swatch {
+  height: 3rem;
+  border-radius: var(--sl-border-radius-small);
+}
+
+.color-palette__swatch--border {
+  box-shadow: inset 0 0 0 1px var(--sl-color-neutral-300);
+}
+
+@media screen and (max-width: 1200px) {
+  .color-palette {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .color-palette__name {
+    grid-column-start: span 6;
+  }
+}
+
+.not-found-image {
+  display: block;
+  max-width: 460px;
+  margin: 2rem 0;
+}

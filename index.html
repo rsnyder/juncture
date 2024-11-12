@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/pure.css" />
+    <link rel="stylesheet" href="docs/custom.css">  
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        homepage: '/docs/README.md',
+        alias: { '.*/_sidebar.md': '/docs/sidebar.md' },
+        loadSidebar: true,
+        routerMode: 'hash', // hash or history
+      };
+      
+      let wcScript = document.createElement('script')
+      wcScript.src = location.port === '3300' ? 'http://localhost:5173/main.ts' : 'https://v3.juncture-digital.org/wc/dist/js/index.js'
+      wcScript.type = 'module'
+      document.body.appendChild(wcScript)
+
+    </script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script>
+      setTimeout(() => {
+        console.log('set browser URL')
+        window.history.replaceState({}, null, `${location.origin}${location.pathname}`)
+      }, 1)
+    </script>
+  </body>
+</html>

@@ -22,8 +22,9 @@
         console.log('Referrer:', referrer);
         [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
       } else {
-        [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe)
+        [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe).slice(location.hostname.indexOf('github.io') > -1 ? 1 : 0)
         branch = new URL(location.href).searchParams.get('ref') || 'main'
+        console.log(acct, repo, branch, path)
       }
       acct = acct || 'juncture-digital'
       repo = repo || '.github'

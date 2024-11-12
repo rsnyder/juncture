@@ -20,19 +20,11 @@
         loadSidebar: true,
         routerMode: 'hash', // hash or history
       };
-      
-      let wcScript = document.createElement('script')
-      wcScript.src = location.port === '3300' ? 'http://localhost:5173/main.ts' : 'https://v3.juncture-digital.org/wc/dist/js/index.js'
-      wcScript.type = 'module'
-      document.body.appendChild(wcScript)
-
     </script>
+    <script src="https://v3.juncture-digital.org/wc/dist/js/index.js" type="module"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
     <script>
-      setTimeout(() => {
-        console.log('set browser URL')
-        window.history.replaceState({}, null, `${location.origin}${location.pathname}`)
-      }, 1)
+      setTimeout(() => { window.history.replaceState({}, null, `${location.origin}${location.pathname}`) }, 100)
     </script>
   </body>
 </html>

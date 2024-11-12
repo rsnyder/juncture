@@ -59,8 +59,7 @@ import PlantSpecimen from './components/PlantSpecimen.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
 import SourceViewer from './components/SourceViewer.ce.vue'
 import Snippet from './components/Snippet.ce.vue'
-// import SlotTest from './components/SlotTest.ce.vue'
-// import SpcWrapper from './components/SpcWrapper.ce.vue'
+import Version from './components/Version.ce.vue'
 import Video from './components/Video.ce.vue'
 import VisJS from './components/VisJS.ce.vue'
 
@@ -100,10 +99,9 @@ function defineCustomElements() {
 	customElements.define('ve-modal', defineCustomElement(Modal))
 	customElements.define('ve-plant-specimen', defineCustomElement(PlantSpecimen))
 	customElements.define('ve-site-search', defineCustomElement(SiteSearch))
-	// customElements.define('ve-slot-test', defineCustomElement(SlotTest))
-	// customElements.define('ve-sfc-wrapper', defineCustomElement(SpcWrapper))
 	customElements.define('ve-snippet', defineCustomElement(Snippet))
 	customElements.define('ve-source-viewer', defineCustomElement(SourceViewer))
+	customElements.define('ve-version', defineCustomElement(Version))
 	customElements.define('ve-video', defineCustomElement(Video))
 	customElements.define('ve-visjs', defineCustomElement(VisJS))
 }

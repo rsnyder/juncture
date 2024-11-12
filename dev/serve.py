@@ -175,7 +175,7 @@ async def serve(path: Optional[str] = None):
     if not os.path.exists(local_file_path):
       return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
   else:
-    for suffix in ('.html', '/index.html'):
+    for suffix in ('index.html', '.html', ):
       local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}{suffix}'
       if os.path.exists(local_file_path):
         ext = 'html'
@@ -199,8 +199,7 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
-      content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
+      content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/wc\/dist\/js\/index\.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
 
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:

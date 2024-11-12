@@ -70,6 +70,8 @@
 <script setup lang="ts">
 
   import { computed, onMounted, ref, toRaw, watch } from 'vue'
+  import { getMarkdown } from '../../../ghp-lib.js'
+
   import { marked } from 'marked'
   import type SLDIalog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js'
   
@@ -90,6 +92,7 @@
   const window = (self as any).window
   const config = ref<any>(window.config || {})
   const source = computed(() => config.value.source)
+  const ghSource = computed(() => `${source.value.owner}/${source.value.repository}/${source.value.branch}/${source.value.path}`)
   const ghLink = computed(() => `https://github.com/${source.value.owner}/${source.value.repository}/blob/${source.value.branch}/${source.value.path}`)
   const editorLink = computed(() => `https://editor.juncture-digital.org/?source=${source.value.owner}/${source.value.repository}/${source.value.branch}/${source.value.path}`)
 
@@ -114,7 +117,7 @@
     else pdfOverlay.value.close(modalEl.value)
   })
 
-  const markdown = ref<HTMLElement | null>(null)
+  const markdown = ref<string | null>(null)
   const repoIsWritable = ref(false)
   watch (repoIsWritable, (repoIsWritable) => {
     codeDialog.value?.querySelector('.edit')?.classList[repoIsWritable ? 'remove' : 'add']('hidden')
@@ -222,7 +225,8 @@
 
   function showCode() {
     codeDialog.value?.show()
-    markdown.value = config.value?.markdown
+    if (config.value?.markdown) markdown.value = config.value?.markdown
+    else if (ghSource.value) getMarkdown(ghSource.value).then(md => markdown.value = md)
   }
 
   function openEditor() {

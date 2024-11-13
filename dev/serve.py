@@ -175,8 +175,9 @@ async def serve(path: Optional[str] = None):
     if not os.path.exists(local_file_path):
       return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
   else:
-    for suffix in ('index.html', '.html', ):
+    for suffix in ('/index.html', '.html', ):
       local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}{suffix}'
+      logger.info(f'local_file_path: {local_file_path}')
       if os.path.exists(local_file_path):
         ext = 'html'
         break

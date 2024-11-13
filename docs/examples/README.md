@@ -1,3 +1,10 @@
-- [basic](/docs/examples/basic)
-- [Amalfi Coast](/docs/examples/amalfi-coast)
-- [Monument Valley](/docs/examples/monument-valley)
+
+# Basic
+
+- [basic](/docs/examples/basic/basic)
+
+# Themed
+
+- [Amalfi Coast](/docs/examples/themed/amalfi-coast)
+- [Monument Valley](/docs/examples/themed/monument-valley)
+- [Indigo](/docs/examples/themed/indigo)

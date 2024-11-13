@@ -52,7 +52,7 @@ p {
 <div class="splash-end">
     <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
         <img class="splash-image" src="https://iiif-image.juncture-digital.org/iiif/2/e058046a1379d7dfc9a4daee11a9a6ca1b7ac9bafd78fd30d40ff92fef99ce86/full/500,/0/default.jpg" alt="Juncture graphic">
-        <div><a href="#/getting-started" class="cta">Get Started</a></div>
+        <div><a href="#/docs/getting-started" class="cta">Get Started</a></div>
     </div>
 </div>
 </div>

@@ -77,6 +77,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.7/addon/mode/simple.js"></script>
 
     <script type="module">
+
+      let inIframe = window.location !== window.parent.location
+      console.log(`Editor in iFrame: ${inIframe}`)
+      if (inIframe) {
+        document.body.style.padding = '0'
+        document.querySelector('ve-header').style.display = 'none'
+      }
+
       // import { articleFromHtml, getGhFile, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
       import { articleFromHtml, getGhFile, markdownToHtml, pathDir, setConfig } from 'https://v3.juncture-digital.org/ghp.js'
       
@@ -374,6 +382,10 @@
           markdownIsUpdated = contentIsUpdated()
         }
         if (mode === 'view') easyMDE.togglePreview()
+
+        if (inIframe) {
+          document.querySelector('.EasyMDEContainer .CodeMirror-wrap').style.height = 'calc(100vh - 130px)'
+        }
 
       }
 

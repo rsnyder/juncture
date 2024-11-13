@@ -1,21 +1,15 @@
 [Version: <ve-version></ve-version>](https://github.com/orgs/juncture-digital/discussions/4)
 
-  - 
-    - <ve-auth></ve-auth>
+- Juncture
+  - <ve-auth></ve-auth>
 
-  - Juncture
+- Quick Links
     - [Home](/)
     - [Quick Start](/docs/quick-start)
     - [Examples](/docs/examples/)
-      - [basic](/docs/examples/basic)
-      - [Amalfi Coast](/docs/examples/amalfi-coast)
-      - [Monument Valley](/docs/examples/monument-valley)
-      
-  - Tools
     - [Editor](/docs/embedded-editor)
-    - [Media Tool](/docs/embedded-media)
   
-- Getting Started
+- [Getting Started](/docs/getting-started)
   - [Using the Juncture Documentation](/docs/getting-started)
   - [Juncture Essay Rendering](/docs/getting-started?id=juncture-essay-rendering)
   - [Creating an essay](/docs/getting-started?id=creating-an-essay)

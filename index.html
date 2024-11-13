@@ -18,11 +18,15 @@
         auto2top: true,
         alias: { '.*/_sidebar.md': '/docs/sidebar.md' },
         loadSidebar: true,
+
         routerMode: 'hash', // hash or history
       };
     </script>
     <script src="https://v3.juncture-digital.org/wc/dist/js/index.js" type="module"></script>
+    
+    <!-- Docsify -->
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+
     <script>
       setTimeout(() => { window.history.replaceState({}, null, `${location.origin}${location.pathname}`) }, 100)
       

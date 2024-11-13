@@ -64,6 +64,7 @@
     width.value = definedWidth.value || host.value.clientWidth
     // height.value  = (definedHeight.value || width.value)
     height.value  = definedHeight.value || (window.innerHeight - host.value.offsetTop - 20)
+    console.log(`setDimensions: ${definedWidth.value} ${width.value} ${main.value?.clientWidth}`)
   }
 
   function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }
@@ -86,7 +87,7 @@
     display: flex;
     flex-direction: column;
     background-color: white;
-    width: 100% !important
+    /* width: 100% !important; */
   }
   
   .caption {

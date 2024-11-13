@@ -27,8 +27,9 @@ import AnimatedImage from './components/AnimatedImage.ce.vue'
 import Annotate from './components/Annotate.ce.vue'
 import Article from './components/Article.ce.vue'
 import Audio from './components/Audio.ce.vue'
+import Auth from './components/Auth.ce.vue'
 import Breadcrumbs from './components/Breadcrumbs.ce.vue'
-// import Button from './components/Button.ce.vue'
+import Button from './components/Button.ce.vue'
 import Carousel from './components/Carousel.ce.vue'
 import Compare from './components/Compare.ce.vue'
 import ContentSelector from './components/ContentSelector.ce.vue'
@@ -69,11 +70,12 @@ function defineCustomElements() {
 	customElements.define('ve-annotate', defineCustomElement(Annotate))
 	customElements.define('ve-article', defineCustomElement(Article))
 	customElements.define('ve-audio', defineCustomElement(Audio))
+	customElements.define('ve-auth', defineCustomElement(Auth))
 	customElements.define('ve-breadcrumbs', defineCustomElement(Breadcrumbs))
 	customElements.define('ve-carousel', defineCustomElement(Carousel))
 	customElements.define('ve-compare', defineCustomElement(Compare))
 	customElements.define('ve-content-selector', defineCustomElement(ContentSelector))
-	// customElements.define('ve-button', defineCustomElement(Button))
+	customElements.define('ve-button', defineCustomElement(Button))
 	// customElements.define('ve-dropdown', defineCustomElement(Dropdown))
 	customElements.define('ve-entities', defineCustomElement(Entities))
 	customElements.define('ve-entity-card', defineCustomElement(EntityCard))

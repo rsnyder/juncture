@@ -6,11 +6,12 @@
 
 The Amalfi Coast, a stretch of coastline in southern Italy's Campania region, is renowned for its breathtaking beauty, cultural richness, and historical significance. Nestled between the Gulf of Naples and the Gulf of Salerno, this 50-kilometer-long coastline is a UNESCO World Heritage site, celebrated for its dramatic cliffs, colorful villages, and lush vegetation.
 
-```map 40.63754,14.55186,12 "The Amalfi Coast" .right
-Q81345
-Q80563
-Q81427
-Q33163826
+```
+map 40.63754,14.55186,12 "The Amalfi Coast" .right
+- Q81345
+- Q80563
+- Q81427
+- Q33163826
 ```
 
 The coast's allure begins with its landscape. `Rugged` cliffs plunge into the sparkling Tyrrhenian Sea, creating a dramatic interplay of land and water. The road that winds along the coast, known as the Amalfi Drive or SS163, is one of the most scenic routes in the world. It offers panoramic views of the azure sea, terraced vineyards, and citrus groves. The natural beauty is complemented by charming towns and villages, each with its unique character and history.
@@ -23,11 +24,13 @@ One of the most famous towns on the Amalfi Coast is [Positano](flyto/Q81345,16).
 
 The Amalfi Coast's culinary scene is another highlight. The region's cuisine is characterized by fresh, locally sourced ingredients, including seafood, lemons, and olives. Dishes such as spaghetti alle vongole (spaghetti with clams) and insalata di limone (lemon salad) showcase the flavors of the sea and the land. The region is also famous for its limoncello, a lemon liqueur that is a perfect digestif after a meal.
 
-`image .right`
-`wd:Q81345`
-`wd:Q80563`
-`wd:Q81427`
-`wd:Q33163826`
+```
+image .right
+- wd:Q81345
+- wd:Q80563
+- wd:Q81427
+- wd:Q33163826
+```
 
 Beyond its natural and cultural attractions, the Amalfi Coast has a rich history that is reflected in its architecture and traditions. The coast was inhabited by the ancient Romans, and remnants of Roman villas can still be found in some areas. During the Middle Ages, the Amalfi Coast was a hub of commerce and navigation, and its maritime laws, known as the Amalfi Tables, influenced maritime law throughout the Mediterranean.
 

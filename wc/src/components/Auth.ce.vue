@@ -61,6 +61,7 @@
   }
 
   async function setupGithubAuth() {
+    console.log(location)
     let _user: any = localStorage.getItem('auth-user') && JSON.parse(localStorage.getItem('auth-user') || '{}' )
     if (_user?.provider === 'github') user.value = _user
     else user.value = null
@@ -70,7 +71,7 @@
     console.log(`setupGithubAuth: hostname=${window.location.hostname} code=${code} source=${source}`)
     if (code) {
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
-      window.history.replaceState({}, '', href)
+      // window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
       let resp = await fetch(url)
       let token = resp.ok ? await resp.text() : null

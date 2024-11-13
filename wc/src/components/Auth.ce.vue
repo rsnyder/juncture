@@ -68,14 +68,14 @@
     let searchParams = new URL(location.href).searchParams
     let code = searchParams.get('code')
     let source = searchParams.get('source')
-    console.log(`setupGithubAuth: hostname=${window.location.hostname} code=${code} source=${source}`)
+    console.log(`auth.setupGithubAuth: hostname=${window.location.hostname} code=${code} source=${source}`)
     if (code) {
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
       // window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
       let resp = await fetch(url)
       let token = resp.ok ? await resp.text() : null
-      console.log(`token=${token}`)
+      console.log(`auth.token=${token}`)
       if (token) {
         let _user = await getGhUserInfo(token)
         user.value = _user
@@ -87,7 +87,7 @@
     let hostname = (new URL(window.location.href)).hostname
     let clientId = clientIds[hostname]
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
-    console.log(`ghLogin: hostname=${hostname}, isDev=${isDev} clientId=${clientId}`)
+    console.log(`auth.ghLogin: hostname=${hostname}, isDev=${isDev} clientId=${clientId}`)
     console.log(location)
     if (isDev) {
       let resp = await fetch(`https:iiif.mdpress.io/gh-token?hostname=${hostname}&code=testing`)
@@ -101,7 +101,7 @@
       let href = clientId
         ? `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo&state=juncture&redirect_uri=${location.href}`
         : null
-      console.log(`ghLogin: href=${href}`)
+      console.log(`auth.ghLogin: href=${href}`)
       // if (href) window.location.href = href
     }
   }
@@ -121,10 +121,10 @@
         Authorization: `token ${token}`
       }
     })
-    console.log(resp)
+    console.log('auth', resp)
     if (resp.ok) {
       let info = await resp.json()
-      console.log(info)
+      console.log('auth', info)
       return { provider: 'github', username: info.login, name: info.name, email: info.email, token }
     }
   }

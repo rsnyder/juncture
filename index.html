@@ -29,8 +29,7 @@
 
     <script>
       setTimeout(() => {
-        console.log(location.search)
-        // window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
+        if (!location.search) window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
       }, 100)
       
       function toggleSidebar() { document.body.classList.toggle('close') }

@@ -28,7 +28,10 @@
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 
     <script>
-      // setTimeout(() => { window.history.replaceState({}, null, `${location.origin}${location.pathname}`) }, 100)
+      setTimeout(() => {
+        console.log(location.search)
+        // window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
+      }, 100)
       
       function toggleSidebar() { document.body.classList.toggle('close') }
 

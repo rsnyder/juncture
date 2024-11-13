@@ -1,7 +1,7 @@
 <style>
     .markdown-section { 
         padding-bottom: 0;
-        max-width: 95%;
+        max-width: unset;
         margin: 0;
     }
     ve-iframe {

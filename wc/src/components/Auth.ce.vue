@@ -67,12 +67,14 @@
     let searchParams = new URL(location.href).searchParams
     let code = searchParams.get('code')
     let source = searchParams.get('source')
+    console.log(`setupGithubAuth: hostname=${window.location.hostname} code=${code} source=${source}`)
     if (code) {
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
       window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
       let resp = await fetch(url)
       let token = resp.ok ? await resp.text() : null
+      console.log(`token=${token}`)
       if (token) {
         let _user = await getGhUserInfo(token)
         user.value = _user
@@ -82,22 +84,22 @@
 
   async function ghLogin() {
     let hostname = (new URL(window.location.href)).hostname
+    let clientId = clientIds[hostname]
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
+    console.log(`ghLogin: hostname=${hostname}, isDev=${isDev} clientIds=${clientId}`)
     if (isDev) {
       let resp = await fetch(`https:iiif.mdpress.io/gh-token?hostname=${hostname}&code=testing`)
-      console.log('resp', resp)
       if (resp.ok) {
         let token = await resp.text()
-        console.log('token', token)
         let _user = await getGhUserInfo(token)
         user.value = _user
         location.reload()
       }
     } else {
-      let href = clientIds[location.hostname] !== undefined
-        ? `https://github.com/login/oauth/authorize?client_id=${clientIds[location.hostname]}&scope=repo&state=juncture&redirect_uri=${location.href}`
+      let href = clientId
+        ? `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo&state=juncture&redirect_uri=${location.href}`
         : null
-      if (href) window.location.href = href
+      // if (href) window.location.href = href
     }
   }
 
@@ -116,8 +118,10 @@
         Authorization: `token ${token}`
       }
     })
+    console.log(resp)
     if (resp.ok) {
       let info = await resp.json()
+      console.log(info)
       return { provider: 'github', username: info.login, name: info.name, email: info.email, token }
     }
   }

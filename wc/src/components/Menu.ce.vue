@@ -271,12 +271,14 @@
     let searchParams = new URL(location.href).searchParams
     let code = searchParams.get('code')
     let source = searchParams.get('source')
+    console.log(`setupGithubAuth: hostname=${window.location.hostname} code=${code} source=${source}`)
     if (code) {
       let href = `${location.pathname}${location.hash}` + (source ? `?source=${source}` : '')
       window.history.replaceState({}, '', href)
       let url = `https://iiif.mdpress.io/gh-token?code=${code}&hostname=${window.location.hostname}`
       let resp = await fetch(url)
       let token = resp.ok ? await resp.text() : null
+      console.log('token', token)
       if (token) {
         let _user = await getGhUserInfo(token)
         user.value = _user
@@ -322,6 +324,7 @@
         Authorization: `token ${token}`
       }
     })
+    console.log('getGhUserInfo', resp)
     if (resp.ok) {
       let info = await resp.json()
       return { provider: 'github', username: info.login, name: info.name, email: info.email, token }

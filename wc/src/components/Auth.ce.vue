@@ -88,6 +88,7 @@
     let clientId = clientIds[hostname]
     let isDev = hostname === 'localhost' || hostname.indexOf('192.168.') === 0
     console.log(`ghLogin: hostname=${hostname}, isDev=${isDev} clientId=${clientId}`)
+    console.log(location)
     if (isDev) {
       let resp = await fetch(`https:iiif.mdpress.io/gh-token?hostname=${hostname}&code=testing`)
       if (resp.ok) {
@@ -100,7 +101,8 @@
       let href = clientId
         ? `https://github.com/login/oauth/authorize?client_id=${clientId}&scope=repo&state=juncture&redirect_uri=${location.href}`
         : null
-      if (href) window.location.href = href
+      console.log(`ghLogin: href=${href}`)
+      // if (href) window.location.href = href
     }
   }
 

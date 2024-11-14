@@ -29,6 +29,7 @@
 
     <script>
       setTimeout(() => {
+        console.log.log(location)
         if (!location.search) window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
       }, 100)
       

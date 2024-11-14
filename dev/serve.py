@@ -124,7 +124,6 @@ def html_from_markdown(md, baseurl, dir, name, path):
       pre.append(new_code)
       code.parent.replace_with(top_div)
 
-    
   for param in soup.find_all('param'):
     node = param.parent
     while node.next_sibling and node.next_sibling.name == 'param':
@@ -182,17 +181,18 @@ async def serve(path: Optional[str] = None):
       if os.path.exists(local_file_path):
         ext = 'html'
         break
-    else:
-      for mdIndex in ['index.md', 'README.md']:
-        if os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'):
-          break
-      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
+    for mdIndex in ['index.md', 'README.md']:
+      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
       if os.path.exists(local_file_path):
-        pass
-      elif os.path.exists(f'{CONTENT_ROOT}/{"/".join(path)}.md'):
-        local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}.md'
-      else:
-        return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
+        break
+      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
+    
+    if not os.path.exists(local_file_path):
+      content = open(f'{BASEDIR}/404.html').read()
+      if LOCAL_WC:
+        content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
+        content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
+      return Response(status_code=200, content=content, media_type='text/html')
   
   if ext == 'ico':
     content = favicon
@@ -214,10 +214,6 @@ async def serve(path: Optional[str] = None):
     if LOCAL_WC:
       content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
       content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
-      
-    content = content.replace('{{ page.dir }}', md_dir)
-    content = content.replace('{{ page.name }}', md_name)
-    content = content.replace('{{ page.path }}', md_path)
 
   media_type = media_types[ext] if ext in media_types else 'text/html'
 

@@ -69,6 +69,14 @@ article .markdown-body pre code {
     width: 100%;
   }
 
+  article {
+    width: 100%;
+  }
+
+  main.markdown-body {
+    margin: 0 0.5em;
+  }
+
 }
 
 /*********** end mobile ***********/

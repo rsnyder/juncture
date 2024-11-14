@@ -1,13 +1,16 @@
-[Version: <ve-version></ve-version>](https://github.com/orgs/juncture-digital/discussions/4)
+<ve-auth></ve-auth>
 
-- Juncture
-  - <ve-auth></ve-auth>
+- 
+  - [Home](/)
+  - [Quick Start](/docs/quick-start)
 
-- Quick Links
-    - [Home](/)
-    - [Quick Start](/docs/quick-start)
-    - [Examples](/docs/examples/)
-    - [Editor](/docs/embedded-editor)
+- Examples
+  - [The Amalfi Coast](/docs/examples/amalfi-coast)
+  - [Monument Valley](/docs/examples/monument-valley)
+  - [More examples...](https://juncture-digital.github.io/examples)
+
+- Tools
+  - [Juncture Web Editor](/docs/embedded-editor)
   
 - [Getting Started](/docs/getting-started)
   - [Using the Juncture Documentation](/docs/getting-started)
@@ -22,30 +25,26 @@
     - [Add header and footer](/docs/getting-started?id=add-header-and-footer)
     - [Enable annotations](/docs/getting-started?id=enable-annotations)
 
-- [Juncture Tagging](/docs/components/)
-  - [Overview](/docs/components/)
-  - [Viewer Components](/docs/components/overview?id=viewers)
-    - [Animated Image Viewer](/docs/components/animated-image-viewer)
-    - [Audio Player](/docs/components/audio-player)
-    - [Image Carousel](/docs/components/image-carousel)
-    - [IFrame Viewer](/docs/components/iframe-viewer)
-    - [Image Compare Viewer](/docs/components/image-compare-viewer)
-    - [Image Gallery](/docs/components/image-gallery)
-    - [Image Viewer](/docs/components/image-viewer)
-    - [Map Viewer](/docs/components/map-viewer)
-    - [Mermaid Diagram Viewer](/docs/components/mermaid-diagram-viewer)
-    - [Plant Specimen Viewer](/docs/components/plant-specimen-viewer)
-    - [Video Player](/docs/components/video-player)
-    - [VisJS Diagram Viewer](/docs/components/visjs-diagram-viewer)
-  - [Other Juncture Components](/docs/components/overview?id=other-tags)
-    - [Annotator](/docs/components/annotate)
-    - [Footer](/docs/components/footer)
-    - [Header](/docs/components/header)
-    - [Metadata](/docs/components/meta)
+- Juncture Components
+  - [Animated Image Viewer](/docs/components/animated-image-viewer)
+  - [Audio Player](/docs/components/audio-player)
+  - [Image Carousel](/docs/components/image-carousel)
+  - [IFrame Viewer](/docs/components/iframe-viewer)
+  - [Image Compare Viewer](/docs/components/image-compare-viewer)
+  - [Image Gallery](/docs/components/image-gallery)
+  - [Image Viewer](/docs/components/image-viewer)
+  - [Map Viewer](/docs/components/map-viewer)
+  - [Mermaid Diagram Viewer](/docs/components/mermaid-diagram-viewer)
+  - [Plant Specimen Viewer](/docs/components/plant-specimen-viewer)
+  - [Video Player](/docs/components/video-player)
+  - [VisJS Diagram Viewer](/docs/components/visjs-diagram-viewer)
+  - [Annotator](/docs/components/annotate)
+  - [Footer](/docs/components/footer)
+  - [Header](/docs/components/header)
+  - [Metadata](/docs/components/meta)
 
 - Styling
   - [General](/docs/styling/general)
-  - [Viewer positioning](/docs/styling/viewer-positioning)
   - [Tabs](/docs/styling/tabs)
   - [Cards](/docs/styling/cards)
 
@@ -61,7 +60,6 @@
   - [Use a historical map overlay](/docs/howto/use-historic-maps)
   - [Use a GeoJSON map overlay](/docs/howto/geojson-overlay)
   - [Hosting a Juncture website](/docs/howto/hosting)
-  - [Using Juncture with WordPress](/docs/howto/use-juncture-with-wordpress)
 
 - Resources
   - [Media providers](/docs/resources/media)
@@ -73,3 +71,5 @@
   - [Contacting Us](/docs/contact)
   - [Problem reporting and feature requests](/docs/issues)
   - [Attribution](/docs/attribution)
+
+[Version: <ve-version></ve-version>](https://github.com/orgs/juncture-digital/discussions/4)

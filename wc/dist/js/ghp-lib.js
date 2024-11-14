@@ -1438,7 +1438,7 @@ function articleFromHtml(html) {
   convertTags(contentEl)
   let article = restructure(contentEl)
   if (window.config?.isJunctureV1 || isJunctureV1(contentEl)) article = restructureForJ1(article)
-  else if (!article.querySelector('ve-footer') && location.hostname === 'localhost' || location.hostname.indexOf('juncture-digital.org') > -1) addDefaultFooter(article)
+  else if (!article.querySelector('ve-footer') && location.hostname === 'localhost' || location.hostname.indexOf('juncture-digital') > -1) addDefaultFooter(article)
   console.log(article)
   return article
 }

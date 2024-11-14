@@ -44,19 +44,11 @@
     width: { type: Number }
   })
 
-  onMounted(() => { console.log(toRaw(props)) })
-
   watch(props, () => { setDimensions() })
 
   const main = ref<HTMLElement | null>(null)
   const host = computed(() => (main.value?.getRootNode() as any)?.host)
   watch(host, (host) => { new ResizeObserver(() => setDimensions()).observe(host) })
-
-  const src = computed(() => {
-    let srcUrl = new URL(props.src)
-    console.log(srcUrl)
-    return props.src
-  })
 
   const captionEl = ref<HTMLElement | null>(null)
 

@@ -4,7 +4,7 @@
     
     <li v-if="!footerElems.length">
       <a href="https://v3.juncture-digital.org">Powered by 
-        <img src="https://v3.juncture-digital.org/logo.png" alt="Juncture Logo" style="height:36px; vertical-align:middle;">
+        <img src="https://v3.juncture-digital.org/images/logo.png" alt="Juncture Logo" style="height:36px; vertical-align:middle;">
       </a>
     </li>
     

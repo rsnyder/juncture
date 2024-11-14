@@ -28,6 +28,8 @@
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 
     <script>
+      console.log(location)
+      console.log(/^\/docs\/?/.test(location.pathname))
       if (/^\/docs\/?/.test(location.pathname)) location.href = location.href.replace(/\/docs\/?/, '/#/docs/') // Redirect docs to hash-based URL
 
       // Close sidebar on desktop
@@ -37,7 +39,7 @@
       window.addEventListener('popstate', (evt) => { if (location.hash !== '#/') document.body.classList.remove('close') }) // The URL changed...
   
       setTimeout(() => {
-        console.log(location.hash, location.search, location.hash === '*/' && location.search === '')
+        console.log(`hash="${location.hash}"" search="${location.search}"`, location.hash === '*/' && location.search === '')
         if (location.hash === '*/' && location.search === '') window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
       }, 100) 
 

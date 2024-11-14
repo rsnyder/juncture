@@ -39,7 +39,8 @@
         path = path.join('/').replace(/\/(README|index)\.md$/,'').replace(/\.md$/,'')
         let redirect = `https://v3.juncture-digital.org/${acct}/${repo}/${path}${branch !== 'main' ? `?ref=${branch}` : ''}`
         console.log('Redirecting to:', redirect)
-        // location.href = redirect
+        document.body.innerHTML = `<h1>Redirecting to <a href="${redirect}">${redirect}</a></h1>`
+        location.href = redirect
       }
 
       // Close sidebar on desktop

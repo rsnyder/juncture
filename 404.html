@@ -4,7 +4,9 @@
     <base href="/">
     <meta charset=utf-8>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="/favicon.ico" rel="icon" />
+    <title>Juncture</title>
+    <link href="https://v3.juncture-digital.org/images/favicon.svg" rel="icon" type="image/svg+xml"/>
+    <link href="https://v3.juncture-digital.org/images/favicon.png" rel="icon" type="image/png"/>
     <link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
   </head>
   <body>
@@ -15,19 +17,11 @@
       // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
       import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https:/v3.juncture-digital.org/ghp.js'
 
-      let acct, repo, branch, path
-
-      let referrer = document.referrer ? new URL(document.referrer) : null
-      if (referrer?.host === 'github.com') {
-        console.log('Referrer:', referrer);
-        [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
-      } else {
-        [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe).slice(location.hostname.indexOf('github.io') > -1 ? 1 : 0)
-        branch = new URL(location.href).searchParams.get('ref') || 'main'
-        console.log(acct, repo, branch, path)
-      }
+      let [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe).slice(location.hostname.indexOf('github.io') > -1 ? 1 : 0)
+      let branch = new URL(location.href).searchParams.get('ref') || 'main'
       acct = acct || 'juncture-digital'
       repo = repo || '.github'
+      console.log(acct, repo, branch, path)
 
       pathDir(acct, repo, branch, path).then(resp => {
         let baseurl = `/${acct}/${repo}${resp.dir}`

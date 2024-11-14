@@ -29,8 +29,13 @@
 
     <script>
       console.log(location)
-      console.log(/^\/docs\/?/.test(location.pathname))
-      if (/^\/docs\/?/.test(location.pathname)) location.href = location.href.replace(/\/docs\/?/, '/#/docs/') // Redirect docs to hash-based URL
+      let isDocsURL = /^\/docs\/?/.test(location.pathname)
+      console.log(`isDocsURL=${isDocsURL}`)
+      if (isDocsURL) {
+        let docsHashURL = location.href.replace(/\/docs\/?/, '/#/docs/')
+        console.log(`redirecting to ${docsHashURL}`)
+        // location.href = docsHashURL
+      }
 
       // Close sidebar on desktop
       function toggleSidebar() { document.body.classList.toggle('close') }
@@ -40,7 +45,7 @@
   
       setTimeout(() => {
         console.log(`hash="${location.hash}"" search="${location.search}"`, location.hash === '*/' && location.search === '')
-        if (location.hash === '*/' && location.search === '') window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
+        // if (location.hash === '*/' && location.search === '') window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
       }, 100) 
 
     </script>

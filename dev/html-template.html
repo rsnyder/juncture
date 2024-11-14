@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset=utf-8>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+{%- seo -%}
+<link href="{{ site.baseurl }}/favicon.ico" rel="icon" />
+<link rel="apple-touch-icon" href="https://v3.juncture-digital.org/images/mobile-icon.png">
+
+<main style="visibility:hidden;">{{ content }}</main>
+
+<script type="module">
+
+  // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
+  import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https://v3.juncture-digital.org/ghp.js'
+
+  let referrer = document.referrer ? new URL(document.referrer) : null
+
+  if (window.location.search.includes('source')) {
+    let [acct, repo, branch, ...path] = new URL(location.href).searchParams.get('source').split('/').filter(pe => pe)
+    pathDir(acct, repo, branch, path).then(resp => {
+      window.jekyll.source = { owner: acct, repository: repo, branch: branch || 'main', dir: resp.dir }
+      setConfig()
+      getMarkdown(`${acct}/${repo}/${branch || 'main'}/${path.join('/')}`).then(markdown => {
+        window.config.content = markdown
+        mount(document.body.firstChild, markdownToHtml(markdown))
+      })
+    })
+  } else if (referrer?.host === 'github.com') {
+    let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+    let source = `${acct}/${repo}/${branch || 'main'}/${path.join('/')}`
+    window.location.pathname = `${acct}/${repo}/${path.join('/')}`
+    if (branch !== 'main') window.location.search = `ref=${branch}`
+  } else {
+    mount()
+  }
+</script>

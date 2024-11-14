@@ -66,8 +66,8 @@ media_types = {
 
 favicon = open(f'{BASEDIR}/favicon.ico', 'rb').read() if os.path.exists(f'{BASEDIR}/favicon.ico') else None
 
-
-template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CONTENT_ROOT}/_layouts/default.html') else f'{BASEDIR}/_layouts/default.html'
+# template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CONTENT_ROOT}/_layouts/default.html') else f'{BASEDIR}/_layouts/default.html'
+template_path = f'{CONTENT_ROOT}/_layouts/default.html' if os.path.exists(f'{CONTENT_ROOT}/_layouts/default.html') else f'{BASEDIR}/dev/html-template.html'
 html_template = open(template_path, 'r').read()
 
 if LOCAL_WC: 
@@ -78,8 +78,7 @@ html_template = html_template.replace('{{ site.github.repository_name }}', GH_RE
 html_template = html_template.replace('{{ site.github.source.branch }}', GH_BRANCH)
 
 html_template = html_template.replace('{%- seo -%}', '')
-```
-`
+
 CONFIG = {
   'site': {
     'baseurl': '',

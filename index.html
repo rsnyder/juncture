@@ -36,8 +36,8 @@
   
       setTimeout(() => {
         console.log(location)
-        console.log(`hash="${location.hash}"" search="${location.search}"`, location.hash === '*/' && location.search === '')
-        // if (location.hash === '*/' && location.search === '') window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
+        console.log(`hash="${loc.hash}"" search="${location.search}"`, location.hash === '*/' && `${location.search}` === '')
+        // if (location.hash === '*/' && `${location.search}` === '') window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
       }, 100) 
 
     </script>

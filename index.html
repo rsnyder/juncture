@@ -28,18 +28,15 @@
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 
     <script>
-      setTimeout(() => {
-        if (location.href === '*/' && !location.search) window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
-      }, 100)
-      
-      function toggleSidebar() { document.body.classList.toggle('close') }
+      if (location.pathname.indexOf('/docs') === 0) location.href = location.href.replace('/docs', '/#/docs') // Redirect docs to hash-based URL
 
+      // Close sidebar on desktop
+      function toggleSidebar() { document.body.classList.toggle('close') }
       const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
       if (!isMobile && (!location.hash || location.hash === '#/')) toggleSidebar()
+      window.addEventListener('popstate', (evt) => { if (location.hash !== '#/') document.body.classList.remove('close') }) // The URL changed...
   
-      window.addEventListener('popstate', (evt) => {
-        if (location.hash !== '#/') document.body.classList.remove('close')
-      }) // The URL changed...
+      setTimeout(() => { if (location.hash === '*/' && !location.search) window.history.replaceState({}, null, `${location.origin}${location.pathname}`) }, 100)
 
     </script>
   </body>

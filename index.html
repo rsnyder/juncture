@@ -28,15 +28,6 @@
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
 
     <script>
-      console.log(location)
-      let isDocsURL = /^\/docs\/?/.test(location.pathname)
-      console.log(`isDocsURL=${isDocsURL}`)
-      if (isDocsURL) {
-        let docsHashURL = location.href.replace(/\/docs\/?/, '/#/docs/')
-        console.log(`redirecting to ${docsHashURL}`)
-        // location.href = docsHashURL
-      }
-
       // Close sidebar on desktop
       function toggleSidebar() { document.body.classList.toggle('close') }
       const isMobile = ('ontouchstart' in document.documentElement && /mobi/i.test(navigator.userAgent) )
@@ -44,6 +35,7 @@
       window.addEventListener('popstate', (evt) => { if (location.hash !== '#/') document.body.classList.remove('close') }) // The URL changed...
   
       setTimeout(() => {
+        console.log(location)
         console.log(`hash="${location.hash}"" search="${location.search}"`, location.hash === '*/' && location.search === '')
         // if (location.hash === '*/' && location.search === '') window.history.replaceState({}, null, `${location.origin}${location.pathname}`) 
       }, 100) 

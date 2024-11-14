@@ -3,4 +3,4 @@
     .markdown-section { max-width: unset; padding: 0 1em; }
 </style>
 
-<ve-iframe src="/examples/monument-valley"><ve-iframe>
+<ve-iframe src="https://juncture-digital.github.io/examples/monument-valley"><ve-iframe>

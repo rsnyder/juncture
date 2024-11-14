@@ -8,6 +8,8 @@ Juncture is a tool for creating and displaying interactive web pages.  Juncture 
 
 To begin using Juncture you will need a GitHub account and some basic familiarity with Markdown.
 
+Refer to the [Juncture Quick Start Guide](https://v3.juncture-digital.org/docs/quick-start) for more information.
+
 **GitHub** is a free Internet hosting service commonly used for software development projects. It provides sophisticated features for version control and workflow management for distributed teams. Juncture primarily uses GitHub as a file hosting service, similar to how one might use Dropbox or Google Drive. The Markdown files that Juncture uses to render interactive web pages are stored in GitHub.  Go to https://github.com/signup to sign up for a free GithHub account.
 
 **Markdown** is a simple language and a basic understanding of usage can be obtained in just a few minutes.  The [Markdown Guide - Getting Started tutorial](https://www.markdownguide.org/getting-started) is a good resource for getting started with Markdown.

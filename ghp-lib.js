@@ -888,7 +888,7 @@ function configCustomClasses(rootEl) {
 
 function restructureForJ1(article) {
 
-  querySelectorAll('p').forEach(p => {
+  article.querySelectorAll('p').forEach(p => {
     if (/^\s*{.*}\s*$/.test(p.textContent)) {
       p.remove()
     }

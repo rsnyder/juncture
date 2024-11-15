@@ -33,6 +33,7 @@
   - [Image Compare Viewer](/docs/components/image-compare-viewer)
   - [Image Gallery](/docs/components/image-gallery)
   - [Image Viewer](/docs/components/image-viewer)
+  - [KnightLab Timeline Viewer](/docs/components/knightlab-timeline-viewer)
   - [Map Viewer](/docs/components/map-viewer)
   - [Mermaid Diagram Viewer](/docs/components/mermaid-diagram-viewer)
   - [Plant Specimen Viewer](/docs/components/plant-specimen-viewer)
@@ -55,6 +56,7 @@
   - [Examples](/docs/actions?id=examples)
 
 - How To Guides
+  - [Adding a KnightLab Timeline](/docs/howto/knightlab-timeline)
   - [Annotating images](/docs/howto/annotate-images)
   - [Setting up a media collection](/docs/howto/setup-media-collection)
   - [Use a historical map overlay](/docs/howto/use-historic-maps)

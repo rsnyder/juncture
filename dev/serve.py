@@ -168,24 +168,25 @@ async def serve(path: Optional[str] = None):
 
   if len(path) > 0 and CONTENT_ROOT != BASEDIR and path[0] in ['ghp.js', 'ghp-lib.js', 'index.css', 'index.js', 'favicon.ico', 'css', 'images', 'wc']:  
     local_file_path = f'{BASEDIR}/{"/".join(path)}'
-    # logger.info(f'local_file_path: {local_file_path}')
 
   elif ext:
     local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}'
     if not os.path.exists(local_file_path):
       return Response(status_code=404, content=f'Page "{path}" not found at {local_file_path}', media_type='text/html')
   else:
-    for suffix in ('/index.html', '.html', ):
-      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}{suffix}'
-      logger.info(f'local_file_path: {local_file_path}')
-      if os.path.exists(local_file_path):
+    local_file_path = None
+    for suffix in ('index.html', '.html', ):
+      to_check = f'{CONTENT_ROOT}/{"/".join(path)}{suffix}'
+      if os.path.exists(to_check):
+        local_file_path = to_check
         ext = 'html'
         break
-    for mdIndex in ['index.md', 'README.md']:
-      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
-      if os.path.exists(local_file_path):
-        break
-      local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
+    if not local_file_path:
+      for mdIndex in ['index.md', 'README.md']:
+        local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
+        if os.path.exists(local_file_path):
+          break
+        local_file_path = f'{CONTENT_ROOT}/{"/".join(path)}' if ext else f'{CONTENT_ROOT}/{"/".join(path)}/{mdIndex}'
     
     if not os.path.exists(local_file_path):
       content = open(f'{BASEDIR}/404.html').read()

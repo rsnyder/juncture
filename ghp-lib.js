@@ -573,7 +573,7 @@ function parseMarkArg(arg) {
 function restructure(rootEl) {
   let styleSheet = rootEl.querySelector('style')
   if (!styleSheet) {
-    let ptext = rootEl.childNodes.item(0).nodeValue?.trim()
+    let ptext = rootEl.childNodes.item(0)?.nodeValue?.trim()
     if (/^\s*<style/.test(ptext)) {
       styleSheet = document.createElement('style')
       styleSheet.innerHTML = ptext.replace(/^\s*<style[^>]*>/, '').replace(/<\/style>\s*$/, '')
@@ -1413,7 +1413,7 @@ function structureContent(html) {
 }
 
 function addDefaultFooter(article) {
-  article.appendChild(document.createElement('ve-footer'))
+  // article.appendChild(document.createElement('ve-footer'))
 }
 
 function articleFromHtml(html) {

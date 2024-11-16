@@ -1,29 +1,23 @@
+[Version: <ve-version></ve-version>](https://github.com/orgs/juncture-digital/discussions/4)
+
 <ve-auth></ve-auth>
 
 - 
   - [Home](/)
   - [Quick Start](/docs/quick-start)
 
-- Examples
-  - [The Amalfi Coast](/docs/examples/amalfi-coast)
-  - [Monument Valley](/docs/examples/monument-valley)
-  - [More examples...](https://juncture-digital.github.io/examples)
-
 - Tools
   - [Juncture Web Editor](/docs/embedded-editor)
   
-- [Getting Started](/docs/getting-started)
-  - [Using the Juncture Documentation](/docs/getting-started)
-  - [Juncture Essay Rendering](/docs/getting-started?id=juncture-essay-rendering)
-  - [Creating an essay](/docs/getting-started?id=creating-an-essay)
-    - [Add text](/docs/getting-started?id=add-text)
-    - [Format text with Markdown](/docs/getting-started?id=format-text-with-markdown)
-    - [Add footnotes](/docs/getting-started?id=add-footnotes)
-    - [Add entity popovers](/docs/getting-started?id=add-entity-popovers)
-    - [Add Juncture viewer tags](/docs/getting-started?id=add-juncture-viewer-tags)
-    - [Add viewer interactions](/docs/getting-started?id=add-viewer-interactions)
-    - [Add header and footer](/docs/getting-started?id=add-header-and-footer)
-    - [Enable annotations](/docs/getting-started?id=enable-annotations)
+- [Creating a Juncture Visual Essay](/docs/getting-started?id=creating-an-essay)
+  - [Add text](/docs/getting-started?id=add-text)
+  - [Format text with Markdown](/docs/getting-started?id=format-text-with-markdown)
+  - [Add footnotes](/docs/getting-started?id=add-footnotes)
+  - [Add entity popovers](/docs/getting-started?id=add-entity-popovers)
+  - [Add Juncture viewer tags](/docs/getting-started?id=add-juncture-viewer-tags)
+  - [Add viewer interactions](/docs/getting-started?id=add-viewer-interactions)
+  - [Add header and footer](/docs/getting-started?id=add-header-and-footer)
+  - [Enable annotations](/docs/getting-started?id=enable-annotations)
 
 - Juncture Components
   - [Animated Image Viewer](/docs/components/animated-image-viewer)
@@ -44,12 +38,17 @@
   - [Header](/docs/components/header)
   - [Metadata](/docs/components/meta)
 
-- Styling
-  - [General](/docs/styling/general)
-  - [Tabs](/docs/styling/tabs)
-  - [Cards](/docs/styling/cards)
+- [Styling](/docs/styling/)
+  - [Using an External Stylesheet](/docs/styling/?id=reference-an-external-stylesheet)
+  - [Style Tag in Essay](/docs/styling/?id=style-tag-in-essay)
+  - [Inline Styling](/docs/styling/?id=in-line-element-styling)
 
-- Actions Framework
+- Layouts
+  - [Multiple columns](/docs/layouts/multiple-columns)
+  - [Tabs](/docs/layouts/tabs)
+  - [Cards](/docs/layouts/cards)
+
+- Interactions Framework
   - [Overview](/docs/actions?id=overview)
   - [Marking text](/docs/actions?id=marking-text)
   - [Action values](/docs/actions?id=getting-action-values)
@@ -69,9 +68,7 @@
     - [IIIF](/docs/resources/background?id=iiif)
     - [GeoJSON](/docs/resources/background?id=geojson)
 
-- Misc
+- &nbsp;
   - [Contacting Us](/docs/contact)
   - [Problem reporting and feature requests](/docs/issues)
   - [Attribution](/docs/attribution)
-
-[Version: <ve-version></ve-version>](https://github.com/orgs/juncture-digital/discussions/4)

@@ -39,14 +39,16 @@ p {
 
 <h3 style="line-height:1.3;margin-top:1rem;"><i>Create and share rich, interactive essays in minutes!</i></h3>
 
-- Quickly create single essays or full web sites
-- Minimal setup and no ongoing administration
-- Easy-to-use drag-n-drop editor with preview
-- Flexible content viewers for displaying images, video, audio, maps, diagrams, and more
-- Use web-based resources and your own content
-- Image and text annotation tools
-- IIIF-enabled features for using high-quality, attributed digital objects
-- Open source and built on open tools and data formats
+**Features Overview:**
+
+- **Quick Creation**: Create essays or full websites with ease.
+- **Minimal Setup**: No ongoing administration needed.
+- **User-Friendly Editor**: Drag-n-drop with live preview.
+- **Flexible Viewers**: Display images, video, audio, maps, diagrams, and more.
+- **Content Integration**: Use web resources alongside your own.
+- **Annotation Tools**: Annotate images and text easily.
+- **[IIIF-Enabled](/docs/iiif)**: Leverage high-quality digital objects.
+- **Open Source**: Built on open tools and data formats.
 
 </div>
 <div class="splash-end">
@@ -59,56 +61,41 @@ p {
 
 # Welcome to Juncture
 
-**Juncture** is a suite of tools and services that enable anyone to easily create engaging web pages with rich visualizations, including interactive images, videos, maps, and more.  
+**Juncture** is a suite of tools and services that helps anyone easily create engaging web pages enriched with visual content like interactive images, videos, maps, and more.
 
-The original version of Juncture was developed by the friendly folks at [JSTOR Labs](https://labs.jstor.org) and [grew out of a project](https://www.doaks.org/research/mellon-initiatives/plant-humanities-initiative) that used visual essays for a form of digital storytelling.  Visual essays are text narratives augmented with interactive visualizations providing depth and context.  
+Juncture was originally developed by [JSTOR Labs](https://labs.jstor.org) and [evolved from a project](https://www.doaks.org/research/mellon-initiatives/plant-humanities-initiative) focused on using visual essays for digital storytelling. Visual essays are text narratives enhanced with interactive visuals that provide depth and context.
 
-This current version of Juncture represents a complete rewrite of the Juncture code base and documentation.  The rendering engine is backward compatible with visual essays written for version 1, so if you're an existing Juncture user, no worries, your Juncture essays will continue to work.  
+?> This is the third version of the Juncture toolset. The syntax for Juncture tags has evolved since its inception, but the current version is backward compatible. If you've already created Juncture essays, rest assured they'll continue to work seamlessly. If you experience any compatibility issues, please let us know using the Juncture Issues site.
 
-?> Documentation for Juncture version 1 can be found [here](https://github.com/jstor-labs/juncture/wiki).
+## Examples of What You Can Create
 
-In its current form, Juncture is still well-suited for the type of digital storytelling emphasized in version 1 but can now be more easily used for generating web pages that are less text-centric, such as an image exhibition.
+This [demo essay](/docs/examples/monument-valley) shows what's possible with Juncture. It features a high-resolution image, videos, an interactive map, and viewer interactions—plus information popovers for places mentioned in the text. You can find more examples and inspiration on the [Juncture Examples](https://juncture-digital.github.io/examples) site.
 
-This [demo essay](/showcase/bedroom-in-arles) provides an example of what is possible in a Juncture essay.  This essay includes multiple high-res images, a YouTube video, an interactive map, and some text-to-viewer interactions.  The essay also includes many information popovers for entities (people, places, works, etc) mentioned in the text.  Other examples may be found in the [Juncture Showcase](/showcase).
+?> When viewing the example essays, note that there is a link on the far right of the footer that, when clicked, will show the Juncture-enhanced Markdown code used to create the essay.
 
-# What problem does this solve?
+## What Problem Does Juncture Solve?
 
-Juncture's primary goal is to make the use of modern web technology (deep-zoom and panning for high-resolution images, interactive maps, etc) accessible to anyone with an interest in sharing something on the web, regardless of background or technical skills. In the [Quick Start guide](/quick-start), you can give it a try and see for yourself. All that is required for this quick start (and to use Juncture generally) is an active Github account. If you already have one, the "hard" part is done. If not, you'll need to take a couple of minutes to signup with Github. Signing up for a Github account is free and painless.
+Juncture makes advanced web technologies—like deep-zoom images, panning features, and interactive maps—accessible to everyone, regardless of technical skills. If you want to share stories or information on the web in an engaging way, Juncture is for you. All you need to get started is a GitHub account, which is free and easy to set up.
 
-If you're looking for a set of easy-to-use tools for quickly creating web pages with engaging and interactive content with minimal setup and zero ongoing administration, Juncture might be exactly what you need.
+Check out our [Quick Start guide](/docs/quick-start) to give Juncture a try. Whether you're looking to create interactive visual essays or simple web pages without hassle, Juncture could be just what you need. Setting up a Juncture website costs nothing and can be accomplished in just a few minutes.
 
-# Some Juncture uses
+## How People Use Juncture
 
-1. **Education**. Juncture is able to support a range of teaching and learning use cases, including:
-    - Use by instructors in the development of resources for classroom or remote instruction.  The [Hypothes.is](https://web.hypothes.is/) annotation tool can be easily added to any essay for class discussion or other uses. 
-    - Use by students for individual or group projects.  Juncture can be used as tool for simple essay development or as tool for building broader skills in the use of digital technologies for information creation and sharing.
+### 1. Education
 
-2. **Simple blog or travelogue**.  The ability to quickly create a web page with text and images makes Juncture a convenient tool for blog style content authoring.  With the addition of interactive maps, connected with text and images, Juncture is well-suited for creating rich and engaging travelogues.  Images, with geolocation data when available, can easily be transferred from a smartphone into a Juncture essay.
+Juncture supports a wide range of educational uses:
 
-3. **Creation of full website with themed essays**.  Multiple Juncture essays can be easily aggregated and linked to create full websites, with a custom domain if desired.  Examples of themed websites created with Juncture include [Plant Humanities Lab](https://lab.plant-humanities.org/) and [Kent Maps Online](https://kent-maps.online/).
+- **Instructors** can create resources for classroom or remote learning. You can even add the [Hypothes.is](https://web.hypothes.is/) annotation tool for class discussions.
+- **Students** can use Juncture for individual or group projects, whether to write essays or to learn about digital technologies for information sharing.
 
-4. **Many others**.  As a general-purpose tool there are any number of interesting ways in which Juncture could be applied. We'd love to hear how you use Juncture.  Please connect with us from our [Contact](/contact) page if you come up with some innovative or interesting use of Juncture that we could share with others.  You might also consider submitting essays for inclusion on the Juncture Showcase site.
+### 2. Blogging and Travelogues
 
-# About Juncture and IIIF
+Creating web pages with text and images is quick and easy with Juncture, making it perfect for blogs or travelogues. Add interactive maps and photos from your smartphone to bring your stories to life.
 
-Juncture is built using many great technologies and tools, many of which can be seen on the Juncture [attribution](/attribution) page.  A cornerstone in the Juncture design and value proposition is IIIF.  The [International Image Interoperability Framework](https://iiif.io/) (IIIF, spoken as 'triple-I-eff') defines several APIs (Application Programming Interfaces) that define a standardized method of describing and delivering media over the web.  IIIF is arguably the most important technology used by Juncture.  Understanding what IIIF is and how it is used will be useful background before diving into the creation of an essay, especially those incorporating images, audio, and video.  
+### 3. Themed Websites
 
-The [IIIF Get Started](https://iiif.io/get-started/) page is the best place to start for good understanding of IIIF.  In this section a top-level overview is provided.  Much of the information provided consist of excerpts from the official IIIF site.  Users interested in learning more are encouraged to visit the IIIF site.
+Multiple Juncture essays can be combined to create full websites. You can even add a custom domain. Great examples of this include [Plant Humanities Lab](https://lab.plant-humanities.org/) and [Kent Maps Online](https://kent-maps.online/).
 
-## Why IIIF?
+### 4. Flexible Applications
 
-The benefits of using IIIF include:
-
-- **Rich image delivery**.  Fast, rich zoom & pan delivery of images via the Internet, with options for size, scale, region of interest, rotation, quality and format.
-- **Plug and play software**.  Use any IIIF-compatible software for viewing, comparing and manipulating images from any IIIF-compatible image site, regardless of the back-end server. Swap parts of the stack at any time, or run multiple components in parallel at once.
--**Publish once, reuse often**.  Deliver images from your own site for many uses; host a single copy and embed in other sites. No need to transfer images to others for them to locally load and use them for one off analysis or republishing.
--**Remix content**.  Assemble and reuse IIIF resources from across the Web, regardless of source. Compare pages, import into tools, build exhibits, or view items served from different sites in one place.
--**Annotate**.  IIIF has native compatibility with the [W3C Web Annotation model](https://www.w3.org/TR/2017/REC-annotation-model-20170223/), which supports annotating content on the Web. Comment on, transcribe, and mark up resources using the Web’s inherent architecture–even for Audiovisual resources.
--**Cite and share**.  IIIF APIs give portable views onto images or any of its regions, and provide incentive for URIs that persist through image server migrations. Cite an image with a stable URI, or share it for reference by others–or yourself in a different environment.
--**Support for attribution and access control**.  Built in API calls support attribution and access control: the Authentication API (http://iiif.io/api/auth/), is integral and consistent with the IIIF conception.
-
-## IIIF use in Juncture
-
-The "Why IIIF?" list of benefits provides a compelling case for using IIIF over standard images, audio, and video.  The benefits provided by IIIF support for interoperability, annotation, and its ability to clearly articulate reuse rights and attribution are especially important capabilities leveraged by Juncture.
-
-It's hard to argue against the benefits of using IIIF.  Unfortunately, for most users the technology has been out of reach as the tools and infrastructure needed are often not available or are hard or confusing to use.  That's where Juncture comes in.  It can deliver the IIIF benefits with minimal effort.  If fact, using IIIF can often be as simple as dragging an image into the Juncture editor.  If the image is not a native IIIF image Juncture can often turn it into one automatically and transparently.
+Juncture is flexible—there are countless ways to use it! We'd love to hear how you use Juncture. Feel free to connect with us via our [Contact page](/contact) to share your projects or submit essays for inclusion in the Juncture Examples site.

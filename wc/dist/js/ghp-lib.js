@@ -888,6 +888,12 @@ function configCustomClasses(rootEl) {
 
 function restructureForJ1(article) {
 
+  article.querySelectorAll('p').forEach(p => {
+    if (/^\s*{.*}\s*$/.test(p.textContent)) {
+      p.remove()
+    }
+  })
+
   function serializeProps(props) {
     return  Object.entries(props).map(([key, value]) => `${key}="${value}"`).join(' ').replace(/“/g, '&quot;').replace(/”/g, '&quot;')
   }

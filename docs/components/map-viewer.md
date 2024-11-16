@@ -1,5 +1,3 @@
-# Map Viewer
-
 <style> 
     .markdown-section h3 ~ p > strong > a { color: crimson; font-size: 110%; text-decoration: none; }
     .markdown-section table { 
@@ -43,6 +41,10 @@
         text-align:center !important;
     }
 </style>
+
+<ve-map class="right" center="Q212214" zoom="12" marker ></ve-map>
+
+# Map Viewer
 
 The `ve-map` tag creates a map viewer that displays a base map with optional map layers.  The map viewer supports zooming and panning.  The base map defaults to [OpenStreetMap](https://www.openstreetmap.org/) but can easily be set to a number of [others](/components/basemaps). 
 

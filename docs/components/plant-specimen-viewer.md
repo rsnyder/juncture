@@ -1,5 +1,3 @@
-# Plant Specimen Viewer
-
 <style> 
     .markdown-section h3 ~ p > strong > a { color: crimson; font-size: 110%; text-decoration: none; }
     .markdown-section table { 
@@ -18,6 +16,10 @@
         text-align:center !important;
     }
 </style>
+
+<ve-plant-specimen qid="Q11575" class="right"></ve-plant-specimen>
+
+# Plant Specimen Viewer
 
 The `ve-plant-specimen` tag is used to display one or more plant specimens obtained from [JSTOR Global Plants](https://plants.jstor.org/).  The component is a wrapper for the `.ve-media` viewer which is used to display the high-resolution specimen images.
 

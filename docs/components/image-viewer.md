@@ -1,5 +1,3 @@
-# Image Viewer
-
 <style> 
     .markdown-section h2 ~ p > strong > a { color: crimson; font-size: 110%; text-decoration: none; }
     .markdown-section table { 
@@ -18,6 +16,10 @@
         text-align:center !important;
     }
 </style>
+
+<ve-image src="wc:Sunflower_sky_backdrop.jpg" class="right"></ve-image>
+
+# Image Viewer
 
 The `ve-image` tag is the most commonly used essay tag.  The tag creates a viewer that is able to display high-resolution images.
 

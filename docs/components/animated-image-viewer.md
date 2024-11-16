@@ -1,5 +1,3 @@
-# Animated Image
-
 <style> 
     .markdown-section h3 ~ p > strong > a { color: crimson; font-size: 110%; text-decoration: none; }
     .markdown-section table { 
@@ -18,6 +16,10 @@
         text-align:center !important;
     }
 </style>
+
+<ve-animated-image src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Animhorse.gif" class="right"></ve-animated-image>
+
+# Animated Image
 
 The `ve-animated-image` tag creates a viewer that is able to play animated GIFs.
 

@@ -1,5 +1,3 @@
-# Image Gallery
-
 <style> 
     .markdown-section h2 ~ p > strong > a { color: crimson; font-size: 110%; text-decoration: none; }
     .markdown-section table { 
@@ -18,6 +16,17 @@
         text-align:center !important;
     }
 </style>
+
+<ve-gallery class="right">
+  <ul>
+    <li>wc:Atrani_(Costiera_Amalfitana,_23-8-2011).jpg</li>
+    <li>wc:Costiera-amalfitana-_panorama_from_the_sea_129.jpg</li>
+    <li>wc:Amalfi_Coast_(Italy,_October_2020)_-_73_(50557616528).jpg</li>
+    <li>wc:Amalfi_Coast_(Italy,_October_2020)_-_72_(50558479917).jpg</li>
+  </ul>
+</ve-gallery>
+
+# Image Gallery
 
 The `ve-gallery` displays an arbitrary number of image thumbnails in a grid.  By default only the thumbnail is displayed.  An image caption cah be shown using the `show-caption` boolean attribute.  When the thumbnail is clicked, the full image is shown in a popup window.
 

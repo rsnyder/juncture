@@ -140,7 +140,7 @@
 
   onMounted(() => {
     if (props.src) {
-      fetch(`/${props.src}?fmt=md`)
+      fetch(props.src)
         .then(resp => resp.text())
         .then(md => {
           markdown.value = md.replace(/>/g,'&gt;').replace(/</g,'&lt;')

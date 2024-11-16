@@ -96,13 +96,18 @@
   const j3MarkupEl = ref<HTMLElement | null>(null)
   const tooltip = ref<SlTooltip | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host as HTMLElement)
-  watch(host, () => { rawText.value = host.value?.textContent?.trim().replace(/=""/g, '') })
+  watch(host, () => {
+    if (props.src) fetch(props.src).then(r => r.text()).then(text => rawText.value = text)
+    else rawText.value = host.value?.textContent?.trim().replace(/=""/g, '') 
+    console.log('watch.host', rawText.value)
+  })
 
   const version = ref('j3')
 
   const props = defineProps({
     draggable: { type: Boolean, default: true },
-    latestOnly: { type: Boolean, default: false }
+    latestOnly: { type: Boolean, default: false },
+    src: { type: String}
   })
 
   const rawText = ref<string>()

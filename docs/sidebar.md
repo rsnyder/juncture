@@ -9,15 +9,15 @@
 - Tools
   - [Juncture Web Editor](/docs/embedded-editor)
   
-- [Creating a Juncture Visual Essay](/docs/getting-started?id=creating-an-essay)
-  - [Add text](/docs/getting-started?id=add-text)
-  - [Format text with Markdown](/docs/getting-started?id=format-text-with-markdown)
-  - [Add footnotes](/docs/getting-started?id=add-footnotes)
-  - [Add entity popovers](/docs/getting-started?id=add-entity-popovers)
-  - [Add Juncture viewer tags](/docs/getting-started?id=add-juncture-viewer-tags)
-  - [Add viewer interactions](/docs/getting-started?id=add-viewer-interactions)
-  - [Add header and footer](/docs/getting-started?id=add-header-and-footer)
-  - [Enable annotations](/docs/getting-started?id=enable-annotations)
+- [Creating a Juncture Visual Essay](/docs/getting-started/?id=creating-an-essay)
+  - [Add text](/docs/getting-started/?id=_1-add-text)
+  - [Format text with Markdown](/docs/getting-started/?id=format-text-with-markdown)
+  - [Add footnotes](/docs/getting-started/?id=add-footnotes)
+  - [Add entity popovers](/docs/getting-started/?id=add-entity-popovers)
+  - [Add Juncture viewer tags](/docs/getting-started/?id=add-juncture-viewer-tags)
+  - [Add viewer interactions](/docs/getting-started/?id=add-viewer-interactions)
+  - [Add header and footer](/docs/getting-started/?id=add-header-and-footer)
+  - [Enable annotations](/docs/getting-started/?id=enable-annotations)
 
 - Juncture Components
   - [Animated Image Viewer](/docs/components/animated-image-viewer)

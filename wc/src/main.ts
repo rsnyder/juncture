@@ -57,6 +57,7 @@ import Mermaid from './components/Mermaid.ce.vue'
 import Meta from './components/Meta.ce.vue'
 import Modal from './components/Modal.ce.vue'
 import PlantSpecimen from './components/PlantSpecimen.ce.vue'
+import Popup from './components/Popup.ce.vue'
 import SiteSearch from './components/SiteSearch.ce.vue'
 import SourceViewer from './components/SourceViewer.ce.vue'
 import Snippet from './components/Snippet.ce.vue'
@@ -100,6 +101,7 @@ function defineCustomElements() {
 	customElements.define('ve-meta', defineCustomElement(Meta))
 	customElements.define('ve-modal', defineCustomElement(Modal))
 	customElements.define('ve-plant-specimen', defineCustomElement(PlantSpecimen))
+	customElements.define('ve-popup', defineCustomElement(Popup))
 	customElements.define('ve-site-search', defineCustomElement(SiteSearch))
 	customElements.define('ve-snippet', defineCustomElement(Snippet))
 	customElements.define('ve-source-viewer', defineCustomElement(SourceViewer))

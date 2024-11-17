@@ -167,9 +167,10 @@ Adding a footnote reference to essay text is accomplished by appending a simple 
 Footnote content must start with the label followed by a colon and at least one space. The label used to define the content must exactly match the label used in the text (including capitalization and white space).
 
 <ve-snippet collapsible label="Basic footnotes example">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.[^1]
+    **Monument Valley**, meaning "valley of the rocks", is a region of the Colorado Plateau characterized by a cluster of sandstone buttes, with the largest reaching 1,000 ft (300 m) above the valley floor[^1]. The most famous butte formations are located in northeastern Arizona along the Utah–Arizona state line. The valley is considered sacred by the Navajo Nation, the Native American people within whose reservation it lies.[^2]
 
-    [^1]: Lorem ipsum text obtained from [https://loremipsum.io/#generator](https://loremipsum.io/#generator)
+    [^1]: Scheffel, Richard L.; Wernet, Susan J., eds. (1980). Natural Wonders of the World. Reader's Digest. p. 255. ISBN 978-0895770875.
+    [^2]: King, Farina (2018). "Náhookọs (North): New Hioes for Diné Students." The Earth Memory Compass: Diné Landscapes and Education in the Twentieth Century. University Press of Kansas. pp. 142–74. doi:10.2307/j.ctv6mtdsj. S2CID 135010884.
 </ve-snippet>
 
 ?> <ve-popup>
@@ -187,20 +188,8 @@ More background on Wikidata and how Juncture uses it can be found [here](/wikida
 
 An entity tag is created by enclosing the entity text in double equal signs and appending an attribute block with the associated QID.  For example, `[Vincent van Gogh](Q5582)`.
 
-<ve-snippet collapsible label="Basic Entity Popover Example">
-    # Bedroom in Arles
-    
-    Van Gogh's own title for this composition was simply **The Bedroom** (French: _La Chambre à coucher_). There are three authentic versions described in his letters, easily distinguishable from one another by the pictures on the wall to the right.[^1]
-    
-    **Bedroom in Arles** (French: _La Chambre à Arles_; Dutch: _Slaapkamer te Arles_) is the title given to each of three similar paintings by 19th-century Dutch Post-Impressionist painter ==Vincent van Gogh=={Q5582}.
-</ve-snippet>
-
-<ve-snippet collapsible label="Text-only Popover Example">
-    # Bedroom in Arles
-    
-    Van Gogh's own title for this composition was simply **The Bedroom** (French: _La Chambre à coucher_). There are three authentic versions described in his letters, easily distinguishable from one another by the pictures on the wall to the right.[^1]
-    
-    **Bedroom in Arles** (French: _La Chambre à Arles_; Dutch: _Slaapkamer te Arles_) is the title given to each of three similar paintings by 19th-century Dutch Post-Impressionist painter ==Vincent van Gogh=={description="A text only popover"}.
+<ve-snippet collapsible label="Text with Entity Popover">    
+    **Monument Valley**, meaning "valley of the rocks", is a region of the Colorado Plateau characterized by a cluster of sandstone buttes, with the largest reaching 1,000 ft (300 m) above the valley floor. The most famous butte formations are located in northeastern Arizona along the Utah–Arizona state line. The valley is considered sacred by the [Navajo Nation](Q1783171), the Native American people within whose reservation it lies.
 </ve-snippet>
 
 ?> <ve-popup>
@@ -216,8 +205,8 @@ Juncture tags are used to add viewers to an essay.  The media ([ve-media](/compo
 
 Juncture tags include a `.ve-` prefix and must be located at the beginning of a new line in the essay.  One or more attributes will often be required after the tag.  These attributes can be expressed as single values or as key-value pairs, for instance, `fit=cover` is an attribute used by the Juncture `.ve-media` tag.  The key in this string is `fit` and the value is `cover`.  This is an attribute that tells the media viewer how to display an image that has a different aspect ratio than the viewer.  Many attributes can be expressed as single values as Juncture can usually infer the purpose of the attribute by its position in the tag string or the value itself.  
 
-<ve-snippet collapsible label="Juncture media tag example">
-    .ve-media wc:Sunflower_sky_backdrop.jpg
+<ve-snippet collapsible label="Juncture image tag example">
+    `image wc:Monument_Valley,_Utah,_USA_(23611451292).jpg "Monument Valley"`
 </ve-snippet>
 
 ?> Note that in the HTML version of the tag seen in the snippet above, the `src` key has been added by the Markdown-to-HTML conversion that Juncture performs.  The Markdown versions of the Juncture tags are easier to write but the Juncture tags are ultimately converted into HTML for use by the browser.  The HTML version of the Juncture tags is provided in the snippets as a convenience for users that may be using Juncture viewers in web pages not rendered by Juncture -- for instance, in a vanilla HTML document or a WordPress site.  The HTML version of the tag could be used in an essay text file but the Markdown version is always more concise and readable.
@@ -238,30 +227,20 @@ One of Juncture's key features is the ability to connect text passages to viewer
 
 After adding Juncture viewers to an essay it can often be useful to connect the viewer to associated sections of the text with one or more interactions.  These interactions include `zoom to`, `fly to`, and `play at` actions for images, maps, and audio/video clips.  The interactions are triggered by a user gesture -- clicking or hovering over a marked passage in the text.
 
-In the snippet below a few `zoom to` actions are defined for an image displayed by the `.ve-media` viewer.
+In the snippet below a few `zoomto` actions are defined for an image displayed by the `.ve-image` viewer.
 
-<ve-snippet collapsible label="Juncture 'zoom to' interactions on an image">
-    .ve-media wc:The_Bug_Peek.jpg right
+<ve-snippet collapsible label="Juncture 'zoomto' interactions on an image">
+    `image wc:Monument_Valley,_Utah,_USA_(23611451292).jpg "Monument Valley" right`
 
-    Click on the text below to trigger an image `zoom to` action.
-    - ==A close-up of the bug=={1131,639,1358,904}
-    - ==Some kind of fungus on the leaf?=={1229,2533,928,618}
-    - ==Full image view=={pct:0,0,100,100}
+    Major rock formations include [West and East Mitten Buttes](zoomto/675,518,2909,1937), [Merrick Butte](zoomto/3759,1040,1455,969), Hunts Mesa, Eagle Mesa, Sentinel Mesa, Brighams Tomb, Castle Rock, Stagecoach, Big Indian, Rain God Mesa, Spearhead Mesa, Mitchell Mesa, Mitchell Butte, Gray Whiskers, Elephant Butte, Camel Butte, Cly Butte, King-on-his-Throne, Rooster Rock, and Setting Hen. Another notable formation is Totem Pole, a highly eroded butte remanent. The valley also includes large stone structures, such as the "Eye of the Sun".
 </ve-snippet>
 
-This next snippet shows the use of `fly to` actions with a `.ve-map` viewer.
+This next snippet shows the use of `flyto` actions with a `.ve-map` viewer.
 
-<ve-snippet collapsible label="Juncture 'fly to' interactions on a map">
-    .ve-map 11.18,-27.77 2 right
-        - Q60
-        - Q90
-        - Q5465
+<ve-snippet collapsible label="Juncture 'flyto' interactions on a map">
+    `map Q192017,4 "Monument Valley" marker right`
 
-    Click on the text below to trigger a `fly to` action.
-    - ==New York=={40.7,-74,10}
-    - ==Paris=={48.856944,2.351389,10}
-    - ==Cape Town=={-33.925,18.425,10}
-    - ==Overview=={11.18,-27.77,2}
+    [Monument Valley](flyto/Q192017,11) is part of the Colorado Plateau. The elevation of the valley floor ranges from 5,000 to 6,000 feet (1,500 to 1,800 m) above sea level. The floor is largely siltstone of the Cutler Group, or sand derived from it, deposited by the meandering rivers that carved the valley. The valley's vivid red coloration comes from iron oxide exposed in the weathered siltstone. The darker, blue-gray rocks in the valley get their color from manganese oxide.
 </ve-snippet>
 
 ?> <ve-popup>
@@ -275,12 +254,16 @@ More information on the Juncture interactions framework can be found [here](/act
 
 Custom headers and/or footers can be a nice addition to an essay.  A Header can be a good location for a title and subtitle or author name.  Headers can be very useful, or even essential when building a website consisting of multiple interlinked essays.  The header provides navigation capabilities that can be used for linking key areas of a site as well as providing access to documentation and a contact form.  Headers also support the use of a banner image which can add to the visual appeal of an essay.
 
-More information on the Juncture header component can be found [here](/components/header).  Footer info is found [here](/components/footer).
+<ve-snippet collapsible label="Header with background image">
+    `header "Monument Valley" wc:Monument_Valley_banner.jpg height=100 alpha=0`
+</ve-snippet>
 
 ?> <ve-popup>
     <sl-button slot="trigger">Show example with header and footer</sl-button>
     <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/7-header-footer.md"></ve-snippet>
 </ve-popup>
+
+More information on the Juncture header component can be found [here](/components/header).  Footer info is found [here](/components/footer).
 
 ## 8. Enable Annotations
 

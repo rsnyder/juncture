@@ -256,6 +256,7 @@ Custom headers and/or footers can be a nice addition to an essay.  A Header can 
 
 <ve-snippet collapsible label="Header with background image">
     `header "Monument Valley" wc:Monument_Valley_banner.jpg height=100 alpha=0`
+    afasfafasfasf
 </ve-snippet>
 
 ?> <ve-popup>

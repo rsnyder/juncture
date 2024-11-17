@@ -69,7 +69,6 @@
   // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
   watch(navbar, (navbar) => {
-    console.log('alpha', props.alpha)
     if (navbar) navbar.style.backgroundColor = 
       toRGBA(backgroundColor.value, props.alpha !== undefined ? props.alpha : (backgroundImage.value ? 0.5 : 1.0))
   })
@@ -200,7 +199,7 @@
   function iiifUrl(serviceUrl: string, options: any) {
     let _imageInfo = imageInfo.value
     let _imageAspect = Number((_imageInfo.width/_imageInfo.height).toFixed(4))
-    let width = Math.min(800, host.value.getBoundingClientRect().width.toFixed(0))
+    let width = Math.max(800, host.value.getBoundingClientRect().width.toFixed(0))
     let height =  Number(width / _imageAspect).toFixed(0)
     let size = `${width},${height}`
     let url = `${serviceUrl.replace(/\/info.json$/,'')}/${options.region}/${size}/${options.rotation}/${options.quality}.${options.format}`

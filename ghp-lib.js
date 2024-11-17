@@ -46,6 +46,7 @@ const components = {
     booleans: 'autoplay',
     positional: 'src caption'
   },
+  've-annotate': {},
   've-audio': {
     booleans: 'autoplay muted no-caption sync',
     positional: 'src caption'
@@ -454,7 +455,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    // console.log(parsed)
+    console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 

@@ -60,7 +60,7 @@ Menu items are defined in a Markdown list of links following the `.ve-header` ta
 ### Basic
 
 <ve-snippet collapsible label="A basic header with a title">
-    `ve-header "Essay Title"`
+    `header "Essay Title"`
 </ve-snippet>
 
 ### Logo

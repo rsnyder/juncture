@@ -232,7 +232,9 @@
       p.removeAttribute('id')
       p.removeAttribute('class')
     }))
-    let main = el?.querySelector('main')
+    console.log(el)
+    // let main = el?.querySelector('main')
+    let main = el
     let firstChild = main?.firstElementChild as HTMLElement
     // if (firstChild.tagName === 'VE-MERMAID') { firstChild.innerHTML = '<pre>' + firstChild.innerHTML + '</pre>'}
     // html.value = (main?.children.length === 1 && firstChild.tagName === 'P' ? firstChild.innerHTML : main?.innerHTML)?.replace(/(wc:.+?)<em>([^<]+)<\/em>([^<]+)/g, '$1_$2_$3')

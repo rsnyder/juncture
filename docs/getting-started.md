@@ -1,3 +1,4 @@
+
 # Getting Started
 
 ## How to use the Juncture documentation
@@ -176,7 +177,7 @@ Footnote content must start with the label followed by a colon and at least one 
     <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/3-footnotes.md"></ve-snippet>
 </ve-popup>
 
-## Add Entity Popovers
+## 4. Add Entity Popovers
 
 It can be useful to add information popups to text that references entities (people, locations, etc) that may be unfamiliar to the reader.  The information popover provides a short description and image (when available) with a short overview of the referenced entity.  The popover will also include a link to the relevant Wikipedia page where the reader can go to learn more.  Using entity popovers can be an effective way for providing context to a reader without disrupting the flow of the narrative.  More information on using entity information popovers can be found [here](/entity-popovers).
 
@@ -202,7 +203,12 @@ An entity tag is created by enclosing the entity text in double equal signs and 
     **Bedroom in Arles** (French: _La Chambre à Arles_; Dutch: _Slaapkamer te Arles_) is the title given to each of three similar paintings by 19th-century Dutch Post-Impressionist painter ==Vincent van Gogh=={description="A text only popover"}.
 </ve-snippet>
 
-## Add Juncture Viewer Tags
+?> <ve-popup>
+    <sl-button slot="trigger">Show example with entity popover</sl-button>
+    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/4-entity-popovers.md"></ve-snippet>
+</ve-popup>
+
+## 5. Add Juncture Viewer Tags
 
 This is where a text narrative starts to become an interactive and engaging visual essay.  High-resolution images, maps, videos, and other visualizations can bring a text narrative to life while also providing details and context that can often be difficult to convey in text alone.  Juncture's media viewer is great at providing visual appeal, especially when using high-resolution images.  Videos and interactive maps are other visualizations often used in a visual essay.
 
@@ -221,7 +227,12 @@ Juncture tags include a `.ve-` prefix and must be located at the beginning of a 
     This example adds the `right` positioning attribute to the `.ve-media` tag to position the media viewer on the right side of the page.  The width is set to 50% of the essay size and the height will be automatically calculated to preserve the aspect ratio of the source item.
 </ve-snippet>
 
-## Add Viewer Interactions
+?> <ve-popup>
+    <sl-button slot="trigger">Show example with Juncture viewer tags</sl-button>
+    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/5-juncture-viewer-tags.md"></ve-snippet>
+</ve-popup>
+
+## 6. Add Viewer Interactions
 
 One of Juncture's key features is the ability to connect text passages to viewer actions.  These actions include zooming in on a particular region of an image, positioning a map over a specific location, and playing an audio or video clip at a specific time stamp.  Actions may be triggered by clicking on marked passages or by scrolling marked paragraphs into the active portion of the browser window. 
 
@@ -253,15 +264,25 @@ This next snippet shows the use of `fly to` actions with a `.ve-map` viewer.
     - ==Overview=={11.18,-27.77,2}
 </ve-snippet>
 
+?> <ve-popup>
+    <sl-button slot="trigger">Show example with Juncture viewer interactions</sl-button>
+    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/5-juncture-viewer-interactions.md"></ve-snippet>
+</ve-popup>
+
 More information on the Juncture interactions framework can be found [here](/actions).
 
-## Add Header and Footer
+## 7. Add Header and Footer
 
 Custom headers and/or footers can be a nice addition to an essay.  A Header can be a good location for a title and subtitle or author name.  Headers can be very useful, or even essential when building a website consisting of multiple interlinked essays.  The header provides navigation capabilities that can be used for linking key areas of a site as well as providing access to documentation and a contact form.  Headers also support the use of a banner image which can add to the visual appeal of an essay.
 
 More information on the Juncture header component can be found [here](/components/header).  Footer info is found [here](/components/footer).
 
-## Enable Annotations
+?> <ve-popup>
+    <sl-button slot="trigger">Show example with header and footer</sl-button>
+    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/7-header-footer.md"></ve-snippet>
+</ve-popup>
+
+## 8. Enable Annotations
 
 Depending on the purpose of an essay, enabling annotations may be desired.  This can be easily done by adding the `.ve-annotate` tag anywhere in an essay.
 
@@ -282,3 +303,8 @@ The example below demonstrates how to add the `.ve-annotate` tag to an essay.
     .ve-annotate
 
 </ve-snippet>
+
+?> <ve-popup>
+    <sl-button slot="trigger">Show example with annotations enabled</sl-button>
+    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/8-annotator.md"></ve-snippet>
+</ve-popup>

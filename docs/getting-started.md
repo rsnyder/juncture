@@ -266,7 +266,7 @@ This next snippet shows the use of `fly to` actions with a `.ve-map` viewer.
 
 ?> <ve-popup>
     <sl-button slot="trigger">Show example with Juncture viewer interactions</sl-button>
-    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/5-juncture-viewer-interactions.md"></ve-snippet>
+    <ve-snippet slot="content" src="https://juncture-digital.github.io/examples/monument-valley/6-juncture-viewer-interactions.md"></ve-snippet>
 </ve-popup>
 
 More information on the Juncture interactions framework can be found [here](/actions).

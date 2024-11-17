@@ -203,7 +203,8 @@ async def serve(path: Optional[str] = None):
   else:
     content = open(local_file_path, 'r').read()
     if LOCAL_WC and ext == 'html':
-      content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/wc\/dist\/js\/index\.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
+      content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
+      content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
 
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:

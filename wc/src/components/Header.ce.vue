@@ -69,8 +69,9 @@
   // watch(backgroundImage, (backgroundImage) => { console.log(`backgroundImage=${backgroundImage}`) })
 
   watch(navbar, (navbar) => {
+    console.log('alpha', props.alpha)
     if (navbar) navbar.style.backgroundColor = 
-      toRGBA(backgroundColor.value, props.alpha || (backgroundImage.value ? 0.5 : 1.0))
+      toRGBA(backgroundColor.value, props.alpha !== undefined ? props.alpha : (backgroundImage.value ? 0.5 : 1.0))
   })
 
   const isSticky = ref<boolean>(false)

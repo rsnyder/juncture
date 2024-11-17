@@ -455,7 +455,7 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    console.log(parsed)
+    // console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 

@@ -59,6 +59,23 @@ Essays are defined in plain text Markdown files that are stored in a Github repo
 
 - A Github repository will be associated with a URL of the form `https://github.com/<USERNAME>/<REPOSITORY>`, where `<USERNAME>` is the Github username associated with your Github account and `REPOSITORY` is the name of a repository in the account.  By convention the repository name is often `essays`, but any repository name can be used.  
 
+To begin using Juncture you will need a GitHub account and some basic familiarity with Markdown.
+
+**GitHub** is a free Internet hosting service commonly used for software development projects. It provides sophisticated features for version control and workflow management for distributed teams. Juncture primarily uses GitHub as a file hosting service, similar to how one might use Dropbox or Google Drive. The Markdown files that Juncture uses to render interactive web pages are stored in GitHub.  Go to https://github.com/signup to sign up for a free GithHub account.
+
+**Markdown** is a simple language and a basic understanding of usage can be obtained in just a few minutes.  The [Markdown Guide - Getting Started tutorial](https://www.markdownguide.org/getting-started) is a good resource for getting started with Markdown.
+
+# GitHub Setup
+
+Create and configure a Juncture-enabled Github repository
+
+1. Create a Juncture-enabled Github repository using this link - [https://github.com/juncture-digital/template/generate](https://github.com/juncture-digital/template/generate)
+
+  - Enter a Repository name (e.g,, "essays") and optional Description.
+  - Press **Create Repository**
+
+2. In the newly created repository, enable Github Pages by selecting **Pages** from the **Code and automation** section in the repository **Settings** page.  In the **Pages** form select **main** from the **Branch** pull-down menu and press **Save**.
+
 # Creating an essay
 
 This section describes the steps typically performed in the creation of a Juncture essay.  The steps described represent a logical progression from plain, unformatted text, to a completed visual essay with text formatting, interactive viewers, text-to-viewer interactions, headers and footers, and more.  This is a conceptual workflow.  All of these activities are optional and can be performed in any sequence.  In practice, the creation of an essay is often an iterative process where aspects of some steps are performed multiple times. 
@@ -67,22 +84,10 @@ This section describes the steps typically performed in the creation of a Junctu
 
 Options for creating an essay text file include:
 
-- **Using the Github web editor.**  This is a very workable approach and was the primary means for creating Juncture essays in the first version.  The drawbacks to this approach are that the editor is exited each time a save is made and previewing changes requires a separate request to the Juncture web server.  While workable it is a cumbersome and inefficient workflow.  Improving this workflow was a key objective in the Juncture rewrite for version 2.  The primary advantage of this approach is that Juncture does not need to be permitted to write to your Github account.
-- **Using a text editor on your local computer and uploading the generated files to Github.**  This approach has many of the same trade-offs as the one above.  Juncture does not need write access to your Github account and the authoring workflow is awkward (even more so with the required uploading).  The primary benefit would be the ability to use a familiar text editor on your local computer.
-- **Using the Juncture Editor.**  A web-based editor was introduced in Juncture version 2,  It provides an in-browser editor with preview features.  It also provides syntax highlighting of Markdown and Juncture tags.  However, one of the biggest benefits is the automatic creation of Juncture tags using copy-paste and drag-n-drop.  For instance, Juncture media viewer tags are automatically created when dragging an image, video, or audio clip into the editor window from some commonly used websites.
+- **Using the Github web editor.**  This is the simplest approach and was the primary means for creating and editing Juncture essays in the first version.  The drawbacks to this approach are that the editor is exited each time a save is made and previewing changes requires a separate request to the Juncture-enabled web server.  While workable it can be a cumbersome and inefficient workflow.  Improving this workflow was a key objective in the Juncture rewrite for version 2.  
+- **Using the Juncture Editor.**  A web-based editor was introduced in Juncture version 2,  It provides an in-browser editor with preview features.  It also provides syntax highlighting of Markdown and Juncture tags.  The Juncture editor also supports the automatic creation of Juncture tags using copy-paste and drag-n-drop.  For instance, Juncture `image`, `audio`, and `video` tags are automatically created when dragging an image, video, or audio clip into the editor window from some commonly used websites.
 
-## The Juncture editor
-
-Using the Juncture Editor is the recommended approach for authoring essays, but as mentioned, the Juncture web page rendering engine doesn't care how the source text file was created.  Feel free to use any approach that suits you.  That said, the rest of this _Creating an Essay_ overview and other tutorials in the Juncture documentation assume the Juncture Editor is being used.  Some instructions may need to be adapted to match a different approach.
-
-After logging in with Github the Juncture editor can be used in one of two ways:
-    
-- As a **separate window** launched from a button found in the left sidebar.  The advantage of this approach is that the various code snippets found in the documentation can be easily added to the editor using drag-and-drop.
-- An **embedded viewer** found on [this page](/embedded-editor).  This approach has the advantage of reducing desktop clutter with one less window.
-
-!> The editor works identically in either mode.  One caution though - **try to avoid using both simultaneously as divergent edits may result in Github merge conflicts when saving.**
-
-An overview on using the Juncture Editor can be found [here](/tools/editor)
+!> **Avoid using both editors simultaneously as divergent edits may result in Github merge conflicts when saving.**
 
 ## 1. Add Text
 

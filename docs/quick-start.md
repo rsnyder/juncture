@@ -6,9 +6,9 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 **Markdown** is a simple language and a basic understanding of usage can be obtained in just a few minutes.  The [Markdown Guide - Getting Started tutorial](https://www.markdownguide.org/getting-started) is a good resource for getting started with Markdown.
 
-## Creating your first Juncture essay
+## GitHub Setup
 
-### Create and configure a Juncture-enabled Github repository
+Create and configure a Juncture-enabled Github repository
 
 1. Create a Juncture-enabled Github repository using this link - [https://github.com/juncture-digital/template/generate](https://github.com/juncture-digital/template/generate)
 
@@ -32,13 +32,13 @@ To view your newly created Juncture essay use the link https://`<GitHub Username
 
 Note that it may take a minute or so for the new essay link to become active.  If the link doesn't work immediately wait and try again.
 
-## Editing Juncture Files
+## Editing Juncture essay files
 
-Juncture source files may be created and edited using the GitHub editor or the Juncture web editor.  In both cases Markdown files are saved to a GithHub repository in your account.  The advantage of using the Juncture editor includes a preview feature and Juncture syntax highlighting.  When using the Juncture editor for the first time you will need to authenticate with GitHub and authorize Juncture to access to write to your repository.
+Juncture source files may be created and edited using either the GitHub editor or the Juncture web editor.  In both cases Markdown files are saved to a GithHub repository in your account.  The advantage of using the Juncture editor includes a preview feature and Juncture syntax highlighting.  When using the Juncture editor for the first time you will need to authenticate with GitHub and authorize Juncture write access to your repository.
 
 ## Embedding a preview link in your essay
 
-When first creating a Juncture Markdown file in GitHub it is recommended that the code below be inserted at the beginning of the file.  This code will render a "View with Juncture" link at the top of the file when viewed from the GitHub site.  This provides a convenient way to view the rendered Juncture essay from the GitHub site.
+When first creating a Juncture essay file in GitHub, it to include the code below at the beginning of the file.  This code will render a "View with Juncture" link at the top of the file when viewed from the GitHub site.  If you use the Chrome browser, this provides a convenient way to view the rendered Juncture essay from the GitHub site.
 
 ```
 [![](https://v3.juncture-digital.org/badge.png)](https://v3.juncture-digital.org)

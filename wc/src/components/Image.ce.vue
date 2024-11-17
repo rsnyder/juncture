@@ -326,7 +326,7 @@
   watch(height, (height) => { 
     host.value.style.height = height ? `${height}px` : 'unset'
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(false), 250)
+    setTimeout(() => osd.value?.viewport?.goHome(false), 400)
    })
 
   // OpenSeadragon - https://openseadragon.github.io/docs/
@@ -382,7 +382,7 @@
   // resize OSD viewer
   function resize() {
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(false), 250)
+    setTimeout(() => osd.value?.viewport?.goHome(false), 400)
   }
 
   function initOpenSeadragon() {

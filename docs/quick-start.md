@@ -17,13 +17,14 @@ To begin using Juncture you will need a GitHub account and some basic familiarit
 
 2. In the newly created repository, enable Github Pages by selecting **Pages** from the **Code and automation** section in the repository **Settings** page.  In the **Pages** form select **main** from the **Branch** pull-down menu and press **Save**.
 
-## Create a new Markdown file with some commonly used Juncture tags
+## Add a Juncture essay with some commonly used Juncture tags
 
 1. In the newly created repository, create a new markdown file for the Juncture essay by selecting **Create new file** from the **Add file** pull-down menu located on the repository home page.  
 2. In the file name input field enter "example.md"
-3. In the editor field add the text found at this [link](https://raw.githubusercontent.com/juncture-digital/examples/main/monument-valley.md)
-
+3. In the editor field add the text found at this [link](https://raw.githubusercontent.com/juncture-digital/examples/main/monument-valley/README.md)
 4. Press the **Commit changes...** button located at the top-right of the page.
+
+?> Note: This example essay is created in a stepwise process in the [Getting Started](/docs/getting-started) guide.
 
 ## View your essay
 

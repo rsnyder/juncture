@@ -232,7 +232,6 @@
       p.removeAttribute('id')
       p.removeAttribute('class')
     }))
-    console.log(el)
     // let main = el?.querySelector('main')
     let main = el
     let firstChild = main?.firstElementChild as HTMLElement

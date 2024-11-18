@@ -177,7 +177,6 @@ async def serve(path: Optional[str] = None):
     local_file_path = None
     for suffix in ('/index.html', '.html', ):
       to_check = f'{CONTENT_ROOT}/{"/".join(path)}{suffix}'
-      logger.info(f'to_check: {to_check} exists: {os.path.exists(to_check)}')
       if os.path.exists(to_check):
         local_file_path = to_check
         ext = 'html'
@@ -206,6 +205,7 @@ async def serve(path: Optional[str] = None):
       content = re.sub(r'https:\/\/cdn\.jsdelivr\.net\/npm\/juncture-digital.*\/js\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
       content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/ghp\.js', f'http://localhost:{PORT}/ghp.js', content)
       content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/wc\/dist\/js\/index\.js', f'http://localhost:{LOCAL_WC_PORT}/main.ts', content)
+      content = re.sub(r'https:\/\/v3\.juncture-digital\.org\/wc\/dist\/css\/index\.css', f'http://localhost:{PORT}/wc/src/index.css', content)
 
   if ext is None: # markdown file
     if os.path.exists(local_file_path) and not ext:

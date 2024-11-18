@@ -472,7 +472,20 @@
   
   function addInteractionHandlers() {
     // console.log('addInteractionHandlers')
+
     let scope = host.value?.parentElement
+        let added = new Set()
+        while (scope?.parentElement && scope.tagName !== 'MAIN') {
+          (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
+            if (!added.has(el)) {
+              addMutationObserver(el)
+              added.add(el)
+            }
+          })
+          scope = scope.parentElement
+        }
+
+    scope = host.value?.parentElement
     while (scope) {
       (Array.from(scope.querySelectorAll('a')) as HTMLAnchorElement[])
         .filter(anchorElem => anchorElem.href !== 'javascript:;')
@@ -508,7 +521,6 @@
           target = findClosestImageViewer(anchorElem, 've-image')
           if (target !== host.value) return
 
-
           anchorElem.classList.add('zoom')
           anchorElem.href = 'javascript:;'
           if (region) anchorElem.setAttribute('data-region', region)
@@ -525,6 +537,30 @@
       })
       scope = scope.parentElement;
     }
+  }
+
+  function addMutationObserver(el: HTMLElement) {
+    let prevClassState = el.classList.contains('active')
+    let observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName == 'class') {
+          let currentClassState = (mutation.target as HTMLElement).classList.contains('active')
+          if (prevClassState !== currentClassState) {
+            prevClassState = currentClassState
+            let attr = el.attributes.getNamedItem(currentClassState ? 'enter' : 'exit')
+            if (attr) {
+              const [action, ...args] = attr.value.replace(/:/g,'/').split('/')
+              console.log(`${action}=${args}`)
+              if (action === 'zoomto') {
+                let region = args[0]
+                zoomto(region)
+              }
+            }
+          }
+        }
+      })
+    })
+    observer.observe(el, { attributes: true, childList: true, subtree: true, characterData: true })
   }
 
   function findClosestImageViewer(anchorElem: HTMLElement, tag) {

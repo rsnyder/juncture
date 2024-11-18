@@ -549,7 +549,6 @@
       }
     
       function getLatLngZoom(e:L.LeafletMouseEvent) {
-        console.log(e)
         let point = e.type === 'click' ? e.latlng : e.target.getCenter()
         let zoom = e.target.getZoom()
         let resp = [point.lat, point.lng, zoom]
@@ -1016,7 +1015,7 @@
         let scope = host.value?.parentElement
         let added = new Set()
         while (scope?.parentElement && scope.tagName !== 'MAIN') {
-         (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
+          (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
             if (!added.has(el)) {
               addMutationObserver(el)
               added.add(el)
@@ -1107,8 +1106,8 @@
                 prevClassState = currentClassState
                 let attr = el.attributes.getNamedItem(currentClassState ? 'enter' : 'exit')
                 if (attr) {
-                  const [action, ...rest] = attr.value.split(':')
-                  let arg = rest.join(':')
+                  const [action, ...rest] = attr.value.replace(/:/g,'/').split('/')
+                  let arg = rest.join('/')
                   // console.log(`${action}=${arg}`)
                   if (action === 'flyto') flytoLocation(arg, true)
                   if (attr.name === 'exit') flytoPriorLoc()

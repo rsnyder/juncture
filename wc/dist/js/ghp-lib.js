@@ -1162,13 +1162,15 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
       let found = sortedVisible.find(e => e.para.classList.contains('active'))
       if (found) currentActiveParagraph = found.para
     }
-      
+    
     if (currentActiveParagraph !== priorActiveParagraph) {
 
       let priorViewers, currentViewers
-      priorViewers = priorActiveParagraph?.nextElementSibling
-      currentViewers = currentActiveParagraph?.nextElementSibling
-      if (priorViewers) priorViewers.classList.remove('active')
+      if (rootEl.classList.contains('j1')) {
+        priorViewers = priorActiveParagraph?.nextElementSibling
+        currentViewers = currentActiveParagraph?.nextElementSibling
+        if (priorViewers) priorViewers.classList.remove('active')
+      }
 
       priorActiveParagraph = currentActiveParagraph
       if (setActiveParagraph) { 

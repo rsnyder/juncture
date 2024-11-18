@@ -99,7 +99,6 @@
   watch(host, () => {
     if (props.src) fetch(props.src).then(r => r.text()).then(text => rawText.value = text)
     else rawText.value = host.value?.textContent?.trim().replace(/=""/g, '') 
-    console.log('watch.host', rawText.value)
   })
 
   const version = ref('j3')
@@ -280,9 +279,7 @@
 
   function parseLi(li:HTMLLIElement, tag:string): Object {
     let s = li.textContent || ''
-    // console.log(s)
     let tagDef = tagMap[tag]
-    // console.log(tagDef)
     let tokens: string[] = []
     s = s.replace(/”/g,'"').replace(/”/g,'"')
     s?.match(/[^\s"]+|"([^"]*)"/gmi)?.filter(t => t).forEach(token => {
@@ -291,22 +288,18 @@
     })
     let parsed:any = {}
     let positionalArgs = tagDef.argsPositional ||  tagDef.positional || []
-    // console.log(positionalArgs)
     tokens
       .filter(t => t !== 'image')
       .forEach((token, idx) => {
-      // console.log(token, token.indexOf('='), token[0], token[token.length-1])
       if (token.indexOf('=') > 0 && (token[0] !== '"' || token[token.length-1] !== '"')) {
         let i = token.indexOf('=')
         let key = token.slice(0, i)
         let value = token.slice(i+1)
         parsed[key] = value[0] === '"' ? value.slice(1,-1) : value 
       } else {
-        // console.log(token, idx, positionalArgs[idx])
         parsed[positionalArgs[idx]] = token[0] === '"' ? token.slice(1,-1) : token 
       }
     })
-    // console.log(parsed)
     return parsed
   }
 

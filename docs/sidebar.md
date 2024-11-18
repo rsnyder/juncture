@@ -10,6 +10,7 @@
   - [Juncture Web Editor](/docs/embedded-editor)
   
 - [Getting Started](/docs/getting-started)
+  - [GitHub Setup](/docs/getting-started?id=github-setup)
   - [Creating a Juncture Visual Essay](/docs/getting-started?id=creating-an-essay)
     - [Add text](/docs/getting-started?id=_1-add-text)
     - [Format text with Markdown](/docs/getting-started?id=_2-format-text-with-markdown)

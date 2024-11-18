@@ -190,10 +190,12 @@ p audio {
   vertical-align: middle;
 }
 
-.showactive {
+.showactive,
+.show-active {
   padding-bottom: 80dvh;
 }
-.showactive .active {
+.showactive .active,
+.show-active .active {
   background-color: #fff;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 }

@@ -17,7 +17,7 @@
     }
 </style>
 
-# ve-footer
+# Footer
 
 The `ve-footer` tag is used to define an optional footer that appears at the bottom of the essay.  The footer contains a horizontal list of items.  Footer items may include logos, links or other informational items such as a license.
 

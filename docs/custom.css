@@ -679,3 +679,22 @@ body[data-page^='/tokens/'] .table-wrapper td:first-child code {
   max-width: 460px;
   margin: 2rem 0;
 }
+
+@media (min-width: 600px) {
+
+  .left {
+    float: left;
+    padding-right: 1em;
+  }
+
+  .right {
+    float: right;
+    padding-left: 1em;
+  }
+
+  .left, .right {
+    width: 50%;
+    margin-bottom: 1em;
+  }
+
+}

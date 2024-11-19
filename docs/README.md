@@ -63,7 +63,7 @@ p {
 
 **Juncture** is a suite of tools and services that helps anyone easily create engaging web pages enriched with visual content like interactive images, videos, maps, and more.
 
-Juncture was originally developed by [JSTOR Labs](https://labs.jstor.org) and [evolved from a project](https://www.doaks.org/research/mellon-initiatives/plant-humanities-initiative) focused on using visual essays for digital storytelling. Visual essays are text narratives enhanced with interactive visuals that provide depth and context.
+Juncture [evolved from a project](https://www.doaks.org/research/mellon-initiatives/plant-humanities-initiative) developed by [JSTOR Labs](https://labs.jstor.org) that used visual essays for digital storytelling. Visual essays are text narratives enhanced with interactive visuals that provide depth and context.
 
 ?> This is the third version of the Juncture toolset. The syntax for Juncture tags has evolved since its inception, but the current version is backward compatible. If you've already created Juncture essays, rest assured they'll continue to work seamlessly. If you experience any compatibility issues, please let us know using the Juncture Issues site.
 

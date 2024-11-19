@@ -330,7 +330,7 @@
   watch(height, (height) => { 
     host.value.style.height = height ? `${height}px` : 'unset'
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(false), 400)
+    setTimeout(() => osd.value?.viewport?.goHome(false), 500)
    })
 
   // OpenSeadragon - https://openseadragon.github.io/docs/
@@ -386,7 +386,7 @@
   // resize OSD viewer
   function resize() {
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(false), 400)
+    setTimeout(() => osd.value?.viewport?.goHome(false), 500)
   }
 
   function initOpenSeadragon() {
@@ -426,7 +426,7 @@
 
       if (currentItem?.region && osd.value) {
         let rect = parseRegionString(currentItem.region, osd.value)
-        setTimeout(() => osd.value?.viewport.fitBounds(rect, false), 100)
+        setTimeout(() => osd.value?.viewport.fitBounds(rect, false), 500)
       }
     })
     configureImageViewerBehavior()

@@ -60,7 +60,7 @@
   onMounted(async() => {
     let el = new DOMParser().parseFromString(host.value.textContent, 'text/html').body
     el.querySelectorAll('ve-image, ve-map, ve-gallery, ve-carousel, ve-visjs').forEach((veComponent) => {
-      veComponent.setAttribute('base', props.base as string)
+      if (props.base && !veComponent.hasAttribute('base')) veComponent.setAttribute('base', props.base as string)
       if (repoIsWritable) veComponent.setAttribute('repo-is-writable', '')
     })  
     html.value = el.innerHTML

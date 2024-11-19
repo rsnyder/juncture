@@ -31,7 +31,7 @@ In addition to using IIIF resources exposed by the sites mentioned above, Junctu
 Wikimedia Commons IIIF URLs are formed by combining the `wc:` prefix with the Wikimedia Commons file name.  For example, the image found at [https://commons.wikimedia.org/wiki/File:Holy_SURP_Hovhannes_Church.jpg](https://commons.wikimedia.org/wiki/File:Holy_SURP_Hovhannes_Church.jpg) has the file name "Holy_SURP_Hovhannes_Church.jpg" (note that spaces in the file name are converted to underscores).  In this example the resulting IIIF URL would be [https://iiif.juncture-digital.org/wc:Holy_SURP_Hovhannes_Church.jpg/manifest.json](https://iiif.juncture-digital.org/wc:Holy_SURP_Hovhannes_Church.jpg/manifest.json).  A short-form version of the URL with just the prefix and file name can be used in a Juncture essay, for instance - `wc:Holy_SURP_Hovhannes_Church.jpg`.
 
 <ve-snippet collapsible label="Wikimedia Commons - Image example">
-    .ve-media wc:Holy_SURP_Hovhannes_Church.jpg right
+    `image  wc:Holy_SURP_Hovhannes_Church.jpg right`
 
     [Holy SURP Hovhannes Church](https://commons.wikimedia.org/wiki/File:Holy_SURP_Hovhannes_Church.jpg)
 
@@ -41,7 +41,7 @@ Wikimedia Commons IIIF URLs are formed by combining the `wc:` prefix with the Wi
 </ve-snippet>
 
 <ve-snippet collapsible label="Wikimedia Commons - Audio example">
-    .ve-media wc:Interview_with_Warren_Hanson_regarding_Hundred_Flowers.ogg right
+    `audio  wc:Interview_with_Warren_Hanson_regarding_Hundred_Flowers.ogg right`
 
     [Interview with Warren Hanson regarding Hundred Flowers](https://commons.wikimedia.org/wiki/File:Interview_with_Warren_Hanson_regarding_Hundred_Flowers.ogg)
 
@@ -49,13 +49,13 @@ Wikimedia Commons IIIF URLs are formed by combining the `wc:` prefix with the Wi
 </ve-snippet>
 
 <ve-snippet collapsible label="Wikimedia Commons - Video example">
-    .ve-media wc:Aerial_views_of_Shoalhaven_Heads,_NSW,_Australia_in_June_2016.webm right autoplay
+    `video  wc:Aerial_views_of_Shoalhaven_Heads,_NSW,_Australia_in_June_2016.webm right autoplay`
 
     [Aerial views of Shoalhaven Heads, NSW, Australia in June 2016](https://commons.wikimedia.org/wiki/File:Aerial_views_of_Shoalhaven_Heads,_NSW,_Australia_in_June_2016.webm)
 </ve-snippet>
 
-<ve-snippet collapsible label="Wikimedia Commons - GIF example">
-    .ve-media wc:DART-impact-SAAO-Lesedi-Mookodi.gif right
+<ve-snippet collapsible label="Wikimedia Commons - Animated GIF example">
+    `animated-image  wc:DART-impact-SAAO-Lesedi-Mookodi.gif right`
 
     [DART impact SAAO-Lesedi-Mookodi](https://commons.wikimedia.org/wiki/Template:Motd/2022-12#/media/File:DART-impact-SAAO-Lesedi-Mookodi.gif)
 
@@ -69,7 +69,7 @@ Wikimedia Commons IIIF URLs are formed by combining the `wc:` prefix with the Wi
 Flickr IIIF URLs are formed by combining the `flickr:` prefix with the Flickr image ID.  For example, the image found at [https://www.flickr.com/photos/mgaylard/52736840054/](https://www.flickr.com/photos/mgaylard/52736840054/) has the image ID "52736840054".  In this example the resulting IIIF URL would be [https://iiif.juncture-digital.org/flickr:52736840054/manifest.json](https://iiif.juncture-digital.org/flickr:52736840054/manifest.json).  The short-form IIIF URL for use in Juncture essays would be `flickr:52736840054`  
 
 <ve-snippet collapsible label="Flickr image">
-    .ve-media flickr:52736840054 right
+    `image  flickr:52736840054 right`
 
     [Yarmouth Ferry Terminal](https://www.flickr.com/photos/mgaylard/52736840054/)
 </ve-snippet>
@@ -81,7 +81,7 @@ Flickr IIIF URLs are formed by combining the `flickr:` prefix with the Flickr im
 JSTOR IIIF URLs are formed by combining the `jstor:` prefix with the JSTOR content ID.  For example, the image found at [https://www.jstor.org/stable/community.18615405](https://www.jstor.org/stable/community.18615405) has the content ID "community.18615405".  In this example the resulting IIIF URL would be [https://iiif.juncture-digital.org/jstor:community.18615405/manifest.json](https://iiif.juncture-digital.org/jstor:community.18615405/manifest.json).  The short-form IIIF URL for use in Juncture essays would be `jstor:community.18615405` 
 
 <ve-snippet collapsible label="JSTOR image">
-    .ve-media jstor:community.18615405 right
+    `image  jstor:community.18615405 right`
 
     [Portal of a Venetian Palace](https://www.jstor.org/stable/community.18615405)
 </ve-snippet>
@@ -95,13 +95,13 @@ The Internet Archive provides both IIIF presentation manifests and an IIIF image
 Using our example the IIIF URL for this item would be https://iiif.archivelab.org/iiif/sunflowergirlwithdog/manifest.json.  When adding an Internet Archive item to a Juncture essay editor using drang-and-drop or copy-paste the correct IIIF URL is automatically created, a manual conversion is not required.
 
 <ve-snippet collapsible label="Internet Archive - image">
-    .ve-media https://iiif.archivelab.org/iiif/sunflowergirlwithdog/manifest.json right
+    `image  https://iiif.archivelab.org/iiif/sunflowergirlwithdog/manifest.json right`
 
     [Sunflower Girl With Dog (1907)](https://archive.org/details/sunflowergirlwithdog)
 </ve-snippet>
 
 <ve-snippet collapsible label="Internet Archive - Journal article">
-    .ve-media https://iiif.archivelab.org/iiif/jstor-457078/manifest.json right
+    `image  https://iiif.archivelab.org/iiif/jstor-457078/manifest.json right`
 
     [_The Theme of Paradise Lost_](https://archive.org/details/jstor-457078) an article from PMLA, Volume 29.
 </ve-snippet>
@@ -115,7 +115,7 @@ In 2017, The Metropolitan Museum of Art implemented [a new policy known as Open 
 MET IIIF URLs are formed by combining the `met:` prefix with the MET content ID.  For example, the image found at [https://www.metmuseum.org/art/collection/search/435809](https://www.metmuseum.org/art/collection/search/435809) has the content ID "435809".  In this example the resulting IIIF URL would be [https://iiif.juncture-digital.org/met:435809/manifest.json](https://iiif.juncture-digital.org/met:435809/manifest.json).  The short-form IIIF URL for use in Juncture essays would be `met:435809` 
 
 <ve-snippet collapsible label="MET Image">
-    .ve-media met:435809 right
+    `image  met:435809 right`
 
     [The Harvesters](https://iiif.juncture-digital.org/met:435809/manifest.json)
 </ve-snippet>
@@ -125,7 +125,7 @@ MET IIIF URLs are formed by combining the `met:` prefix with the MET content ID.
 [The Harvard Art Museums](https://harvardartmuseums.org/) make their collections interoperable through several [IIIF compatible services](https://iiif.harvard.edu/collaborators/harvard-art-museums/) and tools. The museum’s services build on the Harvard libraries implementation of the IIIF image API on the Harvard Digital Repository Service (DRS). The Harvard Art Museums exposes collection image URLs and IIIF URIs to the DRS services as part of the dataset accessible through the museum’s API. In conjunction with exposing IIIF compatible image URIs the museums run a presentation service that exposes IIIF compatible manifests and collections. The museums manifest server is based on software that was developed for HarvardX.
 
 <ve-snippet collapsible label="Harvard Art Museums Image">
-    .ve-media https://iiif.harvardartmuseums.org/manifests/object/336791 right
+    `image  https://iiif.harvardartmuseums.org/manifests/object/336791 right`
 
     [Winter on Fifth Avenue](https://harvardartmuseums.org/collections/object/336791)
 </ve-snippet>
@@ -137,7 +137,7 @@ MET IIIF URLs are formed by combining the `met:` prefix with the MET content ID.
 OpenVerse URLs are formed by combining the `cc:` prefix with the OpenVerse content ID.  For example, the image found at [https://openverse.org/image/91d578af-785e-4e8c-924b-b511f48ea873]https://openverse.org/image/91d578af-785e-4e8c-924b-b511f48ea873) has the content ID "91d578af-785e-4e8c-924b-b511f48ea873".  In this example the resulting IIIF URL would be [https://iiif.juncture-digital.org/cc:91d578af-785e-4e8c-924b-b511f48ea873/manifest.json](https://iiif.juncture-digital.org/cc:91d578af-785e-4e8c-924b-b511f48ea873/manifest.json).  The short-form IIIF URL for use in Juncture essays would be `cc:91d578af-785e-4e8c-924b-b511f48ea873` 
 
 <ve-snippet collapsible label="OpenVerse Image">
-    .ve-media cc:91d578af-785e-4e8c-924b-b511f48ea873 right
+    `image  cc:91d578af-785e-4e8c-924b-b511f48ea873 right`
 
     [Sunflower 'Strawberry Blonde'](https://openverse.org/image/91d578af-785e-4e8c-924b-b511f48ea873)
 </ve-snippet>
@@ -152,7 +152,7 @@ Wikidata URLs are formed by combining the `wd:` prefix with the Wikidata entity 
 Note that images associated with Wikidata entities are hosted in Wikimedia Commons.  Each image returned by a Wikidata QID is actually mapped to a Wikimedia Commons file.  The associated Wikimedia Commons file URL can be seen in the generated IIIF manifest by hovering over the info icon located at the top-right corner of the image.
 
 <ve-snippet collapsible label="Wikidata Image">
-    .ve-media wd:Q2 right
+    `image  wd:Q2 right`
 
     The [Earth](https://www.wikidata.org/wiki/Q2)
 </ve-snippet>
@@ -164,7 +164,7 @@ The [Thomas A. Edison Papers Project](https://edison.rutgers.edu/), a research c
 Edison Papers provides both IIIF presentation manifests and an IIIF image server.  Where available, IIIF links for Edison Papers content are easily found on the item page.
 
 <ve-snippet collapsible label="Edison Papers Image">
-    .ve-media https://edisondigital.rutgers.edu/iiif/SB178C right
+    `image  https://edisondigital.rutgers.edu/iiif/SB178C right`
 
     [Publication, Edison and Murray, 1874](https://edisondigital.rutgers.edu/document/SB178C)
 </ve-snippet>
@@ -177,10 +177,10 @@ This section lists streaming video content providers.
 
 [YouTube](https://www.youtube.com/) is a global online video sharing and social media platform headquartered in San Bruno, California. It is owned by Google and is the second most visited website, after Google Search. YouTube has more than 2.5 billion monthly users, who collectively watch more than one billion hours of videos each day. As of May 2019, videos were being uploaded at a rate of more than 500 hours of content per minute.
 
-YouTube is the exception to the media providers described on this page in that IIIF manifests are not used for rendering the resource with the Juncture `.ve-media` viewer.  The video content is streamed from YouTube directly using the YouTube API.  The `src` attribute used by the `.ve-media` viewer for YouTube content is simply the YouTube URL for the video.
+YouTube is the exception to the media providers described on this page in that IIIF manifests are not used for rendering the resource with the Juncture `video` viewer.  The video content is streamed from YouTube directly using the YouTube API.  The `src` attribute used by the video viewer for YouTube content can be either the YouTube video ID or the full YouTube URL for the video.
 
 <ve-snippet collapsible label="YouTube video">
-    .ve-media https://www.youtube.com/watch?v=Zy3K2Lcw7hQ right
+    `video https://www.youtube.com/watch?v=Zy3K2Lcw7hQ right`
 
     [Who was Vincent van Gogh?](https://www.youtube.com/watch?v=Zy3K2Lcw7hQ)
 

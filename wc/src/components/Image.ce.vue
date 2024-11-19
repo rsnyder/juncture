@@ -237,7 +237,11 @@
   // watch(selectedItemInfo, (selectedItemInfo) => {console.log(toRaw(selectedItemInfo))})
 
 
-  const annoid = computed(() => selectedItemInfo.value && sha256(decodeURIComponent(selectedItemInfo.value.id?.split('/').pop().toLowerCase().replace('.jpeg','.jpg'))).slice(0,8))
+  const annoid = computed(() => {
+    let _annoid = selectedItemInfo.value && sha256(decodeURIComponent(selectedItemInfo.value.id?.split('/').pop().toLowerCase().replace('.jpeg','.jpg'))).slice(0,8)
+    if (selectedItemInfo.value) console.log(selectedItemInfo.value.id, _annoid)
+    return _annoid
+  })
   watch(annoid, async(annoid) =>
     annotations.value = annotator.value
       ? await annotator.value.loadAnnotations(annoid) || []
@@ -550,7 +554,7 @@
             let attr = el.attributes.getNamedItem(currentClassState ? 'enter' : 'exit')
             if (attr) {
               const [action, ...args] = attr.value.replace(/:/g,'/').split('/')
-              console.log(`${action}=${args}`)
+              // console.log(`${action}=${args}`)
               if (action === 'zoomto') {
                 let region = args[0]
                 zoomto(region)

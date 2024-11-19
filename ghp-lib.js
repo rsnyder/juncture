@@ -728,7 +728,7 @@ function restructure(rootEl) {
         anchorElem.href = newHref
       }
 
-      let qid = /^Q\d+$/.test(path[path.length-1]) ? path[path.length-1] : null
+      let qid = path.length === 1 && /^Q\d+$/.test(path[0]) ? path[0] : null
       let isEntityPath = path.find(pe => pe[0] === '~')
       if (qid || isEntityPath) {
         let mdpEntityInfobox = document.createElement('ve-entity-infobox')
@@ -872,6 +872,7 @@ function configCustomClasses(rootEl) {
     }
 
     if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
+      console.log('columns')
       let wrapper = document.createElement('section')
       wrapper.className = 'columns wrapper'
       section.classList.remove('columns')

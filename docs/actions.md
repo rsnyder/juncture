@@ -46,8 +46,7 @@ The `flyto` action performed by the map viewer works similarly.  Instead of spec
 
 | Viewer | Key | Value | Behavior |
 | ------ | --- | ----- | -------- |
-| image  | `zoomto` | Image region bounding box | Zooms the image to the specified image region |
-| image  | `anno` | Annotation ID | Opens an annotation text box |
+| image  | `zoomto` | Image region bounding box or annotation ID | Zooms the image to the specified image region |
 | image  | `zoomto` | Image region bounding box **and** Annotation ID | Zooms the image to the specified image region **and** opens an annotation text box |
 | audio  | `play` | Time to start (and optionally stop) an audio clip | Plays an audio clip from the specified time |
 | video  | `play` | Time to start (and optionally stop) a video clip | Plays a video clip from the specified time |
@@ -158,45 +157,30 @@ After an image has been annotated (as described in [this tutorial](howto/annotat
 
 #### Zoom to image region
 
-<ve-snippet collapsible label="Zoom to image region (using key-value notation)">
+<ve-snippet collapsible label="Zoom to image region">
 `image wc:The_Bug_Peek.jpg right`
-The image depicts a [leaf beetle](/zoomto/1005,507,1676,1117) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
-</ve-snippet>
-
-<ve-snippet collapsible label="Zoom to image region (using value only)">
-`image  wc:The_Bug_Peek.jpg right`
 The image depicts a [leaf beetle](/zoomto/1005,507,1676,1117) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
 </ve-snippet>
 
 #### Show annotation
 
-<ve-snippet collapsible label="Show annotation (using key-value notation)">
-`image  wc:The_Bug_Peek.jpg right base=juncture-digital/juncture/examples/hello-juncture`
-The image depicts a [leaf beetle](/zoomto/386db45b) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
-</ve-snippet>
-
-<ve-snippet collapsible label="Show annotation (using value only)">
-`image  wc:The_Bug_Peek.jpg right base=juncture-digital/juncture/examples/hello-juncture`
-The image depicts a [leaf beetle](/zoomto/386db45b) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
+<ve-snippet collapsible label="Show annotation">
+`image  wc:The_Bug_Peek.jpg right`
+The image depicts a [leaf beetle](/zoomto/c8296df6) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
 </ve-snippet>
 
 #### Zoom to image region and show an annotation
 
-<ve-snippet collapsible label="Zoom to image region and show annotation (using key-value notation)">
-`image  wc:The_Bug_Peek.jpg right base=juncture-digital/juncture/examples/hello-juncture`
-The image depicts a [leaf beetle](/zoomto/167,1,3352,2233,386db45b) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
-</ve-snippet>
-
-<ve-snippet collapsible label="Zoom to image region and show annotation (using value only)">
-`image wc:The_Bug_Peek.jpg right base=juncture-digital/juncture/examples/hello-juncture`
-The image depicts a [leaf beetle](/zoomto/167,1,3352,2233,386db45b) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
+<ve-snippet collapsible label="Zoom to image region and show annotation">
+`image  wc:The_Bug_Peek.jpg right`
+The image depicts a [leaf beetle](/zoomto/167,1,3352,2233/c8296df6) looking out from a leaf hole of Alnus nepalensis tree. Adult leaf beetles make holes in host plant leaves while feeding. They camouflage themselves with these holes.
 </ve-snippet>
 
 ### Audio and video player actions
 
 #### Play at time
 
-<ve-snippet collapsible label="Play at a time (using key-value notation)">
+<ve-snippet collapsible label="Play at a time">
 `video  https://www.youtube.com/watch?v=Zy3K2Lcw7hQ right`
 Start playing video at [time](/play/10)
 </ve-snippet>
@@ -221,7 +205,7 @@ Fly to [Paris](/flyto/Q90)
 
 <ve-snippet collapsible label="Fly to a location with specified zoom level">
 ```
-map` Q60 8 right
+map Q60 8 right
     - Q60
     - Q90
 ```

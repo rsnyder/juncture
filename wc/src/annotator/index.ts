@@ -19,6 +19,7 @@ export class Annotator {
   selected:any = null
 
   constructor(osd:any, base:string='', editable:boolean=false) {
+    // console.log('Annotator', osd, base, editable)
     this.osd = osd
     this.base = base
     let [acct, repo, ...pathElems] = this.base.split('/')

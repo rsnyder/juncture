@@ -1,0 +1,23 @@
+[
+  {
+    "type": "Annotation",
+    "body": [
+      {
+        "type": "TextualBody",
+        "value": "Leaf beetle",
+        "purpose": "commenting"
+      }
+    ],
+    "target": {
+      "source": "https://bxw3h77njs6t5nf7bo2vykqxvi0lzkxb.lambda-url.us-east-1.on.aws/iiif/3/92d6312e99630e48b33b938b3b06580db817157b08dcaaa9edf2106f5471ef6d",
+      "selector": {
+        "type": "FragmentSelector",
+        "conformsTo": "http://www.w3.org/TR/media-frags/",
+        "value": "xywh=pixel:692.5903930664062,-27492.07391357422,2440.4491577148438,28893.332092285156"
+      },
+      "id": "1401df27"
+    },
+    "@context": "http://www.w3.org/ns/anno.jsonld",
+    "id": "c8296df6"
+  }
+]

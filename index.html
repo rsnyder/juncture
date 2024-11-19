@@ -8,7 +8,7 @@
     <link href="https://v3.juncture-digital.org/images/favicon.svg" rel="icon" type="image/svg+xml"/>
     <link href="https://v3.juncture-digital.org/images/favicon.png" rel="icon" type="image/png"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/themes/pure.css" />
-    <link rel="stylesheet" href="https://v3.juncture-digital.org/wc/dist/css/index.css" />
+    <!-- <link rel="stylesheet" href="https://v3.juncture-digital.org/wc/dist/css/index.css" /> -->
     <link rel="stylesheet" href="docs/custom.css">  
   </head>
   <body>
@@ -33,8 +33,6 @@
 
     <script type="module">
       
-      import { setConfig } from 'https://v3.juncture-digital.org/ghp.js'
-
       let referrer = document.referrer ? new URL(document.referrer) : null
       if (referrer?.host === 'github.com') {
         console.log('Referrer:', referrer);
@@ -50,8 +48,7 @@
       if (!isMobile && (!location.hash || location.hash === '#/')) toggleSidebar()
       window.addEventListener('popstate', (evt) => { if (location.hash !== '#/') document.body.classList.remove('close') }) // The URL changed...
   
-      window.jekyll = { source: { owner: 'rsnyder', repository: 'juncture', branch: 'main', dir: '/docs/' } }
-      setConfig()
+      window.config = { source: { owner:'rsnyder', repository: 'juncture', branch: 'main', dir: '/docs/' } }
 
       setTimeout(() => {
         if (location.href === 'https://v3.juncture-digital.org/#/') window.history.replaceState({}, null, 'https://v3.juncture-digital.org/') // Remove hash from root URL

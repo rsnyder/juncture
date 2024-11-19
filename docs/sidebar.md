@@ -62,7 +62,6 @@
   - [Setting up a media collection](/docs/howto/setup-media-collection)
   - [Use a historical map overlay](/docs/howto/use-historic-maps)
   - [Use a GeoJSON map overlay](/docs/howto/geojson-overlay)
-  - [Hosting a Juncture website](/docs/howto/hosting)
 
 - Resources
   - [Media providers](/docs/resources/media)

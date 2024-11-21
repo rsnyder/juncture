@@ -20,15 +20,18 @@
     </div>
 
     <div v-if="manifests.length && !noCaption" class="status">
-      <div if="annotations.length > 0" class="annotations-indicator">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M160 368c26.5 0 48 21.5 48 48v16l72.5-54.4c8.3-6.2 18.4-9.6 28.8-9.6H448c8.8 0 16-7.2 16-16V64c0-8.8-7.2-16-16-16H64c-8.8 0-16 7.2-16 16V352c0 8.8 7.2 16 16 16h96zm48 124l-.2 .2-5.1 3.8-17.1 12.8c-4.8 3.6-11.3 4.2-16.8 1.5s-8.8-8.2-8.8-14.3V474.7v-6.4V468v-4V416H112 64c-35.3 0-64-28.7-64-64V64C0 28.7 28.7 0 64 0H448c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H309.3L208 492z"/></svg>
-        <sl-badge variant="primary" pill>{{annotations.length || 1}}</sl-badge>
+
+      <div v-if="annotations.length" class="annotations-indicator" @click="toggleAnnotations">
+        <svg v-if="annotationsVisible" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/></svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152V424c0 48.6 39.4 88 88 88H360c48.6 0 88-39.4 88-88V312c0-13.3-10.7-24-24-24s-24 10.7-24 24V424c0 22.1-17.9 40-40 40H88c-22.1 0-40-17.9-40-40V152c0-22.1 17.9-40 40-40H200c13.3 0 24-10.7 24-24s-10.7-24-24-24H88z"/></svg>
+        <sl-badge variant="primary" pill>{{annotations.length}}</sl-badge>
       </div>
+
       <ve-caption
         :manifest="manifests[selected]" 
         :caption="caption"
         :description="src && description"
-      >
+        :annoid="annoid">
       </ve-caption>
     </div>
   </div>
@@ -93,7 +96,6 @@
     if (config.value.source?.owner) return config.value.source
     else if (props.base) {
       let [owner, repository, branch, ...dir] = props.base.split('/')
-      // console.log({ owner, repository, branch, dir })
       return { owner, repository, branch, dir: dir ? `/${dir.join('/')}/` : '/'}
     } 
     return null
@@ -107,9 +109,6 @@
 
   const width = computed(() => definedWidth.value || host.value?.clientWidth)
   const height = computed(() => definedHeight.value || host.value?.clientHeight)
-
-  // watch(width, () => { if (width.value && height.value) console.log(`${width.value}x${height.value}`) })
-  // watch(height, () => { if (width.value && height.value) console.log(`${width.value}x${height.value}`) })
 
   watch(host, (host) => {
     if (host) {
@@ -144,22 +143,9 @@
     let rotationDegrees = props.rotation || parseInt(rotation) || 0
     quality = props.quality || quality || 'default'
     format = props.format || format || 'jpg'
-    // console.log(`region=${region} size=${size} rotation=${rotationDegrees} quality=${quality} format=${format}`)
     url =`${itemInfo.service[0].id || itemInfo.service[0]['@id']}/${region}/${size}/${rotationDegrees}/${quality}.${format}`
-    // console.log(url)
     return url
   })
-
-  function ancestors() {
-    let ancestors: any[] = []
-    let el = host.value
-    // while (el && el.className.indexOf('content') < 0) {
-    while (el) {
-      ancestors.push(el)
-      el = el.parentElement;
-    }
-    return ancestors
-  }
 
   const refresh = computed(() => {
     let refreshArg = new URLSearchParams(window.location.search).get('refresh')
@@ -175,7 +161,6 @@
 
   const imageDefs = ref<any[]>([])
   watch(imageDefs, async (imageDefs) => {
-    // console.log(toRaw(imageDefs))
     manifests.value = await Promise.all(imageDefs.map(def => 
       (def.src || def.manifest)
         ? getManifest(def.src || def.manifest, refresh.value)
@@ -221,7 +206,6 @@
   const selectedItemInfo = computed(() => 
     manifests.value[selected.value] && findItem({type:'Annotation', motivation:'painting'}, manifests.value[selected.value], imageDefs.value[selected.value].seq || 1).body
   )
-  // watch(selectedItemInfo, (selectedItemInfo) => {console.log(toRaw(selectedItemInfo))})
   
   const imageSize = computed(() => selectedItemInfo.value && { width: selectedItemInfo.value.width, height: selectedItemInfo.value.height} )
   const aspectRatio = computed(() => Number(((imageSize.value?.width || 1)/(imageSize.value?.height || 1)).toFixed(4)) )
@@ -229,13 +213,15 @@
 
   const annoid = computed(() => {
     let _annoid = selectedItemInfo.value && sha256(decodeURIComponent(selectedItemInfo.value.id?.split('/').pop().toLowerCase().replace('.jpeg','.jpg'))).slice(0,8)
-    // if (selectedItemInfo.value) console.log(selectedItemInfo.value.id, _annoid)
     return _annoid
   })
   watch(annoid, () => { annotator.value?.loadAnnotations(annoid.value).then(annos => annotations.value = annos) })
 
   const annotator = ref<any>()
   const annotations = ref<any[]>([])
+  const annotationsVisible = ref<boolean>(false)
+  watch(annotationsVisible, () => annotator.value.setVisible(annotationsVisible.value) )
+  function toggleAnnotations() { annotationsVisible.value = !annotationsVisible.value }
 
   function init() {
     function parseImageDefStr(s:String): Object {
@@ -353,7 +339,6 @@
   }
 
   function setOsdHeight() {
-    // console.log(`setOsdHeight: height=${height.value} osdWidth=${osdEl.value?.clientWidth} aspectRatio=${aspectRatio.value}`)
     if (osdEl.value?.clientWidth) {
       if (height.value) osdEl.value?.setAttribute('style', 'flex: 1 1 0%; position: relative')
       else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
@@ -368,7 +353,6 @@
 
   function initOpenSeadragon() {
     if (osd.value || !osdEl.value) return
-    // console.log(`initOpenSeadragon: osdEl=${osdEl.value?.clientWidth}x${osdEl.value?.clientHeight} tileSources=${tileSources.value.length}`, osdEl.value)
     setOsdHeight()
     const osdOptions: OpenSeadragon.Options = {
       element: osdEl.value,
@@ -406,7 +390,6 @@
     osd.value.world.addHandler('add-item', (e) => {
       let currentItem = imageDefs.value[selected.value]
       if (currentItem?.rotation) e.item.setRotation(parseInt(currentItem.rotation), true)
-      // console.log('add-item', toRaw(currentItem))
 
       if (currentItem?.region && osd.value) {
         let rect = parseRegionString(currentItem.region, osd.value)
@@ -416,6 +399,7 @@
 
     // let annotator = new Annotator(osd.value, props.base, !props.repoIsWritable)
     annotator.value = new Annotator(osd.value, props.base)
+    annotator.value.addChangeListener((annos) => annotations.value = annos)
     if (annoid.value) annotator.value?.loadAnnotations(annoid.value).then(annos => annotations.value = annos)
 
     addInteractionHandlers()
@@ -433,7 +417,6 @@
   }
   
   function addInteractionHandlers() {
-    // console.log('addInteractionHandlers')
 
     let scope = host.value?.parentElement
         let added = new Set()
@@ -460,7 +443,6 @@
           let annoId = path.slice(idx+1).find(val => val.length === 8 && /^[0-9a-f]+$/.test(val))
           let trigger = path.slice(idx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
           let targetId = path.slice(idx+2).filter(val => val !== 'click' && val !== 'mouseover' && val !== annoId)[0]
-          // console.log(`zoom: region=${region} trigger=${trigger} annoId=${annoId} targetId=${targetId}`)
 
           let target
 
@@ -491,7 +473,6 @@
             let target = anchorElem
             let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
             let annoId = target.getAttribute('data-annoId') || target?.parentElement?.getAttribute('data-annoId')
-            // console.log(`zoomto: region=${region} annoId=${annoId}`)
             if (region) zoomto(region)
           })
         }
@@ -511,7 +492,6 @@
             let attr = el.attributes.getNamedItem(currentClassState ? 'enter' : 'exit')
             if (attr) {
               const [action, ...args] = attr.value.replace(/:/g,'/').split('/')
-              // console.log(`${action}=${args}`)
               if (action === 'zoomto') {
                 let region = args[0]
                 zoomto(region)
@@ -555,18 +535,14 @@
     const match = arg?.match(/^(?<region>(pct:|pixel:|px:)?[+-\d.]+,[+-\d.]+,[+-\d.]+,[+-\d.]+)?$/)
     if (match) {
       let region = match?.groups?.region
-      // console.log(`ve-image.zoom: region=${region}`)
       if (region) {
         if (zoomedToRegion === region) {
           osd.value?.viewport.goHome()
           zoomedToRegion = ''
         } else {
-          // console.log(`zoomTo: region=${region}`)
           zoomedToRegion = region
           if (osd.value) {
             let rect = parseRegionString(region, osd.value)
-            // console.log(host.value)
-            // console.log(rect)
             osd.value.viewport.fitBounds(rect, false)
           }
         }
@@ -618,10 +594,14 @@ class Annotator {
 
   osd: any
   base: string
+  listeners: any[] = []
   imageId: string
   annotorious: any
+  selected: string | undefined
   shas: any = {}
   readOnly: boolean = true
+  visible: boolean
+
   authToken = window.localStorage.getItem('gh-auth-token') || window.localStorage.getItem('gh-unscoped-token')
   username = window.localStorage.getItem('gh-username')
 
@@ -639,11 +619,26 @@ class Annotator {
   }
 
   init() {
-    console.log(`Annotator: base=${this.base} readOnly=${this.readOnly}`)
     this.annotorious = Annotorious(this.osd, {readOnly: this.readOnly})
     this.annotorious.on('createAnnotation', async (anno:any) => this.createAnnotation(anno))
     this.annotorious.on('updateAnnotation', async (anno:any) => this.updateAnnotation(anno))
     this.annotorious.on('deleteAnnotation', async (anno:any) => this.deleteAnnotation(anno))
+    this.annotorious.on('selectAnnotation', async (anno:any) => this.onSelect(anno))
+  }
+
+  addChangeListener(listener) {
+    this.listeners.push(listener)
+  }
+
+  setVisible(visible:boolean) {
+    this.visible = visible
+    let el = this.osd.element.querySelector('.a9s-annotationlayer') as HTMLElement
+    if (el) {
+      el.style.visibility = visible ? 'visible' : 'hidden'
+      el.style.display = visible ? 'inline' : 'none'
+    };
+    (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[])
+      .forEach(el => el.style.visibility = visible ? 'visible' : 'hidden')
   }
 
   async loadAnnotations(imageId) {
@@ -651,21 +646,71 @@ class Annotator {
     const annotationsLocation = `${this.base}/${this.imageId}.json`
     let annotations = await this.getFile(annotationsLocation)
     if (annotations) annotations.content.forEach(anno => this.annotorious.addAnnotation(anno))
+    this.setVisible(!annotations?.content.length && !this.readOnly)
+    for (let listener of this.listeners) listener(annotations || [])
     return annotations?.content || []
   }
 
   async saveAnnotations() {
-    return this.putFile(`${this.base}/${this.imageId}.json`, JSON.stringify(this.annotorious.getAnnotations(), null, 2))
+    let annotations = this.annotorious.getAnnotations()
+    for (let listener of this.listeners) listener(annotations || [])
+    return this.putFile(`${this.base}/${this.imageId}.json`, JSON.stringify(annotations, null, 2))
   }
 
-  async createAnnotation(anno) { this.saveAnnotations() }
-  async updateAnnotation(anno) { this.saveAnnotations() }
+  async createAnnotation(anno) {
+    anno.id = sha256(anno.id).slice(0,8)
+    anno.target.id = this.imageId
+    if (navigator.clipboard) navigator.clipboard.writeText(anno.id)
+    this.saveAnnotations()
+  }
+  async updateAnnotation(anno) {
+    anno.target.id = this.imageId
+    if (navigator.clipboard) navigator.clipboard.writeText(anno.id)
+    this.saveAnnotations()
+  }
   async deleteAnnotation(anno) { this.saveAnnotations() }
 
+  onSelect(anno:any) {
+    this.selected = anno.id
+    if (navigator.clipboard) navigator.clipboard.writeText(anno.id)
+  }
+
+  annoEl(annoId:string) {
+    return this.osd.element.querySelector(`[data-id="${annoId}"]`) as HTMLElement
+  }
+
+  select(annoId:string) {
+    if (annoId !== this.selected) {
+      this.setVisible(true)
+      this.selected = annoId
+
+      this.osd.element.querySelectorAll('.a9s-annotation').forEach((el:HTMLElement) => {
+        if (el.dataset.id === annoId) {
+          el.style.visibility = 'visible'
+          el.classList.add('selected')
+          this.annotorious.selectAnnotation(annoId)
+        } else el.style.visibility = 'hidden'
+      })
+
+      if (this.selected) {
+        let annoEl = this.annoEl(annoId)
+        if (annoEl) annoEl.style.visibility = 'visible'
+      }
+    } else {
+      this.setVisible(false)
+      this.deselect() 
+    }
+  }
+
+  deselect() {
+    (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[])
+    .forEach(el => el.style.visibility = this.visible ? 'visible' : 'hidden')
+    this.annotorious.cancelSelected()
+    this.selected = undefined
+  }
   async getFile(location) {
     let [ acct, repo, branch, ...path ] = location.split('/')
     path = path.join('/')
-    // console.log(`getGhFile: acct=${acct} repo=${repo} branch=${branch} path='${path} token=${this.authToken}`)
     let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
     let resp:any = this.authToken ? await fetch(url, { headers: {Authorization: `Token ${this.authToken}`} }) : await fetch(url)
     if (resp.status === 200) {
@@ -684,7 +729,6 @@ class Annotator {
     path = path.join('/')
     let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}`
     sha = sha || this.shas[location] || await this.getSha(location)
-    // console.log(`putFile: acct=${acct} repo=${repo} branch=${branch} path='${path} sha=${sha} token=${this.authToken}`)
     let payload:any = { branch, content: this.b64EncodeUnicode(content), message: 'API commit'}
     if (sha) payload.sha = sha
     let resp:any = this.authToken 
@@ -698,7 +742,6 @@ class Annotator {
     if (this.shas[location]) return this.shas[location]
     let [ acct, repo, branch, ...path ] = location.split('/')
     path = path.join('/')
-    // console.log(`getSha: acct=${acct} repo=${repo} branch=${branch} path='${path} token=${this.authToken}`)
     let url = `https://api.github.com/repos/${acct}/${repo}/contents/${path}?ref=${branch}`
     let resp:any = this.authToken ? await fetch(url, { headers: {Authorization: `Token ${this.authToken}`} }) : await fetch(url)
     if (resp.ok) {

@@ -1195,8 +1195,9 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
 async function getMarkdown(ghSource) {
   let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   path = path.join('/')
-  let extension = ghSource.slice(-3)
-  if (extension === '.md') {
+  let extension = ghSource.slice(-3) === '.md' ? 'md' : ''
+  // console.log(`getMarkdown: owner=${owner}, repo=${repo}, branch=${branch}, path=${path}, extension=${extension}`)
+  if (extension === 'md') {
     let resp = await getGhFile(owner, repo, branch, path)
     return resp.content
   } else {

@@ -728,7 +728,10 @@ function restructure(rootEl) {
         anchorElem.href = newHref
       }
 
-      let qid = path.length === 1 && /^Q\d+$/.test(path[0]) ? path[0] : null
+      let qid = 
+        !'zoomto flyto play'.split(' ').includes(path[path.length-2]) && /^Q\d+$/.test(path[path.length-1])
+          ? path[path.length-1]
+          : null
       let isEntityPath = path.find(pe => pe[0] === '~')
       if (qid || isEntityPath) {
         let mdpEntityInfobox = document.createElement('ve-entity-infobox')
@@ -872,6 +875,7 @@ function configCustomClasses(rootEl) {
     }
 
     if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
+      console.log('columns')
       let wrapper = document.createElement('section')
       wrapper.className = 'columns wrapper'
       section.classList.remove('columns')
@@ -1191,8 +1195,9 @@ function observeVisible(rootEl, setActiveParagraph, offset=0) {
 async function getMarkdown(ghSource) {
   let [owner, repo, branch, ...path] = ghSource.split('/').filter(pe => pe)
   path = path.join('/')
-  let extension = ghSource.slice(-3)
-  if (extension === '.md') {
+  let extension = ghSource.slice(-3) === '.md' ? 'md' : ''
+  // console.log(`getMarkdown: owner=${owner}, repo=${repo}, branch=${branch}, path=${path}, extension=${extension}`)
+  if (extension === 'md') {
     let resp = await getGhFile(owner, repo, branch, path)
     return resp.content
   } else {

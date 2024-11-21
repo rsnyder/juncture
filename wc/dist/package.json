@@ -1,6 +1,6 @@
 {
   "name": "juncture-digital",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "private": false,
   "scripts": {
     "dev": "vite",
@@ -12,11 +12,9 @@
     "postbuild": "cp package.json ../dist; cp ../../ghp-lib.js ../dist/js/ghp-lib.js; cp ../../ghp.js ../dist/js/ghp.js"
   },
   "dependencies": {
-    "@allmaps/leaflet": "^1.0.0-beta.25",
-    "@openseadragon-imaging/openseadragon-viewerinputhook": "^2.2.1",
-    "@recogito/annotorious-openseadragon": "2.6.0",
+    "@allmaps/leaflet": "^1.0.0-beta.40",
+    "@recogito/annotorious-openseadragon": "2.7.14",
     "@shoelace-style/shoelace": "^2.18.0",
-    "@types/leaflet": "^1.9.8",
     "js-md5": "^0.8.3",
     "js-sha256": "^0.11.0",
     "js-yaml": "^4.1.0",
@@ -28,7 +26,7 @@
     "marked": "^7.0.4",
     "marked-footnote": "^1.2.2",
     "mermaid": "^10.9.0",
-    "openseadragon": "2.4.2",
+    "openseadragon": "^5.0.0",
     "preline": "^1.9.0",
     "prismjs": "^1.29.0",
     "simply-beautiful": "^1.0.1",
@@ -40,8 +38,9 @@
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.0",
+    "@types/leaflet": "^1.9.8",
     "@types/node": "^18.17.0",
-    "@types/openseadragon": "^3.0.6",
+    "@types/openseadragon": "^3.0.10",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/tsconfig": "0.4.0",
     "autoprefixer": "^10.4.15",

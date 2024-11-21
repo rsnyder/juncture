@@ -396,8 +396,8 @@
       }
     })
 
-    // let annotator = new Annotator(osd.value, props.base, !props.repoIsWritable)
-    annotator.value = new Annotator(osd.value, props.base)
+    let annoBase = `${source.value.owner}/${source.value.repository}/${source.value.branch}${source.value.dir.slice(0,-1)}`
+    annotator.value = new Annotator(osd.value, annoBase)
     annotator.value.addChangeListener((annos) => annotations.value = annos)
     if (annoid.value) annotator.value?.loadAnnotations(annoid.value).then(annos => annotations.value = annos)
 
@@ -418,16 +418,16 @@
   function addInteractionHandlers() {
 
     let scope = host.value?.parentElement
-        let added = new Set()
-        while (scope?.parentElement && scope.tagName !== 'MAIN') {
-          (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
-            if (!added.has(el)) {
-              addMutationObserver(el)
-              added.add(el)
-            }
-          })
-          scope = scope.parentElement
+    let added = new Set()
+    while (scope?.parentElement && scope.tagName !== 'MAIN') {
+      (Array.from(scope.querySelectorAll('[enter],[exit]')) as HTMLElement[]).forEach(el => {
+        if (!added.has(el)) {
+          addMutationObserver(el)
+          added.add(el)
         }
+      })
+      scope = scope.parentElement
+    }
 
     scope = host.value?.parentElement
     while (scope) {
@@ -438,10 +438,13 @@
         let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
         let idx = path.indexOf('zoom')
         if (idx >= 0) {
+          console.log(path)
           let region = /^(pct:|pixel:|px:)?[-+\d.]+,[-+\d.]+,[-+\d.]+,[-+\d.]+$/.test(path[idx+1]) ? path[idx+1] : ''
           let annoId = path.slice(idx+1).find(val => val.length === 8 && /^[0-9a-f]+$/.test(val))
           let trigger = path.slice(idx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
           let targetId = path.slice(idx+2).filter(val => val !== 'click' && val !== 'mouseover' && val !== annoId)[0]
+
+          console.log('zoomto', {region, annoId, trigger, targetId})
 
           let target
 
@@ -472,6 +475,7 @@
             let target = anchorElem
             let region = target.getAttribute('data-region') || target?.parentElement?.getAttribute('data-region')
             let annoId = target.getAttribute('data-annoId') || target?.parentElement?.getAttribute('data-annoId')
+            if (annoId) annotator.value?.select(annoId)
             if (region) zoomto(region)
           })
         }

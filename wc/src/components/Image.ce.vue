@@ -438,13 +438,10 @@
         let path = link.pathname.split('/').filter((p:string) => p).map(p => p.toLowerCase()).map(p => p === 'zoomto' ? 'zoom' : p)
         let idx = path.indexOf('zoom')
         if (idx >= 0) {
-          console.log(path)
           let region = /^(pct:|pixel:|px:)?[-+\d.]+,[-+\d.]+,[-+\d.]+,[-+\d.]+$/.test(path[idx+1]) ? path[idx+1] : ''
           let annoId = path.slice(idx+1).find(val => val.length === 8 && /^[0-9a-f]+$/.test(val))
           let trigger = path.slice(idx+2).filter(val => val === 'click' || val === 'mouseover')[0] || 'click'
           let targetId = path.slice(idx+2).filter(val => val !== 'click' && val !== 'mouseover' && val !== annoId)[0]
-
-          console.log('zoomto', {region, annoId, trigger, targetId})
 
           let target
 
@@ -674,7 +671,23 @@ class Annotator {
   async deleteAnnotation(anno) { this.saveAnnotations() }
 
   onSelect(anno:any) {
-    this.selected = anno.id
+    this.selected = anno.id;
+    let selection = (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[]).find(el => el.dataset.id === anno.id)
+    let selectionRect = selection?.getBoundingClientRect()
+    let article
+    let tmp: any = host.value
+    while (tmp && !article) {
+      if (tmp.tagName === 'ARTICLE') article = tmp
+      tmp = tmp.parentElement
+    }
+    let articleRect = article?.getBoundingClientRect()
+    let container = selection?.parentElement
+    let containerRect = container?.getBoundingClientRect()
+    let popup = this.osd.element.querySelector(`.r6o-editor`)
+    if (popup && selectionRect && containerRect) {
+      let left = containerRect.left >= articleRect.width/2 ? articleRect.width/2 + 20 : 0
+      popup.style.transform = `translate(${left}px, 60px)`
+    }
     if (navigator.clipboard) navigator.clipboard.writeText(anno.id)
   }
 

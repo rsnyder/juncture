@@ -292,7 +292,7 @@
   watch(height, (height) => { 
     host.value.style.height = height ? `${height}px` : 'unset'
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(false), 500)
+    osd.value?.viewport?.goHome(true)
    })
 
   // OpenSeadragon - https://openseadragon.github.io/docs/
@@ -347,7 +347,7 @@
   // resize OSD viewer
   function resize() {
     setOsdHeight()
-    setTimeout(() => osd.value?.viewport?.goHome(false), 500)
+    osd.value?.viewport?.goHome(true)
   }
 
   function initOpenSeadragon() {
@@ -377,7 +377,7 @@
       gestureSettingsMouse: {
         clickToZoom: false,
         dblClickToZoom: true,
-        dragToPan: false,
+        dragToPan: true,
         scrollToZoom: true,
         pinchToZoom: true
       },

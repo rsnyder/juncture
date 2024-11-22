@@ -670,9 +670,8 @@ class Annotator {
   }
   async deleteAnnotation(anno) { this.saveAnnotations() }
 
-  onSelect(anno:any) {
-    this.selected = anno.id;
-    let selection = (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[]).find(el => el.dataset.id === anno.id)
+  adjustPopupPosition(annoId) { //TODO: fix this
+    let selection = (Array.from(this.osd.element.querySelectorAll(`.a9s-annotation`)) as HTMLElement[]).find(el => el.dataset.id === annoId)
     let selectionRect = selection?.getBoundingClientRect()
     let article
     let tmp: any = host.value
@@ -688,6 +687,11 @@ class Annotator {
       let left = containerRect.left >= articleRect.width/2 ? articleRect.width/2 + 20 : 0
       popup.style.transform = `translate(${left}px, 60px)`
     }
+  }
+
+  onSelect(anno:any) {
+    this.selected = anno.id;
+    // this.adjustPopupPosition(anno.id)
     if (navigator.clipboard) navigator.clipboard.writeText(anno.id)
   }
 

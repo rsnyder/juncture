@@ -38,6 +38,8 @@
         console.log('Referrer:', referrer);
         let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
         path = path.join('/').replace(/\/(README|index)\.md$/,'').replace(/\.md$/,'')
+        branch = branch || 'main'
+        console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path}`);
         let redirect = `https://v3.juncture-digital.org/${acct}/${repo}/${path}${branch !== 'main' ? `?ref=${branch}` : ''}`
         // location.href = redirect
       }

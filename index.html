@@ -41,7 +41,7 @@
         branch = branch || 'main'
         console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path}`);
         let redirect = `https://v3.juncture-digital.org/${acct}/${repo}/${path}${branch !== 'main' ? `?ref=${branch}` : ''}`
-        // location.href = redirect
+        location.href = redirect
       }
 
       // Close sidebar on desktop

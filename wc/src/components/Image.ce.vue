@@ -837,7 +837,7 @@ class Annotator {
   .coords {
     opacity: 0;
     position: absolute;
-    bottom: 0;
+    /* bottom: 0; */
     right: 0;
     background-color: white;
     border: 1px solid #ccc;

@@ -353,7 +353,7 @@
   function initOpenSeadragon() {
     if (osd.value || !osdEl.value) return
     setOsdHeight()
-    const osdOptions: OpenSeadragon.Options = {
+    const osdOptions: OpenSeadragon.Options = { // https://openseadragon.github.io/docs/OpenSeadragon.html#.Options
       element: osdEl.value,
       prefixUrl: 'https://openseadragon.github.io/openseadragon/images/',
       // tileSources: tileSources.value,
@@ -375,12 +375,31 @@
       // visibilityRatio: 1.0,
       // constrainDuringPan: true
       gestureSettingsMouse: {
-        clickToZoom: false,
-        dblClickToZoom: true,
         dragToPan: true,
         scrollToZoom: true,
-        pinchToZoom: true
+        clickToZoom: true,
+        dblClickToZoom: false,
+        dblClickDragToZoom: false,
+        pinchToZoom: true,
+        zoomToRefPoint: true,
+        flickEnabled: false,
+        flickMinSpeed: 120,
+        flickMomentum: 0.25,
+        pinchRotate: false
       },
+      gestureSettingsTouch: {
+        dragToPan: true,
+        scrollToZoom: false,
+        clickToZoom: true,
+        dblClickToZoom: true,
+        dblClickDragToZoom: true,
+        pinchToZoom: true,
+        zoomToRefPoint: true,
+        flickEnabled: false,
+        flickMinSpeed: 120,
+        flickMomentum: 0.25,
+        pinchRotate: false
+      }
       
     }
     osd.value = OpenSeadragon(osdOptions)
@@ -400,7 +419,7 @@
     annotator.value = new Annotator(osd.value, annoBase)
     annotator.value.addChangeListener((annos) => annotations.value = annos)
     if (annoid.value) annotator.value?.loadAnnotations(annoid.value).then(annos => annotations.value = annos)
-
+    
     addInteractionHandlers()
 
     setTimeout(() => setViewportCoords(), 500)
@@ -414,7 +433,7 @@
       [owner, repository, branch, ...path] = src
     }
   }
-  
+
   function addInteractionHandlers() {
 
     let scope = host.value?.parentElement

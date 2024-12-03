@@ -36,7 +36,7 @@
       let referrer = document.referrer ? new URL(document.referrer) : null
       if (referrer?.host === 'github.com') {
         console.log('Referrer:', referrer);
-        [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
+        let [acct, repo, branch, ...path] = referrer.pathname.split('/').filter(pe => pe && pe !== 'blob' && pe !== 'tree')
         path = path.join('/').replace(/\/(README|index)\.md$/,'').replace(/\.md$/,'')
         let redirect = `https://v3.juncture-digital.org/${acct}/${repo}/${path}${branch !== 'main' ? `?ref=${branch}` : ''}`
         location.href = redirect

@@ -359,10 +359,14 @@ function priorSibling(el) {
 
 // convert juncture tags to web component elements
 function convertTags(rootEl) {
+  
   // remove "editor" and "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
   .map(img => img.parentElement)
-  .find(link => link.href.indexOf('juncture-digital.org') > 0)
+  .find(link => {
+    console.log(link.href)
+    return link.href.indexOf('juncture-digital.org') > 0
+  })
   ?.parentElement?.remove()
 
   Array.from(rootEl?.querySelectorAll('p, li'))

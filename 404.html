@@ -18,7 +18,8 @@
       import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https://v3.juncture-digital.org/ghp.js'
 
       let [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe).slice(location.hostname.indexOf('github.io') > -1 ? 1 : 0)
-      let branch = new URL(location.href).searchParams.get('ref') || 'main'
+      let searchParams = new URL(location.href).searchParams
+      let branch = searchParams.get('ref') || searchParams.get('branch') || 'main'
       acct = acct || 'juncture-digital'
       repo = repo || '.github'
       console.log(acct, repo, branch, path)

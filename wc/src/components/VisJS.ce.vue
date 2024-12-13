@@ -128,7 +128,9 @@ import { onMounted } from 'vue';
   const edges = ref<any>()
   const timeline = ref<any>()
 
-  const networkData = computed(() => ({nodes: nodes.value, edges: edges.value}))
+  const networkData = computed(() => (nodes.value !== undefined && edges.value !== undefined && {nodes: nodes.value, edges: edges.value}))
+  watch (networkData, () => { init() })
+
   const timelineData = computed(() => timeline.value )
 
   const networkDiagram = ref<any>()

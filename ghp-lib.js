@@ -363,10 +363,7 @@ function convertTags(rootEl) {
   // remove "editor" and "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
   .map(img => img.parentElement)
-  .find(link => {
-    console.log(link.href)
-    return link.href.indexOf('juncture-digital.org') > 0
-  })
+  .find(link => link.href.indexOf('juncture-digital.org') > 0)
   ?.parentElement?.remove()
 
   Array.from(rootEl?.querySelectorAll('p, li'))
@@ -459,7 +456,6 @@ function convertTags(rootEl) {
 
     let parsed = parseCodeEl(codeEl)
     parsed.inline = ['LI', 'P'].includes(parent.tagName) && parent.childNodes.item(0).nodeValue !== null
-    // console.log(parsed)
 
     let priorEl = priorSibling(codeEl)
 
@@ -636,7 +632,6 @@ function restructure(rootEl) {
       param.remove()
     }
   })
-
   Array.from(rootEl?.children || []).forEach(el => {
     if (el.tagName[0] === 'H' && isNumeric(el.tagName.slice(1))) {
       let heading = el
@@ -879,7 +874,6 @@ function configCustomClasses(rootEl) {
     }
 
     if ((section.classList.contains('columns') || section.classList.contains('mcol')) && !section.classList.contains('wrapper')) {
-      console.log('columns')
       let wrapper = document.createElement('section')
       wrapper.className = 'columns wrapper'
       section.classList.remove('columns')
@@ -948,7 +942,7 @@ function restructureForJ1(article) {
     if (!viewersDiv) return
     
     const params = Array.from(viewersDiv.querySelectorAll(':scope > param'))
-      .map((param, idx) => ({ ...Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])), ...{idx} }))
+      .map((param, idx) => Object.fromEntries(Array.from(param.attributes).map(a => [a.name, a.value])))
     let idx = params.length
     let parent = viewersDiv.parentElement
     while (parent && parent.tagName !== 'ARTICLE') {
@@ -971,7 +965,6 @@ function restructureForJ1(article) {
       if (!veTags[tag]) veTags[tag] = []
       veTags[tag].push(p)
     })
-
     let entities = []
     Object.values(veTags['ve-entity'] || []).forEach(veEntity => {
       let qid = veEntity.eid || veEntity.qid
@@ -1049,7 +1042,6 @@ function restructureForJ1(article) {
     let j1Viewers = document.createElement('ve-j1-viewers-slots')
     j1Viewers.dataset.id = id
     viewersDiv.appendChild(j1Viewers)
-
     Object.entries(veTags).forEach(([tag, tagProps]) => {
       if (tag === 've-map-marker' || tag === 've-map-layer') return
       tagProps[0].entities = entities.join(' ')
@@ -1066,7 +1058,7 @@ function restructureForJ1(article) {
     })
 
     Array.from(para.children).forEach(child => {
-      if (child.tagName.indexOf('VE-') === 0) {
+      if (child.tagName.indexOf('VE-') === 0 && child.tagName !== 'VE-ENTITY-INFOBOX') {
         child.setAttribute('slot', child.tagName.toLowerCase())
         j1Viewers.appendChild(child)
       }

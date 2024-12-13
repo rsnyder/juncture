@@ -298,7 +298,7 @@
   // OpenSeadragon - https://openseadragon.github.io/docs/
   const osd = ref<OpenSeadragon.Viewer>()
 
-  const caption = computed(() => props.caption || (manifests.value[selected.value] && manifests.value[selected.value]?.label?.en?.[0]))
+  const caption = computed(() => props.caption || imageDefs.value[selected.value]?.caption || (manifests.value[selected.value] && manifests.value[selected.value]?.label?.en?.[0]))
 
   const coords = ref<string>()
 

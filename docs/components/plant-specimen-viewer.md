@@ -39,8 +39,8 @@ The `ve-plant-specimen` tag is used to display one or more plant specimens obtai
 
 ## Examples
 
-<ve-snippet collapsible label="Plant specimen for QID Q11575">
-    `plant-specimen Q11575`
+<ve-snippet collapsible label="Plant specimen for QID Q148532">
+    `plant-specimen Q148532`
 </ve-snippet>
 
 <ve-snippet collapsible label="Plant specimen using JSTOR Global Plants ID">

@@ -201,7 +201,7 @@
   }
 
   async function findSpecimens() {
-    // console.log('findSpecimens', toRaw(props))
+    console.log('findSpecimens', toRaw(props))
     let selector = props.jpid
       ? `jwdt:P1106 "${props.jpid}" ;`
       :  props.eid || props.qid || props.wdid
@@ -214,7 +214,7 @@
       delete resp['@context']
       specimens.value = [resp]
     } else {
-      specimens.value = (await doSparqlQuery(query))['@graph']
+      specimens.value = resp['@graph']
     }
   }
 

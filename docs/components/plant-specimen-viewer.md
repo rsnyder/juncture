@@ -29,6 +29,8 @@ The `ve-plant-specimen` tag is used to display one or more plant specimens obtai
 
 **[qid](#examples)** (_string_) :  The Wikidata QID for the associated plan taxon entity.  More information on QID use can be found in the [Wikidata](#wikidata) section.
 
+**[jpid](#examples)** (_string_) :  A JSTOR Plants (Global Plants) identifier.
+
 **[taxon-name](#examples)** (_string_):  The text to use in the _alt_ tag used by screen readers.  If not provided an _alt_ tag is automatically generated from the manifest label property.
 
 **[max](#examples)** (_number_):  The maximum number of specimen images to show (default=1).  Many specimen images may be found for a taxon entity.  By default only one is shown.  The plant specimen component attempts to show the best available when multiple are found.  The default maximum of 1 can be overridden with this attribute.
@@ -39,6 +41,10 @@ The `ve-plant-specimen` tag is used to display one or more plant specimens obtai
 
 <ve-snippet collapsible label="Plant specimen for QID Q11575">
     `plant-specimen Q11575`
+</ve-snippet>
+
+<ve-snippet collapsible label="Plant specimen using JSTOR Global Plants ID">
+    `plant-specimen jpid=10.5555/al.ap.specimen.e00413821`
 </ve-snippet>
 
 <ve-snippet collapsible label="Plant specimen with right positioning">

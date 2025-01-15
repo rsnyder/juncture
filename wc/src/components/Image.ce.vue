@@ -10,7 +10,7 @@
         objectFit: props.cover && 'cover' || fit
       }"
     />
-    <div v-else-if="tileSources" ref="osdEl" 
+    <div v-else-if="tileSources" ref="osdEl" style="height:100%;"
       id="osd" role="img" :aria-label="caption" :alt="caption">
       <div v-if="coords"
         class="coords"
@@ -341,8 +341,10 @@
 
   function setOsdHeight() {
     if (osdEl.value?.clientWidth) {
+      let captionEl = host.value.querySelector('ve-caption')
+      console.log(captionEl)
       let parentHeight = host.value.parentElement.clientHeight
-      let imageViewerHeight = parentHeight - 110
+      let imageViewerHeight = parentHeight - 124
       if (height.value) osdEl.value?.setAttribute('style', 'flex: 1 1 0%; position: relative')
       // else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
       else osdEl.value?.setAttribute('style', `height: ${imageViewerHeight}px`)

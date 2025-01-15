@@ -277,7 +277,9 @@
       new ResizeObserver(() => {
         osdWidth.value = osdEl.value?.clientWidth || osdWidth.value
       }).observe(osdEl.value)
-      osdWidth.value = osdEl.value?.clientWidth 
+      osdWidth.value = osdEl.value?.clientWidth
+
+      new ResizeObserver(() => setOsdHeight()).observe(host.value.parentElement)
     }
   })
 
@@ -339,8 +341,13 @@
 
   function setOsdHeight() {
     if (osdEl.value?.clientWidth) {
+      let parentHeight = host.value.parentElement.clientHeight
+      let imageViewerHeight = parentHeight - 110
       if (height.value) osdEl.value?.setAttribute('style', 'flex: 1 1 0%; position: relative')
-      else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
+      // else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
+      else osdEl.value?.setAttribute('style', `height: ${imageViewerHeight}px`)
+
+    
     }
   }
 

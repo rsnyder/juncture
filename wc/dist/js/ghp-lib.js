@@ -362,8 +362,7 @@ function convertTags(rootEl) {
   
   // remove "editor" and "view as" buttons
   Array.from(rootEl.querySelectorAll('a > img'))
-  .map(img => img.parentElement)
-  .find(link => link.href.indexOf('juncture-digital.org') > 0)
+  .find(img => img.src.indexOf('ve-button') > -1 || img.parentElement.href.indexOf('juncture-digital.org') > 0)
   ?.parentElement?.remove()
 
   Array.from(rootEl?.querySelectorAll('p, li'))

@@ -67,13 +67,12 @@
       let srcParamsObj = Object.fromEntries(Array.from(srcParams.keys()).map(param => [param.replace(/&?amp;/g,''), srcParams.get(param)]))
       srcWidth = /^\d+$/.test(srcParamsObj.width || '') ? parseInt(srcParamsObj.width || '') : null
       srcHeight = /^\d+$/.test(srcParamsObj.height || '') ? parseInt(srcParamsObj.height || '') : null
-      console.log({ srcWidth, srcHeight })
     }
     definedWidth.value = srcWidth || props.width || (host.value.style.width && host.value.clientWidth)
     definedHeight.value = srcHeight || props.height || (host.value.style.height && host.value.clientHeight)
     width.value = definedWidth.value || host.value.clientWidth
     height.value  = definedHeight.value || Math.max((window.innerHeight - Math.round(host.value.getBoundingClientRect().top) - 20), width.value)
-    console.log('setDimensions', { definedWidth: definedWidth.value, definedHeight: definedHeight.value, width: width.value, height: height.value })
+    // console.log('setDimensions', { definedWidth: definedWidth.value, definedHeight: definedHeight.value, width: width.value, height: height.value })
   }
 
   function htmlFromMarkdown(md) { return md ? marked.parse(md).slice(3,-5) : '' }

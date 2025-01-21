@@ -291,7 +291,7 @@
    })
 
   // const height = ref<number>(0)
-  watch(height, (height) => { 
+  watch(height, (height) => {
     host.value.style.height = height ? `${height}px` : 'unset'
     setOsdHeight()
     osd.value?.viewport?.goHome(true)
@@ -312,7 +312,7 @@
       interactionsHandlersInitialized.value = true
     }
     definedWidth.value = (isNumeric(props.width) && parseInt(props.width || '0')) || 0
-    definedHeight.value = (isNumeric(props.width) && parseInt(props.width || '0')) || 0
+    definedHeight.value = (isNumeric(props.height) && parseInt(props.height || '0')) || 0
   }
 
   onMounted(() => {
@@ -341,15 +341,8 @@
 
   function setOsdHeight() {
     if (osdEl.value?.clientWidth) {
-      let captionEl = host.value.querySelector('ve-caption')
-      console.log(captionEl)
-      let parentHeight = host.value.parentElement.clientHeight
-      let imageViewerHeight = parentHeight - 124
       if (height.value) osdEl.value?.setAttribute('style', 'flex: 1 1 0%; position: relative')
-      // else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
-      else osdEl.value?.setAttribute('style', `height: ${imageViewerHeight}px`)
-
-    
+      else osdEl.value?.setAttribute('style', `height: ${Number(osdEl.value?.clientWidth / aspectRatio.value).toFixed(0)}px;`)
     }
   }
 
@@ -830,6 +823,7 @@ class Annotator {
 <style>
   @import 'https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@2.7.14/dist/annotorious.min.css';
 
+
   .image {
     display: flex;
     flex-direction: column;
@@ -837,6 +831,8 @@ class Annotator {
   }
 
   .osd {
+    display: flex;
+
     position: relative;
     width: 100%;
     background-color: black;

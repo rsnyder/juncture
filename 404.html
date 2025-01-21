@@ -14,8 +14,8 @@
 
     <script type="module">
 
-      // import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.1/js/ghp.js'
-      import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https://v3.juncture-digital.org/ghp.js'
+      import { mount, getMarkdown, markdownToHtml } from 'https://cdn.jsdelivr.net/npm/juncture-digital@3.3/js/ghp.js'
+      // import { mount, getMarkdown, markdownToHtml, pathDir, setConfig } from 'https://v3.juncture-digital.org/ghp.js'
 
       let [acct, repo, ...path] = location.pathname.split('/').filter(pe => pe).slice(location.hostname.indexOf('github.io') > -1 ? 1 : 0)
       let searchParams = new URL(location.href).searchParams

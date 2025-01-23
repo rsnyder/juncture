@@ -472,17 +472,13 @@
             paraDataId = parent.dataset.id
             parent = parent.parentElement
           }
-          if (paraDataId) {
-            let mapDataId = host.value?.dataset.id
-            if (mapDataId && mapDataId !== paraDataId) return
-          }
-
           if (targetId) {
             target = document.getElementById(targetId)
             if (!target) return
           }
 
           target = findClosestImageViewer(anchorElem, 've-image')
+          console.log(`zoomto: region=${region} trigger=${trigger} targetId=${targetId}`, target)
           if (target !== host.value) return
 
           anchorElem.classList.add('zoom')
@@ -531,7 +527,8 @@
     while (scope && !found) {
       let matches = Array.from(scope.querySelectorAll(tag))
       if (matches.length) {
-        if (scope === anchorElem.parentElement?.parentElement) {
+        // if (scope === anchorElem.parentElement?.parentElement) {
+        if (scope === anchorElem.parentElement) {
           let priorSib = anchorElem.parentElement.previousElementSibling
           while (priorSib) {
             if (matches.find(m => m === priorSib)) {

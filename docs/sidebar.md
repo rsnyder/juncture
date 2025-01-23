@@ -7,7 +7,7 @@
   - [Quick Start](/docs/quick-start)
 
 - Tools
-  - [Juncture Web Editor](/docs/embedded-editor)
+  - [Juncture Web Editor](/editor  ':ignore')
   
 - [Getting Started](/docs/getting-started)
   - [GitHub Setup](/docs/getting-started?id=github-setup)

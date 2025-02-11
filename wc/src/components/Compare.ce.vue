@@ -6,7 +6,7 @@
       <sl-image-comparer ref="compare" position="50">
         <img v-for="src, idx in scaledImages" :key="`img-${idx}`" :slot="idx === 0 ? 'before' : 'after'" :src="src" :alt="label(manifests[idx])" />
       </sl-image-comparer>
-      <div ref="captionEl" class="caption">{{ caption }}</div>
+      <div ref="captionEl" class="caption" v-html="htmlFromMarkdown(caption)"></div>
     </div>
 
   </div>
@@ -18,6 +18,7 @@
   import { computed, getCurrentScope, nextTick, onMounted, ref, toRaw, watch } from 'vue'
 
   import { iiifServer, getManifest } from '../utils'
+  import { marked } from 'marked'
 
   const root = ref<HTMLElement | null>(null)
   const host = computed(() => (root.value?.getRootNode() as any)?.host)
@@ -78,6 +79,11 @@
 
   const caption = computed(() => props.caption || imageDefs.value.filter(def => def.caption).map(def => def.caption).join(' ') )
   
+  function htmlFromMarkdown(md) {
+    let html = md ? marked.parse(md).slice(3,-5) : ''
+    return html
+  }
+
   function init() {
     
     evalProps()
@@ -208,11 +214,11 @@
       let outputHeight = inputHeight
 
       if (inputImageAspectRatio > targetAspectRatio) {
-        outputWidth = Math.round(inputHeight * targetAspectRatio)
-        outputHeight = Math.round(outputWidth / targetAspectRatio)
+        outputWidth = Math.floor(inputHeight * targetAspectRatio)
+        outputHeight = Math.floor(outputWidth / targetAspectRatio)
       } else {
-        outputHeight = Math.round(inputWidth / targetAspectRatio)
-        outputWidth = Math.round(outputHeight * targetAspectRatio)
+        outputHeight = Math.floor(inputWidth / targetAspectRatio)
+        outputWidth = Math.floor(outputHeight * targetAspectRatio)
       }
 
       let tileSource = imgInfo.service[0].id || imgInfo.service[0]['@id']
@@ -223,6 +229,7 @@
       let region = `${outputX},${outputY},${outputWidth},${outputHeight}`
       let widthRatio = targetWidth / outputWidth
 
+      console.log(region, imgInfo.width, imgInfo.height)
       let size = widthRatio > 1
         ? `^pct:${Math.round(widthRatio * 100)}`
         : `${targetWidth},${targetHeight}`

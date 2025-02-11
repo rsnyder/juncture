@@ -292,7 +292,7 @@
 
   // const height = ref<number>(0)
   watch(height, (height) => {
-    host.value.style.height = height ? `${height}px` : 'unset'
+    if (root.value) root.value.style.height = height ? `${height}px` : 'unset'
     setOsdHeight()
     osd.value?.viewport?.goHome(true)
    })

@@ -6,7 +6,7 @@
         <div id="lat-lng-zoom" v-html="latLngZoom" @click="copyTextToClipboard(`${latLngZoom}`)"></div>
         
         <div id="map" ref="mapEl"></div>
-        <div v-if="caption" class="caption">{{ caption }}</div>
+        <div v-if="caption" class="caption" v-html="htmlFromMarkdown(caption)"></div>
       </div>
 
       <sl-dialog class="imageDialog" no-header :style="{'--width':dialogWidth, '--body-spacing':0, '--footer-spacing':'0.5em'}">
@@ -46,6 +46,8 @@
 
       import 'leaflet.smoothwheelzoom'
       import { WarpedMapLayer } from '@allmaps/leaflet'
+
+      import { marked } from 'marked'
 
       import { isQid, getEntity, getEntityData, getManifest, kebabToCamel, mwImage, isMobile, loadManifests } from '../utils'
       import EventBus from './EventBus'
@@ -286,6 +288,8 @@
     
       // const geoJsonLayers = ref<L.LayerGroup[]>()
       
+      const htmlFromMarkdown = (md: string) =>  md ? marked.parse(md).slice(3,-5) : ''
+
       const config = ref<any>(window.config || {})
       const source = computed(() => {
         if (config.value.source?.owner) return config.value.source

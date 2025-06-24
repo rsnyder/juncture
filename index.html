@@ -42,7 +42,7 @@
         // if (path) redirect += `/${path}`
         let redirect = `https://v3.juncture-digital.org/${owner}/${repo}/${path}${branch !== 'main' ? `?ref=${branch}` : ''}`
         console.log(`redirect to ${redirect}`)
-        // location.href = redirect
+        location.href = redirect
       }
 
       const githubSearchArg = new URLSearchParams(window.location.search).get('github');
@@ -58,7 +58,7 @@
         branch = branch || 'main'
         console.log(`acct: ${acct}, repo: ${repo}, branch: ${branch}, path: ${path}`);
         let redirect = `https://v3.juncture-digital.org/${acct}/${repo}/${path}${branch !== 'main' ? `?ref=${branch}` : ''}`
-        // location.href = redirect
+        location.href = redirect
       }
 
       // Close sidebar on desktop
@@ -70,7 +70,7 @@
       window.config = { source: { owner:'rsnyder', repository: 'juncture', branch: 'main', dir: '/docs/' } }
 
       setTimeout(() => {
-        // if (location.href === 'https://v3.juncture-digital.org/#/') window.history.replaceState({}, null, 'https://v3.juncture-digital.org/') // Remove hash from root URL
+        if (location.href === 'https://v3.juncture-digital.org/#/') window.history.replaceState({}, null, 'https://v3.juncture-digital.org/') // Remove hash from root URL
       }, 100) 
 
     </script>

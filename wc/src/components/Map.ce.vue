@@ -168,7 +168,7 @@
         Esri_WorldImagery: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' }],
         Esri_WorldPhysical: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
-                maxZoom: 8,
+                maxZoom: 10,
                 attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service' }],
         Esri_WorldShadedRelief: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
@@ -344,7 +344,7 @@
         if (_layerObjs.length > 0) console.log(_layerObjs.map((item:any) => toRaw(item)))
     
         let geojsonUrls = _layerObjs
-          //.filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
+          .filter(item => console.log(toRaw(item), toRaw(props)) === undefined)
           .filter(item => item['ve-map-marker'] === undefined )
           .filter(item => item.geojson !== undefined)
           .map (item => {
@@ -660,6 +660,7 @@
           },
           style: (feature) => {
             const featureProps = feature?.properties
+            console.log('toGeoJSONLayer style', toRaw(featureProps))
             const _geometry = feature?.geometry.type
             for (let [prop, value] of Object.entries(featureProps)) {
               if (value === 'null') featureProps[prop] = null
@@ -668,8 +669,8 @@
               color: featureProps.color || '#FB683F',
               weight: featureProps.weight || (_geometry === 'Polygon' || _geometry === 'MultiPolygon' ? 0 : 4),
               opacity: featureProps.opacity || 1,                  
-              fillColor: featureProps.fillColor || '#32C125',
-              fillOpacity: featureProps.fillOpacity || 0.5,
+              fillColor: featureProps.fill || featureProps.fillColor || '#32C125',
+              fillOpacity: featureProps['fill-opacity'] || featureProps.fillOpacity || 0.5,
             }
             return style
           }
